@@ -3,6 +3,24 @@
 Todas las modificaciones estructurales y de datos importantes de la base de datos se documentarán en este archivo, siguiendo un orden cronológico inverso (lo más nuevo arriba).
 
 ---
+## Versión 10. - 2026-07-15
+### Añadido
+- Endpoint `POST /api/productos` completamente funcional y conectado a MySQL.
+- Script de inicialización de datos base (`roles`, `usuarios`, `compras`, `historial_costos`) ejecutado con éxito para mantener la integridad relacional de la base de datos.
+
+### Corregido
+- Error 1046: Selección por defecto del Schema `mydb` en MySQL Workbench.
+- Error 1452: Restricciones de llave foránea al insertar productos sin dependencias previas.
+
+## Versión 8.1 - 2026-07-15
+Implementación de Controladores y Rutas para Mesas: Se desarrolló la lógica para la gestión de estados de mesas (PATCH) y se configuró el entorno de pruebas con Thunder Client para validación de API.
+
+## Versión 8.2 - 2026-07-15
+ Gestión de Inventario y Productos: Se habilitó el controlador y rutas para el listado (INNER JOIN con categorías) y creación de productos.
+
+## Versión 8.3 - 2026-07-15
+ Ajustes de Integridad de Base de Datos: Se realizó la configuración de registros base en las tablas de proveedores, categorias e historial_costos para cumplir con las restricciones de llaves foráneas y asegurar la correcta creación de productos.
+
 ## [v1.8] - 2026-07-15
 ### Modificado
 - Estandarización de políticas de integridad referencial `ON UPDATE CASCADE` en las tablas transaccionales y de auditoría (`pagos`, `auditoria`, `pedidos`) para asegurar la trazabilidad del sistema ante cambios en identificadores maestros (Script: `v1.8_asegurar_integridad_transacciones.sql`).

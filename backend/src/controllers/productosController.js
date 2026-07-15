@@ -25,6 +25,41 @@ const obtenerProductos = (req, res) => {
   });
 };
 
+// ... (tu función obtenerProductos ya está aquí) ...
+
+// Crear un nuevo producto
+const crearProducto = (req, res) => {
+  const { nombre, codigo, precio_venta, costo_promedio, cantidad, stock_minimo, categorias_id, proveedores_id, historial_costos_id } = req.body;
+
+  if (!nombre || !codigo || !precio_venta || !categorias_id || !proveedores_id || !historial_costos_id) {
+    return res.status(400).json({ error: "Faltan datos obligatorios para crear el producto." });
+  }
+
+  const id = crypto.randomUUID();
+  const estado = 'activo';
+
+  const query = `
+    INSERT INTO productos 
+    (id, nombre, codigo, precio_venta, costo_promedio_ponderado, cantidad_disponible, stock_minimo, estado, categorias_id, proveedores_id, historial_costos_id) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  db.query(query, [id, nombre, codigo, precio_venta, costo_promedio, cantidad, stock_minimo, estado, categorias_id, proveedores_id, historial_costos_id], (err, resultado) => {
+    if (err) {
+      console.error('❌ Error al crear producto:', err.message);
+      return res.status(500).json({ error: 'No se pudo crear el producto. Verifica los IDs de categoría, proveedor e historial.' });
+    }
+    res.status(201).json({ mensaje: '¡Producto registrado en el inventario de Donde Juanca! 📦', id_producto: id });
+  });
+};
+
+// Actualiza tu export para incluir la nueva función
 module.exports = {
-  obtenerProductos
+  obtenerProductos,
+  crearProducto
+};
+
+module.exports = {
+  obtenerProductos,
+  crearProducto
 };
