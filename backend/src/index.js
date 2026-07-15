@@ -3,7 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const categoriasRoutes = require('./routes/categoriasRoutes');
 const productosRoutes = require('./routes/productosRoutes');
-const mesasRoutes = require('./routes/mesasRoutes');
+const mesasRoutes = require('./routes/mesasRoutes')
+const pedidosRoutes = require('./routes/pedidosRoutes');;
 const db = require('./config/db'); // Importa la base de datos para asegurar la conexión al inicio
 
 
@@ -23,6 +24,7 @@ app.get('/', (req, res) => {
 app.use('/api/categorias', categoriasRoutes); 
 app.use('/api/productos', productosRoutes);
 app.use('/api/mesas', mesasRoutes);
+app.use('/api/pedidos', pedidosRoutes);
 
 // 4. Manejo global de errores (SIEMPRE AL FINAL, justo antes del listen)
 app.use((err, req, res, next) => {
