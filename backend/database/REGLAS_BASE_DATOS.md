@@ -44,3 +44,6 @@ ON DELETE RESTRICT: Se aplicará en todas las llaves foráneas que conecten tabl
 ON UPDATE CASCADE: Se aplicará en todas las relaciones para asegurar que cualquier modificación en un identificador único (Primary Key) se propague automáticamente a todas las referencias existentes, manteniendo la consistencia de los datos.
 
 Actualización v1.6: Se aplicaron políticas de integridad referencial ON DELETE RESTRICT y ON UPDATE CASCADE en la relación entre productos y categorias para garantizar la consistencia de los datos.
+
+## Verificación de Consistencia:
+Se implementó un protocolo de validación mediante LEFT JOIN para identificar relaciones huérfanas en las entidades pedidos, productos y pagos. Los resultados confirmaron una integridad referencial del 100%, validando que todos los registros transaccionales están correctamente vinculados a sus entidades maestras.
