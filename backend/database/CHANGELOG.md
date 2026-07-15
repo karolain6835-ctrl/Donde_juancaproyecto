@@ -3,6 +3,17 @@
 Todas las modificaciones estructurales y de datos importantes de la base de datos se documentarán en este archivo, siguiendo un orden cronológico inverso (lo más nuevo arriba).
 
 ---
+## [v1.8] - 2026-07-15
+### Modificado
+- Estandarización de políticas de integridad referencial `ON UPDATE CASCADE` en las tablas transaccionales y de auditoría (`pagos`, `auditoria`, `pedidos`) para asegurar la trazabilidad del sistema ante cambios en identificadores maestros (Script: `v1.8_asegurar_integridad_transacciones.sql`).
+
+## [v1.7] - 2026-07-15
+### Modificado
+- Aplicación de política `ON UPDATE CASCADE` en las relaciones jerárquicas críticas entre `clientes`-`usuarios` y `pedidos`-`mesas` para mantener la consistencia de los datos (Script: `v1.7_actualizar_politicas_update.sql`).
+
+## [v1.6] - 2026-07-15
+### Modificado
+- Definición formal de políticas de integridad referencial (`ON DELETE RESTRICT`, `ON UPDATE CASCADE`) en la relación `productos`-`categorias` para prevenir la eliminación de datos con dependencias activas (Script: `v1.6_definir_politicas_referenciales.sql`). 
 
 ## [v1.5] - 2026-07-14
 ### Eliminado
@@ -27,3 +38,4 @@ Todas las modificaciones estructurales y de datos importantes de la base de dato
 ## [v1.0] - 2026-07-14
 ### Inicializado
 - Se estableció el diseño y la estructura fundacional de la base de datos relacional para el sistema (Script: `v1.0_estructura.sql`).
+
