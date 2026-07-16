@@ -4,7 +4,10 @@ const cors = require('cors');
 const categoriasRoutes = require('./routes/categoriasRoutes');
 const productosRoutes = require('./routes/productosRoutes');
 const mesasRoutes = require('./routes/mesasRoutes')
-const pedidosRoutes = require('./routes/pedidosRoutes');;
+const pedidosRoutes = require('./routes/pedidosRoutes');
+const pagosRoutes = require('./routes/pagosRoutes');
+const juegosRoutes = require('./routes/juegosRoutes');
+const inventarioRoutes = require('./routes/inventarioRoutes');
 const db = require('./config/db'); // Importa la base de datos para asegurar la conexión al inicio
 
 
@@ -25,6 +28,9 @@ app.use('/api/categorias', categoriasRoutes);
 app.use('/api/productos', productosRoutes);
 app.use('/api/mesas', mesasRoutes);
 app.use('/api/pedidos', pedidosRoutes);
+app.use('/api/pagos', pagosRoutes); 
+app.use('/api/juegos', juegosRoutes);
+app.use('/api/inventario', inventarioRoutes);
 
 // 4. Manejo global de errores (SIEMPRE AL FINAL, justo antes del listen)
 app.use((err, req, res, next) => {
