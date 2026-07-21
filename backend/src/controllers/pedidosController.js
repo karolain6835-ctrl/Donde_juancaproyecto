@@ -41,7 +41,8 @@ const crearPedido = (req, res) => {
 };
 
 // ==========================================
-// 2. AGREGAR UN PRODUCTO AL PEDIDO
+// ==========================================
+// 2. AGREGAR UN PRODUCTO AL PEDIDO Y DESCONTAR INVENTARIO
 // ==========================================
 const agregarItemPedido = (req, res) => {
   const { id_pedido } = req.params;
@@ -53,25 +54,92 @@ const agregarItemPedido = (req, res) => {
     });
   }
 
-  const id = crypto.randomUUID();
-  const estado = 'preparando'; 
-  const cantidad_pagada = 0;   
-
-  const query = `
-    INSERT INTO pedido_items 
-    (id, precio_unitario, pedido_id, producto_id, cantidad_pedida, cantidad_pagada, estado, pedidos_id, productos_id) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `;
-
-  db.query(query, [id, precio_unitario, id_pedido, productos_id, cantidad_pedida, cantidad_pagada, estado, id_pedido, productos_id], (err, resultados) => {
-    if (err) {
-      console.error('❌ Error al agregar producto al pedido:', err.message);
-      return res.status(500).json({ error: 'Hubo un error en el servidor al agregar el producto.' });
+  // Iniciamos transacción para asegurar que el registro del item y el descuento de stock ocurran juntos
+  db.beginTransaction((errTx) => {
+    if (errTx) {
+      console.error('❌ Error al iniciar transacción:', errTx.message);
+      return res.status(500).json({ error: 'Error en el servidor al procesar la solicitud.' });
     }
 
-    res.status(201).json({
-      mensaje: '¡Producto agregado a la cuenta exitosamente! 🍺',
-      id_item: id
+    // 1. Verificar stock actual del producto
+    const sqlStock = 'SELECT stock, nombre FROM productos WHERE id = ? FOR UPDATE';
+
+    db.query(sqlStock, [productos_id], (errStock, resStock) => {
+      if (errStock) {
+        return db.rollback(() => {
+          console.error('❌ Error al consultar stock:', errStock.message);
+          res.status(500).json({ error: 'Error al verificar el inventario del producto.' });
+        });
+      }
+
+      if (resStock.length === 0) {
+        return db.rollback(() => {
+          res.status(404).json({ error: 'El producto especificado no existe.' });
+        });
+      }
+
+      const producto = resStock[0];
+
+      // Validar si hay stock suficiente
+      if (producto.stock < cantidad_pedida) {
+        return db.rollback(() => {
+          res.status(400).json({ 
+            error: `Stock insuficiente para "${producto.nombre}". Disponible: ${producto.stock}, solicitado: ${cantidad_pedida}.` 
+          });
+        });
+      }
+
+      // 2. Insertar el ítem en la tabla pedido_items
+      const idItem = crypto.randomUUID();
+      const estado = 'preparando'; 
+      const cantidad_pagada = 0; 
+
+      const sqlInsert = `
+        INSERT INTO pedido_items 
+        (id, precio_unitario, pedido_id, producto_id, cantidad_pedida, cantidad_pagada, estado, pedidos_id, productos_id) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `;
+
+      db.query(
+        sqlInsert, 
+        [idItem, precio_unitario, id_pedido, productos_id, cantidad_pedida, cantidad_pagada, estado, id_pedido, productos_id], 
+        (errInsert) => {
+          if (errInsert) {
+            return db.rollback(() => {
+              console.error('❌ Error al insertar item:', errInsert.message);
+              res.status(500).json({ error: 'Error al agregar el producto al pedido.' });
+            });
+          }
+
+          // 3. Descontar el stock en la tabla productos
+          const sqlUpdateStock = 'UPDATE productos SET stock = stock - ? WHERE id = ?';
+
+          db.query(sqlUpdateStock, [cantidad_pedida, productos_id], (errUpdate) => {
+            if (errUpdate) {
+              return db.rollback(() => {
+                console.error('❌ Error al descontar inventario:', errUpdate.message);
+                res.status(500).json({ error: 'Error al actualizar el inventario.' });
+              });
+            }
+
+            // Confirmar todos los cambios en la BD
+            db.commit((errCommit) => {
+              if (errCommit) {
+                return db.rollback(() => {
+                  console.error('❌ Error al confirmar transacción:', errCommit.message);
+                  res.status(500).json({ error: 'Error al finalizar el registro del item.' });
+                });
+              }
+
+              return res.status(201).json({
+                mensaje: '¡Producto agregado y stock descontado exitosamente! 🍺',
+                id_item: idItem,
+                stock_restante: producto.stock - cantidad_pedida
+              });
+            });
+          });
+        }
+      );
     });
   });
 };
@@ -166,6 +234,7 @@ const obtenerCuentaConsolidada = (req, res) => {
   });
 };
 
+
 // ==========================================
 // EXPORTAR TODAS LAS FUNCIONES AL FINAL
 // ==========================================
@@ -175,3 +244,4 @@ module.exports = {
   obtenerPedidoConDetalles,
   obtenerCuentaConsolidada
 };
+

@@ -1,0 +1,9 @@
+$kind: http-request
+name: http://localhost:5000/api/usuarios/user-001/estado
+description: ""
+url: http://localhost:5000/api/usuarios/user-001/estado
+method: PUT
+body:
+  type: json
+  content: "{\r\n  \"estado\": \"inactivo\"\r\n}"
+order: 4475066076725903
