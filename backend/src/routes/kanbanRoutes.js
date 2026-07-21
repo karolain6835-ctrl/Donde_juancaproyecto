@@ -2,10 +2,9 @@ const express = require('express');
 const router = express.Router();
 const kanbanController = require('../controllers/kanbanController');
 
-// Ruta para ver el tablero Kanban (Listar pedidos por columnas de estado)
-router.get('/tablero', kanbanController.obtenerPedidosKanban);
-
-// Ruta para cambiar de columna un pedido (Ej: de 'pendiente' a 'en_preparacion')
+// Sub-rutas del Kanban
+router.get('/simulado', kanbanController.obtenerPedidosKanban);
 router.put('/:id/estado', kanbanController.actualizarEstadoPedido);
+router.get('/tablero', kanbanController.obtenerTableroKanban);
 
 module.exports = router;

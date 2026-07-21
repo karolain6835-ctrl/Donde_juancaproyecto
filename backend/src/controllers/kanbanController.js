@@ -1,26 +1,29 @@
-// 1. Obtener todos los pedidos destinados al tablero Kanban (Simulado)
-exports.obtenerPedidosKanban = async (req, res) => {
-  // Simulamos una lista de pedidos con diferentes estados de preparación
+const db = require('../config/db');
+
+// ==========================================
+// 1. OBTENER PEDIDOS SIMULADOS
+// ==========================================
+const obtenerPedidosKanban = async (req, res) => {
   const pedidosKanban = [
     {
       id: "PED-101",
       mesa: "Mesa 3",
       items: "2 Cervezas Club Colombia",
-      estado: "pendiente", // Columna 1
+      estado: "pendiente",
       hora_pedido: "15:45"
     },
     {
       id: "PED-102",
       mesa: "Mesa 1 (Tejo)",
       items: "1 Porción de Chicharrón, 1 Aguardiente",
-      estado: "en_preparacion", // Columna 2
+      estado: "en_preparacion",
       hora_pedido: "15:30"
     },
     {
       id: "PED-103",
       mesa: "Mesa 5",
       items: "1 Gaseosa Coca-Cola",
-      estado: "entregado", // Columna 3
+      estado: "entregado",
       hora_pedido: "15:15"
     }
   ];
@@ -32,8 +35,10 @@ exports.obtenerPedidosKanban = async (req, res) => {
   });
 };
 
-// 2. Actualizar el estado de un pedido en el Kanban (Simulado)
-exports.actualizarEstadoPedido = async (req, res) => {
+// ==========================================
+// 2. ACTUALIZAR ESTADO DE UN PEDIDO (SIMULADO)
+// ==========================================
+const actualizarEstadoPedido = async (req, res) => {
   const { id } = req.params;
   const { nuevo_estado } = req.body;
 
@@ -50,4 +55,72 @@ exports.actualizarEstadoPedido = async (req, res) => {
     pedido_id: id,
     estado_actual: nuevo_estado
   });
+};
+
+// ==========================================
+// 3. OBTENER TABLERO REAL DE LA BASE DE DATOS
+// ==========================================
+const obtenerTableroKanban = (req, res) => {
+  const query = `
+    SELECT 
+      pi.id AS item_id,
+      pi.cantidad_pedida,
+      pi.estado AS estado_item,
+      p.nombre AS producto_nombre,
+      ped.id AS pedido_id,
+      m.numero AS numero_mesa,
+      ped.creado_en
+    FROM pedido_items pi
+    JOIN productos p ON (pi.producto_id = p.id OR pi.productos_id = p.id)
+    JOIN pedidos ped ON (pi.pedido_id = ped.id OR pi.pedidos_id = ped.id)
+    JOIN mesas m ON ped.mesas_id = m.id
+    WHERE pi.estado IN ('enviado', 'preparacion', 'preparando', 'servido')
+      AND ped.estado = 'abierto'
+    ORDER BY ped.creado_en ASC
+  `;
+
+  db.query(query, (err, resultados) => {
+    if (err) {
+      console.error('❌ Error al obtener tablero Kanban:', err.message);
+      return res.status(500).json({ error: 'Error al cargar el tablero de cocina.' });
+    }
+
+    const tablero = {
+      enviado: [],
+      preparacion: [],
+      servido: []
+    };
+
+    resultados.forEach((item) => {
+      const estadoNormalizado = item.estado_item === 'preparando' ? 'preparacion' : item.estado_item;
+
+      const tarjeta = {
+        id_item: item.item_id,
+        id_pedido: item.pedido_id,
+        mesa: item.numero_mesa,
+        producto: item.producto_nombre,
+        cantidad: item.cantidad_pedida,
+        hora: item.creado_en
+      };
+
+      if (tablero[estadoNormalizado]) {
+        tablero[estadoNormalizado].push(tarjeta);
+      }
+    });
+
+    return res.status(200).json({
+      exito: true,
+      mensaje: 'Tablero Kanban cargado exitosamente 📋',
+      data: tablero
+    });
+  });
+};
+
+// ==========================================
+// EXPORTAR TODAS LAS FUNCIONES AL FINAL
+// ==========================================
+module.exports = {
+  obtenerPedidosKanban,
+  actualizarEstadoPedido,
+  obtenerTableroKanban
 };

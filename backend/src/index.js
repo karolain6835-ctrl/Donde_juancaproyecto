@@ -15,6 +15,7 @@ const kanbanRoutes = require('./routes/kanbanRoutes');
 const db = require('./config/db'); // Importa la base de datos para asegurar la conexión al inicio
 
 
+
 const app = express();
 const PORT = process.env.PORT || 5000; // Usa el puerto de .env o el 5000 por defecto
 

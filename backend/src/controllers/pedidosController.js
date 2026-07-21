@@ -1,5 +1,5 @@
 const db = require('../config/db');
-const crypto = require('crypto'); // Nos ayuda a generar el ID automático (UUID)
+const crypto = require('crypto'); // Generador de UUIDs
 
 // ==========================================
 // 1. CREAR UN NUEVO PEDIDO
@@ -41,7 +41,6 @@ const crearPedido = (req, res) => {
 };
 
 // ==========================================
-// ==========================================
 // 2. AGREGAR UN PRODUCTO AL PEDIDO Y DESCONTAR INVENTARIO
 // ==========================================
 const agregarItemPedido = (req, res) => {
@@ -54,14 +53,12 @@ const agregarItemPedido = (req, res) => {
     });
   }
 
-  // Iniciamos transacción para asegurar que el registro del item y el descuento de stock ocurran juntos
   db.beginTransaction((errTx) => {
     if (errTx) {
       console.error('❌ Error al iniciar transacción:', errTx.message);
       return res.status(500).json({ error: 'Error en el servidor al procesar la solicitud.' });
     }
 
-    // 1. Verificar stock actual del producto
     const sqlStock = 'SELECT stock, nombre FROM productos WHERE id = ? FOR UPDATE';
 
     db.query(sqlStock, [productos_id], (errStock, resStock) => {
@@ -80,7 +77,6 @@ const agregarItemPedido = (req, res) => {
 
       const producto = resStock[0];
 
-      // Validar si hay stock suficiente
       if (producto.stock < cantidad_pedida) {
         return db.rollback(() => {
           res.status(400).json({ 
@@ -89,7 +85,6 @@ const agregarItemPedido = (req, res) => {
         });
       }
 
-      // 2. Insertar el ítem en la tabla pedido_items
       const idItem = crypto.randomUUID();
       const estado = 'preparando'; 
       const cantidad_pagada = 0; 
@@ -111,7 +106,6 @@ const agregarItemPedido = (req, res) => {
             });
           }
 
-          // 3. Descontar el stock en la tabla productos
           const sqlUpdateStock = 'UPDATE productos SET stock = stock - ? WHERE id = ?';
 
           db.query(sqlUpdateStock, [cantidad_pedida, productos_id], (errUpdate) => {
@@ -122,7 +116,6 @@ const agregarItemPedido = (req, res) => {
               });
             }
 
-            // Confirmar todos los cambios en la BD
             db.commit((errCommit) => {
               if (errCommit) {
                 return db.rollback(() => {
@@ -155,8 +148,8 @@ const obtenerPedidoConDetalles = (req, res) => {
   const queryItems = `
     SELECT pi.id, pi.cantidad_pedida, pi.precio_unitario, pi.estado, p.nombre 
     FROM pedido_items pi
-    JOIN productos p ON pi.productos_id = p.id
-    WHERE pi.pedidos_id = ?
+    JOIN productos p ON pi.producto_id = p.id OR pi.productos_id = p.id
+    WHERE pi.pedido_id = ? OR pi.pedidos_id = ?
   `;
 
   db.query(queryPedido, [id], (err, resultadosPedido) => {
@@ -165,7 +158,7 @@ const obtenerPedidoConDetalles = (req, res) => {
 
     const pedido = resultadosPedido[0];
 
-    db.query(queryItems, [id], (err, resultadosItems) => {
+    db.query(queryItems, [id, id], (err, resultadosItems) => {
       if (err) return res.status(500).json({ error: 'Hubo un error al buscar los detalles del pedido.' });
 
       pedido.items = resultadosItems;
@@ -182,15 +175,16 @@ const obtenerPedidoConDetalles = (req, res) => {
 // 4. CALCULAR CUENTA CONSOLIDADA (PRODUCTOS + JUEGOS)
 // ==========================================
 const obtenerCuentaConsolidada = (req, res) => {
-  const { id } = req.params; // ID de la mesa o pedido
+  const { id } = req.params; 
 
   const queryProductos = `
-    SELECT pi.productos_id, p.nombre, pi.cantidad_pedida, pi.precio_unitario, 
+    SELECT COALESCE(pi.producto_id, pi.productos_id) AS producto_id, 
+           p.nombre, pi.cantidad_pedida, pi.precio_unitario, 
            (pi.cantidad_pedida * pi.precio_unitario) AS subtotal
     FROM pedido_items pi
-    JOIN productos p ON pi.productos_id = p.id
-    JOIN pedidos ped ON pi.pedidos_id = ped.id
-    WHERE ped.mesas_id = ? AND ped.estado = 'abierto'
+    JOIN productos p ON (pi.producto_id = p.id OR pi.productos_id = p.id)
+    JOIN pedidos ped ON (pi.pedido_id = ped.id OR pi.pedidos_id = ped.id)
+    WHERE ped.mesas_id = ? AND ped.estado = 'abierto' AND pi.estado != 'cancelado'
   `;
 
   const queryJuegos = `
@@ -208,7 +202,6 @@ const obtenerCuentaConsolidada = (req, res) => {
 
     db.query(queryJuegos, [id], (err, juegos) => {
       if (err) {
-        // Si la tabla sesiones_juego aún no tiene registros o varía, retornamos lista vacía de juegos sin tumbar el endpoint
         juegos = [];
       }
 
@@ -234,14 +227,91 @@ const obtenerCuentaConsolidada = (req, res) => {
   });
 };
 
+// ==========================================
+// 5. CANCELAR UN ÍTEM DEL PEDIDO Y LIBERAR STOCK
+// ==========================================
+const cancelarItemPedido = (req, res) => {
+  const { id } = req.params;
 
-// ==========================================
-// EXPORTAR TODAS LAS FUNCIONES AL FINAL
-// ==========================================
+  db.beginTransaction((errTx) => {
+    if (errTx) {
+      console.error('❌ Error al iniciar transacción:', errTx.message);
+      return res.status(500).json({ error: 'Error interno al procesar la solicitud.' });
+    }
+
+    const sqlObtenerItem = `
+      SELECT id, COALESCE(producto_id, productos_id) AS producto_id, cantidad_pedida, estado 
+      FROM pedido_items 
+      WHERE id = ? FOR UPDATE
+    `;
+
+    db.query(sqlObtenerItem, [id], (errItem, resItem) => {
+      if (errItem) {
+        return db.rollback(() => {
+          console.error('❌ Error al consultar el ítem:', errItem.message);
+          res.status(500).json({ error: 'Error al consultar el ítem a cancelar.' });
+        });
+      }
+
+      if (resItem.length === 0) {
+        return db.rollback(() => {
+          res.status(404).json({ error: 'El ítem especificado no existe.' });
+        });
+      }
+
+      const item = resItem[0];
+
+      if (item.estado === 'cancelado') {
+        return db.rollback(() => {
+          res.status(400).json({ error: 'El ítem ya se encuentra cancelado.' });
+        });
+      }
+
+      const sqlCancelarItem = "UPDATE pedido_items SET estado = 'cancelado' WHERE id = ?";
+
+      db.query(sqlCancelarItem, [id], (errUpdateItem) => {
+        if (errUpdateItem) {
+          return db.rollback(() => {
+            console.error('❌ Error al actualizar el estado del ítem:', errUpdateItem.message);
+            res.status(500).json({ error: 'Error al cancelar el ítem.' });
+          });
+        }
+
+        const sqlReintegrarStock = 'UPDATE productos SET stock = stock + ? WHERE id = ?';
+
+        db.query(sqlReintegrarStock, [item.cantidad_pedida, item.producto_id], (errStock) => {
+          if (errStock) {
+            return db.rollback(() => {
+              console.error('❌ Error al devolver stock al inventario:', errStock.message);
+              res.status(500).json({ error: 'Error al actualizar el inventario.' });
+            });
+          }
+
+          db.commit((errCommit) => {
+            if (errCommit) {
+              return db.rollback(() => {
+                console.error('❌ Error al confirmar la transacción:', errCommit.message);
+                res.status(500).json({ error: 'Error al finalizar la cancelación.' });
+              });
+            }
+
+            return res.status(200).json({
+              exito: true,
+              mensaje: '¡Ítem cancelado con éxito y stock devuelto al inventario! 🔄',
+              id_item: id,
+              cantidad_reintegrada: item.cantidad_pedida
+            });
+          });
+        });
+      });
+    });
+  });
+};
+
 module.exports = {
   crearPedido,
   agregarItemPedido,
   obtenerPedidoConDetalles,
-  obtenerCuentaConsolidada
+  obtenerCuentaConsolidada,
+  cancelarItemPedido
 };
-
