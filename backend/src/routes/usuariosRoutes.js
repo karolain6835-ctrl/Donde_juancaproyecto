@@ -8,4 +8,7 @@ router.post('/registrar', usuariosController.registrarUsuario);
 // Ruta para el inicio de sesión
 router.post('/login', usuariosController.loginUsuario);
 
+// Ruta para solicitar un código OTP para restablecimiento de contraseña
+router.post('/auth/otp/solicitar', usuariosController.solicitarOTP);
+
 module.exports = router;
