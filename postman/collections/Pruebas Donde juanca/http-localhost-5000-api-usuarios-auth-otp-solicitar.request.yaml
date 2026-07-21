@@ -1,0 +1,13 @@
+$kind: http-request
+name: http://localhost:5000/api/usuarios/auth/otp/solicitar
+description: ""
+url: http://localhost:5000/api/usuarios/auth/otp/solicitar
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"email\": \"carlos.bar@dondejuanca.com\"\r
+
+    }"
+order: 4408564692604359

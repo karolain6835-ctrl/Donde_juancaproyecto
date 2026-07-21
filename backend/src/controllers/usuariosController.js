@@ -100,3 +100,55 @@ exports.solicitarOTP = (req, res) => {
     });
   });
 };
+
+// 4. Cambiar estado de usuario (Desactivación / Bloqueo)
+exports.cambiarEstadoUsuario = (req, res) => {
+  const { id } = req.params;
+  const { estado } = req.body;
+
+  // Validar que envíen un estado válido
+  const estadosPermitidos = ['activo', 'inactivo', 'bloqueado'];
+
+  if (!estado || !estadosPermitidos.includes(estado.toLowerCase())) {
+    return res.status(400).json({
+      ok: false,
+      msg: 'Debe proporcionar un estado válido: "activo", "inactivo" o "bloqueado".'
+    });
+  }
+
+  // 1. Verificar si el usuario existe
+  const sqlBuscar = 'SELECT id, nombre, email, estado FROM usuarios WHERE id = ?';
+
+  db.query(sqlBuscar, [id], (err, resultados) => {
+    if (err) {
+      console.error('Error al consultar usuario:', err);
+      return res.status(500).json({ ok: false, msg: 'Error en el servidor al consultar usuario.' });
+    }
+
+    if (resultados.length === 0) {
+      return res.status(404).json({
+        ok: false,
+        msg: `No se encontró ningún usuario con el ID ${id}.`
+      });
+    }
+
+    // 2. Actualizar el estado en la BD
+    const sqlActualizar = 'UPDATE usuarios SET estado = ? WHERE id = ?';
+
+    db.query(sqlActualizar, [estado.toLowerCase(), id], (errUpdate) => {
+      if (errUpdate) {
+        console.error('Error al actualizar estado del usuario:', errUpdate);
+        return res.status(500).json({ ok: false, msg: 'Error al actualizar el estado del usuario.' });
+      }
+
+      return res.status(200).json({
+        ok: true,
+        msg: `Estado del usuario actualizado exitosamente a "${estado.toLowerCase()}".`,
+        data: {
+          usuario_id: id,
+          nuevo_estado: estado.toLowerCase()
+        }
+      });
+    });
+  });
+};
