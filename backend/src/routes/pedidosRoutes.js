@@ -10,5 +10,7 @@ router.post('/:id_pedido/items', pedidosController.agregarItemPedido);
 
 // 3. Consultar la cuenta completa con sus detalles (Ver la factura total de la mesa)
 router.get('/:id', pedidosController.obtenerPedidoConDetalles);
+// 
+router.get('/:id/cuenta', pedidosController.obtenerCuentaConsolidada);
 
 module.exports = router;

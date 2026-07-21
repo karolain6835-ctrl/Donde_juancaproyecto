@@ -111,10 +111,67 @@ const obtenerPedidoConDetalles = (req, res) => {
 };
 
 // ==========================================
+// 4. CALCULAR CUENTA CONSOLIDADA (PRODUCTOS + JUEGOS)
+// ==========================================
+const obtenerCuentaConsolidada = (req, res) => {
+  const { id } = req.params; // ID de la mesa o pedido
+
+  const queryProductos = `
+    SELECT pi.productos_id, p.nombre, pi.cantidad_pedida, pi.precio_unitario, 
+           (pi.cantidad_pedida * pi.precio_unitario) AS subtotal
+    FROM pedido_items pi
+    JOIN productos p ON pi.productos_id = p.id
+    JOIN pedidos ped ON pi.pedidos_id = ped.id
+    WHERE ped.mesas_id = ? AND ped.estado = 'abierto'
+  `;
+
+  const queryJuegos = `
+    SELECT id, activos_juego_id, fecha_inicio, fecha_fin, precio_hora,
+           ROUND((TIMESTAMPDIFF(MINUTE, fecha_inicio, NOW()) / 60) * precio_hora, 2) AS costo_tiempo
+    FROM sesiones_juego
+    WHERE mesas_id = ? AND estado = 'en_progreso'
+  `;
+
+  db.query(queryProductos, [id], (err, productos) => {
+    if (err) {
+      console.error('❌ Error al consultar productos:', err.message);
+      return res.status(500).json({ error: 'Error al consultar consumos de productos.' });
+    }
+
+    db.query(queryJuegos, [id], (err, juegos) => {
+      if (err) {
+        // Si la tabla sesiones_juego aún no tiene registros o varía, retornamos lista vacía de juegos sin tumbar el endpoint
+        juegos = [];
+      }
+
+      const totalProductos = (productos || []).reduce((acc, item) => acc + parseFloat(item.subtotal || 0), 0);
+      const totalJuegos = (juegos || []).reduce((acc, item) => acc + parseFloat(item.costo_tiempo || 0), 0);
+      const totalGeneral = totalProductos + totalJuegos;
+
+      return res.status(200).json({
+        exito: true,
+        mensaje: 'Cuenta consolidada calculada exitosamente 📊',
+        data: {
+          mesa_id: id,
+          resumen: {
+            subtotal_productos: totalProductos.toFixed(2),
+            subtotal_juegos: totalJuegos.toFixed(2),
+            total_general: totalGeneral.toFixed(2)
+          },
+          detalle_productos: productos || [],
+          detalle_juegos: juegos || []
+        }
+      });
+    });
+  });
+};
+
+// ==========================================
 // EXPORTAR TODAS LAS FUNCIONES AL FINAL
 // ==========================================
 module.exports = {
   crearPedido,
   agregarItemPedido,
-  obtenerPedidoConDetalles
+  obtenerPedidoConDetalles,
+  obtenerCuentaConsolidada
 };

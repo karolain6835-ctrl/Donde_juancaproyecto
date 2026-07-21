@@ -1,0 +1,6 @@
+$kind: http-request
+name: http://localhost:5000/api/pedidos/act-001/cuenta
+description: ""
+url: http://localhost:5000/api/pedidos/act-001/cuenta
+method: GET
+order: 1784662414074
