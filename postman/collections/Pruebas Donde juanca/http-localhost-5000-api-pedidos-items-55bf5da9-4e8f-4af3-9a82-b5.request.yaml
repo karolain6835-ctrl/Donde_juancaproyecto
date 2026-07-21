@@ -1,0 +1,6 @@
+$kind: http-request
+name: http://localhost:5000/api/pedidos/items/55bf5da9-4e8f-4af3-9a82-b5baaa85e876/cancelar
+description: ""
+url: http://localhost:5000/api/pedidos/items/55bf5da9-4e8f-4af3-9a82-b5baaa85e876/cancelar
+method: PUT
+order: 4501924289130906

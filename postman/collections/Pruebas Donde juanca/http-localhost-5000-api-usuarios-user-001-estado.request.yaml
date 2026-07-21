@@ -1,9 +1,17 @@
 $kind: http-request
 name: http://localhost:5000/api/usuarios/user-001/estado
 description: ""
-url: http://localhost:5000/api/usuarios/user-001/estado
-method: PUT
+url: http://localhost:5000/api/pedidos/ped-001/items
+method: POST
 body:
   type: json
-  content: "{\r\n  \"estado\": \"inactivo\"\r\n}"
+  content: "{\r
+
+    \  \"productos_id\": \"5a553515-2903-4256-be97-e051e1f25764\",\r
+
+    \  \"cantidad_pedida\": 2,\r
+
+    \  \"precio_unitario\": 5000.00\r
+
+    }"
 order: 4475066076725903

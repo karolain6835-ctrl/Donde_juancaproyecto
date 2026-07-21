@@ -1,0 +1,17 @@
+$kind: http-request
+name: http://localhost:5000/api/sesiones-division
+description: ""
+url: http://localhost:5000/api/sesiones-division
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"mesas_id\": \"mesa-001\",\r
+
+    \  \"usuarios_id\": \"usr-001\",\r
+
+    \  \"modalidad\": \"equitativa\"\r
+
+    }"
+order: 4503374614182275

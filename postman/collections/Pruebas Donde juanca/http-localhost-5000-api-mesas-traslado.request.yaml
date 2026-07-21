@@ -1,0 +1,17 @@
+$kind: http-request
+name: http://localhost:5000/api/mesas/traslado
+description: ""
+url: http://localhost:5000/api/mesas/traslado
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: "{\r
+
+    \  \"mesa_origen_id\": \"mesa-005\",\r
+
+    \  \"mesa_destino_id\": \"mesa-002\"\r
+
+    }"
+order: 4502195436645655

@@ -13,7 +13,7 @@ const ventasRoutes = require('./routes/ventasRoutes');
 const usuariosRoutes = require('./routes/usuariosRoutes');
 const kanbanRoutes = require('./routes/kanbanRoutes');
 const db = require('./config/db'); // Importa la base de datos para asegurar la conexión al inicio
-
+const divisionesRoutes = require('./routes/divisionesRoutes');
 
 
 const app = express();
@@ -40,6 +40,7 @@ app.use('/api/clientes', clientesRoutes);
 app.use('/api/ventas', ventasRoutes);
 app.use('/api/usuarios', usuariosRoutes);
 app.use('/api/kanban', kanbanRoutes);
+app.use('/api/sesiones-division', divisionesRoutes);
 
 // 4. Manejo global de errores (SIEMPRE AL FINAL, justo antes del listen)
 app.use((err, req, res, next) => {
