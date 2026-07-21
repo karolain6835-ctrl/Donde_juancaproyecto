@@ -1,18 +1,21 @@
--- v2.12_otp_tokens.sql
--- Aseguramos la existencia de la tabla otp_tokens con campos de expiración y estado de uso
+-- ============================================================
+-- VERSIÓN 2.12: Creación de la tabla otp_tokens
+-- Descripción: Tabla para almacenar tokens OTP de recuperación
+-- ============================================================
 
-CREATE TABLE IF NOT EXISTS `mydb`.`otp_tokens` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `codigo` VARCHAR(8) NOT NULL,
-  `expira_en` DATETIME NOT NULL,
-  `usado` TINYINT DEFAULT 0,
-  `creado_en` DATETIME NOT NULL,
-  `usuarios_id` VARCHAR(36) NOT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `fk_otp_tokens_usuarios1_idx` (`usuarios_id` ASC),
-  CONSTRAINT `fk_otp_tokens_usuarios1`
-    FOREIGN KEY (`usuarios_id`)
-    REFERENCES `mydb`.`usuarios` (`id`)
-    ON DELETE RESTRICT
+USE mydb;
+
+CREATE TABLE IF NOT EXISTS otp_tokens (
+  id INT NOT NULL AUTO_INCREMENT,
+  codigo VARCHAR(8) NOT NULL,
+  expira_en DATETIME NOT NULL,
+  usado TINYINT(1) DEFAULT 0,
+  creado_en DATETIME DEFAULT CURRENT_TIMESTAMP,
+  usuarios_id INT NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_otp_tokens_usuarios
+    FOREIGN KEY (usuarios_id)
+    REFERENCES usuarios (id)
+    ON DELETE CASCADE
     ON UPDATE CASCADE
-) ENGINE = InnoDB;
+);
