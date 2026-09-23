@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Donde Juanca - Dashboard</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+
+<body>
+
+    <div class="app-layout">
+
+        <aside class="sidebar">
+
+            <div class="sidebar-header">
+                <h2>Donde Juanca</h2>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-link active">Dashboard</a>
+                <a href="mesas.html" class="nav-link">Mesas</a>
+                <a href="pedidos.html" class="nav-link">Pedidos</a>
+            </nav>
+
+            <div class="sidebar-user">
+                <span id="nombreUsuario">Usuario</span>
+                <small>Administrador</small>
+            </div>
+
+        </aside>
+
+        <main class="main-content">
+
+            <header class="page-header">
+                <div>
+                    <h1>Dashboard</h1>
+                    <p id="saludoUsuario">Resumen general del establecimiento</p>
+                </div>
+            </header>
+
+            <section class="stats-grid">
+
+                <article class="stat-card stat-card-primary">
+                    <span>Ventas del día</span>
+                    <strong>$787.500</strong>
+                    <small>Ventas registradas</small>
+                </article>
+
+                <article class="stat-card">
+                    <span>Pedidos activos</span>
+                    <strong>5</strong>
+                    <small>3 mesas ocupadas</small>
+                </article>
+
+                <article class="stat-card">
+                    <span>Mesas libres</span>
+                    <strong>5 / 12</strong>
+                    <small>Disponibles actualmente</small>
+                </article>
+
+                <article class="stat-card">
+                    <span>Alertas de stock</span>
+                    <strong>9</strong>
+                    <small>Productos por revisar</small>
+                </article>
+
+            </section>
+
+            <section class="dashboard-grid">
+
+                <article class="panel">
+                    <div class="panel-header">
+                        <h2>Pedidos activos</h2>
+                        <a href="pedidos.html">Ver todos</a>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Pedido</th>
+                                    <th>Mesa</th>
+                                    <th>Personas</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <td>P-2401</td>
+                                    <td>Mesa 2</td>
+                                    <td>4</td>
+                                    <td>$39.000</td>
+                                    <td>
+                                        <span class="status-badge status-active">
+                                            Activo
+                                        </span>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>P-2402</td>
+                                    <td>Mesa 3</td>
+                                    <td>6</td>
+                                    <td>$138.000</td>
+                                    <td>
+                                        <span class="status-badge status-active">
+                                            Activo
+                                        </span>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>P-2403</td>
+                                    <td>Mesa 5</td>
+                                    <td>7</td>
+                                    <td>$96.000</td>
+                                    <td>
+                                        <span class="status-badge status-active">
+                                            Activo
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+
+                <article class="panel">
+                    <div class="panel-header">
+                        <h2>Mesas</h2>
+                        <a href="mesas.html">Gestionar</a>
+                    </div>
+
+                    <div class="mini-tables">
+                        <div class="mini-table available">1</div>
+                        <div class="mini-table occupied">2</div>
+                        <div class="mini-table occupied">3</div>
+                        <div class="mini-table available">4</div>
+                        <div class="mini-table occupied">5</div>
+                        <div class="mini-table reserved">6</div>
+                        <div class="mini-table available">7</div>
+                        <div class="mini-table available">8</div>
+                        <div class="mini-table available">9</div>
+                        <div class="mini-table cleaning">10</div>
+                        <div class="mini-table occupied">11</div>
+                        <div class="mini-table occupied">12</div>
+                    </div>
+
+                    <div class="table-legend">
+                        <span>● Libre</span>
+                        <span>● Ocupada</span>
+                        <span>● Reservada</span>
+                        <span>● Limpieza</span>
+                    </div>
+                </article>
+
+            </section>
+
+        </main>
+
+    </div>
+
+    <script src="js/app.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Donde Juanca - Mesas</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+
+<body>
+
+    <div class="app-layout">
+
+        <aside class="sidebar">
+
+            <div class="sidebar-header">
+                <h2>Donde Juanca</h2>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="mesas.html" class="nav-link active">Mesas</a>
+                <a href="pedidos.html" class="nav-link">Pedidos</a>
+            </nav>
+
+            <div class="sidebar-user">
+                <span id="nombreUsuario">Usuario</span>
+                <small>Administrador</small>
+            </div>
+
+        </aside>
+
+        <main class="main-content">
+
+            <header class="page-header">
+                <div>
+                    <h1>Gestión de Mesas</h1>
+                    <p>Consulta y administra el estado de las mesas.</p>
+                </div>
+            </header>
+
+            <section class="stats-grid">
+
+                <article class="stat-card">
+                    <span>Mesas libres</span>
+                    <strong>5</strong>
+                    <small>Disponibles</small>
+                </article>
+
+                <article class="stat-card">
+                    <span>Mesas ocupadas</span>
+                    <strong>5</strong>
+                    <small>Con pedidos activos</small>
+                </article>
+
+                <article class="stat-card">
+                    <span>Reservadas</span>
+                    <strong>1</strong>
+                    <small>Reserva activa</small>
+                </article>
+
+                <article class="stat-card">
+                    <span>En limpieza</span>
+                    <strong>1</strong>
+                    <small>No disponibles</small>
+                </article>
+
+            </section>
+
+            <section class="mesas-layout">
+
+                <div class="mesas-grid">
+
+                    <button class="mesa-card available" data-numero="1" data-estado="Libre" data-capacidad="4">
+                        <strong>Mesa 1</strong>
+                        <span>Libre</span>
+                        <small>4 personas</small>
+                    </button>
+
+                    <button class="mesa-card occupied" data-numero="2" data-estado="Ocupada" data-capacidad="4">
+                        <strong>Mesa 2</strong>
+                        <span>Ocupada</span>
+                        <small>4 personas</small>
+                    </button>
+
+                    <button class="mesa-card occupied" data-numero="3" data-estado="Ocupada" data-capacidad="6">
+                        <strong>Mesa 3</strong>
+                        <span>Ocupada</span>
+                        <small>6 personas</small>
+                    </button>
+
+                    <button class="mesa-card available" data-numero="4" data-estado="Libre" data-capacidad="4">
+                        <strong>Mesa 4</strong>
+                        <span>Libre</span>
+                        <small>4 personas</small>
+                    </button>
+
+                    <button class="mesa-card occupied" data-numero="5" data-estado="Ocupada" data-capacidad="6">
+                        <strong>Mesa 5</strong>
+                        <span>Ocupada</span>
+                        <small>6 personas</small>
+                    </button>
+
+                    <button class="mesa-card reserved" data-numero="6" data-estado="Reservada" data-capacidad="4">
+                        <strong>Mesa 6</strong>
+                        <span>Reservada</span>
+                        <small>4 personas</small>
+                    </button>
+
+                    <button class="mesa-card available" data-numero="7" data-estado="Libre" data-capacidad="2">
+                        <strong>Mesa 7</strong>
+                        <span>Libre</span>
+                        <small>2 personas</small>
+                    </button>
+
+                    <button class="mesa-card available" data-numero="8" data-estado="Libre" data-capacidad="4">
+                        <strong>Mesa 8</strong>
+                        <span>Libre</span>
+                        <small>4 personas</small>
+                    </button>
+
+                    <button class="mesa-card available" data-numero="9" data-estado="Libre" data-capacidad="6">
+                        <strong>Mesa 9</strong>
+                        <span>Libre</span>
+                        <small>6 personas</small>
+                    </button>
+
+                    <button class="mesa-card cleaning" data-numero="10" data-estado="Limpieza" data-capacidad="4">
+                        <strong>Mesa 10</strong>
+                        <span>Limpieza</span>
+                        <small>4 personas</small>
+                    </button>
+
+                    <button class="mesa-card occupied" data-numero="11" data-estado="Ocupada" data-capacidad="4">
+                        <strong>Mesa 11</strong>
+                        <span>Ocupada</span>
+                        <small>4 personas</small>
+                    </button>
+
+                    <button class="mesa-card occupied" data-numero="12" data-estado="Ocupada" data-capacidad="6">
+                        <strong>Mesa 12</strong>
+                        <span>Ocupada</span>
+                        <small>6 personas</small>
+                    </button>
+
+                </div>
+
+                <aside class="mesa-detail" id="mesaDetail">
+
+                    <h2>Selecciona una mesa</h2>
+
+                    <p>
+                        Haz clic sobre una mesa para consultar su información.
+                    </p>
+
+                </aside>
+
+            </section>
+
+        </main>
+
+    </div>
+
+    <script src="js/app.js"></script>
+
+</body>
+
+</html>

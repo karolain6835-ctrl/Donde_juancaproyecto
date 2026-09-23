@@ -1,0 +1,20 @@
+.btn-primary {
+    width: 100%;
+    padding: 13px 20px;
+    border: none;
+    border-radius: 10px;
+    background-color: #d97818;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: #bd6510;
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
+}
