@@ -23,11 +23,12 @@
             </div>
 
             <nav class="sidebar-nav">
-                <a href="dashboard.html" class="nav-link">Dashboard</a>
-                <a href="mesas.html" class="nav-link">Mesas</a>
-                <a href="pedidos.html" class="nav-link active">Pedidos</a>
-            </nav>
-
+    <a href="dashboard.html" class="nav-link">Dashboard</a>
+    <a href="mesas.html" class="nav-link">Mesas</a>
+    <a href="pedidos.html" class="nav-link">Pedidos</a>
+    <a href="productos.html" class="nav-link">Productos</a>
+    <a href="inventario.html" class="nav-link">Inventario</a>
+</nav>
             <div class="sidebar-user">
                 <span id="nombreUsuario">Usuario</span>
                 <small>Administrador</small>
@@ -181,38 +182,56 @@
 
                 <div class="form-group">
                     <label>Productos</label>
+<div class="checkbox-group">
 
-                    <div class="checkbox-group">
+    <label class="product-option">
+        <span>
+            <input
+                type="checkbox"
+                name="producto"
+                value="Poker 330ml"
+                data-precio="4500"
+            >
+            Poker 330ml
+        </span>
 
-                        <label>
-                            <input
-                                type="checkbox"
-                                name="producto"
-                                value="Poker 330ml"
-                            >
-                            Poker 330ml
-                        </label>
+        <strong>$4.500</strong>
+    </label>
 
-                        <label>
-                            <input
-                                type="checkbox"
-                                name="producto"
-                                value="Águila 330ml"
-                            >
-                            Águila 330ml
-                        </label>
+    <label class="product-option">
+        <span>
+            <input
+                type="checkbox"
+                name="producto"
+                value="Águila 330ml"
+                data-precio="4500"
+            >
+            Águila 330ml
+        </span>
 
-                        <label>
-                            <input
-                                type="checkbox"
-                                name="producto"
-                                value="Club Colombia"
-                            >
-                            Club Colombia
-                        </label>
+        <strong>$4.500</strong>
+    </label>
 
-                    </div>
-                </div>
+    <label class="product-option">
+        <span>
+            <input
+                type="checkbox"
+                name="producto"
+                value="Club Colombia"
+                data-precio="7000"
+            >
+            Club Colombia
+        </span>
+
+        <strong>$7.000</strong>
+    </label>
+
+</div>
+
+<div class="pedido-total">
+    <span>Total estimado</span>
+    <strong id="totalPedido">$0</strong>
+</div>
 
                 <p id="pedidoError" class="error-message"></p>
 
