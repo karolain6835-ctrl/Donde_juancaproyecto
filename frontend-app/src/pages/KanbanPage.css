@@ -1,0 +1,529 @@
+.kanban-page {
+  width: 100%;
+}
+
+/* =========================
+   ENCABEZADO
+========================= */
+
+.kanban-header {
+  position: relative;
+
+  margin-bottom: 28px;
+  padding-bottom: 18px;
+}
+
+.kanban-header::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  bottom: 0;
+
+  width: 52px;
+  height: 3px;
+
+  border-radius: 999px;
+
+  background: var(--color-accent);
+}
+
+/* =========================
+   TOOLBAR
+========================= */
+
+.kanban-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 20px;
+
+  margin-bottom: 20px;
+}
+
+.kanban-filters {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 8px;
+}
+
+.kanban-summary {
+  display: inline-flex;
+  align-items: center;
+
+  min-height: 36px;
+
+  padding: 0 12px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+
+  background: var(--color-surface);
+
+  color: var(--color-text-secondary);
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* =========================
+   BOARD
+========================= */
+
+.kanban-board {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(260px, 1fr));
+
+  gap: 18px;
+
+  align-items: start;
+
+  overflow-x: auto;
+
+  padding-bottom: 10px;
+}
+
+/* =========================
+   COLUMNAS
+========================= */
+
+.kanban-column {
+  min-width: 260px;
+
+  overflow: hidden;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+
+  background: #f4f0e9;
+
+  box-shadow:
+    0 5px 18px rgba(30, 43, 34, 0.035);
+}
+
+.kanban-column.enviado {
+  border-top: 3px solid #8c795e;
+}
+
+.kanban-column.preparando {
+  border-top: 3px solid var(--color-accent);
+}
+
+.kanban-column.servido {
+  border-top: 3px solid var(--color-success);
+}
+
+.kanban-column.cancelado {
+  border-top: 3px solid #909995;
+}
+
+/* =========================
+   HEADER COLUMNAS
+========================= */
+
+.kanban-column-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  gap: 12px;
+
+  padding: 18px;
+
+  background: var(--color-surface);
+
+  border-bottom: 1px solid var(--color-border);
+}
+
+.kanban-column-header h2 {
+  color: var(--color-text);
+
+  font-family: var(--font-brand);
+
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.kanban-column-header p {
+  margin-top: 4px;
+
+  color: var(--color-text-secondary);
+
+  font-size: 11px;
+}
+
+.kanban-count {
+  min-width: 29px;
+  height: 29px;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+
+  background: var(--color-background);
+
+  color: var(--color-text);
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* =========================
+   CONTENIDO
+========================= */
+
+.kanban-column-content {
+  min-height: 420px;
+
+  padding: 12px;
+}
+
+/* =========================
+   TARJETAS
+========================= */
+
+.kanban-card {
+  position: relative;
+
+  margin-bottom: 12px;
+
+  padding: 15px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 13px;
+
+  background: white;
+
+  box-shadow:
+    0 4px 12px rgba(30, 43, 34, 0.045);
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.kanban-card:hover {
+  transform: translateY(-1px);
+
+  border-color: rgba(30, 43, 34, 0.16);
+
+  box-shadow:
+    0 6px 16px rgba(30, 43, 34, 0.065);
+}
+
+.kanban-card.delayed {
+  border-color: rgba(153, 27, 27, 0.2);
+
+  background: #fffafa;
+}
+
+/* =========================
+   CABECERA TARJETA
+========================= */
+
+.kanban-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 10px;
+
+  margin-bottom: 14px;
+}
+
+/* =========================
+   ÁREAS
+========================= */
+
+.area-chip {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
+  border: 1px solid transparent;
+  border-radius: 999px;
+
+  padding: 5px 9px;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.45px;
+}
+
+.area-chip.bar {
+  color: var(--color-primary);
+
+  background: var(--color-success-bg);
+
+  border-color: rgba(45, 106, 79, 0.1);
+}
+
+.area-chip.cocina {
+  color: var(--color-warning);
+
+  background: var(--color-warning-bg);
+
+  border-color: rgba(217, 119, 6, 0.1);
+}
+
+.area-chip.juegos {
+  color: #69547b;
+
+  background: #f1ebf3;
+
+  border-color: rgba(105, 84, 123, 0.1);
+}
+
+/* =========================
+   TIEMPO
+========================= */
+
+.kanban-time {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 4px;
+
+  color: var(--color-text-secondary);
+
+  font-size: 11px;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+/* =========================
+   CUERPO TARJETA
+========================= */
+
+.kanban-card-body h3 {
+  color: var(--color-text);
+
+  font-size: 15px;
+  font-weight: 700;
+
+  line-height: 1.4;
+}
+
+.kanban-meta {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 7px;
+
+  margin-top: 10px;
+}
+
+.kanban-meta span {
+  padding: 5px 8px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 7px;
+
+  background: var(--color-background);
+
+  color: var(--color-text-secondary);
+
+  font-size: 11px;
+}
+
+/* =========================
+   RESPONSABLE
+========================= */
+
+.kanban-responsable {
+  display: flex;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  margin-top: 15px;
+  padding-top: 12px;
+
+  border-top: 1px solid var(--color-border);
+}
+
+.kanban-responsable span {
+  color: var(--color-text-secondary);
+
+  font-size: 11px;
+}
+
+.kanban-responsable strong {
+  color: var(--color-text);
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* =========================
+   RETRASO
+========================= */
+
+.kanban-delay-warning {
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  margin-top: 12px;
+
+  padding: 8px 10px;
+
+  border: 1px solid rgba(153, 27, 27, 0.1);
+  border-radius: 9px;
+
+  background: var(--color-danger-bg);
+
+  color: var(--color-danger);
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* =========================
+   ACCIONES
+========================= */
+
+.kanban-action {
+  width: 100%;
+  min-height: 40px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  margin-top: 15px;
+
+  padding: 10px 12px;
+
+  border-radius: 10px;
+
+  font-family: var(--font-ui);
+
+  font-weight: 700;
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.kanban-action.primary {
+  border: 1px solid var(--color-accent);
+
+  background: var(--color-accent);
+
+  color: white;
+}
+
+.kanban-action.primary:hover {
+  border-color: #cc691e;
+
+  background: #cc691e;
+
+  box-shadow:
+    0 4px 12px rgba(227, 122, 36, 0.16);
+}
+
+.kanban-action.success {
+  border: 1px solid var(--color-primary);
+
+  background: var(--color-primary);
+
+  color: white;
+}
+
+.kanban-action.success:hover {
+  background: var(--color-primary-soft);
+
+  border-color: var(--color-primary-soft);
+}
+
+.kanban-action:active {
+  transform: translateY(1px);
+}
+
+/* =========================
+   COMPLETADO / CANCELADO
+========================= */
+
+.kanban-complete,
+.kanban-cancelled {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  margin-top: 15px;
+
+  padding: 9px 10px;
+
+  border: 1px solid transparent;
+  border-radius: 9px;
+
+  text-align: center;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.kanban-complete {
+  background: var(--color-success-bg);
+
+  color: var(--color-success);
+
+  border-color: rgba(45, 106, 79, 0.1);
+}
+
+.kanban-cancelled {
+  background: #f1f1ef;
+
+  color: var(--color-text-secondary);
+
+  border-color: var(--color-border);
+}
+
+/* =========================
+   VACÍO
+========================= */
+
+.kanban-empty {
+  padding: 36px 12px;
+
+  text-align: center;
+
+  color: var(--color-text-secondary);
+
+  font-size: 12px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1000px) {
+  .kanban-toolbar {
+    flex-direction: column;
+
+    align-items: stretch;
+  }
+
+  .kanban-board {
+    grid-template-columns: repeat(4, 280px);
+  }
+}

@@ -1,0 +1,160 @@
+.inventario-nav {
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  margin-bottom: 24px;
+
+  padding: 6px;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+
+  background: var(--color-surface);
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+.inventario-nav::-webkit-scrollbar {
+  height: 5px;
+}
+
+.inventario-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.inventario-nav::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+
+  background: var(--color-border);
+}
+
+/* =========================
+   BOTONES
+========================= */
+
+.inventario-nav-button {
+  position: relative;
+
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  min-height: 40px;
+
+  border: 1px solid transparent;
+  border-radius: 10px;
+
+  padding: 9px 13px;
+
+  background: transparent;
+
+  color: var(--color-text-secondary);
+
+  font-family: var(--font-ui);
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.inventario-nav-button:hover {
+  background: var(--color-background-secondary);
+
+  color: var(--color-primary);
+}
+
+/* =========================
+   ACTIVO
+========================= */
+
+.inventario-nav-button.active {
+  border-color: rgba(30, 43, 34, 0.08);
+
+  background: var(--color-primary);
+
+  color: white;
+
+  box-shadow:
+    0 3px 10px rgba(30, 43, 34, 0.09);
+}
+
+.inventario-nav-button.active::after {
+  content: "";
+
+  position: absolute;
+
+  left: 50%;
+  bottom: -6px;
+
+  width: 22px;
+  height: 2px;
+
+  transform: translateX(-50%);
+
+  border-radius: 999px;
+
+  background: var(--color-accent);
+}
+
+/* =========================
+   ICONOS
+========================= */
+
+.inventario-nav-icon {
+  flex-shrink: 0;
+
+  color: currentColor;
+
+  transition: color 0.15s ease;
+}
+
+.inventario-nav-button.active
+  .inventario-nav-icon {
+  color: var(--color-accent);
+}
+
+/* =========================
+   FOCUS
+========================= */
+
+.inventario-nav-button:focus-visible {
+  outline: none;
+
+  border-color: var(--color-accent);
+
+  box-shadow:
+    0 0 0 3px rgba(227, 122, 36, 0.12);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 700px) {
+  .inventario-nav {
+    padding-bottom: 9px;
+  }
+
+  .inventario-nav-button {
+    padding: 9px 12px;
+
+    font-size: 12px;
+  }
+}

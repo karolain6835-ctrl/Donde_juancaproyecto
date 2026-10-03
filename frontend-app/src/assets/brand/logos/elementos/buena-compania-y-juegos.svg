@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title">
+<title id="title">Buena compañía y juegos</title>
+<path fill="none" stroke="#1E2B22" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" d="M42 95h62v80c0 22-14 37-31 37s-31-15-31-37V95Z"/>
+<path fill="none" stroke="#1E2B22" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" d="M152 95h62v80c0 22-14 37-31 37s-31-15-31-37V95Z"/>
+<path fill="none" stroke="#1E2B22" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" d="M104 112h14c16 0 28 12 28 28s-12 28-28 28h-14"/>
+<path fill="none" stroke="#1E2B22" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" d="M152 112h-14c-16 0-28 12-28 28s12 28 28 28h14"/>
+<path fill="none" stroke="#1E2B22" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" d="M50 95c8-14 18-18 29-14 11-6 23-4 31 7"/>
+<path fill="none" stroke="#1E2B22" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" d="M160 95c8-14 18-18 29-14 11-6 23-4 31 7"/>
+<path fill="none" stroke="#1E2B22" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" d="M128 42v24M92 52l12 19M164 52l-12 19"/>
+<path fill="none" stroke="#1E2B22" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" d="M58 183h30M168 183h30"/>
+</svg>

@@ -1,0 +1,355 @@
+.juegos-page {
+  width: 100%;
+}
+
+.juegos-header {
+  margin-bottom: 24px;
+}
+
+.juegos-nav {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 24px;
+  padding: 6px;
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: white;
+}
+
+.juegos-nav button {
+  flex-shrink: 0;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 15px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-weight: 700;
+}
+
+.juegos-nav button.active {
+  background: var(--color-primary);
+  color: white;
+}
+
+.juegos-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.juego-kpi {
+  padding: 22px;
+  text-align: left;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: white;
+  box-shadow: var(--shadow-card);
+}
+
+.juego-kpi.selected {
+  border-color: var(--color-primary);
+}
+
+.juego-kpi.warning {
+  border-color: #edd8a9;
+}
+
+.juego-kpi span {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.juego-kpi strong {
+  display: block;
+  margin-top: 8px;
+  color: var(--color-text);
+  font-size: 30px;
+}
+
+.juego-kpi small {
+  display: block;
+  margin-top: 8px;
+  color: var(--color-text-secondary);
+}
+
+.juegos-toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+.juegos-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.juegos-search input {
+  width: 280px;
+  padding: 11px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 11px;
+  background: white;
+  outline: none;
+}
+
+.juegos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.juego-card {
+  display: flex;
+  flex-direction: column;
+  padding: 22px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: white;
+  box-shadow: var(--shadow-card);
+}
+
+.juego-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.juego-icon {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--color-background);
+  font-size: 21px;
+}
+
+.juego-status {
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.juego-status.disponible {
+  color: var(--color-success);
+  background: var(--color-success-bg);
+}
+
+.juego-status.ocupado {
+  color: white;
+  background: var(--color-primary);
+}
+
+.juego-status.mantenimiento {
+  color: var(--color-warning);
+  background: var(--color-warning-bg);
+}
+
+.juego-card-body {
+  flex: 1;
+  margin-top: 20px;
+}
+
+.juego-code {
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.juego-card-body h3 {
+  margin-top: 5px;
+  color: var(--color-text);
+  font-size: 19px;
+}
+
+.juego-card-body > p {
+  margin-top: 4px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+
+.juego-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.juego-info-grid div {
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--color-background);
+}
+
+.juego-info-grid span {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: 10px;
+}
+
+.juego-info-grid strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--color-text);
+  font-size: 13px;
+}
+
+.juego-detail-button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 11px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: white;
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.juego-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(15, 35, 30, 0.28);
+}
+
+.juego-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(440px, 100%);
+  height: 100vh;
+  z-index: 100;
+  padding: 26px;
+  overflow-y: auto;
+  background: white;
+  box-shadow: -12px 0 30px rgba(18, 48, 40, 0.12);
+}
+
+.juego-drawer-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.juego-drawer-header h2 {
+  margin-top: 6px;
+  font-size: 26px;
+  color: var(--color-text);
+}
+
+.juego-drawer-header span {
+  display: block;
+  margin-top: 6px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+
+.juego-drawer-status {
+  margin-top: 22px;
+  padding: 17px;
+  border-radius: var(--radius-md);
+  background: var(--color-background);
+}
+
+.juego-drawer-status span {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+}
+
+.juego-drawer-status strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--color-text);
+  font-size: 18px;
+}
+
+.juego-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.juego-detail-grid div {
+  padding: 15px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.juego-detail-grid span {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+}
+
+.juego-detail-grid strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--color-text);
+}
+
+.juego-drawer-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.juego-maintenance-notice {
+  margin-top: 24px;
+  padding: 15px;
+  border-radius: 10px;
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.juegos-empty-section {
+  min-height: 300px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  background: white;
+  text-align: center;
+}
+
+.juegos-empty-section p {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+@media (max-width: 1100px) {
+  .juegos-kpis,
+  .juegos-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .juegos-toolbar {
+    flex-direction: column;
+  }
+
+  .juegos-search input {
+    width: 100%;
+  }
+
+  .juegos-kpis,
+  .juegos-grid,
+  .juego-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}

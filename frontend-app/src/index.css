@@ -1,0 +1,224 @@
+@import "@fontsource/fraunces/500.css";
+@import "@fontsource/fraunces/600.css";
+
+@import "@fontsource/source-sans-3/400.css";
+@import "@fontsource/source-sans-3/500.css";
+@import "@fontsource/source-sans-3/600.css";
+@import "@fontsource/source-sans-3/700.css";
+
+:root {
+  /* =========================
+     IDENTIDAD DONDE JUANCA
+  ========================= */
+
+  --color-primary: #1e2b22;
+  --color-primary-soft: #2f4537;
+
+  --color-accent: #e37a24;
+  --color-accent-soft: #f7e5d5;
+
+  --color-background: #faf8f5;
+  --color-background-secondary: #f3efea;
+
+  --color-surface: #ffffff;
+
+  --color-text: #1e2b22;
+  --color-text-secondary: #74827e;
+  --color-text-light: #a7b1ae;
+
+  /* =========================
+     ESTADOS
+  ========================= */
+
+  --color-success: #2d6a4f;
+  --color-success-bg: #e9f3ef;
+
+  --color-warning: #d97706;
+  --color-warning-bg: #fff1d8;
+
+  --color-info: #1e3a8a;
+  --color-info-bg: #e8eefc;
+
+  --color-danger: #991b1b;
+  --color-danger-bg: #fbe9e7;
+
+  /* =========================
+     BORDES Y SOMBRAS
+  ========================= */
+
+  --color-border: #e2dfda;
+
+  --shadow-card:
+    0 6px 20px rgba(30, 43, 34, 0.06);
+
+  /* =========================
+     TIPOGRAFÍA
+  ========================= */
+
+  --font-brand:
+    "Fraunces",
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  --font-ui:
+    "Source Sans 3",
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  /* =========================
+     ESPACIADO
+  ========================= */
+
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+
+  /* =========================
+     RADIOS
+  ========================= */
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+}
+
+/* =========================
+   RESET
+========================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--font-ui);
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+
+  background: var(--color-background);
+
+  color: var(--color-text);
+
+  font-family: var(--font-ui);
+
+  font-size: 16px;
+  line-height: 1.5;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+img,
+svg {
+  display: block;
+}
+
+/* =========================
+   TIPOGRAFÍA GLOBAL
+========================= */
+
+h1,
+h2,
+h3 {
+  color: var(--color-text);
+}
+
+.page-eyebrow {
+  color: var(--color-accent);
+
+  font-family: var(--font-ui);
+
+  font-size: 12px;
+  font-weight: 700;
+
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.page-title {
+  margin-top: 8px;
+
+  color: var(--color-text);
+
+  font-family: var(--font-brand);
+
+  font-size: 38px;
+  font-weight: 600;
+
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+
+.page-description {
+  margin-top: 8px;
+
+  color: var(--color-text-secondary);
+
+  font-family: var(--font-ui);
+
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* =========================
+   BOTONES BASE
+========================= */
+
+.primary-button {
+  border: none;
+  border-radius: var(--radius-md);
+
+  padding: 11px 18px;
+
+  background: var(--color-accent);
+  color: white;
+
+  font-family: var(--font-ui);
+
+  font-weight: 700;
+
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.primary-button:hover {
+  background: #cc691e;
+
+  box-shadow:
+    0 5px 14px rgba(227, 122, 36, 0.2);
+}
+
+.primary-button:active {
+  transform: translateY(1px);
+}
+
+/* =========================
+   SELECCIÓN DE TEXTO
+========================= */
+
+::selection {
+  background: var(--color-accent-soft);
+  color: var(--color-primary);
+}

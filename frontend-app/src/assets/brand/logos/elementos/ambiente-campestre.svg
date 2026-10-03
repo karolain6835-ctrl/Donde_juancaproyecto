@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title">
+<title id="title">Ambiente campestre</title>
+<circle fill="none" stroke="#1E2B22" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" cx="162" cy="68" r="24"/>
+<path fill="none" stroke="#1E2B22" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" d="M162 24v16M162 96v16M118 68h16M190 68h16M131 37l11 11M182 88l11 11M193 37l-11 11M142 88l-11 11"/>
+<path fill="none" stroke="#1E2B22" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" d="M28 184c28-38 54-56 79-56 24 0 42 14 61 34 11 12 19 13 30 4 11-9 22-18 36-22"/>
+<path fill="none" stroke="#1E2B22" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" d="M22 210c35-28 69-40 101-36 28 3 49 17 72 24 17 5 31 5 39 4"/>
+<path fill="none" stroke="#1E2B22" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" d="M22 210h212"/>
+</svg>

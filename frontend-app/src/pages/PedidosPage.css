@@ -1,0 +1,852 @@
+.pedidos-page {
+  width: 100%;
+}
+
+/* =========================
+   ENCABEZADO
+========================= */
+
+.pedidos-header {
+  position: relative;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 24px;
+
+  margin-bottom: 28px;
+  padding-bottom: 18px;
+}
+
+.pedidos-header::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  bottom: 0;
+
+  width: 52px;
+  height: 3px;
+
+  border-radius: 999px;
+
+  background: var(--color-accent);
+}
+
+.pedidos-new-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  flex-shrink: 0;
+}
+
+/* =========================
+   KPIs
+========================= */
+
+.pedidos-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  gap: 18px;
+
+  margin-bottom: 22px;
+}
+
+.pedido-kpi {
+  position: relative;
+
+  overflow: hidden;
+
+  text-align: left;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+
+  background: var(--color-surface);
+
+  padding: 20px;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 5px 18px rgba(30, 43, 34, 0.045);
+
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    border-color 0.16s ease,
+    background 0.16s ease;
+}
+
+.pedido-kpi::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  bottom: 0;
+
+  width: 100%;
+  height: 3px;
+
+  background: transparent;
+}
+
+.pedido-kpi:hover {
+  transform: translateY(-1px);
+
+  border-color: rgba(30, 43, 34, 0.2);
+
+  box-shadow:
+    0 8px 22px rgba(30, 43, 34, 0.065);
+}
+
+.pedido-kpi.selected {
+  border-color: rgba(30, 43, 34, 0.4);
+
+  background: #fcfbf8;
+
+  box-shadow:
+    0 0 0 2px rgba(30, 43, 34, 0.055);
+}
+
+.pedido-kpi.selected::after {
+  background: var(--color-accent);
+}
+
+.pedido-kpi.alert {
+  border-color: rgba(153, 27, 27, 0.18);
+}
+
+/* =========================
+   ICONOS KPI
+========================= */
+
+.pedido-kpi-icon {
+  width: 40px;
+  height: 40px;
+
+  display: grid;
+  place-items: center;
+
+  margin-bottom: 14px;
+
+  border-radius: 11px;
+}
+
+.pedido-kpi-icon.abierto {
+  color: var(--color-primary);
+
+  background: var(--color-background-secondary);
+}
+
+.pedido-kpi-icon.preparando {
+  color: var(--color-warning);
+
+  background: var(--color-warning-bg);
+}
+
+.pedido-kpi-icon.listo {
+  color: var(--color-success);
+
+  background: var(--color-success-bg);
+}
+
+.pedido-kpi-icon.retrasado {
+  color: var(--color-danger);
+
+  background: var(--color-danger-bg);
+}
+
+.pedido-kpi span {
+  display: block;
+
+  color: var(--color-text-secondary);
+
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.pedido-kpi strong {
+  display: block;
+
+  margin-top: 7px;
+
+  color: var(--color-text);
+
+  font-family: var(--font-brand);
+
+  font-size: 30px;
+  font-weight: 600;
+
+  line-height: 1.05;
+}
+
+.pedido-kpi small {
+  display: block;
+
+  margin-top: 8px;
+
+  color: var(--color-text-secondary);
+
+  font-size: 12px;
+}
+
+.pedido-kpi.alert small {
+  color: var(--color-danger);
+}
+
+/* =========================
+   TOOLBAR
+========================= */
+
+.pedidos-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 18px;
+
+  margin-bottom: 20px;
+}
+
+.pedido-filters {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 8px;
+}
+
+/* =========================
+   FILTROS
+========================= */
+
+.filter-button {
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+
+  background: var(--color-surface);
+
+  color: var(--color-text-secondary);
+
+  padding: 8px 14px;
+
+  font-family: var(--font-ui);
+
+  font-size: 13px;
+  font-weight: 600;
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.filter-button:hover {
+  border-color: rgba(30, 43, 34, 0.35);
+
+  background: var(--color-background-secondary);
+
+  color: var(--color-primary);
+}
+
+.filter-button.active {
+  border-color: var(--color-primary);
+
+  background: var(--color-primary);
+
+  color: white;
+}
+
+.filter-button:focus-visible {
+  outline: none;
+
+  border-color: var(--color-accent);
+
+  box-shadow:
+    0 0 0 3px rgba(227, 122, 36, 0.12);
+}
+
+/* =========================
+   BÚSQUEDA
+========================= */
+
+.pedido-search {
+  width: 300px;
+
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  flex-shrink: 0;
+}
+
+.pedido-search-icon {
+  position: absolute;
+
+  left: 13px;
+
+  color: #8a9792;
+
+  pointer-events: none;
+}
+
+.pedido-search input {
+  width: 100%;
+
+  border: 1px solid var(--color-border);
+  border-radius: 11px;
+
+  background: white;
+
+  color: var(--color-text);
+
+  padding: 10px 14px 10px 40px;
+
+  outline: none;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.pedido-search input::placeholder {
+  color: #98a19e;
+}
+
+.pedido-search input:focus {
+  border-color: rgba(227, 122, 36, 0.7);
+
+  box-shadow:
+    0 0 0 3px rgba(227, 122, 36, 0.1);
+}
+
+/* =========================
+   PANEL TABLA
+========================= */
+
+.pedidos-table-panel {
+  position: relative;
+
+  overflow: hidden;
+
+  background: var(--color-surface);
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+
+  box-shadow:
+    0 5px 18px rgba(30, 43, 34, 0.045);
+}
+
+.pedidos-table-panel::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 24px;
+
+  width: 48px;
+  height: 3px;
+
+  border-radius: 0 0 999px 999px;
+
+  background: var(--color-accent);
+}
+
+.pedidos-table-header {
+  padding: 24px;
+
+  border-bottom: 1px solid var(--color-border);
+}
+
+.pedidos-table-header h2 {
+  color: var(--color-text);
+
+  font-family: var(--font-brand);
+
+  font-size: 21px;
+  font-weight: 600;
+}
+
+.pedidos-table-header p {
+  margin-top: 5px;
+
+  color: var(--color-text-secondary);
+
+  font-size: 13px;
+}
+
+/* =========================
+   TABLA
+========================= */
+
+.pedidos-table-wrapper {
+  overflow-x: auto;
+}
+
+.pedidos-table {
+  width: 100%;
+  min-width: 950px;
+
+  border-collapse: collapse;
+}
+
+.pedidos-table th {
+  text-align: left;
+
+  padding: 13px 18px;
+
+  background: var(--color-background-secondary);
+
+  color: var(--color-text-secondary);
+
+  font-size: 11px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.55px;
+}
+
+.pedidos-table td {
+  padding: 17px 18px;
+
+  border-top: 1px solid var(--color-border);
+
+  color: var(--color-text);
+
+  font-size: 13px;
+}
+
+.pedido-row {
+  transition:
+    background 0.15s ease;
+}
+
+.pedido-row:hover {
+  background: #fcfbf8;
+}
+
+.pedido-row.delayed {
+  background: #fff9f8;
+}
+
+.pedido-row.delayed:hover {
+  background: #fdf1ef;
+}
+
+.pedido-code {
+  color: var(--color-primary);
+
+  font-weight: 700;
+}
+
+/* =========================
+   TIEMPO
+========================= */
+
+.pedido-time {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
+  color: var(--color-text-secondary);
+}
+
+/* =========================
+   ESTADOS
+========================= */
+
+.pedido-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid transparent;
+  border-radius: 999px;
+
+  padding: 5px 10px;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  line-height: 1.2;
+}
+
+.pedido-status.abierto {
+  color: var(--color-primary);
+
+  background: var(--color-background-secondary);
+
+  border-color: rgba(30, 43, 34, 0.1);
+}
+
+.pedido-status.preparando {
+  color: var(--color-warning);
+
+  background: var(--color-warning-bg);
+
+  border-color: rgba(217, 119, 6, 0.12);
+}
+
+.pedido-status.listo {
+  color: var(--color-success);
+
+  background: var(--color-success-bg);
+
+  border-color: rgba(45, 106, 79, 0.12);
+}
+
+.pedido-status.retrasado {
+  color: var(--color-danger);
+
+  background: var(--color-danger-bg);
+
+  border-color: rgba(153, 27, 27, 0.12);
+}
+
+/* =========================
+   VER DETALLE
+========================= */
+
+.pedido-detail-button {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
+  border: none;
+
+  background: transparent;
+
+  color: var(--color-primary);
+
+  padding: 4px 0;
+
+  font-family: var(--font-ui);
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    color 0.15s ease;
+}
+
+.pedido-detail-button:hover {
+  color: var(--color-accent);
+}
+
+/* =========================
+   OVERLAY
+========================= */
+
+.pedido-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 90;
+
+  background: rgba(18, 30, 25, 0.34);
+
+  backdrop-filter: blur(1px);
+}
+
+/* =========================
+   DRAWER
+========================= */
+
+.pedido-drawer {
+  position: fixed;
+
+  top: 0;
+  right: 0;
+
+  width: min(440px, 100%);
+  height: 100vh;
+
+  padding: 26px;
+
+  background: white;
+
+  z-index: 100;
+
+  overflow-y: auto;
+
+  box-shadow:
+    -12px 0 32px rgba(30, 43, 34, 0.14);
+}
+
+/* =========================
+   HEADER DRAWER
+========================= */
+
+.pedido-drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  gap: 20px;
+
+  padding-bottom: 22px;
+
+  border-bottom: 1px solid var(--color-border);
+}
+
+.pedido-drawer-header h2 {
+  margin-top: 6px;
+
+  color: var(--color-text);
+
+  font-family: var(--font-brand);
+
+  font-size: 28px;
+  font-weight: 600;
+}
+
+/* =========================
+   ESTADO DEL DRAWER
+========================= */
+
+.pedido-drawer-status {
+  margin-top: 24px;
+
+  padding: 18px;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  background: var(--color-background);
+}
+
+.pedido-drawer-status.abierto {
+  border-color: rgba(30, 43, 34, 0.14);
+
+  background: var(--color-background-secondary);
+}
+
+.pedido-drawer-status.preparando {
+  border-color: rgba(217, 119, 6, 0.14);
+
+  background: var(--color-warning-bg);
+}
+
+.pedido-drawer-status.listo {
+  border-color: rgba(45, 106, 79, 0.14);
+
+  background: var(--color-success-bg);
+}
+
+.pedido-drawer-status.retrasado {
+  border-color: rgba(153, 27, 27, 0.14);
+
+  background: var(--color-danger-bg);
+}
+
+.pedido-drawer-status span {
+  display: block;
+
+  color: var(--color-text-secondary);
+
+  font-size: 12px;
+}
+
+.pedido-drawer-status strong {
+  display: block;
+
+  margin-top: 5px;
+
+  color: var(--color-text);
+
+  font-family: var(--font-brand);
+
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.pedido-drawer-status.preparando strong {
+  color: var(--color-warning);
+}
+
+.pedido-drawer-status.listo strong {
+  color: var(--color-success);
+}
+
+.pedido-drawer-status.retrasado strong {
+  color: var(--color-danger);
+}
+
+/* =========================
+   DATOS DRAWER
+========================= */
+
+.pedido-drawer-data {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 12px;
+
+  margin-top: 20px;
+}
+
+.pedido-drawer-data div {
+  padding: 15px;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  background: #fff;
+}
+
+.pedido-drawer-data span {
+  display: block;
+
+  color: var(--color-text-secondary);
+
+  font-size: 11px;
+}
+
+.pedido-drawer-data strong {
+  display: block;
+
+  margin-top: 5px;
+
+  color: var(--color-text);
+}
+
+.drawer-time-value {
+  display: flex !important;
+  align-items: center;
+
+  gap: 5px;
+}
+
+/* =========================
+   PRODUCTOS
+========================= */
+
+.pedido-products {
+  margin-top: 28px;
+}
+
+.pedido-products h3 {
+  margin-bottom: 12px;
+
+  color: var(--color-text);
+
+  font-family: var(--font-brand);
+
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.pedido-product-row {
+  display: flex;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  padding: 13px 0;
+
+  border-bottom: 1px solid var(--color-border);
+
+  color: var(--color-text-secondary);
+
+  font-size: 13px;
+}
+
+.pedido-product-row strong {
+  color: var(--color-text);
+}
+
+/* =========================
+   TOTAL
+========================= */
+
+.pedido-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-top: 20px;
+
+  padding: 18px;
+
+  border-radius: var(--radius-md);
+
+  background: var(--color-primary);
+
+  color: white;
+}
+
+.pedido-total span {
+  color: rgba(255, 255, 255, 0.74);
+
+  font-size: 13px;
+}
+
+.pedido-total strong {
+  color: white;
+
+  font-family: var(--font-brand);
+
+  font-size: 23px;
+  font-weight: 600;
+}
+
+/* =========================
+   ACCIONES DRAWER
+========================= */
+
+.pedido-drawer-actions {
+  display: flex;
+  flex-direction: column;
+
+  gap: 10px;
+
+  margin-top: 24px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1200px) {
+  .pedidos-kpis {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 850px) {
+  .pedidos-header,
+  .pedidos-toolbar {
+    flex-direction: column;
+
+    align-items: stretch;
+  }
+
+  .pedido-search {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .pedidos-kpis {
+    grid-template-columns: 1fr;
+  }
+
+  .pedido-drawer-data {
+    grid-template-columns: 1fr;
+  }
+}

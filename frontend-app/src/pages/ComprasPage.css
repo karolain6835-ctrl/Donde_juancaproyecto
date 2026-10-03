@@ -1,0 +1,471 @@
+.compras-page {
+  width: 100%;
+}
+
+.compras-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.compras-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.compra-kpi {
+  text-align: left;
+  padding: 22px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: white;
+  box-shadow: var(--shadow-card);
+}
+
+.compra-kpi.selected {
+  border-color: var(--color-primary);
+}
+
+.compra-kpi.alert {
+  border-color: #efc6c2;
+}
+
+.compra-kpi span {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.compra-kpi strong {
+  display: block;
+  margin-top: 8px;
+  color: var(--color-text);
+  font-size: 30px;
+}
+
+.compra-kpi small {
+  display: block;
+  margin-top: 8px;
+  color: var(--color-text-secondary);
+}
+
+.compras-toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+.compras-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.compras-search input {
+  width: 290px;
+  padding: 11px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 11px;
+  background: white;
+  outline: none;
+}
+
+.compras-panel {
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: white;
+  box-shadow: var(--shadow-card);
+}
+
+.compras-panel-header {
+  padding: 22px 24px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.compras-panel-header h2 {
+  font-size: 21px;
+  color: var(--color-text);
+}
+
+.compras-panel-header p {
+  margin-top: 5px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.compras-table-wrapper {
+  overflow-x: auto;
+}
+
+.compras-table {
+  width: 100%;
+  min-width: 1000px;
+  border-collapse: collapse;
+}
+
+.compras-table th {
+  padding: 14px 18px;
+  background: #faf9f6;
+  color: var(--color-text-secondary);
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.compras-table td {
+  padding: 17px 18px;
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-size: 13px;
+}
+
+.compras-table tbody tr:hover {
+  background: #faf9f6;
+}
+
+.compra-status {
+  display: inline-flex;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.compra-status.pendiente {
+  color: var(--color-warning);
+  background: var(--color-warning-bg);
+}
+
+.compra-status.recibida {
+  color: var(--color-success);
+  background: var(--color-success-bg);
+}
+
+.compra-status.cancelada {
+  color: var(--color-danger);
+  background: var(--color-danger-bg);
+}
+
+.compra-detail-button {
+  border: none;
+  background: transparent;
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.compra-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(15, 35, 30, 0.28);
+}
+
+.compra-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(460px, 100%);
+  height: 100vh;
+  z-index: 100;
+  padding: 26px;
+  overflow-y: auto;
+  background: white;
+  box-shadow: -12px 0 30px rgba(18, 48, 40, 0.12);
+}
+
+.compra-drawer-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.compra-drawer-header h2 {
+  margin-top: 6px;
+  font-size: 27px;
+  color: var(--color-text);
+}
+
+.compra-drawer-status {
+  margin-top: 22px;
+  padding: 17px;
+  border-radius: var(--radius-md);
+  background: var(--color-background);
+}
+
+.compra-drawer-status span {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+}
+
+.compra-drawer-status strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--color-text);
+}
+
+.compra-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.compra-detail-grid div {
+  padding: 15px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.compra-detail-grid span {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+}
+
+.compra-detail-grid strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--color-text);
+}
+
+.compra-products {
+  margin-top: 28px;
+}
+
+.compra-products h3 {
+  margin-bottom: 12px;
+  color: var(--color-text);
+  font-size: 16px;
+}
+
+.compra-product-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.compra-product-row > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.compra-product-row span {
+  color: var(--color-text-secondary);
+  font-size: 11px;
+}
+
+.compra-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding: 18px;
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: white;
+}
+
+.compra-total strong {
+  font-size: 21px;
+}
+
+.compra-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+@media (max-width: 1000px) {
+  .compras-kpis {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .compras-header,
+  .compras-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .compras-search input {
+    width: 100%;
+  }
+
+  .compras-kpis,
+  .compra-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.compras-nav {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 24px;
+  padding: 6px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: white;
+}
+
+.compras-nav button {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-weight: 700;
+}
+
+.compras-nav button.active {
+  background: var(--color-primary);
+  color: white;
+}
+
+.proveedores-summary {
+  display: flex;
+  gap: 10px;
+}
+
+.proveedores-summary span {
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: white;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.proveedores-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.proveedor-card {
+  padding: 22px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: white;
+  box-shadow: var(--shadow-card);
+}
+
+.proveedor-card-header > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.proveedor-card h3 {
+  color: var(--color-text);
+  font-size: 18px;
+}
+
+.proveedor-status {
+  padding: 6px 9px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.proveedor-status.activo {
+  color: var(--color-success);
+  background: var(--color-success-bg);
+}
+
+.proveedor-status.inactivo {
+  color: var(--color-text-secondary);
+  background: #eeeeec;
+}
+
+.proveedor-info {
+  margin-top: 16px;
+}
+
+.proveedor-info span {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+}
+
+.proveedor-info strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--color-text);
+  font-size: 13px;
+}
+
+.proveedor-card-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+}
+
+.proveedor-toggle-button {
+  border: 1px solid var(--color-border);
+  border-radius: 9px;
+  padding: 8px 11px;
+  background: white;
+  color: var(--color-text);
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.proveedor-history {
+  margin-top: 28px;
+}
+
+.proveedor-history h3 {
+  margin-bottom: 10px;
+  color: var(--color-text);
+  font-size: 16px;
+}
+
+.proveedor-history-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.proveedor-history-row > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.proveedor-history-row span {
+  color: var(--color-text-secondary);
+  font-size: 11px;
+}
+
+@media (max-width: 1000px) {
+  .proveedores-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 650px) {
+  .proveedores-grid {
+    grid-template-columns: 1fr;
+  }
+}

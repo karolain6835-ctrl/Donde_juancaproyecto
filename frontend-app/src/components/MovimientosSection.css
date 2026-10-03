@@ -1,0 +1,599 @@
+.movimientos-section {
+  width: 100%;
+}
+
+/* =========================
+   TOOLBAR
+========================= */
+
+.movimientos-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 18px;
+
+  margin-bottom: 20px;
+}
+
+.movimientos-filters {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 8px;
+}
+
+/* =========================
+   BÚSQUEDA
+========================= */
+
+.movimientos-search {
+  position: relative;
+
+  width: 290px;
+
+  display: flex;
+  align-items: center;
+
+  flex-shrink: 0;
+}
+
+.movimientos-search-icon {
+  position: absolute;
+
+  left: 13px;
+
+  color: #8a9792;
+
+  pointer-events: none;
+}
+
+.movimientos-search input {
+  width: 100%;
+
+  padding: 10px 14px 10px 40px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 11px;
+
+  background: white;
+
+  color: var(--color-text);
+
+  outline: none;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.movimientos-search input::placeholder {
+  color: #98a19e;
+}
+
+.movimientos-search input:focus {
+  border-color: rgba(227, 122, 36, 0.7);
+
+  box-shadow:
+    0 0 0 3px rgba(227, 122, 36, 0.1);
+}
+
+/* =========================
+   PANEL
+========================= */
+
+.movimientos-panel {
+  position: relative;
+
+  overflow: hidden;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+
+  background: var(--color-surface);
+
+  box-shadow:
+    0 5px 18px rgba(30, 43, 34, 0.045);
+}
+
+.movimientos-panel::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 24px;
+
+  width: 48px;
+  height: 3px;
+
+  border-radius: 0 0 999px 999px;
+
+  background: var(--color-accent);
+}
+
+.movimientos-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 20px;
+
+  padding: 24px;
+
+  border-bottom: 1px solid var(--color-border);
+}
+
+.movimientos-panel-header h2 {
+  color: var(--color-text);
+
+  font-family: var(--font-brand);
+
+  font-size: 21px;
+  font-weight: 600;
+}
+
+.movimientos-panel-header p {
+  margin-top: 5px;
+
+  color: var(--color-text-secondary);
+
+  font-size: 13px;
+}
+
+/* =========================
+   SOLO CONSULTA
+========================= */
+
+.movimientos-readonly {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 7px 10px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+
+  background: var(--color-background);
+
+  color: var(--color-text-secondary);
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* =========================
+   TABLA
+========================= */
+
+.movimientos-table-wrapper {
+  overflow-x: auto;
+}
+
+.movimientos-table {
+  width: 100%;
+  min-width: 1000px;
+
+  border-collapse: collapse;
+}
+
+.movimientos-table th {
+  padding: 13px 18px;
+
+  background: var(--color-background-secondary);
+
+  color: var(--color-text-secondary);
+
+  text-align: left;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.45px;
+}
+
+.movimientos-table td {
+  padding: 17px 18px;
+
+  border-top: 1px solid var(--color-border);
+
+  color: var(--color-text);
+
+  font-size: 13px;
+}
+
+.movimientos-table tbody tr {
+  transition: background 0.15s ease;
+}
+
+.movimientos-table tbody tr:hover {
+  background: #fcfbf8;
+}
+
+/* =========================
+   REFERENCIA
+========================= */
+
+.movimiento-reference {
+  display: inline-flex;
+
+  padding: 5px 8px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 7px;
+
+  background: var(--color-background);
+
+  color: var(--color-text-secondary);
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* =========================
+   PRODUCTO
+========================= */
+
+.movimiento-product {
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+.movimiento-product strong {
+  color: var(--color-text);
+}
+
+.movimiento-product span {
+  color: var(--color-text-secondary);
+
+  font-size: 11px;
+}
+
+/* =========================
+   TIPO MOVIMIENTO
+========================= */
+
+.movimiento-type {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
+  padding: 5px 10px;
+
+  border: 1px solid transparent;
+  border-radius: 999px;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.movimiento-type.compra {
+  color: var(--color-success);
+
+  background: var(--color-success-bg);
+
+  border-color: rgba(45, 106, 79, 0.1);
+}
+
+.movimiento-type.venta {
+  color: var(--color-primary);
+
+  background: var(--color-background-secondary);
+
+  border-color: rgba(30, 43, 34, 0.1);
+}
+
+.movimiento-type.merma {
+  color: var(--color-danger);
+
+  background: var(--color-danger-bg);
+
+  border-color: rgba(153, 27, 27, 0.1);
+}
+
+.movimiento-type.ajuste {
+  color: var(--color-warning);
+
+  background: var(--color-warning-bg);
+
+  border-color: rgba(217, 119, 6, 0.1);
+}
+
+/* =========================
+   CANTIDADES
+========================= */
+
+.cantidad-positive {
+  color: var(--color-success);
+}
+
+.cantidad-negative {
+  color: var(--color-danger);
+}
+
+/* =========================
+   DETALLE
+========================= */
+
+.movimiento-detail-button {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
+  border: none;
+
+  background: transparent;
+
+  color: var(--color-primary);
+
+  font-family: var(--font-ui);
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: color 0.15s ease;
+}
+
+.movimiento-detail-button:hover {
+  color: var(--color-accent);
+}
+
+/* =========================
+   OVERLAY
+========================= */
+
+.movimiento-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 90;
+
+  background: rgba(18, 30, 25, 0.34);
+
+  backdrop-filter: blur(1px);
+}
+
+/* =========================
+   DRAWER
+========================= */
+
+.movimiento-drawer {
+  position: fixed;
+
+  top: 0;
+  right: 0;
+
+  width: min(440px, 100%);
+  height: 100vh;
+
+  z-index: 100;
+
+  padding: 26px;
+
+  overflow-y: auto;
+
+  background: white;
+
+  box-shadow:
+    -12px 0 32px rgba(30, 43, 34, 0.14);
+}
+
+.movimiento-drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  gap: 20px;
+
+  padding-bottom: 22px;
+
+  border-bottom: 1px solid var(--color-border);
+}
+
+.movimiento-drawer-header h2 {
+  margin-top: 6px;
+
+  color: var(--color-text);
+
+  font-family: var(--font-brand);
+
+  font-size: 26px;
+  font-weight: 600;
+}
+
+/* =========================
+   TIPO DRAWER
+========================= */
+
+.movimiento-drawer-type {
+  margin-top: 24px;
+
+  padding: 18px;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  background: var(--color-background);
+}
+
+.movimiento-drawer-type.compra {
+  border-color: rgba(45, 106, 79, 0.14);
+
+  background: var(--color-success-bg);
+}
+
+.movimiento-drawer-type.venta {
+  border-color: rgba(30, 43, 34, 0.12);
+
+  background: var(--color-background-secondary);
+}
+
+.movimiento-drawer-type.merma {
+  border-color: rgba(153, 27, 27, 0.14);
+
+  background: var(--color-danger-bg);
+}
+
+.movimiento-drawer-type.ajuste {
+  border-color: rgba(217, 119, 6, 0.14);
+
+  background: var(--color-warning-bg);
+}
+
+.movimiento-drawer-type span,
+.movimiento-origin span,
+.movimiento-observation span {
+  display: block;
+
+  color: var(--color-text-secondary);
+
+  font-size: 11px;
+}
+
+.movimiento-drawer-type strong {
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  margin-top: 5px;
+
+  color: var(--color-text);
+
+  font-family: var(--font-brand);
+
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* =========================
+   GRID DETALLE
+========================= */
+
+.movimiento-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 12px;
+
+  margin-top: 20px;
+}
+
+.movimiento-detail-grid div {
+  padding: 15px;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  background: white;
+}
+
+.movimiento-detail-grid span {
+  display: block;
+
+  color: var(--color-text-secondary);
+
+  font-size: 11px;
+}
+
+.movimiento-detail-grid strong {
+  display: flex;
+  align-items: center;
+
+  gap: 5px;
+
+  margin-top: 5px;
+
+  color: var(--color-text);
+}
+
+/* =========================
+   ORIGEN / OBSERVACIÓN
+========================= */
+
+.movimiento-origin,
+.movimiento-observation {
+  margin-top: 18px;
+
+  padding: 18px;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  background: white;
+}
+
+.movimiento-origin strong,
+.movimiento-observation p {
+  display: block;
+
+  margin-top: 7px;
+
+  color: var(--color-text);
+
+  line-height: 1.5;
+}
+
+/* =========================
+   SOLO LECTURA
+========================= */
+
+.movimiento-readonly-box {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 9px;
+
+  margin-top: 22px;
+
+  padding: 14px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+
+  background: var(--color-background-secondary);
+
+  color: var(--color-text-secondary);
+
+  font-size: 12px;
+
+  line-height: 1.5;
+}
+
+.movimiento-readonly-box svg {
+  flex-shrink: 0;
+
+  margin-top: 1px;
+
+  color: var(--color-primary);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 800px) {
+  .movimientos-toolbar,
+  .movimientos-panel-header {
+    flex-direction: column;
+
+    align-items: stretch;
+  }
+
+  .movimientos-search {
+    width: 100%;
+  }
+
+  .movimiento-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}

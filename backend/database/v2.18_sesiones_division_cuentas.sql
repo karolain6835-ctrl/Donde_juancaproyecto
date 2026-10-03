@@ -16,7 +16,4 @@ CREATE TABLE IF NOT EXISTS divisiones_cuenta (
     monto_por_persona DECIMAL(10, 2) DEFAULT 0.00,
     estado ENUM('pendiente', 'completada', 'cancelada') DEFAULT 'pendiente',
     creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE
-);
-
-SELECT 'v2.18_sesiones_division_cuentas.sql ejecutado correctamente' AS mensaje;
+    FOREIGN KEY (pedido_id) REFEREN

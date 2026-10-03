@@ -1,0 +1,54 @@
+.reportes-page {
+  width: 100%;
+}
+
+.reportes-header {
+  margin-bottom: 24px;
+}
+
+.reportes-nav {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 24px;
+  padding: 6px;
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: white;
+}
+
+.reportes-nav button {
+  flex-shrink: 0;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 15px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-weight: 700;
+}
+
+.reportes-nav button.active {
+  background: var(--color-primary);
+  color: white;
+}
+
+.reportes-empty-section {
+  min-height: 320px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  background: white;
+  text-align: center;
+}
+
+.reportes-empty-section h2 {
+  color: var(--color-text);
+}
+
+.reportes-empty-section p {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}

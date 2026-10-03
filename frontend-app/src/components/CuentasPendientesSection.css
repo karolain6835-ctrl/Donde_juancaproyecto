@@ -1,0 +1,344 @@
+.cuentas-pendientes-section {
+  width: 100%;
+}
+
+.cuentas-pendientes-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+.cuentas-pendientes-toolbar h2 {
+  color: var(--color-text);
+  font-size: 21px;
+}
+
+.cuentas-pendientes-toolbar p {
+  margin-top: 5px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.cuentas-pendientes-search input {
+  width: 300px;
+  padding: 11px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 11px;
+  background: white;
+  outline: none;
+}
+
+.cuentas-pendientes-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.cuenta-kpi {
+  padding: 22px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: white;
+  box-shadow: var(--shadow-card);
+}
+
+.cuenta-kpi span {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.cuenta-kpi strong {
+  display: block;
+  margin-top: 8px;
+  color: var(--color-text);
+  font-size: 26px;
+}
+
+.cuenta-kpi small {
+  display: block;
+  margin-top: 8px;
+  color: var(--color-text-secondary);
+}
+
+.cuentas-pendientes-panel {
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: white;
+  box-shadow: var(--shadow-card);
+}
+
+.cuentas-pendientes-panel-header {
+  padding: 22px 24px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.cuentas-pendientes-panel-header h2 {
+  color: var(--color-text);
+  font-size: 21px;
+}
+
+.cuentas-pendientes-panel-header p {
+  margin-top: 5px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.cuentas-pendientes-table-wrapper {
+  overflow-x: auto;
+}
+
+.cuentas-pendientes-table {
+  width: 100%;
+  min-width: 950px;
+  border-collapse: collapse;
+}
+
+.cuentas-pendientes-table th {
+  padding: 14px 18px;
+  background: #faf9f6;
+  color: var(--color-text-secondary);
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.cuentas-pendientes-table td {
+  padding: 17px 18px;
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-size: 13px;
+}
+
+.cuenta-saldo {
+  color: var(--color-danger);
+}
+
+.cuenta-row-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.cuenta-pay-button,
+.cuenta-detail-button {
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.cuenta-pay-button {
+  border: none;
+  background: var(--color-accent);
+  color: white;
+}
+
+.cuenta-detail-button {
+  border: 1px solid var(--color-border);
+  background: white;
+  color: var(--color-primary);
+}
+
+.cuenta-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(15, 35, 30, 0.28);
+}
+
+.cuenta-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(460px, 100%);
+  height: 100vh;
+  z-index: 100;
+  padding: 26px;
+  overflow-y: auto;
+  background: white;
+  box-shadow: -12px 0 30px rgba(18, 48, 40, 0.12);
+}
+
+.cuenta-drawer-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.cuenta-drawer-header h2 {
+  margin-top: 6px;
+  color: var(--color-text);
+  font-size: 26px;
+}
+
+.cuenta-drawer-header span {
+  display: block;
+  margin-top: 6px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+
+.cuenta-detail-summary {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.cuenta-detail-summary div {
+  padding: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.cuenta-detail-summary span,
+.cuenta-totals span {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+}
+
+.cuenta-detail-summary strong,
+.cuenta-totals strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--color-text);
+}
+
+.cuenta-products,
+.cuenta-payment-history {
+  margin-top: 24px;
+}
+
+.cuenta-products h3,
+.cuenta-payment-history h3,
+.cuenta-payment-form h3,
+.cuenta-split-box h3 {
+  margin-bottom: 12px;
+  color: var(--color-text);
+  font-size: 16px;
+}
+
+.cuenta-product-row,
+.cuenta-payment-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.cuenta-product-row > div,
+.cuenta-payment-row > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cuenta-product-row span,
+.cuenta-payment-row span {
+  color: var(--color-text-secondary);
+  font-size: 11px;
+}
+
+.cuenta-totals {
+  margin-top: 22px;
+  padding: 17px;
+  border-radius: var(--radius-md);
+  background: var(--color-background);
+}
+
+.cuenta-totals > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 7px 0;
+}
+
+.cuenta-total-pending {
+  margin-top: 8px;
+  padding-top: 14px !important;
+  border-top: 1px solid var(--color-border);
+}
+
+.cuenta-total-pending strong {
+  color: var(--color-danger);
+  font-size: 18px;
+}
+
+.cuenta-actions,
+.cuenta-form-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.cuenta-payment-form,
+.cuenta-split-box {
+  margin-top: 22px;
+  padding: 18px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.cuenta-payment-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 12px;
+  color: var(--color-text);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.cuenta-payment-form input,
+.cuenta-payment-form select {
+  padding: 11px;
+  border: 1px solid var(--color-border);
+  border-radius: 9px;
+  background: white;
+}
+
+.cuenta-split-box p {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.cuenta-split-example {
+  display: flex;
+  justify-content: space-between;
+  margin: 16px 0;
+  padding: 14px;
+  border-radius: 10px;
+  background: var(--color-background);
+}
+
+@media (max-width: 1000px) {
+  .cuentas-pendientes-kpis {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .cuentas-pendientes-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cuentas-pendientes-search input {
+    width: 100%;
+  }
+
+  .cuentas-pendientes-kpis,
+  .cuenta-detail-summary {
+    grid-template-columns: 1fr;
+  }
+}

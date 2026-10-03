@@ -1,0 +1,231 @@
+.historial-juegos-section {
+  width: 100%;
+}
+
+.historial-juegos-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+.historial-juegos-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.historial-juegos-search input {
+  width: 300px;
+  padding: 11px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 11px;
+  background: white;
+  outline: none;
+}
+
+.historial-juegos-panel {
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: white;
+  box-shadow: var(--shadow-card);
+}
+
+.historial-juegos-panel-header {
+  padding: 22px 24px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.historial-juegos-panel-header h2 {
+  color: var(--color-text);
+  font-size: 21px;
+}
+
+.historial-juegos-panel-header p {
+  margin-top: 5px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.historial-juegos-table-wrapper {
+  overflow-x: auto;
+}
+
+.historial-juegos-table {
+  width: 100%;
+  min-width: 1100px;
+  border-collapse: collapse;
+}
+
+.historial-juegos-table th {
+  padding: 14px 18px;
+  background: #faf9f6;
+  color: var(--color-text-secondary);
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.historial-juegos-table td {
+  padding: 17px 18px;
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-size: 13px;
+}
+
+.historial-juegos-table tbody tr:hover {
+  background: #faf9f6;
+}
+
+.historial-juego-name {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.historial-juego-name span {
+  color: var(--color-text-secondary);
+  font-size: 11px;
+}
+
+.historial-juego-status {
+  display: inline-flex;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.historial-juego-status.finalizada {
+  color: var(--color-success);
+  background: var(--color-success-bg);
+}
+
+.historial-juego-status.cancelada {
+  color: var(--color-danger);
+  background: var(--color-danger-bg);
+}
+
+.historial-juego-detail-button {
+  border: none;
+  background: transparent;
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.historial-juego-detail-button:hover {
+  text-decoration: underline;
+}
+
+.historial-juego-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(15, 35, 30, 0.28);
+}
+
+.historial-juego-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(440px, 100%);
+  height: 100vh;
+  z-index: 100;
+  padding: 26px;
+  overflow-y: auto;
+  background: white;
+  box-shadow: -12px 0 30px rgba(18, 48, 40, 0.12);
+}
+
+.historial-juego-drawer-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.historial-juego-drawer-header h2 {
+  margin-top: 6px;
+  color: var(--color-text);
+  font-size: 26px;
+}
+
+.historial-juego-drawer-header span {
+  display: block;
+  margin-top: 6px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+
+.historial-juego-drawer-status {
+  margin-top: 22px;
+  padding: 17px;
+  border-radius: var(--radius-md);
+  background: var(--color-background);
+}
+
+.historial-juego-drawer-status span {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+}
+
+.historial-juego-drawer-status strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--color-text);
+  font-size: 18px;
+}
+
+.historial-juego-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.historial-juego-detail-grid div {
+  padding: 15px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.historial-juego-detail-grid span {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+}
+
+.historial-juego-detail-grid strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--color-text);
+}
+
+.historial-juego-notice {
+  margin-top: 22px;
+  padding: 14px;
+  border-radius: 10px;
+  background: #f5f3ed;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+@media (max-width: 750px) {
+  .historial-juegos-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .historial-juegos-search input {
+    width: 100%;
+  }
+
+  .historial-juego-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}

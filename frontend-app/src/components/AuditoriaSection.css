@@ -1,0 +1,337 @@
+.auditoria-section {
+  width: 100%;
+}
+
+.auditoria-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+.auditoria-toolbar h2 {
+  color: var(--color-text);
+  font-size: 21px;
+}
+
+.auditoria-toolbar p {
+  margin-top: 5px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.auditoria-search input {
+  width: 300px;
+  padding: 11px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 11px;
+  background: white;
+  outline: none;
+}
+
+.auditoria-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+.auditoria-kpi {
+  padding: 22px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: white;
+  box-shadow: var(--shadow-card);
+}
+
+.auditoria-kpi span {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.auditoria-kpi strong {
+  display: block;
+  margin-top: 8px;
+  color: var(--color-text);
+  font-size: 27px;
+}
+
+.auditoria-kpi small {
+  display: block;
+  margin-top: 8px;
+  color: var(--color-text-secondary);
+}
+
+.auditoria-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.auditoria-filters select {
+  min-width: 170px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: white;
+  color: var(--color-text);
+}
+
+.auditoria-panel {
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: white;
+  box-shadow: var(--shadow-card);
+}
+
+.auditoria-panel-header {
+  padding: 22px 24px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.auditoria-panel-header h2 {
+  color: var(--color-text);
+  font-size: 21px;
+}
+
+.auditoria-panel-header p {
+  margin-top: 5px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.auditoria-table-wrapper {
+  overflow-x: auto;
+}
+
+.auditoria-table {
+  width: 100%;
+  min-width: 1050px;
+  border-collapse: collapse;
+}
+
+.auditoria-table th {
+  padding: 14px 18px;
+  background: #faf9f6;
+  color: var(--color-text-secondary);
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.auditoria-table td {
+  padding: 17px 18px;
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-size: 13px;
+}
+
+.auditoria-module-chip {
+  display: inline-flex;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--color-background);
+  color: var(--color-primary);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.auditoria-action {
+  display: inline-flex;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.auditoria-action.crear {
+  color: var(--color-success);
+  background: var(--color-success-bg);
+}
+
+.auditoria-action.editar {
+  color: var(--color-warning);
+  background: var(--color-warning-bg);
+}
+
+.auditoria-detail-button {
+  border: none;
+  background: transparent;
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.auditoria-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(15, 35, 30, 0.28);
+}
+
+.auditoria-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(520px, 100%);
+  height: 100vh;
+  z-index: 100;
+  padding: 26px;
+  overflow-y: auto;
+  background: white;
+  box-shadow: -12px 0 30px rgba(18, 48, 40, 0.12);
+}
+
+.auditoria-drawer-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.auditoria-drawer-header h2 {
+  margin-top: 6px;
+  color: var(--color-text);
+  font-size: 26px;
+}
+
+.auditoria-drawer-header span {
+  display: block;
+  margin-top: 6px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+
+.auditoria-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.auditoria-detail-grid div {
+  padding: 15px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.auditoria-detail-grid span,
+.auditoria-description span {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+}
+
+.auditoria-detail-grid strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--color-text);
+}
+
+.auditoria-description {
+  margin-top: 15px;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.auditoria-description p {
+  margin-top: 7px;
+  color: var(--color-text);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.auditoria-comparison {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.auditoria-value-box {
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.auditoria-value-box h3 {
+  margin-bottom: 12px;
+  color: var(--color-text);
+  font-size: 15px;
+}
+
+.auditoria-change-row {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.auditoria-change-row:last-child {
+  border-bottom: none;
+}
+
+.auditoria-change-row span {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: 10px;
+}
+
+.auditoria-change-row strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--color-text);
+  font-size: 12px;
+}
+
+.auditoria-empty-value {
+  padding: 14px;
+  border-radius: 9px;
+  background: var(--color-background);
+  color: var(--color-text-secondary);
+  font-size: 11px;
+}
+
+.auditoria-readonly {
+  margin-top: 20px;
+  padding: 14px;
+  border-radius: 10px;
+  background: #f5f3ed;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+@media (max-width: 1000px) {
+  .auditoria-kpis {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .auditoria-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .auditoria-search input {
+    width: 100%;
+  }
+
+  .auditoria-kpis,
+  .auditoria-detail-grid,
+  .auditoria-comparison {
+    grid-template-columns: 1fr;
+  }
+
+  .auditoria-filters {
+    flex-direction: column;
+  }
+
+  .auditoria-filters select {
+    width: 100%;
+  }
+}
