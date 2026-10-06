@@ -1,0 +1,19 @@
+$kind: http-request
+name: http://localhost:5000/api/pagos
+description: ""
+url: http://localhost:5000/api/pagos/pago-1791311549792
+method: GET
+body:
+  type: json
+  content: "{\r
+
+    \  \"metodo_de_pago\": \"efectivo\",\r
+
+    \  \"total_seleccionado\": 15000,\r
+
+    \  \"pedidos_id\": \"ped-001\",\r
+
+    \  \"usuarios_id\": \"user-001\"\r
+
+    }"
+order: 4503578900138656

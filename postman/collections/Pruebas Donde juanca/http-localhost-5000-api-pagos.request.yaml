@@ -1,0 +1,21 @@
+$kind: http-request
+name: http://localhost:5000/api/pagos
+description: ""
+url: http://localhost:5000/api/pagos
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"sesion_division_id\": \"div-1784677462690\",\r
+
+    \  \"participante_id\": \"part-1791302828347\",\r
+
+    \  \"usuarios_id\": \"usr-001\",\r
+
+    \  \"total_seleccionado\": 32000,\r
+
+    \  \"metodo_de_pago\": \"efectivo\"\r
+
+    }"
+order: 4503569682918376

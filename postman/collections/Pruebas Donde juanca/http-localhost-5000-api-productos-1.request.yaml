@@ -1,0 +1,29 @@
+$kind: http-request
+name: http://localhost:5000/api/productos
+description: ""
+url: " http://localhost:5000/api/productos/6fe747e7-0193-4d20-891a-9fad0ee486d0"
+method: GET
+body:
+  type: json
+  content: "{\r
+
+    \  \"nombre\": \"Cerveza Evidencia CRUD\",\r
+
+    \  \"codigo\": \"CRUD-001\",\r
+
+    \  \"precio_venta\": 6000,\r
+
+    \  \"costo_promedio\": 3500,\r
+
+    \  \"cantidad\": 20,\r
+
+    \  \"stock_minimo\": 5,\r
+
+    \  \"categorias_id\": \"1\",\r
+
+    \  \"proveedores_id\": \"prov-001\",\r
+
+    \  \"historial_costos_id\": \"hist-001\"\r
+
+    }"
+order: 4503587660345643
