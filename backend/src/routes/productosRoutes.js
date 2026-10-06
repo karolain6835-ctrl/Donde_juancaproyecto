@@ -2,10 +2,23 @@ const express = require('express');
 const router = express.Router();
 const productosController = require('../controllers/productosController');
 
-// Obtener todos los productos
+// ==========================================
+// CRUD DE PRODUCTOS
+// ==========================================
+
+// READ - Obtener todos los productos
 router.get('/', productosController.obtenerProductos);
 
-// ESTA ES LA QUE FALTA O ESTÁ DANDO ERROR: Crear producto
-router.post('/', productosController.crearProducto); 
+// READ - Obtener un producto por ID
+router.get('/:id', productosController.obtenerProductoPorId);
+
+// CREATE - Crear un producto
+router.post('/', productosController.crearProducto);
+
+// UPDATE - Actualizar un producto
+router.put('/:id', productosController.actualizarProducto);
+
+// DELETE - Eliminar un producto
+router.delete('/:id', productosController.eliminarProducto);
 
 module.exports = router;
