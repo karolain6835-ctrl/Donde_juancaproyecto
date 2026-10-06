@@ -1,0 +1,6 @@
+$kind: http-request
+name: http://localhost:5000/api/sesiones-division/div-1784677462690
+description: ""
+url: http://localhost:5000/api/sesiones-division/div-1784677462690
+method: GET
+order: 4503563017610182

@@ -142,3 +142,104 @@ module.exports = {
   iniciarSesionDivision,
   asignarItemsACliente
 };
+
+// ==========================================
+// 3. CONSULTAR RESUMEN DE LA SESIÓN DE DIVISIÓN
+// ==========================================
+const obtenerResumenDivision = (req, res) => {
+  const { id: sesion_division_id } = req.params;
+
+  // 1. Obtener la información básica de la sesión
+  const querySesion = `
+    SELECT s.id, s.modalidad, s.mesas_id, s.usuarios_id, s.creado_en, m.numero AS numero_mesa
+    FROM sesiones_division_cuentas s
+    LEFT JOIN mesas m ON s.mesas_id = m.id
+    WHERE s.id = ?
+  `;
+
+  db.query(querySesion, [sesion_division_id], (errSesion, resSesion) => {
+    if (errSesion) {
+      console.error('❌ Error al consultar la sesión:', errSesion.message);
+      return res.status(500).json({ error: 'Error al consultar la sesión.', detalles: errSesion.message });
+    }
+
+    if (resSesion.length === 0) {
+      return res.status(404).json({ error: 'La sesión de división no existe.' });
+    }
+
+    const sesion = resSesion[0];
+
+    // 2. Obtener los participantes y sus ítems asignados
+    const queryDetalle = `
+      SELECT 
+        p.id AS participante_id,
+        p.nombre_cliente,
+        p.total_asignado,
+        p.estado,
+        d.id AS detalle_id,
+        d.pedido_item_id,
+        d.cantidad_asignada,
+        d.subtotal
+      FROM division_participantes p
+      LEFT JOIN division_items_detalle d ON p.id = d.participante_id
+      WHERE p.sesion_division_id = ?
+      ORDER BY p.creado_en ASC
+    `;
+
+    db.query(queryDetalle, [sesion_division_id], (errDetalle, resDetalle) => {
+      if (errDetalle) {
+        console.error('❌ Error al consultar participantes e ítems:', errDetalle.message);
+        return res.status(500).json({ error: 'Error al consultar detalle de división.', detalles: errDetalle.message });
+      }
+
+      // Agrupar los ítems bajo cada participante
+      const participantesMap = {};
+      let granTotal = 0;
+
+      resDetalle.forEach(fila => {
+        if (!participantesMap[fila.participante_id]) {
+          participantesMap[fila.participante_id] = {
+            id: fila.participante_id,
+            nombre_cliente: fila.nombre_cliente,
+            total_asignado: parseFloat(fila.total_asignado) || 0,
+            estado: fila.estado,
+            items: []
+          };
+          granTotal += parseFloat(fila.total_asignado) || 0;
+        }
+
+        if (fila.detalle_id) {
+          participantesMap[fila.participante_id].items.push({
+            detalle_id: fila.detalle_id,
+            pedido_item_id: fila.pedido_item_id,
+            cantidad: fila.cantidad_asignada,
+            subtotal: parseFloat(fila.subtotal) || 0
+          });
+        }
+      });
+
+      return res.status(200).json({
+        exito: true,
+        mensaje: 'Resumen de la división obtenido correctamente 🍕',
+        data: {
+          sesion: {
+            id: sesion.id,
+            modalidad: sesion.modalidad,
+            mesas_id: sesion.mesas_id,
+            numero_mesa: sesion.numero_mesa,
+            usuarios_id: sesion.usuarios_id,
+            creado_en: sesion.creado_en
+          },
+          total_acumulado: granTotal,
+          participantes: Object.values(participantesMap)
+        }
+      });
+    });
+  });
+};
+
+module.exports = {
+  iniciarSesionDivision,
+  asignarItemsACliente,
+  obtenerResumenDivision
+};
