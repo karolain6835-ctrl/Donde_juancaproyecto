@@ -1,27 +1,46 @@
-EVIDENCIA: GA7-220501096-AA2-EV02
-Módulos de software codificados y probados
+EVIDENCIA:
+GA7-220501096-AA3-EV01
+Codificación de módulos del software stand-alone, web y móvil
 
-Proyecto: Donde Juanca
+Proyecto:
+Donde Juanca
 
-Para esta evidencia se integró el módulo de productos del frontend con el backend y la base de datos MySQL.
+Plataforma seleccionada:
+Aplicación web
 
-Funcionalidades implementadas y probadas:
+Framework seleccionado:
+React
 
-1. Consultar productos desde la base de datos mediante GET /api/productos.
-2. Crear productos desde la interfaz mediante POST /api/productos.
-3. Editar productos mediante PUT /api/productos/:id.
-4. Eliminar productos mediante DELETE /api/productos/:id.
-5. Los cambios realizados desde la interfaz se reflejan y permanecen almacenados en MySQL.
+Justificación:
+Se seleccionó React porque permite desarrollar interfaces web dinámicas mediante componentes reutilizables, facilita la gestión del estado y permite consumir servicios REST del backend.
 
-Tecnologías utilizadas:
+Módulo trabajado:
+Inventario - Productos
+
+Funcionalidades implementadas:
+- Consultar productos.
+- Registrar productos.
+- Editar productos.
+- Eliminar productos.
+- Persistencia de información en MySQL.
+- Integración frontend - backend.
+
+Tecnologías:
 - React
 - Vite
 - Node.js
 - Express
 - MySQL
-- Git y GitHub
+- Git
+- GitHub
 
-Módulo principal trabajado:
-Inventario > Productos
+Código principal:
+frontend-app/src/pages/InventarioPage.jsx
 
-El módulo permite realizar el CRUD completo de productos desde la interfaz web conectada al backend y a la base de datos.
+Backend relacionado:
+backend/src/controllers/productosController.js
+backend/src/routes/productosRoutes.js
+backend/src/config/db.js
+
+Rama:
+evidencia-aa3-ev01
