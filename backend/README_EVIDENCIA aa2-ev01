@@ -1,0 +1,38 @@
+EVIDENCIA:
+GA7-220501096-AA2-EV01
+Codificación de módulos del software
+
+Proyecto:
+Donde Juanca
+
+Objetivo de la evidencia:
+Implementar y probar el módulo backend conectado a una base de datos relacional.
+
+Módulo trabajado:
+Productos
+
+Funcionalidades implementadas:
+- Conexión del backend con MySQL.
+- Rutas para productos.
+- Controlador de productos.
+- Operaciones CRUD:
+  - GET
+  - POST
+  - PUT
+  - DELETE
+- Pruebas realizadas con Postman.
+
+Archivos principales:
+backend/src/controllers/productosController.js
+backend/src/routes/productosRoutes.js
+backend/src/config/db.js
+
+Herramientas utilizadas:
+- Node.js
+- Express
+- MySQL
+- Postman
+- Git y GitHub
+
+Rama:
+evidencia-aa2-ev01
