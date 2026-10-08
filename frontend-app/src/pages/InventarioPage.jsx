@@ -1,3 +1,18 @@
+/*
+ * Evidencia: GA7-220501096-AA3-EV01
+ * Codificación de módulos del software stand-alone, web y móvil.
+ *
+ * Framework seleccionado: React.
+ *
+ * Justificación:
+ * Se seleccionó React porque permite construir interfaces web dinámicas
+ * mediante componentes reutilizables, facilita la gestión del estado de
+ * la aplicación y permite consumir servicios REST del backend mediante
+ * peticiones HTTP. En este módulo se utiliza React para administrar el
+ * inventario de productos del sistema Donde Juanca y mantener sincronizada
+ * la información mostrada en pantalla con los datos almacenados en MySQL.
+ */
+
 import { useEffect, useMemo, useState } from "react";
 
 
@@ -53,6 +68,11 @@ import "./InventarioPage.css";
 
 
 
+/**
+ * Componente principal del módulo de inventario.
+ * Administra la navegación entre secciones, el estado de productos y categorías,
+ * los filtros de búsqueda y las operaciones CRUD realizadas desde la interfaz.
+ */
 function InventarioPage() {
 
   const [seccionActiva, setSeccionActiva] = useState("resumen");
@@ -101,6 +121,10 @@ function InventarioPage() {
 
 
 
+  /*
+   * Al cargar el componente por primera vez se consulta el listado de productos
+   * almacenados en la base de datos para mostrar información real en la interfaz.
+   */
   useEffect(() => {
 
     cargarProductos();
@@ -109,6 +133,11 @@ function InventarioPage() {
 
 
 
+  /**
+   * Consulta los productos registrados mediante el endpoint GET /api/productos.
+   * La respuesta del backend se adapta al formato que utiliza la interfaz
+   * para mostrar precios, stock, categoría, estado y demás datos del producto.
+   */
   async function cargarProductos() {
 
     try {
@@ -309,6 +338,11 @@ function InventarioPage() {
 
   // ==========================================
 
+  /*
+   * Filtra los productos por estado de stock y por el texto ingresado
+   * en el buscador. useMemo evita recalcular el resultado si no cambian
+   * los datos, la búsqueda o el filtro seleccionado.
+   */
   const productosFiltrados = useMemo(() => {
 
     return productos.filter((producto) => {
@@ -349,6 +383,10 @@ function InventarioPage() {
 
   // ==========================================
 
+  /*
+   * Filtra las categorías según el texto escrito por el usuario,
+   * comparándolo con el nombre y la descripción de cada categoría.
+   */
   const categoriasFiltradas = useMemo(() => {
 
     const texto = busqueda.toLowerCase();
@@ -375,6 +413,10 @@ function InventarioPage() {
 
   // ==========================================
 
+  /*
+   * Indicadores generales del inventario calculados a partir
+   * de los productos obtenidos desde el backend.
+   */
   const totalReferencias = productos.length;
 
 
@@ -417,6 +459,10 @@ function InventarioPage() {
 
   // ==========================================
 
+  /**
+   * Convierte un valor numérico al formato monetario colombiano (COP)
+   * para presentar precios y costos de forma legible en la interfaz.
+   */
   function formatearDinero(valor) {
 
     return new Intl.NumberFormat("es-CO", {
@@ -433,6 +479,10 @@ function InventarioPage() {
 
 
 
+  /**
+   * Traduce el valor interno del estado de stock a un texto comprensible
+   * para el usuario dentro de las tablas y paneles del inventario.
+   */
   function nombreEstadoStock(estado) {
 
     if (estado === "normal") return "Normal";
@@ -451,6 +501,11 @@ function InventarioPage() {
 
 
 
+  /**
+   * Prepara y abre el formulario para registrar un nuevo producto.
+   * Limpia datos anteriores, restablece valores iniciales y activa
+   * la vista del formulario en modo creación.
+   */
   function abrirNuevoProducto() {
     setProductoEditandoId(null);
     setMensajeProducto("");
@@ -472,6 +527,10 @@ function InventarioPage() {
     setMostrarFormularioProducto(true);
   }
 
+  /**
+   * Abre el formulario en modo edición y carga los datos del producto
+   * seleccionado para que puedan ser modificados por el usuario.
+   */
   function abrirEditarProducto(producto) {
     setProductoSeleccionado(null);
     setProductoEditandoId(producto.id);
@@ -495,6 +554,10 @@ function InventarioPage() {
     setMostrarFormularioProducto(true);
   }
 
+  /**
+   * Cierra el formulario de productos cuando no hay una operación de guardado
+   * en curso y limpia el estado relacionado con la edición y los errores.
+   */
   function cerrarFormularioProducto() {
     if (guardandoProducto) return;
 
@@ -503,6 +566,10 @@ function InventarioPage() {
     setErrorFormularioProducto("");
   }
 
+  /**
+   * Actualiza dinámicamente el estado del formulario cuando el usuario
+   * modifica cualquiera de los campos de un producto.
+   */
   function cambiarCampoProducto(event) {
     const { name, value } = event.target;
 
@@ -512,6 +579,12 @@ function InventarioPage() {
     }));
   }
 
+  /**
+   * Guarda la información del formulario mediante una petición HTTP.
+   * Si existe un identificador de edición realiza un PUT para actualizar;
+   * de lo contrario realiza un POST para crear un nuevo producto.
+   * Después de una operación exitosa vuelve a consultar los productos.
+   */
   async function guardarProducto(event) {
     event.preventDefault();
 
@@ -588,6 +661,11 @@ function InventarioPage() {
     }
   }
 
+  /**
+   * Elimina un producto mediante DELETE /api/productos/:id.
+   * Antes de enviar la solicitud solicita confirmación al usuario
+   * y, si la operación finaliza correctamente, actualiza el listado.
+   */
   async function eliminarProducto(producto) {
     const confirmado = window.confirm(
       `¿Seguro que deseas eliminar "${producto.nombre}"? Esta acción no se puede deshacer.`
@@ -633,6 +711,10 @@ function InventarioPage() {
     }
   }
 
+  /**
+   * Cierra el panel lateral que muestra la información detallada
+   * del producto seleccionado.
+   */
   function cerrarDetalleProducto() {
 
     setProductoSeleccionado(null);
@@ -641,6 +723,10 @@ function InventarioPage() {
 
 
 
+  /**
+   * Cierra el panel lateral que muestra la información detallada
+   * de la categoría seleccionada.
+   */
   function cerrarDetalleCategoria() {
 
     setCategoriaSeleccionada(null);
@@ -649,6 +735,10 @@ function InventarioPage() {
 
 
 
+  /**
+   * Cambia localmente el estado activo o inactivo de una categoría
+   * y mantiene sincronizado el detalle actualmente seleccionado.
+   */
   function cambiarEstadoCategoria(id) {
 
     setCategorias((categoriasActuales) =>
@@ -693,6 +783,10 @@ function InventarioPage() {
 
 
 
+  /**
+   * Devuelve la descripción correspondiente a la sección activa
+   * para orientar al usuario dentro del módulo de inventario.
+   */
   function descripcionSeccion() {
 
     if (seccionActiva === "resumen") {

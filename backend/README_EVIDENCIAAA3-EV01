@@ -1,0 +1,41 @@
+EVIDENCIA:
+GA7-220501096-AA3-EV01
+Codificación de módulos del software stand-alone, web y móvil
+
+Proyecto:
+Donde Juanca
+
+Plataforma seleccionada:
+Aplicación web
+
+Framework seleccionado:
+React
+
+Justificación:
+Se seleccionó React porque permite desarrollar interfaces dinámicas
+basadas en componentes reutilizables, facilita la organización del
+frontend y permite consumir servicios REST desarrollados en el backend.
+
+Módulo desarrollado:
+Inventario - Productos
+
+Funcionalidades:
+- Consulta de productos
+- Registro de productos
+- Actualización de productos
+- Eliminación de productos
+- Persistencia en base de datos MySQL
+
+Arquitectura:
+Frontend: React + Vite
+Backend: Node.js + Express
+Base de datos: MySQL
+
+Integración:
+El frontend consume los endpoints REST del backend mediante fetch.
+
+Control de versiones:
+Git y GitHub
+
+Rama:
+evidencia-aa3-ev01
