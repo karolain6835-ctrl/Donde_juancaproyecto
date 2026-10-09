@@ -1,4 +1,23 @@
 import { useMemo, useState } from "react";
+
+import {
+  ShieldCheck,
+  Users,
+  KeyRound,
+  Search,
+  UserCheck,
+  UserX,
+  Eye,
+  Plus,
+  Pencil,
+  Settings2,
+  ArrowRight,
+  X,
+  LockKeyhole,
+  Power,
+  PowerOff,
+} from "lucide-react";
+
 import "./RolesPermisosSection.css";
 
 function RolesPermisosSection() {
@@ -171,19 +190,45 @@ function RolesPermisosSection() {
     );
   }
 
+  function iconoAccion(accion) {
+    if (accion === "ver") {
+      return <Eye size={13} strokeWidth={1.9} />;
+    }
+
+    if (accion === "crear") {
+      return <Plus size={13} strokeWidth={1.9} />;
+    }
+
+    if (accion === "editar") {
+      return <Pencil size={13} strokeWidth={1.9} />;
+    }
+
+    return <Settings2 size={13} strokeWidth={1.9} />;
+  }
+
   return (
     <div className="roles-permisos-section">
 
       <section className="roles-toolbar">
 
         <div>
-          <h2>Roles del sistema</h2>
+          <h2>
+            Roles del sistema
+          </h2>
+
           <p>
             Define qué puede consultar y gestionar cada perfil.
           </p>
         </div>
 
         <div className="roles-search">
+
+          <Search
+            className="roles-search-icon"
+            size={18}
+            strokeWidth={1.9}
+          />
+
           <input
             type="text"
             placeholder="Buscar rol..."
@@ -192,6 +237,7 @@ function RolesPermisosSection() {
               setBusqueda(event.target.value)
             }
           />
+
         </div>
 
       </section>
@@ -199,12 +245,37 @@ function RolesPermisosSection() {
       <section className="roles-summary">
 
         <article>
-          <span>Roles registrados</span>
-          <strong>{roles.length}</strong>
+
+          <div className="roles-summary-icon total">
+            <ShieldCheck
+              size={20}
+              strokeWidth={1.9}
+            />
+          </div>
+
+          <span>
+            Roles registrados
+          </span>
+
+          <strong>
+            {roles.length}
+          </strong>
+
         </article>
 
         <article>
-          <span>Roles activos</span>
+
+          <div className="roles-summary-icon active">
+            <UserCheck
+              size={20}
+              strokeWidth={1.9}
+            />
+          </div>
+
+          <span>
+            Roles activos
+          </span>
+
           <strong>
             {
               roles.filter(
@@ -212,16 +283,29 @@ function RolesPermisosSection() {
               ).length
             }
           </strong>
+
         </article>
 
         <article>
-          <span>Usuarios asignados</span>
+
+          <div className="roles-summary-icon users">
+            <Users
+              size={20}
+              strokeWidth={1.9}
+            />
+          </div>
+
+          <span>
+            Usuarios asignados
+          </span>
+
           <strong>
             {roles.reduce(
               (total, rol) => total + rol.usuarios,
               0
             )}
           </strong>
+
         </article>
 
       </section>
@@ -246,7 +330,21 @@ function RolesPermisosSection() {
               <div className="rol-card-header">
 
                 <div>
-                  <h3>{rol.nombre}</h3>
+
+                  <div className="rol-card-title">
+
+                    <span className="rol-card-icon">
+                      <ShieldCheck
+                        size={18}
+                        strokeWidth={1.9}
+                      />
+                    </span>
+
+                    <h3>
+                      {rol.nombre}
+                    </h3>
+
+                  </div>
 
                   <span
                     className={`rol-status ${rol.estado}`}
@@ -255,33 +353,57 @@ function RolesPermisosSection() {
                       ? "Activo"
                       : "Inactivo"}
                   </span>
+
                 </div>
 
               </div>
 
-              <p>{rol.descripcion}</p>
+              <p>
+                {rol.descripcion}
+              </p>
 
               <div className="rol-card-stats">
 
                 <div>
-                  <span>Usuarios</span>
-                  <strong>{rol.usuarios}</strong>
+                  <span>
+                    Usuarios
+                  </span>
+
+                  <strong>
+                    {rol.usuarios}
+                  </strong>
                 </div>
 
                 <div>
-                  <span>Permisos</span>
-                  <strong>{cantidadPermisos}</strong>
+                  <span>
+                    Permisos
+                  </span>
+
+                  <strong>
+                    {cantidadPermisos}
+                  </strong>
                 </div>
 
               </div>
 
               <button
+                type="button"
                 className="rol-detail-button"
                 onClick={() =>
                   setRolSeleccionado(rol)
                 }
               >
+                <KeyRound
+                  size={15}
+                  strokeWidth={1.9}
+                />
+
                 Ver permisos
+
+                <ArrowRight
+                  size={15}
+                  strokeWidth={1.9}
+                />
               </button>
 
             </article>
@@ -292,6 +414,7 @@ function RolesPermisosSection() {
 
       {rolSeleccionado && (
         <>
+
           <div
             className="rol-overlay"
             onClick={() =>
@@ -318,12 +441,17 @@ function RolesPermisosSection() {
               </div>
 
               <button
+                type="button"
                 className="drawer-close"
                 onClick={() =>
                   setRolSeleccionado(null)
                 }
+                aria-label="Cerrar detalle"
               >
-                ×
+                <X
+                  size={20}
+                  strokeWidth={1.9}
+                />
               </button>
 
             </div>
@@ -331,18 +459,49 @@ function RolesPermisosSection() {
             <div className="rol-drawer-summary">
 
               <div>
-                <span>Usuarios asignados</span>
+                <span>
+                  Usuarios asignados
+                </span>
+
                 <strong>
+                  <Users
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {rolSeleccionado.usuarios}
                 </strong>
               </div>
 
               <div>
-                <span>Estado</span>
-                <strong>
-                  {rolSeleccionado.estado === "activo"
-                    ? "Activo"
-                    : "Inactivo"}
+                <span>
+                  Estado
+                </span>
+
+                <strong
+                  className={
+                    rolSeleccionado.estado === "activo"
+                      ? "rol-summary-active"
+                      : "rol-summary-inactive"
+                  }
+                >
+                  {rolSeleccionado.estado === "activo" ? (
+                    <>
+                      <UserCheck
+                        size={14}
+                        strokeWidth={1.9}
+                      />
+                      Activo
+                    </>
+                  ) : (
+                    <>
+                      <UserX
+                        size={14}
+                        strokeWidth={1.9}
+                      />
+                      Inactivo
+                    </>
+                  )}
                 </strong>
               </div>
 
@@ -350,58 +509,88 @@ function RolesPermisosSection() {
 
             <div className="rol-permissions">
 
-              <h3>Permisos por módulo</h3>
+              <div className="rol-permissions-heading">
+
+                <KeyRound
+                  size={17}
+                  strokeWidth={1.9}
+                />
+
+                <h3>
+                  Permisos por módulo
+                </h3>
+
+              </div>
 
               {Object.keys(
                 rolSeleccionado.permisos
               ).map((modulo) => (
+
                 <div
                   key={modulo}
                   className="rol-permission-module"
                 >
 
-                  <strong>{modulo}</strong>
+                  <strong>
+                    {modulo}
+                  </strong>
 
                   <div className="rol-permission-actions">
 
-                    {acciones.map((accion) => (
-                      <label key={accion}>
+                    {acciones.map((accion) => {
 
-                        <input
-                          type="checkbox"
-                          checked={tienePermiso(
-                            rolSeleccionado,
-                            modulo,
-                            accion
-                          )}
-                          onChange={() =>
-                            alternarPermiso(
-                              modulo,
-                              accion
-                            )
+                      const activo = tienePermiso(
+                        rolSeleccionado,
+                        modulo,
+                        accion
+                      );
+
+                      return (
+                        <label
+                          key={accion}
+                          className={
+                            activo
+                              ? "permission-active"
+                              : ""
                           }
-                        />
+                        >
 
-                        <span>
-                          {accion.charAt(0).toUpperCase() +
-                            accion.slice(1)}
-                        </span>
+                          <input
+                            type="checkbox"
+                            checked={activo}
+                            onChange={() =>
+                              alternarPermiso(
+                                modulo,
+                                accion
+                              )
+                            }
+                          />
 
-                      </label>
-                    ))}
+                          {iconoAccion(accion)}
+
+                          <span>
+                            {accion.charAt(0).toUpperCase() +
+                              accion.slice(1)}
+                          </span>
+
+                        </label>
+                      );
+                    })}
 
                   </div>
 
                 </div>
+
               ))}
 
             </div>
 
             <button
+              type="button"
               className={
                 rolSeleccionado.estado === "activo"
                   ? "rol-deactivate-button"
-                  : "drawer-primary-button"
+                  : "drawer-primary-button rol-activate-button"
               }
               onClick={() =>
                 cambiarEstadoRol(
@@ -409,18 +598,42 @@ function RolesPermisosSection() {
                 )
               }
             >
-              {rolSeleccionado.estado === "activo"
-                ? "Desactivar rol"
-                : "Activar rol"}
+              {rolSeleccionado.estado === "activo" ? (
+                <>
+                  <PowerOff
+                    size={17}
+                    strokeWidth={1.9}
+                  />
+
+                  Desactivar rol
+                </>
+              ) : (
+                <>
+                  <Power
+                    size={17}
+                    strokeWidth={1.9}
+                  />
+
+                  Activar rol
+                </>
+              )}
             </button>
 
             <div className="rol-notice">
-              Los cambios realizados aquí son simulados en React. Cuando
-              conectemos el backend, los permisos deberán validarse también
-              en el servidor y no únicamente en la interfaz.
+
+              <LockKeyhole
+                size={17}
+                strokeWidth={1.9}
+              />
+
+              <span>
+                Los cambios realizados aquí son simulados en React. Cuando conectemos el backend, los permisos deberán validarse también en el servidor y no únicamente en la interfaz.
+              </span>
+
             </div>
 
           </aside>
+
         </>
       )}
 

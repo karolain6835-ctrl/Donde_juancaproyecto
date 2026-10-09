@@ -2,121 +2,352 @@
   width: 100%;
 }
 
+/* =========================
+   HEADER
+========================= */
+
 .caja-header {
+  position: relative;
+
   margin-bottom: 24px;
+  padding-bottom: 18px;
 }
+
+.caja-header::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  bottom: 0;
+
+  width: 52px;
+  height: 3px;
+
+  border-radius: 999px;
+
+  background: var(--color-accent);
+}
+
+/* =========================
+   NAV
+========================= */
 
 .caja-nav {
   display: flex;
+  align-items: center;
+
   gap: 6px;
+
   margin-bottom: 24px;
+
   padding: 6px;
+
+  overflow-x: auto;
+
   border: 1px solid var(--color-border);
   border-radius: 14px;
+
   background: white;
 }
 
 .caja-nav button {
-  border: none;
+  position: relative;
+
+  display: inline-flex;
+  align-items: center;
+
+  gap: 7px;
+
+  flex-shrink: 0;
+
+  border: 1px solid transparent;
   border-radius: 10px;
-  padding: 10px 15px;
+
+  padding: 9px 14px;
+
   background: transparent;
+
   color: var(--color-text-secondary);
-  font-weight: 700;
+
+  font-family: var(--font-ui);
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.caja-nav button:hover {
+  background: var(--color-background-secondary);
+
+  color: var(--color-primary);
 }
 
 .caja-nav button.active {
+  border-color: rgba(30, 43, 34, 0.08);
+
   background: var(--color-primary);
+
   color: white;
 }
 
+.caja-nav button.active::after {
+  content: "";
+
+  position: absolute;
+
+  left: 50%;
+  bottom: -6px;
+
+  width: 22px;
+  height: 2px;
+
+  transform: translateX(-50%);
+
+  border-radius: 999px;
+
+  background: var(--color-accent);
+}
+
+.caja-nav button.active svg {
+  color: var(--color-accent);
+}
+
+/* =========================
+   STATUS PANEL
+========================= */
+
 .caja-status-panel {
+  position: relative;
+
+  overflow: hidden;
+
   display: flex;
   justify-content: space-between;
   align-items: center;
+
   gap: 25px;
+
   margin-bottom: 20px;
+
   padding: 24px;
+
   border-radius: var(--radius-lg);
+
   background: var(--color-primary);
+
   color: white;
+
+  box-shadow:
+    0 7px 22px rgba(30, 43, 34, 0.12);
+}
+
+.caja-status-panel::after {
+  content: "";
+
+  position: absolute;
+
+  width: 120px;
+  height: 120px;
+
+  right: 18%;
+  bottom: -75px;
+
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 50%;
+
+  pointer-events: none;
 }
 
 .caja-status-main {
   display: flex;
   align-items: center;
+
   gap: 18px;
+}
+
+.caja-status-icon {
+  width: 48px;
+  height: 48px;
+
+  display: grid;
+  place-items: center;
+
+  flex-shrink: 0;
+
+  border-radius: 13px;
+
+  background: rgba(255, 255, 255, 0.1);
+
+  color: var(--color-accent);
 }
 
 .caja-status-main span,
 .caja-balance span {
   display: block;
+
   font-size: 11px;
+
   opacity: 0.72;
 }
 
 .caja-status-main strong {
   display: block;
+
   margin-top: 5px;
+
+  font-family: var(--font-brand);
+
   font-size: 25px;
+  font-weight: 600;
 }
 
 .caja-status-main small {
   display: block;
+
   margin-top: 5px;
+
   opacity: 0.7;
 }
 
 .caja-status-badge {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
   padding: 7px 11px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.13);
+
+  background: rgba(255, 255, 255, 0.1);
+
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
+}
+
+.caja-status-badge svg {
+  color: #b8e4ca;
 }
 
 .caja-balance {
+  position: relative;
+
+  z-index: 2;
+
   text-align: right;
 }
 
 .caja-balance strong {
   display: block;
+
   margin-top: 5px;
-  font-size: 28px;
+
+  font-family: var(--font-brand);
+
+  font-size: 29px;
+  font-weight: 600;
 }
+
+/* =========================
+   KPIs
+========================= */
 
 .caja-kpis {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
+
   gap: 18px;
+
   margin-bottom: 20px;
 }
 
 .caja-kpi {
-  padding: 22px;
+  padding: 20px;
+
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
+
   background: white;
-  box-shadow: var(--shadow-card);
+
+  box-shadow:
+    0 5px 18px rgba(30, 43, 34, 0.045);
+}
+
+.caja-kpi-icon {
+  width: 40px;
+  height: 40px;
+
+  display: grid;
+  place-items: center;
+
+  margin-bottom: 14px;
+
+  border-radius: 11px;
+}
+
+.caja-kpi-icon.initial {
+  color: var(--color-primary);
+
+  background: var(--color-background-secondary);
+}
+
+.caja-kpi-icon.income {
+  color: var(--color-success);
+
+  background: var(--color-success-bg);
+}
+
+.caja-kpi-icon.outcome {
+  color: var(--color-danger);
+
+  background: var(--color-danger-bg);
+}
+
+.caja-kpi-icon.movements {
+  color: var(--color-accent);
+
+  background: var(--color-accent-soft);
 }
 
 .caja-kpi span {
   display: block;
+
   color: var(--color-text-secondary);
+
   font-size: 13px;
 }
 
 .caja-kpi strong {
   display: block;
-  margin-top: 8px;
+
+  margin-top: 7px;
+
   color: var(--color-text);
+
+  font-family: var(--font-brand);
+
   font-size: 26px;
+  font-weight: 600;
+
+  line-height: 1.1;
 }
 
 .caja-kpi small {
   display: block;
+
   margin-top: 8px;
+
   color: var(--color-text-secondary);
+
+  font-size: 12px;
 }
 
 .caja-positive {
@@ -127,36 +358,79 @@
   color: var(--color-danger) !important;
 }
 
+/* =========================
+   MAIN GRID
+========================= */
+
 .caja-main-grid {
   display: grid;
   grid-template-columns: 1fr 0.6fr;
+
   gap: 20px;
+
   margin-bottom: 20px;
 }
 
+/* =========================
+   PANEL
+========================= */
+
 .caja-panel {
+  position: relative;
+
+  overflow: hidden;
+
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
+
   background: white;
-  box-shadow: var(--shadow-card);
-  overflow: hidden;
+
+  box-shadow:
+    0 5px 18px rgba(30, 43, 34, 0.045);
+}
+
+.caja-panel::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 22px;
+
+  width: 44px;
+  height: 3px;
+
+  border-radius: 0 0 999px 999px;
+
+  background: var(--color-accent);
 }
 
 .caja-panel-header {
-  padding: 20px 22px;
+  padding: 22px;
+
   border-bottom: 1px solid var(--color-border);
 }
 
 .caja-panel-header h2 {
   color: var(--color-text);
+
+  font-family: var(--font-brand);
+
   font-size: 20px;
+  font-weight: 600;
 }
 
 .caja-panel-header p {
   margin-top: 5px;
+
   color: var(--color-text-secondary);
+
   font-size: 12px;
 }
+
+/* =========================
+   PAYMENT METHODS
+========================= */
 
 .payment-methods {
   padding: 10px 22px 20px;
@@ -165,13 +439,38 @@
 .payment-method-row {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+
   gap: 15px;
+
   padding: 14px 0;
+
   border-bottom: 1px solid var(--color-border);
 }
 
 .payment-method-row:last-child {
   border-bottom: none;
+}
+
+.payment-method-name {
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+}
+
+.payment-method-icon {
+  width: 32px;
+  height: 32px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 9px;
+
+  background: var(--color-background-secondary);
+
+  color: var(--color-primary);
 }
 
 .payment-method-row span {
@@ -180,32 +479,99 @@
 
 .payment-method-row strong {
   color: var(--color-text);
+
+  font-family: var(--font-brand);
+
+  font-size: 16px;
+  font-weight: 600;
 }
+
+/* =========================
+   ACTIONS PANEL
+========================= */
 
 .caja-actions-panel {
   padding-bottom: 22px;
 }
 
+.caja-actions-content {
+  padding: 20px 22px 2px;
+
+  text-align: center;
+}
+
+.caja-control-icon {
+  width: 46px;
+  height: 46px;
+
+  display: grid;
+  place-items: center;
+
+  margin: 0 auto 12px;
+
+  border-radius: 12px;
+
+  background: var(--color-background-secondary);
+
+  color: var(--color-primary);
+}
+
+.caja-actions-content p {
+  color: var(--color-text-secondary);
+
+  font-size: 12px;
+  line-height: 1.55;
+}
+
 .caja-review-button,
 .caja-close-button {
   width: calc(100% - 44px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
   margin: 18px 22px 0;
-  padding: 12px;
+
+  padding: 11px;
+
   border-radius: 10px;
+
+  font-family: var(--font-ui);
   font-weight: 700;
+
+  cursor: pointer;
 }
 
 .caja-review-button {
   border: 1px solid var(--color-border);
+
   background: white;
+
   color: var(--color-text);
+}
+
+.caja-review-button:hover {
+  background: var(--color-background);
 }
 
 .caja-close-button {
   border: none;
+
   background: var(--color-accent);
+
   color: white;
 }
+
+.caja-close-button:hover {
+  filter: brightness(0.97);
+}
+
+/* =========================
+   TABLE
+========================= */
 
 .caja-table-wrapper {
   overflow-x: auto;
@@ -214,117 +580,251 @@
 .caja-table {
   width: 100%;
   min-width: 900px;
+
   border-collapse: collapse;
 }
 
 .caja-table th {
-  padding: 14px 18px;
-  background: #faf9f6;
+  padding: 13px 18px;
+
+  background: var(--color-background-secondary);
+
   color: var(--color-text-secondary);
+
   text-align: left;
+
   font-size: 11px;
+  font-weight: 700;
+
   text-transform: uppercase;
+
+  letter-spacing: 0.45px;
 }
 
 .caja-table td {
   padding: 17px 18px;
+
   border-top: 1px solid var(--color-border);
+
   color: var(--color-text);
+
   font-size: 13px;
 }
 
-.payment-chip {
-  display: inline-flex;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: var(--color-background);
-  color: var(--color-primary);
-  font-size: 10px;
-  font-weight: 800;
+.caja-table tbody tr {
+  transition: background 0.15s ease;
 }
 
-.caja-detail-button {
-  border: none;
-  background: transparent;
-  color: var(--color-primary);
+.caja-table tbody tr:hover {
+  background: #fcfbf8;
+}
+
+.caja-payment-code {
+  display: inline-flex;
+
+  padding: 5px 8px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 7px;
+
+  background: var(--color-background);
+
+  color: var(--color-text-secondary);
+
+  font-size: 11px;
   font-weight: 700;
 }
 
+/* =========================
+   PAYMENT CHIP
+========================= */
+
+.payment-chip {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
+  padding: 5px 9px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+
+  background: var(--color-background);
+
+  color: var(--color-primary);
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* =========================
+   DETAIL BUTTON
+========================= */
+
+.caja-detail-button {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
+  border: none;
+
+  background: transparent;
+
+  color: var(--color-primary);
+
+  font-family: var(--font-ui);
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: color 0.15s ease;
+}
+
+.caja-detail-button:hover {
+  color: var(--color-accent);
+}
+
+/* =========================
+   EMPTY
+========================= */
+
 .caja-empty-section {
   min-height: 300px;
+
   display: grid;
   place-items: center;
   align-content: center;
+
   gap: 8px;
+
   border: 1px dashed var(--color-border);
   border-radius: var(--radius-lg);
+
   background: white;
+
   text-align: center;
 }
 
 .caja-empty-section p {
   color: var(--color-text-secondary);
+
   font-size: 13px;
 }
 
+/* =========================
+   OVERLAY
+========================= */
+
 .caja-overlay {
   position: fixed;
+
   inset: 0;
+
   z-index: 90;
-  background: rgba(15, 35, 30, 0.28);
+
+  background: rgba(18, 30, 25, 0.34);
+
+  backdrop-filter: blur(1px);
 }
+
+/* =========================
+   DRAWER
+========================= */
 
 .caja-drawer {
   position: fixed;
+
   top: 0;
   right: 0;
+
   width: min(440px, 100%);
   height: 100vh;
+
   z-index: 100;
+
   padding: 26px;
+
   overflow-y: auto;
+
   background: white;
-  box-shadow: -12px 0 30px rgba(18, 48, 40, 0.12);
+
+  box-shadow:
+    -12px 0 32px rgba(30, 43, 34, 0.14);
 }
 
 .caja-drawer-header {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
+
   gap: 20px;
+
   padding-bottom: 22px;
+
   border-bottom: 1px solid var(--color-border);
 }
 
 .caja-drawer-header h2 {
   margin-top: 6px;
+
   color: var(--color-text);
-  font-size: 26px;
+
+  font-family: var(--font-brand);
+
+  font-size: 27px;
+  font-weight: 600;
 }
+
+/* =========================
+   DETAIL GRID
+========================= */
 
 .caja-detail-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
+
   gap: 12px;
+
   margin-top: 22px;
 }
 
 .caja-detail-grid div {
   padding: 15px;
+
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
+
+  background: white;
 }
 
 .caja-detail-grid span {
   display: block;
+
   color: var(--color-text-secondary);
+
   font-size: 11px;
 }
 
 .caja-detail-grid strong {
-  display: block;
+  display: flex;
+  align-items: center;
+
+  gap: 5px;
+
   margin-top: 5px;
+
   color: var(--color-text);
 }
+
+.caja-detail-grid svg {
+  color: var(--color-text-secondary);
+}
+
+/* =========================
+   CASH COUNT
+========================= */
 
 .cash-count-box {
   margin-top: 22px;
@@ -333,27 +833,92 @@
 .cash-count-box label {
   display: flex;
   flex-direction: column;
+
   gap: 8px;
+
   color: var(--color-text);
+
   font-size: 12px;
   font-weight: 700;
 }
 
-.cash-count-box input {
-  padding: 12px;
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
+.cash-count-input {
+  position: relative;
+
+  display: flex;
+  align-items: center;
 }
 
-.caja-close-notice {
-  margin-top: 18px;
-  padding: 14px;
+.cash-count-input > svg {
+  position: absolute;
+
+  left: 12px;
+
+  color: var(--color-text-secondary);
+}
+
+.cash-count-box input {
+  width: 100%;
+
+  padding: 12px 12px 12px 38px;
+
+  border: 1px solid var(--color-border);
   border-radius: 10px;
+
+  background: white;
+
+  outline: none;
+
+  font-family: var(--font-ui);
+}
+
+.cash-count-box input:focus {
+  border-color: rgba(227, 122, 36, 0.7);
+
+  box-shadow:
+    0 0 0 3px rgba(227, 122, 36, 0.1);
+}
+
+/* =========================
+   NOTICE
+========================= */
+
+.caja-close-notice {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 9px;
+
+  margin-top: 18px;
+
+  padding: 14px;
+
+  border: 1px solid rgba(217, 119, 6, 0.14);
+  border-radius: 10px;
+
   background: var(--color-warning-bg);
+
   color: var(--color-warning);
+
   font-size: 12px;
   line-height: 1.5;
 }
+
+.caja-close-notice svg {
+  flex-shrink: 0;
+
+  margin-top: 1px;
+}
+
+.caja-confirm-close {
+  width: 100%;
+
+  margin-top: 22px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
 
 @media (max-width: 1000px) {
   .caja-kpis {
@@ -368,7 +933,14 @@
 @media (max-width: 650px) {
   .caja-status-panel {
     flex-direction: column;
+
     align-items: stretch;
+  }
+
+  .caja-status-main {
+    align-items: flex-start;
+
+    flex-wrap: wrap;
   }
 
   .caja-balance {

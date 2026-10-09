@@ -1,4 +1,23 @@
 import { useMemo, useState } from "react";
+
+import {
+  Search,
+  Play,
+  CircleDot,
+  Target,
+  BadgeDollarSign,
+  Clock3,
+  UserRound,
+  Armchair,
+  ArrowRight,
+  X,
+  CircleCheck,
+  ReceiptText,
+  Timer,
+  Square,
+  RotateCcw,
+} from "lucide-react";
+
 import "./SesionesJuegosSection.css";
 
 function SesionesJuegosSection() {
@@ -98,13 +117,23 @@ function SesionesJuegosSection() {
     cerrarDetalle();
   }
 
+  function iconoTipo(tipo) {
+    if (tipo === "Billar") {
+      return <CircleDot size={18} strokeWidth={1.9} />;
+    }
+
+    return <Target size={18} strokeWidth={1.9} />;
+  }
+
   return (
     <div className="sesiones-juegos-section">
 
       <section className="sesiones-juegos-toolbar">
 
         <div>
-          <h2>Sesiones en curso</h2>
+          <h2>
+            Sesiones en curso
+          </h2>
 
           <p>
             Consulta el uso actual de los juegos y su costo acumulado.
@@ -112,12 +141,22 @@ function SesionesJuegosSection() {
         </div>
 
         <div className="sesiones-juegos-search">
+
+          <Search
+            className="sesiones-juegos-search-icon"
+            size={18}
+            strokeWidth={1.9}
+          />
+
           <input
             type="text"
             placeholder="Buscar sesión, juego o mesa..."
             value={busqueda}
-            onChange={(event) => setBusqueda(event.target.value)}
+            onChange={(event) =>
+              setBusqueda(event.target.value)
+            }
           />
+
         </div>
 
       </section>
@@ -125,13 +164,35 @@ function SesionesJuegosSection() {
       <section className="sesiones-juegos-kpis">
 
         <article className="sesion-juego-kpi">
-          <span>Sesiones activas</span>
-          <strong>{sesiones.length}</strong>
-          <small>En curso actualmente</small>
+
+          <div className="sesion-juego-kpi-icon active">
+            <Play size={20} strokeWidth={1.9} />
+          </div>
+
+          <span>
+            Sesiones activas
+          </span>
+
+          <strong>
+            {sesiones.length}
+          </strong>
+
+          <small>
+            En curso actualmente
+          </small>
+
         </article>
 
         <article className="sesion-juego-kpi">
-          <span>Billar</span>
+
+          <div className="sesion-juego-kpi-icon billar">
+            <CircleDot size={20} strokeWidth={1.9} />
+          </div>
+
+          <span>
+            Billar
+          </span>
+
           <strong>
             {
               sesiones.filter(
@@ -139,11 +200,23 @@ function SesionesJuegosSection() {
               ).length
             }
           </strong>
-          <small>Sesiones activas</small>
+
+          <small>
+            Sesiones activas
+          </small>
+
         </article>
 
         <article className="sesion-juego-kpi">
-          <span>Tejo</span>
+
+          <div className="sesion-juego-kpi-icon tejo">
+            <Target size={20} strokeWidth={1.9} />
+          </div>
+
+          <span>
+            Tejo
+          </span>
+
           <strong>
             {
               sesiones.filter(
@@ -151,11 +224,23 @@ function SesionesJuegosSection() {
               ).length
             }
           </strong>
-          <small>Sesiones activas</small>
+
+          <small>
+            Sesiones activas
+          </small>
+
         </article>
 
         <article className="sesion-juego-kpi">
-          <span>Costo acumulado</span>
+
+          <div className="sesion-juego-kpi-icon money">
+            <BadgeDollarSign size={20} strokeWidth={1.9} />
+          </div>
+
+          <span>
+            Costo acumulado
+          </span>
+
           <strong>
             {formatearDinero(
               sesiones.reduce(
@@ -164,7 +249,11 @@ function SesionesJuegosSection() {
               )
             )}
           </strong>
-          <small>Solo juegos</small>
+
+          <small>
+            Solo juegos
+          </small>
+
         </article>
 
       </section>
@@ -174,7 +263,9 @@ function SesionesJuegosSection() {
         <div className="sesiones-juegos-panel-header">
 
           <div>
-            <h2>Sesiones activas</h2>
+            <h2>
+              Sesiones activas
+            </h2>
 
             <p>
               {sesionesFiltradas.length} sesiones encontradas
@@ -186,6 +277,7 @@ function SesionesJuegosSection() {
         <div className="sesiones-juegos-grid">
 
           {sesionesFiltradas.map((sesion) => (
+
             <article
               key={sesion.id}
               className="sesion-juego-card"
@@ -194,17 +286,32 @@ function SesionesJuegosSection() {
               <div className="sesion-juego-card-header">
 
                 <div>
+
                   <span className="sesion-juego-code">
                     {sesion.codigo}
                   </span>
 
-                  <h3>
-                    {sesion.juego}
-                  </h3>
+                  <div className="sesion-juego-title-row">
+
+                    <span className={`sesion-juego-type-icon ${sesion.tipo.toLowerCase()}`}>
+                      {iconoTipo(sesion.tipo)}
+                    </span>
+
+                    <h3>
+                      {sesion.juego}
+                    </h3>
+
+                  </div>
 
                   <p>
+                    <Armchair
+                      size={13}
+                      strokeWidth={1.9}
+                    />
+
                     {sesion.mesa}
                   </p>
+
                 </div>
 
                 <span className="sesion-juego-status">
@@ -216,23 +323,61 @@ function SesionesJuegosSection() {
               <div className="sesion-juego-info">
 
                 <div>
-                  <span>Inicio</span>
-                  <strong>{sesion.inicio}</strong>
-                </div>
+                  <span>
+                    Inicio
+                  </span>
 
-                <div>
-                  <span>Duración</span>
-                  <strong>{sesion.duracion}</strong>
-                </div>
-
-                <div>
-                  <span>Responsable</span>
-                  <strong>{sesion.responsable}</strong>
-                </div>
-
-                <div>
-                  <span>Costo juego</span>
                   <strong>
+                    <Clock3
+                      size={14}
+                      strokeWidth={1.9}
+                    />
+
+                    {sesion.inicio}
+                  </strong>
+                </div>
+
+                <div>
+                  <span>
+                    Duración
+                  </span>
+
+                  <strong>
+                    <Timer
+                      size={14}
+                      strokeWidth={1.9}
+                    />
+
+                    {sesion.duracion}
+                  </strong>
+                </div>
+
+                <div>
+                  <span>
+                    Responsable
+                  </span>
+
+                  <strong>
+                    <UserRound
+                      size={14}
+                      strokeWidth={1.9}
+                    />
+
+                    {sesion.responsable}
+                  </strong>
+                </div>
+
+                <div>
+                  <span>
+                    Costo juego
+                  </span>
+
+                  <strong>
+                    <BadgeDollarSign
+                      size={14}
+                      strokeWidth={1.9}
+                    />
+
                     {formatearDinero(sesion.costo)}
                   </strong>
                 </div>
@@ -240,13 +385,20 @@ function SesionesJuegosSection() {
               </div>
 
               <button
+                type="button"
                 className="sesion-juego-detail-button"
                 onClick={() => abrirDetalle(sesion)}
               >
                 Ver detalle
+
+                <ArrowRight
+                  size={15}
+                  strokeWidth={1.9}
+                />
               </button>
 
             </article>
+
           ))}
 
         </div>
@@ -255,6 +407,7 @@ function SesionesJuegosSection() {
 
       {sesionSeleccionada && (
         <>
+
           <div
             className="sesion-juego-overlay"
             onClick={cerrarDetalle}
@@ -279,19 +432,31 @@ function SesionesJuegosSection() {
               </div>
 
               <button
+                type="button"
                 className="drawer-close"
                 onClick={cerrarDetalle}
+                aria-label="Cerrar detalle"
               >
-                ×
+                <X
+                  size={20}
+                  strokeWidth={1.9}
+                />
               </button>
 
             </div>
 
             <div className="sesion-juego-drawer-status">
 
-              <span>Estado</span>
+              <span>
+                Estado
+              </span>
 
               <strong>
+                <CircleCheck
+                  size={17}
+                  strokeWidth={1.9}
+                />
+
                 Activa
               </strong>
 
@@ -300,36 +465,76 @@ function SesionesJuegosSection() {
             <div className="sesion-juego-detail-grid">
 
               <div>
-                <span>Mesa</span>
+                <span>
+                  Mesa
+                </span>
+
                 <strong>
+                  <Armchair
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {sesionSeleccionada.mesa}
                 </strong>
               </div>
 
               <div>
-                <span>Hora de inicio</span>
+                <span>
+                  Hora de inicio
+                </span>
+
                 <strong>
+                  <Clock3
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {sesionSeleccionada.inicio}
                 </strong>
               </div>
 
               <div>
-                <span>Duración</span>
+                <span>
+                  Duración
+                </span>
+
                 <strong>
+                  <Timer
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {sesionSeleccionada.duracion}
                 </strong>
               </div>
 
               <div>
-                <span>Responsable</span>
+                <span>
+                  Responsable
+                </span>
+
                 <strong>
+                  <UserRound
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {sesionSeleccionada.responsable}
                 </strong>
               </div>
 
               <div>
-                <span>Precio por hora</span>
+                <span>
+                  Precio por hora
+                </span>
+
                 <strong>
+                  <BadgeDollarSign
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {formatearDinero(
                     sesionSeleccionada.precioHora
                   )}
@@ -337,8 +542,16 @@ function SesionesJuegosSection() {
               </div>
 
               <div>
-                <span>Costo acumulado</span>
+                <span>
+                  Costo acumulado
+                </span>
+
                 <strong>
+                  <BadgeDollarSign
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {formatearDinero(
                     sesionSeleccionada.costo
                   )}
@@ -349,8 +562,25 @@ function SesionesJuegosSection() {
 
             <div className="sesion-juego-account">
 
+              <div className="sesion-juego-account-title">
+
+                <div>
+                  <ReceiptText
+                    size={18}
+                    strokeWidth={1.9}
+                  />
+
+                  <span>
+                    Cuenta actual
+                  </span>
+                </div>
+
+              </div>
+
               <div>
-                <span>Consumo asociado</span>
+                <span>
+                  Consumo asociado
+                </span>
 
                 <strong>
                   {formatearDinero(
@@ -360,7 +590,9 @@ function SesionesJuegosSection() {
               </div>
 
               <div>
-                <span>Juego</span>
+                <span>
+                  Juego
+                </span>
 
                 <strong>
                   {formatearDinero(
@@ -370,7 +602,10 @@ function SesionesJuegosSection() {
               </div>
 
               <div className="sesion-juego-account-total">
-                <span>Total actual</span>
+
+                <span>
+                  Total actual
+                </span>
 
                 <strong>
                   {formatearDinero(
@@ -378,49 +613,76 @@ function SesionesJuegosSection() {
                       sesionSeleccionada.costo
                   )}
                 </strong>
+
               </div>
 
             </div>
 
             {!confirmacionFinalizar && (
+
               <button
-                className="drawer-primary-button"
+                type="button"
+                className="drawer-primary-button sesion-finalizar-main"
                 onClick={solicitarFinalizacion}
               >
+                <Square
+                  size={17}
+                  strokeWidth={1.9}
+                />
+
                 Finalizar sesión
               </button>
+
             )}
 
             {confirmacionFinalizar && (
+
               <div className="sesion-finalizar-box">
 
-                <h3>
-                  Finalizar sesión
-                </h3>
+                <div className="sesion-finalizar-heading">
+
+                  <Square
+                    size={18}
+                    strokeWidth={1.9}
+                  />
+
+                  <h3>
+                    Finalizar sesión
+                  </h3>
+
+                </div>
 
                 <p>
-                  La sesión de {sesionSeleccionada.juego} será
-                  cerrada y pasará al historial.
+                  La sesión de {sesionSeleccionada.juego} será cerrada y pasará al historial.
                 </p>
 
                 <div className="sesion-finalizar-summary">
 
                   <div>
-                    <span>Duración</span>
+                    <span>
+                      Duración
+                    </span>
+
                     <strong>
                       {sesionSeleccionada.duracion}
                     </strong>
                   </div>
 
                   <div>
-                    <span>Mesa</span>
+                    <span>
+                      Mesa
+                    </span>
+
                     <strong>
                       {sesionSeleccionada.mesa}
                     </strong>
                   </div>
 
                   <div>
-                    <span>Costo juego</span>
+                    <span>
+                      Costo juego
+                    </span>
+
                     <strong>
                       {formatearDinero(
                         sesionSeleccionada.costo
@@ -429,7 +691,10 @@ function SesionesJuegosSection() {
                   </div>
 
                   <div>
-                    <span>Total con consumo</span>
+                    <span>
+                      Total con consumo
+                    </span>
+
                     <strong>
                       {formatearDinero(
                         sesionSeleccionada.consumo +
@@ -443,25 +708,39 @@ function SesionesJuegosSection() {
                 <div className="sesion-finalizar-actions">
 
                   <button
+                    type="button"
                     className="drawer-primary-button"
                     onClick={finalizarSesion}
                   >
+                    <CircleCheck
+                      size={17}
+                      strokeWidth={1.9}
+                    />
+
                     Confirmar finalización
                   </button>
 
                   <button
+                    type="button"
                     className="drawer-secondary-button"
                     onClick={cancelarFinalizacion}
                   >
+                    <RotateCcw
+                      size={17}
+                      strokeWidth={1.9}
+                    />
+
                     Cancelar
                   </button>
 
                 </div>
 
               </div>
+
             )}
 
           </aside>
+
         </>
       )}
 

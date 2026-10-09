@@ -1,12 +1,33 @@
 import { useMemo, useState } from "react";
+
+import {
+  Search,
+  Wrench,
+  ShieldCheck,
+  TriangleAlert,
+  CalendarDays,
+  UserRound,
+  ArrowRight,
+  X,
+  Play,
+  CircleCheck,
+  Plus,
+  Clock3,
+  History,
+  SlidersHorizontal,
+} from "lucide-react";
+
 import "./MantenimientoJuegosSection.css";
 
 function MantenimientoJuegosSection() {
   const [busqueda, setBusqueda] = useState("");
   const [filtroTipo, setFiltroTipo] = useState("todos");
   const [filtroEstado, setFiltroEstado] = useState("todos");
-  const [mantenimientoSeleccionado, setMantenimientoSeleccionado] =
-    useState(null);
+
+  const [
+    mantenimientoSeleccionado,
+    setMantenimientoSeleccionado,
+  ] = useState(null);
 
   const [mantenimientos, setMantenimientos] = useState([
     {
@@ -97,11 +118,17 @@ function MantenimientoJuegosSection() {
 
       return coincideTipo && coincideEstado && coincideBusqueda;
     });
-  }, [mantenimientos, filtroTipo, filtroEstado, busqueda]);
+  }, [
+    mantenimientos,
+    filtroTipo,
+    filtroEstado,
+    busqueda,
+  ]);
 
   function nombreTipo(tipo) {
     if (tipo === "preventivo") return "Preventivo";
     if (tipo === "correctivo") return "Correctivo";
+
     return tipo;
   }
 
@@ -109,6 +136,7 @@ function MantenimientoJuegosSection() {
     if (estado === "programado") return "Programado";
     if (estado === "en-proceso") return "En proceso";
     if (estado === "completado") return "Completado";
+
     return estado;
   }
 
@@ -153,6 +181,24 @@ function MantenimientoJuegosSection() {
     );
   }
 
+  function iconoTipo(tipo) {
+    if (tipo === "preventivo") {
+      return (
+        <ShieldCheck
+          size={14}
+          strokeWidth={1.9}
+        />
+      );
+    }
+
+    return (
+      <TriangleAlert
+        size={14}
+        strokeWidth={1.9}
+      />
+    );
+  }
+
   return (
     <div className="mantenimiento-juegos-section">
 
@@ -161,6 +207,7 @@ function MantenimientoJuegosSection() {
         <div className="mantenimiento-filters">
 
           <button
+            type="button"
             className={`filter-button ${
               filtroTipo === "todos" ? "active" : ""
             }`}
@@ -170,20 +217,32 @@ function MantenimientoJuegosSection() {
           </button>
 
           <button
+            type="button"
             className={`filter-button ${
               filtroTipo === "preventivo" ? "active" : ""
             }`}
             onClick={() => setFiltroTipo("preventivo")}
           >
+            <ShieldCheck
+              size={14}
+              strokeWidth={1.9}
+            />
+
             Preventivo
           </button>
 
           <button
+            type="button"
             className={`filter-button ${
               filtroTipo === "correctivo" ? "active" : ""
             }`}
             onClick={() => setFiltroTipo("correctivo")}
           >
+            <TriangleAlert
+              size={14}
+              strokeWidth={1.9}
+            />
+
             Correctivo
           </button>
 
@@ -191,27 +250,66 @@ function MantenimientoJuegosSection() {
 
         <div className="mantenimiento-toolbar-right">
 
-          <select
-            value={filtroEstado}
-            onChange={(event) =>
-              setFiltroEstado(event.target.value)
-            }
+          <div className="mantenimiento-select-wrapper">
+
+            <SlidersHorizontal
+              size={16}
+              strokeWidth={1.9}
+            />
+
+            <select
+              value={filtroEstado}
+              onChange={(event) =>
+                setFiltroEstado(event.target.value)
+              }
+            >
+              <option value="todos">
+                Todos los estados
+              </option>
+
+              <option value="programado">
+                Programado
+              </option>
+
+              <option value="en-proceso">
+                En proceso
+              </option>
+
+              <option value="completado">
+                Completado
+              </option>
+            </select>
+
+          </div>
+
+          <div className="mantenimiento-search">
+
+            <Search
+              size={17}
+              strokeWidth={1.9}
+            />
+
+            <input
+              type="text"
+              placeholder="Buscar mantenimiento..."
+              value={busqueda}
+              onChange={(event) =>
+                setBusqueda(event.target.value)
+              }
+            />
+
+          </div>
+
+          <button
+            type="button"
+            className="primary-button mantenimiento-register-button"
           >
-            <option value="todos">Todos los estados</option>
-            <option value="programado">Programado</option>
-            <option value="en-proceso">En proceso</option>
-            <option value="completado">Completado</option>
-          </select>
+            <Plus
+              size={17}
+              strokeWidth={1.9}
+            />
 
-          <input
-            type="text"
-            placeholder="Buscar mantenimiento..."
-            value={busqueda}
-            onChange={(event) => setBusqueda(event.target.value)}
-          />
-
-          <button className="primary-button">
-            + Registrar mantenimiento
+            Registrar mantenimiento
           </button>
 
         </div>
@@ -221,12 +319,28 @@ function MantenimientoJuegosSection() {
       <section className="mantenimiento-panel">
 
         <div className="mantenimiento-panel-header">
-          <div>
-            <h2>Historial de mantenimiento</h2>
-            <p>
-              {mantenimientosFiltrados.length} registros encontrados
-            </p>
+
+          <div className="mantenimiento-panel-title">
+
+            <div className="mantenimiento-panel-icon">
+              <Wrench
+                size={18}
+                strokeWidth={1.9}
+              />
+            </div>
+
+            <div>
+              <h2>
+                Historial de mantenimiento
+              </h2>
+
+              <p>
+                {mantenimientosFiltrados.length} registros encontrados
+              </p>
+            </div>
+
           </div>
+
         </div>
 
         <div className="mantenimiento-table-wrapper">
@@ -248,50 +362,80 @@ function MantenimientoJuegosSection() {
 
             <tbody>
 
-              {mantenimientosFiltrados.map((mantenimiento) => (
-                <tr key={mantenimiento.id}>
+              {mantenimientosFiltrados.map(
+                (mantenimiento) => (
 
-                  <td>
-                    <strong>{mantenimiento.codigo}</strong>
-                  </td>
+                  <tr key={mantenimiento.id}>
 
-                  <td>{mantenimiento.juego}</td>
+                    <td>
+                      <span className="mantenimiento-code">
+                        {mantenimiento.codigo}
+                      </span>
+                    </td>
 
-                  <td>
-                    <span
-                      className={`mantenimiento-type ${mantenimiento.tipo}`}
-                    >
-                      {nombreTipo(mantenimiento.tipo)}
-                    </span>
-                  </td>
+                    <td>
+                      <strong>
+                        {mantenimiento.juego}
+                      </strong>
+                    </td>
 
-                  <td>{mantenimiento.motivo}</td>
+                    <td>
+                      <span
+                        className={`mantenimiento-type ${mantenimiento.tipo}`}
+                      >
+                        {iconoTipo(mantenimiento.tipo)}
 
-                  <td>{mantenimiento.fecha}</td>
+                        {nombreTipo(
+                          mantenimiento.tipo
+                        )}
+                      </span>
+                    </td>
 
-                  <td>{mantenimiento.responsable}</td>
+                    <td>
+                      {mantenimiento.motivo}
+                    </td>
 
-                  <td>
-                    <span
-                      className={`mantenimiento-status ${mantenimiento.estado}`}
-                    >
-                      {nombreEstado(mantenimiento.estado)}
-                    </span>
-                  </td>
+                    <td>
+                      {mantenimiento.fecha}
+                    </td>
 
-                  <td>
-                    <button
-                      className="mantenimiento-detail-button"
-                      onClick={() =>
-                        setMantenimientoSeleccionado(mantenimiento)
-                      }
-                    >
-                      Ver detalle
-                    </button>
-                  </td>
+                    <td>
+                      {mantenimiento.responsable}
+                    </td>
 
-                </tr>
-              ))}
+                    <td>
+                      <span
+                        className={`mantenimiento-status ${mantenimiento.estado}`}
+                      >
+                        {nombreEstado(
+                          mantenimiento.estado
+                        )}
+                      </span>
+                    </td>
+
+                    <td>
+                      <button
+                        type="button"
+                        className="mantenimiento-detail-button"
+                        onClick={() =>
+                          setMantenimientoSeleccionado(
+                            mantenimiento
+                          )
+                        }
+                      >
+                        Ver detalle
+
+                        <ArrowRight
+                          size={15}
+                          strokeWidth={1.9}
+                        />
+                      </button>
+                    </td>
+
+                  </tr>
+
+                )
+              )}
 
             </tbody>
 
@@ -303,9 +447,12 @@ function MantenimientoJuegosSection() {
 
       {mantenimientoSeleccionado && (
         <>
+
           <div
             className="mantenimiento-overlay"
-            onClick={() => setMantenimientoSeleccionado(null)}
+            onClick={() =>
+              setMantenimientoSeleccionado(null)
+            }
           ></div>
 
           <aside className="mantenimiento-drawer">
@@ -327,19 +474,49 @@ function MantenimientoJuegosSection() {
               </div>
 
               <button
+                type="button"
                 className="drawer-close"
-                onClick={() => setMantenimientoSeleccionado(null)}
+                onClick={() =>
+                  setMantenimientoSeleccionado(null)
+                }
+                aria-label="Cerrar detalle"
               >
-                ×
+                <X
+                  size={20}
+                  strokeWidth={1.9}
+                />
               </button>
+
+            </div>
+
+            <div
+              className={`mantenimiento-drawer-status ${mantenimientoSeleccionado.estado}`}
+            >
+
+              <span>
+                Estado actual
+              </span>
+
+              <strong>
+                {nombreEstado(
+                  mantenimientoSeleccionado.estado
+                )}
+              </strong>
 
             </div>
 
             <div className="mantenimiento-detail-grid">
 
               <div>
-                <span>Tipo</span>
+                <span>
+                  Tipo
+                </span>
+
                 <strong>
+                  {iconoTipo(
+                    mantenimientoSeleccionado.tipo
+                  )}
+
                   {nombreTipo(
                     mantenimientoSeleccionado.tipo
                   )}
@@ -347,8 +524,16 @@ function MantenimientoJuegosSection() {
               </div>
 
               <div>
-                <span>Estado</span>
+                <span>
+                  Estado
+                </span>
+
                 <strong>
+                  <Wrench
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {nombreEstado(
                     mantenimientoSeleccionado.estado
                   )}
@@ -356,15 +541,31 @@ function MantenimientoJuegosSection() {
               </div>
 
               <div>
-                <span>Fecha</span>
+                <span>
+                  Fecha
+                </span>
+
                 <strong>
+                  <CalendarDays
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {mantenimientoSeleccionado.fecha}
                 </strong>
               </div>
 
               <div>
-                <span>Responsable</span>
+                <span>
+                  Responsable
+                </span>
+
                 <strong>
+                  <UserRound
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {mantenimientoSeleccionado.responsable}
                 </strong>
               </div>
@@ -372,41 +573,80 @@ function MantenimientoJuegosSection() {
             </div>
 
             <div className="mantenimiento-reason">
-              <span>Motivo</span>
+
+              <span>
+                Motivo
+              </span>
 
               <p>
                 {mantenimientoSeleccionado.motivo}
               </p>
+
             </div>
 
             <div className="mantenimiento-history">
 
-              <h3>Historial de estados</h3>
+              <div className="mantenimiento-history-heading">
+
+                <History
+                  size={17}
+                  strokeWidth={1.9}
+                />
+
+                <h3>
+                  Historial de estados
+                </h3>
+
+              </div>
 
               {mantenimientoSeleccionado.historial.map(
                 (registro, index) => (
+
                   <div
                     key={index}
                     className="mantenimiento-history-row"
                   >
-                    <div className="history-dot"></div>
+
+                    <div className="history-marker">
+
+                      <span className="history-dot"></span>
+
+                      {index <
+                        mantenimientoSeleccionado.historial.length -
+                          1 && (
+                        <span className="history-line"></span>
+                      )}
+
+                    </div>
 
                     <div>
-                      <strong>{registro.estado}</strong>
+                      <strong>
+                        {registro.estado}
+                      </strong>
 
                       <span>
+                        <Clock3
+                          size={12}
+                          strokeWidth={1.9}
+                        />
+
                         {registro.fecha} · {registro.hora}
                       </span>
                     </div>
+
                   </div>
+
                 )
               )}
 
             </div>
 
-            {mantenimientoSeleccionado.estado === "programado" && (
+            {mantenimientoSeleccionado.estado ===
+              "programado" && (
+
               <button
-                className="drawer-primary-button"
+                type="button"
+                className="drawer-primary-button mantenimiento-main-action"
                 onClick={() =>
                   cambiarEstado(
                     mantenimientoSeleccionado.id,
@@ -414,13 +654,22 @@ function MantenimientoJuegosSection() {
                   )
                 }
               >
+                <Play
+                  size={17}
+                  strokeWidth={1.9}
+                />
+
                 Iniciar mantenimiento
               </button>
+
             )}
 
-            {mantenimientoSeleccionado.estado === "en-proceso" && (
+            {mantenimientoSeleccionado.estado ===
+              "en-proceso" && (
+
               <button
-                className="drawer-primary-button"
+                type="button"
+                className="drawer-primary-button mantenimiento-main-action"
                 onClick={() =>
                   cambiarEstado(
                     mantenimientoSeleccionado.id,
@@ -428,18 +677,36 @@ function MantenimientoJuegosSection() {
                   )
                 }
               >
+                <CircleCheck
+                  size={17}
+                  strokeWidth={1.9}
+                />
+
                 Marcar como completado
               </button>
+
             )}
 
-            {mantenimientoSeleccionado.estado === "completado" && (
+            {mantenimientoSeleccionado.estado ===
+              "completado" && (
+
               <div className="mantenimiento-complete-notice">
-                Este mantenimiento fue completado y permanece disponible
-                como registro histórico.
+
+                <CircleCheck
+                  size={17}
+                  strokeWidth={1.9}
+                />
+
+                <span>
+                  Este mantenimiento fue completado y permanece disponible como registro histórico.
+                </span>
+
               </div>
+
             )}
 
           </aside>
+
         </>
       )}
 

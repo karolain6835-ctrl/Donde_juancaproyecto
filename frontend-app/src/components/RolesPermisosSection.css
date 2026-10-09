@@ -2,282 +2,690 @@
   width: 100%;
 }
 
+/* =========================
+   TOOLBAR
+========================= */
+
 .roles-toolbar {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+
   gap: 20px;
+
   margin-bottom: 22px;
 }
 
 .roles-toolbar h2 {
   color: var(--color-text);
+
+  font-family: var(--font-brand);
+
   font-size: 21px;
+  font-weight: 600;
 }
 
 .roles-toolbar p {
   margin-top: 5px;
+
   color: var(--color-text-secondary);
+
   font-size: 13px;
 }
 
-.roles-search input {
+/* =========================
+   SEARCH
+========================= */
+
+.roles-search {
+  position: relative;
+
   width: 280px;
-  padding: 11px 14px;
+
+  display: flex;
+  align-items: center;
+
+  flex-shrink: 0;
+}
+
+.roles-search-icon {
+  position: absolute;
+
+  left: 13px;
+
+  color: #8a9792;
+
+  pointer-events: none;
+}
+
+.roles-search input {
+  width: 100%;
+
+  padding: 10px 14px 10px 40px;
+
   border: 1px solid var(--color-border);
   border-radius: 11px;
+
   background: white;
+
+  color: var(--color-text);
+
   outline: none;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
+
+.roles-search input:focus {
+  border-color: rgba(227, 122, 36, 0.7);
+
+  box-shadow:
+    0 0 0 3px rgba(227, 122, 36, 0.1);
+}
+
+/* =========================
+   SUMMARY
+========================= */
 
 .roles-summary {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+
   gap: 18px;
+
   margin-bottom: 22px;
 }
 
 .roles-summary article {
   padding: 20px;
+
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
+
   background: white;
-  box-shadow: var(--shadow-card);
+
+  box-shadow:
+    0 5px 18px rgba(30, 43, 34, 0.045);
+}
+
+.roles-summary-icon {
+  width: 40px;
+  height: 40px;
+
+  display: grid;
+  place-items: center;
+
+  margin-bottom: 14px;
+
+  border-radius: 11px;
+}
+
+.roles-summary-icon.total {
+  color: var(--color-primary);
+
+  background: var(--color-background-secondary);
+}
+
+.roles-summary-icon.active {
+  color: var(--color-success);
+
+  background: var(--color-success-bg);
+}
+
+.roles-summary-icon.users {
+  color: var(--color-accent);
+
+  background: var(--color-accent-soft);
 }
 
 .roles-summary span {
   display: block;
+
   color: var(--color-text-secondary);
+
   font-size: 12px;
 }
 
 .roles-summary strong {
   display: block;
+
   margin-top: 7px;
+
   color: var(--color-text);
+
+  font-family: var(--font-brand);
+
   font-size: 28px;
+  font-weight: 600;
 }
+
+/* =========================
+   GRID
+========================= */
 
 .roles-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+
   gap: 18px;
 }
 
+/* =========================
+   ROLE CARD
+========================= */
+
 .rol-card {
+  position: relative;
+
   padding: 22px;
+
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
+
   background: white;
-  box-shadow: var(--shadow-card);
+
+  box-shadow:
+    0 5px 18px rgba(30, 43, 34, 0.045);
+
+  transition:
+    transform 0.16s ease,
+    border-color 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+.rol-card:hover {
+  transform: translateY(-1px);
+
+  border-color: rgba(30, 43, 34, 0.18);
+
+  box-shadow:
+    0 8px 22px rgba(30, 43, 34, 0.065);
+}
+
+.rol-card::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 22px;
+
+  width: 42px;
+  height: 3px;
+
+  border-radius: 0 0 999px 999px;
+
+  background: var(--color-accent);
 }
 
 .rol-card-header > div {
   display: flex;
   justify-content: space-between;
-  gap: 15px;
   align-items: center;
+
+  gap: 15px;
+}
+
+.rol-card-title {
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+}
+
+.rol-card-icon {
+  width: 34px;
+  height: 34px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 9px;
+
+  background: var(--color-background-secondary);
+
+  color: var(--color-primary);
 }
 
 .rol-card h3 {
   color: var(--color-text);
+
+  font-family: var(--font-brand);
+
   font-size: 18px;
+  font-weight: 600;
 }
 
 .rol-card > p {
   min-height: 42px;
+
   margin-top: 12px;
+
   color: var(--color-text-secondary);
+
   font-size: 12px;
   line-height: 1.5;
 }
 
+/* =========================
+   STATUS
+========================= */
+
 .rol-status {
   display: inline-flex;
-  padding: 6px 10px;
+
+  padding: 5px 10px;
+
+  border: 1px solid transparent;
   border-radius: 999px;
+
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .rol-status.activo {
   color: var(--color-success);
+
   background: var(--color-success-bg);
+
+  border-color: rgba(45, 106, 79, 0.1);
 }
 
 .rol-status.inactivo {
   color: var(--color-text-secondary);
+
   background: #eeeeec;
+
+  border-color: #e1e1de;
 }
+
+/* =========================
+   CARD STATS
+========================= */
 
 .rol-card-stats {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
+
   gap: 10px;
+
   margin-top: 18px;
 }
 
 .rol-card-stats div {
   padding: 12px;
+
+  border: 1px solid var(--color-border);
   border-radius: 10px;
+
   background: var(--color-background);
 }
 
 .rol-card-stats span {
   display: block;
+
   color: var(--color-text-secondary);
+
   font-size: 10px;
 }
 
 .rol-card-stats strong {
   display: block;
+
   margin-top: 5px;
+
   color: var(--color-text);
+
+  font-family: var(--font-brand);
+
   font-size: 17px;
+  font-weight: 600;
 }
+
+/* =========================
+   DETAIL BUTTON
+========================= */
 
 .rol-detail-button {
   width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
   margin-top: 18px;
-  padding: 11px;
+
+  padding: 10px 11px;
+
   border: 1px solid var(--color-border);
   border-radius: 10px;
+
   background: white;
+
   color: var(--color-primary);
+
+  font-family: var(--font-ui);
   font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
 }
+
+.rol-detail-button:hover {
+  border-color: rgba(30, 43, 34, 0.2);
+
+  background: var(--color-background-secondary);
+
+  color: var(--color-accent);
+}
+
+/* =========================
+   OVERLAY
+========================= */
 
 .rol-overlay {
   position: fixed;
+
   inset: 0;
+
   z-index: 90;
-  background: rgba(15, 35, 30, 0.28);
+
+  background: rgba(18, 30, 25, 0.34);
+
+  backdrop-filter: blur(1px);
 }
+
+/* =========================
+   DRAWER
+========================= */
 
 .rol-drawer {
   position: fixed;
+
   top: 0;
   right: 0;
+
   width: min(540px, 100%);
   height: 100vh;
+
   z-index: 100;
+
   padding: 26px;
+
   overflow-y: auto;
+
   background: white;
-  box-shadow: -12px 0 30px rgba(18, 48, 40, 0.12);
+
+  box-shadow:
+    -12px 0 32px rgba(30, 43, 34, 0.14);
 }
 
 .rol-drawer-header {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
+
   gap: 20px;
+
   padding-bottom: 22px;
+
   border-bottom: 1px solid var(--color-border);
 }
 
 .rol-drawer-header h2 {
   margin-top: 6px;
+
   color: var(--color-text);
-  font-size: 26px;
+
+  font-family: var(--font-brand);
+
+  font-size: 27px;
+  font-weight: 600;
 }
 
 .rol-drawer-header span {
   display: block;
+
   margin-top: 6px;
+
   color: var(--color-text-secondary);
+
   font-size: 12px;
   line-height: 1.5;
 }
 
+/* =========================
+   DRAWER SUMMARY
+========================= */
+
 .rol-drawer-summary {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
+
   gap: 12px;
+
   margin-top: 22px;
 }
 
 .rol-drawer-summary div {
   padding: 15px;
+
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
+
+  background: white;
 }
 
 .rol-drawer-summary span {
   display: block;
+
   color: var(--color-text-secondary);
+
   font-size: 11px;
 }
 
 .rol-drawer-summary strong {
-  display: block;
+  display: flex;
+  align-items: center;
+
+  gap: 5px;
+
   margin-top: 5px;
+
   color: var(--color-text);
 }
+
+.rol-drawer-summary strong svg {
+  color: var(--color-text-secondary);
+}
+
+.rol-summary-active {
+  color: var(--color-success) !important;
+}
+
+.rol-summary-inactive {
+  color: var(--color-text-secondary) !important;
+}
+
+/* =========================
+   PERMISSIONS
+========================= */
 
 .rol-permissions {
   margin-top: 26px;
 }
 
-.rol-permissions h3 {
+.rol-permissions-heading {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
   margin-bottom: 14px;
+}
+
+.rol-permissions-heading svg {
+  color: var(--color-accent);
+}
+
+.rol-permissions h3 {
   color: var(--color-text);
+
+  font-family: var(--font-brand);
+
   font-size: 16px;
+  font-weight: 600;
 }
 
 .rol-permission-module {
   padding: 16px 0;
+
   border-bottom: 1px solid var(--color-border);
 }
 
 .rol-permission-module > strong {
   display: block;
+
   margin-bottom: 10px;
+
   color: var(--color-text);
+
   font-size: 13px;
 }
 
 .rol-permission-actions {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+
   gap: 8px;
 }
 
 .rol-permission-actions label {
   display: flex;
   align-items: center;
+
   gap: 6px;
+
   padding: 8px;
+
+  border: 1px solid transparent;
   border-radius: 8px;
+
   background: var(--color-background);
+
   color: var(--color-text-secondary);
+
   font-size: 10px;
+
   cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.rol-permission-actions label.permission-active {
+  border-color: rgba(45, 106, 79, 0.12);
+
+  background: var(--color-success-bg);
+
+  color: var(--color-success);
+}
+
+.rol-permission-actions label:hover {
+  border-color: var(--color-border);
 }
 
 .rol-permission-actions input {
   accent-color: var(--color-primary);
 }
 
-.rol-deactivate-button {
+/* =========================
+   ACTIVATE / DEACTIVATE
+========================= */
+
+.rol-deactivate-button,
+.rol-activate-button {
   width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
   margin-top: 24px;
+
   padding: 12px;
-  border: 1px solid #efc7c3;
+
   border-radius: 10px;
-  background: white;
-  color: var(--color-danger);
+
+  font-family: var(--font-ui);
   font-weight: 700;
+
+  cursor: pointer;
 }
 
+.rol-deactivate-button {
+  border: 1px solid rgba(153, 27, 27, 0.2);
+
+  background: white;
+
+  color: var(--color-danger);
+}
+
+.rol-deactivate-button:hover {
+  background: var(--color-danger-bg);
+}
+
+.rol-activate-button {
+  margin-top: 24px;
+}
+
+/* =========================
+   NOTICE
+========================= */
+
 .rol-notice {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 9px;
+
   margin-top: 18px;
+
   padding: 14px;
+
+  border: 1px solid var(--color-border);
   border-radius: 10px;
-  background: #f5f3ed;
+
+  background: var(--color-background-secondary);
+
   color: var(--color-text-secondary);
+
   font-size: 12px;
   line-height: 1.5;
 }
+
+.rol-notice svg {
+  flex-shrink: 0;
+
+  margin-top: 1px;
+
+  color: var(--color-primary);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
 
 @media (max-width: 1000px) {
   .roles-grid {
@@ -288,10 +696,11 @@
 @media (max-width: 700px) {
   .roles-toolbar {
     flex-direction: column;
+
     align-items: stretch;
   }
 
-  .roles-search input {
+  .roles-search {
     width: 100%;
   }
 

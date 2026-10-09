@@ -1,6 +1,28 @@
 import { useMemo, useState } from "react";
+
+import {
+  WalletCards,
+  ReceiptText,
+  CircleDollarSign,
+  ArrowDownToLine,
+  ArrowUpFromLine,
+  ListChecks,
+  Banknote,
+  CreditCard,
+  Smartphone,
+  Clock3,
+  Armchair,
+  UserRound,
+  ArrowRight,
+  X,
+  Calculator,
+  CircleCheck,
+  ClipboardCheck,
+} from "lucide-react";
+
 import CuentasPendientesSection from "../components/CuentasPendientesSection";
 import CierresCajaSection from "../components/CierresCajaSection";
+
 import "./CajaPage.css";
 
 function CajaPage() {
@@ -66,6 +88,18 @@ function CajaPage() {
     }).format(valor);
   }
 
+  function iconoMetodo(metodo) {
+    if (metodo === "Efectivo") {
+      return <Banknote size={17} strokeWidth={1.9} />;
+    }
+
+    if (metodo === "Tarjeta") {
+      return <CreditCard size={17} strokeWidth={1.9} />;
+    }
+
+    return <Smartphone size={17} strokeWidth={1.9} />;
+  }
+
   const saldoInicial = 300000;
   const entradas = 2436000;
   const salidas = 185000;
@@ -75,8 +109,11 @@ function CajaPage() {
     <div className="caja-page">
 
       <header className="caja-header">
+
         <div>
-          <p className="page-eyebrow">CAJA Y PAGOS</p>
+          <p className="page-eyebrow">
+            CAJA Y PAGOS
+          </p>
 
           <h1 className="page-title">
             {seccionActiva === "pagos" && "Pagos y caja"}
@@ -88,28 +125,35 @@ function CajaPage() {
             Controla pagos, cuentas abiertas y cierres de caja.
           </p>
         </div>
+
       </header>
 
       <nav className="caja-nav">
 
         <button
+          type="button"
           className={seccionActiva === "pagos" ? "active" : ""}
           onClick={() => setSeccionActiva("pagos")}
         >
+          <WalletCards size={16} strokeWidth={1.9} />
           Pagos
         </button>
 
         <button
+          type="button"
           className={seccionActiva === "pendientes" ? "active" : ""}
           onClick={() => setSeccionActiva("pendientes")}
         >
+          <ReceiptText size={16} strokeWidth={1.9} />
           Cuentas pendientes
         </button>
 
         <button
+          type="button"
           className={seccionActiva === "cierres" ? "active" : ""}
           onClick={() => setSeccionActiva("cierres")}
         >
+          <ClipboardCheck size={16} strokeWidth={1.9} />
           Cierres de caja
         </button>
 
@@ -117,25 +161,52 @@ function CajaPage() {
 
       {seccionActiva === "pagos" && (
         <>
+
           <section className="caja-status-panel">
 
             <div className="caja-status-main">
 
+              <div className="caja-status-icon">
+                <WalletCards
+                  size={25}
+                  strokeWidth={1.8}
+                />
+              </div>
+
               <div>
-                <span>Estado de caja</span>
-                <strong>Abierta</strong>
-                <small>Desde las 08:02</small>
+                <span>
+                  Estado de caja
+                </span>
+
+                <strong>
+                  Abierta
+                </strong>
+
+                <small>
+                  Desde las 08:02
+                </small>
               </div>
 
               <div className="caja-status-badge">
+                <CircleCheck
+                  size={14}
+                  strokeWidth={1.9}
+                />
                 Caja abierta
               </div>
 
             </div>
 
             <div className="caja-balance">
-              <span>Saldo esperado</span>
-              <strong>{formatearDinero(saldoEsperado)}</strong>
+
+              <span>
+                Saldo esperado
+              </span>
+
+              <strong>
+                {formatearDinero(saldoEsperado)}
+              </strong>
+
             </div>
 
           </section>
@@ -143,31 +214,95 @@ function CajaPage() {
           <section className="caja-kpis">
 
             <article className="caja-kpi">
-              <span>Saldo inicial</span>
-              <strong>{formatearDinero(saldoInicial)}</strong>
-              <small>Apertura del turno</small>
+
+              <div className="caja-kpi-icon initial">
+                <CircleDollarSign
+                  size={20}
+                  strokeWidth={1.9}
+                />
+              </div>
+
+              <span>
+                Saldo inicial
+              </span>
+
+              <strong>
+                {formatearDinero(saldoInicial)}
+              </strong>
+
+              <small>
+                Apertura del turno
+              </small>
+
             </article>
 
             <article className="caja-kpi">
-              <span>Entradas</span>
-              <strong>{formatearDinero(entradas)}</strong>
+
+              <div className="caja-kpi-icon income">
+                <ArrowDownToLine
+                  size={20}
+                  strokeWidth={1.9}
+                />
+              </div>
+
+              <span>
+                Entradas
+              </span>
+
+              <strong>
+                {formatearDinero(entradas)}
+              </strong>
+
               <small className="caja-positive">
                 Pagos registrados
               </small>
+
             </article>
 
             <article className="caja-kpi">
-              <span>Salidas</span>
-              <strong>{formatearDinero(salidas)}</strong>
+
+              <div className="caja-kpi-icon outcome">
+                <ArrowUpFromLine
+                  size={20}
+                  strokeWidth={1.9}
+                />
+              </div>
+
+              <span>
+                Salidas
+              </span>
+
+              <strong>
+                {formatearDinero(salidas)}
+              </strong>
+
               <small className="caja-negative">
                 Gastos y retiros
               </small>
+
             </article>
 
             <article className="caja-kpi">
-              <span>Movimientos</span>
-              <strong>{pagos.length}</strong>
-              <small>Pagos recientes</small>
+
+              <div className="caja-kpi-icon movements">
+                <ListChecks
+                  size={20}
+                  strokeWidth={1.9}
+                />
+              </div>
+
+              <span>
+                Movimientos
+              </span>
+
+              <strong>
+                {pagos.length}
+              </strong>
+
+              <small>
+                Pagos recientes
+              </small>
+
             </article>
 
           </section>
@@ -177,25 +312,47 @@ function CajaPage() {
             <article className="caja-panel">
 
               <div className="caja-panel-header">
+
                 <div>
-                  <h2>Métodos de pago</h2>
-                  <p>Distribución de ingresos registrados</p>
+                  <h2>
+                    Métodos de pago
+                  </h2>
+
+                  <p>
+                    Distribución de ingresos registrados
+                  </p>
                 </div>
+
               </div>
 
               <div className="payment-methods">
 
                 {Object.entries(resumenMetodos).map(
                   ([metodo, valor]) => (
+
                     <div
                       key={metodo}
                       className="payment-method-row"
                     >
-                      <span>{metodo}</span>
+
+                      <div className="payment-method-name">
+
+                        <span className="payment-method-icon">
+                          {iconoMetodo(metodo)}
+                        </span>
+
+                        <span>
+                          {metodo}
+                        </span>
+
+                      </div>
+
                       <strong>
                         {formatearDinero(valor)}
                       </strong>
+
                     </div>
+
                   )
                 )}
 
@@ -206,23 +363,57 @@ function CajaPage() {
             <article className="caja-panel caja-actions-panel">
 
               <div className="caja-panel-header">
+
                 <div>
-                  <h2>Control de caja</h2>
-                  <p>Acciones del turno actual</p>
+                  <h2>
+                    Control de caja
+                  </h2>
+
+                  <p>
+                    Acciones del turno actual
+                  </p>
                 </div>
+
+              </div>
+
+              <div className="caja-actions-content">
+
+                <div className="caja-control-icon">
+                  <Calculator
+                    size={23}
+                    strokeWidth={1.8}
+                  />
+                </div>
+
+                <p>
+                  Revisa el saldo esperado y realiza el conteo físico antes de cerrar el turno.
+                </p>
+
               </div>
 
               <button
+                type="button"
                 className="caja-review-button"
                 onClick={() => setMostrarCierre(true)}
               >
+                <Calculator
+                  size={16}
+                  strokeWidth={1.9}
+                />
+
                 Revisar cierre
               </button>
 
               <button
+                type="button"
                 className="caja-close-button"
                 onClick={() => setMostrarCierre(true)}
               >
+                <ClipboardCheck
+                  size={16}
+                  strokeWidth={1.9}
+                />
+
                 Cerrar caja
               </button>
 
@@ -233,10 +424,17 @@ function CajaPage() {
           <section className="caja-panel caja-movements">
 
             <div className="caja-panel-header">
+
               <div>
-                <h2>Pagos recientes</h2>
-                <p>Últimos movimientos registrados</p>
+                <h2>
+                  Pagos recientes
+                </h2>
+
+                <p>
+                  Últimos movimientos registrados
+                </p>
               </div>
+
             </div>
 
             <div className="caja-table-wrapper">
@@ -259,33 +457,66 @@ function CajaPage() {
                 <tbody>
 
                   {pagos.map((pago) => (
+
                     <tr key={pago.id}>
-                      <td><strong>{pago.id}</strong></td>
-                      <td>{pago.hora}</td>
-                      <td>{pago.mesa}</td>
-                      <td>{pago.pedido}</td>
+
                       <td>
-                        <span className="payment-chip">
-                          {pago.metodo}
+                        <span className="caja-payment-code">
+                          {pago.id}
                         </span>
                       </td>
+
+                      <td>
+                        {pago.hora}
+                      </td>
+
+                      <td>
+                        {pago.mesa}
+                      </td>
+
+                      <td>
+                        {pago.pedido}
+                      </td>
+
+                      <td>
+                        <span className="payment-chip">
+
+                          {iconoMetodo(pago.metodo)}
+
+                          {pago.metodo}
+
+                        </span>
+                      </td>
+
                       <td>
                         <strong>
                           {formatearDinero(pago.valor)}
                         </strong>
                       </td>
-                      <td>{pago.usuario}</td>
+
+                      <td>
+                        {pago.usuario}
+                      </td>
+
                       <td>
                         <button
+                          type="button"
                           className="caja-detail-button"
                           onClick={() =>
                             setMovimientoSeleccionado(pago)
                           }
                         >
                           Ver detalle
+
+                          <ArrowRight
+                            size={15}
+                            strokeWidth={1.9}
+                          />
                         </button>
                       </td>
+
                     </tr>
+
                   ))}
 
                 </tbody>
@@ -295,22 +526,26 @@ function CajaPage() {
             </div>
 
           </section>
+
         </>
       )}
 
       {seccionActiva === "pendientes" && (
-  <CuentasPendientesSection />
-)}
+        <CuentasPendientesSection />
+      )}
 
-{seccionActiva === "cierres" && (
-  <CierresCajaSection />
-)}
+      {seccionActiva === "cierres" && (
+        <CierresCajaSection />
+      )}
 
       {movimientoSeleccionado && (
         <>
+
           <div
             className="caja-overlay"
-            onClick={() => setMovimientoSeleccionado(null)}
+            onClick={() =>
+              setMovimientoSeleccionado(null)
+            }
           ></div>
 
           <aside className="caja-drawer">
@@ -328,10 +563,17 @@ function CajaPage() {
               </div>
 
               <button
+                type="button"
                 className="drawer-close"
-                onClick={() => setMovimientoSeleccionado(null)}
+                onClick={() =>
+                  setMovimientoSeleccionado(null)
+                }
+                aria-label="Cerrar detalle"
               >
-                ×
+                <X
+                  size={20}
+                  strokeWidth={1.9}
+                />
               </button>
 
             </div>
@@ -339,43 +581,90 @@ function CajaPage() {
             <div className="caja-detail-grid">
 
               <div>
-                <span>Mesa</span>
+                <span>
+                  Mesa
+                </span>
+
                 <strong>
+                  <Armchair
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {movimientoSeleccionado.mesa}
                 </strong>
               </div>
 
               <div>
-                <span>Pedido</span>
+                <span>
+                  Pedido
+                </span>
+
                 <strong>
+                  <ReceiptText
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {movimientoSeleccionado.pedido}
                 </strong>
               </div>
 
               <div>
-                <span>Método</span>
+                <span>
+                  Método
+                </span>
+
                 <strong>
+                  {iconoMetodo(
+                    movimientoSeleccionado.metodo
+                  )}
+
                   {movimientoSeleccionado.metodo}
                 </strong>
               </div>
 
               <div>
-                <span>Hora</span>
+                <span>
+                  Hora
+                </span>
+
                 <strong>
+                  <Clock3
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {movimientoSeleccionado.hora}
                 </strong>
               </div>
 
               <div>
-                <span>Responsable</span>
+                <span>
+                  Responsable
+                </span>
+
                 <strong>
+                  <UserRound
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {movimientoSeleccionado.usuario}
                 </strong>
               </div>
 
               <div>
-                <span>Valor</span>
+                <span>
+                  Valor
+                </span>
+
                 <strong>
+                  <CircleDollarSign
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {formatearDinero(
                     movimientoSeleccionado.valor
                   )}
@@ -385,11 +674,13 @@ function CajaPage() {
             </div>
 
           </aside>
+
         </>
       )}
 
       {mostrarCierre && (
         <>
+
           <div
             className="caja-overlay"
             onClick={() => setMostrarCierre(false)}
@@ -410,10 +701,15 @@ function CajaPage() {
               </div>
 
               <button
+                type="button"
                 className="drawer-close"
                 onClick={() => setMostrarCierre(false)}
+                aria-label="Cerrar revisión"
               >
-                ×
+                <X
+                  size={20}
+                  strokeWidth={1.9}
+                />
               </button>
 
             </div>
@@ -421,29 +717,61 @@ function CajaPage() {
             <div className="caja-detail-grid">
 
               <div>
-                <span>Saldo inicial</span>
+                <span>
+                  Saldo inicial
+                </span>
+
                 <strong>
+                  <CircleDollarSign
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {formatearDinero(saldoInicial)}
                 </strong>
               </div>
 
               <div>
-                <span>Entradas</span>
-                <strong>
+                <span>
+                  Entradas
+                </span>
+
+                <strong className="caja-positive">
+                  <ArrowDownToLine
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {formatearDinero(entradas)}
                 </strong>
               </div>
 
               <div>
-                <span>Salidas</span>
-                <strong>
+                <span>
+                  Salidas
+                </span>
+
+                <strong className="caja-negative">
+                  <ArrowUpFromLine
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {formatearDinero(salidas)}
                 </strong>
               </div>
 
               <div>
-                <span>Saldo esperado</span>
+                <span>
+                  Saldo esperado
+                </span>
+
                 <strong>
+                  <Calculator
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {formatearDinero(saldoEsperado)}
                 </strong>
               </div>
@@ -454,24 +782,50 @@ function CajaPage() {
 
               <label>
                 Conteo físico
-                <input
-                  type="number"
-                  placeholder="Ingresa el valor contado"
-                />
+
+                <div className="cash-count-input">
+                  <CircleDollarSign
+                    size={17}
+                    strokeWidth={1.9}
+                  />
+
+                  <input
+                    type="number"
+                    placeholder="Ingresa el valor contado"
+                  />
+                </div>
+
               </label>
 
             </div>
 
             <div className="caja-close-notice">
-              Antes de cerrar la caja se debe comparar el conteo físico con
-              el saldo esperado y registrar cualquier diferencia.
+
+              <Calculator
+                size={17}
+                strokeWidth={1.9}
+              />
+
+              <span>
+                Antes de cerrar la caja se debe comparar el conteo físico con el saldo esperado y registrar cualquier diferencia.
+              </span>
+
             </div>
 
-            <button className="drawer-primary-button">
+            <button
+              type="button"
+              className="drawer-primary-button caja-confirm-close"
+            >
+              <ClipboardCheck
+                size={17}
+                strokeWidth={1.9}
+              />
+
               Confirmar cierre
             </button>
 
           </aside>
+
         </>
       )}
 

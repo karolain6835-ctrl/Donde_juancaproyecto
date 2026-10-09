@@ -1,4 +1,21 @@
 import { useMemo, useState } from "react";
+
+import {
+  BarChart3,
+  ReceiptText,
+  BadgeDollarSign,
+  CreditCard,
+  Banknote,
+  Smartphone,
+  Clock3,
+  Armchair,
+  UserRound,
+  ArrowRight,
+  X,
+  LockKeyhole,
+  CalendarRange,
+} from "lucide-react";
+
 import "./ReporteVentasSection.css";
 
 function ReporteVentasSection() {
@@ -92,6 +109,18 @@ function ReporteVentasSection() {
     }).format(valor);
   }
 
+  function iconoMetodo(metodo) {
+    if (metodo === "Efectivo") {
+      return <Banknote size={15} strokeWidth={1.9} />;
+    }
+
+    if (metodo === "Tarjeta") {
+      return <CreditCard size={15} strokeWidth={1.9} />;
+    }
+
+    return <Smartphone size={15} strokeWidth={1.9} />;
+  }
+
   return (
     <div className="reporte-ventas-section">
 
@@ -99,45 +128,107 @@ function ReporteVentasSection() {
 
         <div>
           <h2>Resumen de ventas</h2>
-          <p>Comportamiento comercial según el período seleccionado.</p>
+
+          <p>
+            Comportamiento comercial según el período seleccionado.
+          </p>
         </div>
 
-        <select
-          value={periodo}
-          onChange={(event) => setPeriodo(event.target.value)}
-        >
-          <option value="hoy">Hoy</option>
-          <option value="semana">Esta semana</option>
-          <option value="mes">Este mes</option>
-          <option value="personalizado">Personalizado</option>
-        </select>
+        <div className="reporte-ventas-periodo">
+
+          <CalendarRange
+            size={16}
+            strokeWidth={1.9}
+          />
+
+          <select
+            value={periodo}
+            onChange={(event) =>
+              setPeriodo(event.target.value)
+            }
+          >
+            <option value="hoy">Hoy</option>
+            <option value="semana">Esta semana</option>
+            <option value="mes">Este mes</option>
+            <option value="personalizado">Personalizado</option>
+          </select>
+
+        </div>
 
       </section>
 
       <section className="reporte-ventas-kpis">
 
         <article className="reporte-venta-kpi">
+
+          <div className="reporte-venta-kpi-icon sales">
+            <BadgeDollarSign size={20} strokeWidth={1.9} />
+          </div>
+
           <span>Ventas netas</span>
-          <strong>{formatearDinero(ventasNetas)}</strong>
-          <small>Período seleccionado</small>
+
+          <strong>
+            {formatearDinero(ventasNetas)}
+          </strong>
+
+          <small>
+            Período seleccionado
+          </small>
+
         </article>
 
         <article className="reporte-venta-kpi">
+
+          <div className="reporte-venta-kpi-icon transactions">
+            <ReceiptText size={20} strokeWidth={1.9} />
+          </div>
+
           <span>Transacciones</span>
-          <strong>{numeroTransacciones}</strong>
-          <small>Pagos confirmados</small>
+
+          <strong>
+            {numeroTransacciones}
+          </strong>
+
+          <small>
+            Pagos confirmados
+          </small>
+
         </article>
 
         <article className="reporte-venta-kpi">
+
+          <div className="reporte-venta-kpi-icon average">
+            <BarChart3 size={20} strokeWidth={1.9} />
+          </div>
+
           <span>Ticket promedio</span>
-          <strong>{formatearDinero(ticketPromedio)}</strong>
-          <small>Promedio por transacción</small>
+
+          <strong>
+            {formatearDinero(ticketPromedio)}
+          </strong>
+
+          <small>
+            Promedio por transacción
+          </small>
+
         </article>
 
         <article className="reporte-venta-kpi">
+
+          <div className="reporte-venta-kpi-icon method">
+            <CreditCard size={20} strokeWidth={1.9} />
+          </div>
+
           <span>Método principal</span>
-          <strong>{metodoPrincipal}</strong>
-          <small>Mayor valor registrado</small>
+
+          <strong>
+            {metodoPrincipal}
+          </strong>
+
+          <small>
+            Mayor valor registrado
+          </small>
+
         </article>
 
       </section>
@@ -147,10 +238,25 @@ function ReporteVentasSection() {
         <article className="reporte-ventas-panel">
 
           <div className="reporte-ventas-panel-header">
-            <div>
-              <h3>Ventas por hora</h3>
-              <p>Distribución del ingreso durante la jornada</p>
+
+            <div className="reporte-ventas-panel-title">
+
+              <div className="reporte-ventas-panel-icon">
+                <BarChart3 size={18} strokeWidth={1.9} />
+              </div>
+
+              <div>
+                <h3>
+                  Ventas por hora
+                </h3>
+
+                <p>
+                  Distribución del ingreso durante la jornada
+                </p>
+              </div>
+
             </div>
+
           </div>
 
           <div className="ventas-hour-chart">
@@ -164,11 +270,13 @@ function ReporteVentasSection() {
                   key={registro.hora}
                   className="ventas-hour-item"
                 >
+
                   <div className="ventas-hour-value">
                     {formatearDinero(registro.valor)}
                   </div>
 
                   <div className="ventas-hour-bar-area">
+
                     <div
                       className="ventas-hour-bar"
                       style={{
@@ -178,9 +286,13 @@ function ReporteVentasSection() {
                         )}%`,
                       }}
                     ></div>
+
                   </div>
 
-                  <span>{registro.hora}</span>
+                  <span>
+                    {registro.hora}
+                  </span>
+
                 </div>
               );
             })}
@@ -192,29 +304,61 @@ function ReporteVentasSection() {
         <article className="reporte-ventas-panel">
 
           <div className="reporte-ventas-panel-header">
-            <div>
-              <h3>Métodos de pago</h3>
-              <p>Distribución de las transacciones recientes</p>
+
+            <div className="reporte-ventas-panel-title">
+
+              <div className="reporte-ventas-panel-icon">
+                <CreditCard size={18} strokeWidth={1.9} />
+              </div>
+
+              <div>
+                <h3>
+                  Métodos de pago
+                </h3>
+
+                <p>
+                  Distribución de las transacciones recientes
+                </p>
+              </div>
+
             </div>
+
           </div>
 
           <div className="reporte-payment-list">
 
             {Object.entries(metodosPago).map(
               ([metodo, valor]) => (
+
                 <div
                   key={metodo}
                   className="reporte-payment-row"
                 >
-                  <div>
-                    <strong>{metodo}</strong>
-                    <span>Método de pago</span>
+
+                  <div className="reporte-payment-info">
+
+                    <span className="reporte-payment-icon">
+                      {iconoMetodo(metodo)}
+                    </span>
+
+                    <div>
+                      <strong>
+                        {metodo}
+                      </strong>
+
+                      <span>
+                        Método de pago
+                      </span>
+                    </div>
+
                   </div>
 
                   <strong>
                     {formatearDinero(valor)}
                   </strong>
+
                 </div>
+
               )
             )}
 
@@ -227,10 +371,30 @@ function ReporteVentasSection() {
       <section className="reporte-ventas-panel">
 
         <div className="reporte-ventas-panel-header">
-          <div>
-            <h3>Transacciones recientes</h3>
-            <p>Últimos pagos registrados en el sistema</p>
+
+          <div className="reporte-ventas-panel-title">
+
+            <div className="reporte-ventas-panel-icon">
+              <ReceiptText size={18} strokeWidth={1.9} />
+            </div>
+
+            <div>
+              <h3>
+                Transacciones recientes
+              </h3>
+
+              <p>
+                Últimos pagos registrados en el sistema
+              </p>
+            </div>
+
           </div>
+
+          <span className="reporte-ventas-readonly-badge">
+            <LockKeyhole size={13} strokeWidth={1.9} />
+            Solo consulta
+          </span>
+
         </div>
 
         <div className="reporte-ventas-table-wrapper">
@@ -253,44 +417,72 @@ function ReporteVentasSection() {
             <tbody>
 
               {transacciones.map((transaccion) => (
+
                 <tr key={transaccion.id}>
 
                   <td>
-                    <strong>{transaccion.id}</strong>
+                    <span className="reporte-transaction-code">
+                      {transaccion.id}
+                    </span>
                   </td>
 
-                  <td>{transaccion.hora}</td>
+                  <td>
+                    {transaccion.hora}
+                  </td>
 
-                  <td>{transaccion.mesa}</td>
+                  <td>
+                    {transaccion.mesa}
+                  </td>
 
-                  <td>{transaccion.pedido}</td>
+                  <td>
+                    {transaccion.pedido}
+                  </td>
 
                   <td>
                     <span className="reporte-payment-chip">
+
+                      {iconoMetodo(
+                        transaccion.metodo
+                      )}
+
                       {transaccion.metodo}
+
                     </span>
                   </td>
 
                   <td>
                     <strong>
-                      {formatearDinero(transaccion.total)}
+                      {formatearDinero(
+                        transaccion.total
+                      )}
                     </strong>
                   </td>
 
-                  <td>{transaccion.responsable}</td>
+                  <td>
+                    {transaccion.responsable}
+                  </td>
 
                   <td>
                     <button
+                      type="button"
                       className="reporte-detail-button"
                       onClick={() =>
-                        setTransaccionSeleccionada(transaccion)
+                        setTransaccionSeleccionada(
+                          transaccion
+                        )
                       }
                     >
                       Ver detalle
+
+                      <ArrowRight
+                        size={15}
+                        strokeWidth={1.9}
+                      />
                     </button>
                   </td>
 
                 </tr>
+
               ))}
 
             </tbody>
@@ -303,9 +495,12 @@ function ReporteVentasSection() {
 
       {transaccionSeleccionada && (
         <>
+
           <div
             className="reporte-ventas-overlay"
-            onClick={() => setTransaccionSeleccionada(null)}
+            onClick={() =>
+              setTransaccionSeleccionada(null)
+            }
           ></div>
 
           <aside className="reporte-ventas-drawer">
@@ -327,12 +522,17 @@ function ReporteVentasSection() {
               </div>
 
               <button
+                type="button"
                 className="drawer-close"
                 onClick={() =>
                   setTransaccionSeleccionada(null)
                 }
+                aria-label="Cerrar detalle"
               >
-                ×
+                <X
+                  size={20}
+                  strokeWidth={1.9}
+                />
               </button>
 
             </div>
@@ -341,28 +541,39 @@ function ReporteVentasSection() {
 
               <div>
                 <span>Mesa</span>
+
                 <strong>
+                  <Armchair size={14} strokeWidth={1.9} />
                   {transaccionSeleccionada.mesa}
                 </strong>
               </div>
 
               <div>
                 <span>Hora</span>
+
                 <strong>
+                  <Clock3 size={14} strokeWidth={1.9} />
                   {transaccionSeleccionada.hora}
                 </strong>
               </div>
 
               <div>
                 <span>Método de pago</span>
+
                 <strong>
+                  {iconoMetodo(
+                    transaccionSeleccionada.metodo
+                  )}
+
                   {transaccionSeleccionada.metodo}
                 </strong>
               </div>
 
               <div>
                 <span>Responsable</span>
+
                 <strong>
+                  <UserRound size={14} strokeWidth={1.9} />
                   {transaccionSeleccionada.responsable}
                 </strong>
               </div>
@@ -370,21 +581,43 @@ function ReporteVentasSection() {
             </div>
 
             <div className="reporte-ventas-total">
-              <span>Total de la transacción</span>
 
-              <strong>
-                {formatearDinero(
-                  transaccionSeleccionada.total
-                )}
-              </strong>
+              <div className="reporte-ventas-total-icon">
+                <BadgeDollarSign
+                  size={21}
+                  strokeWidth={1.9}
+                />
+              </div>
+
+              <div>
+                <span>
+                  Total de la transacción
+                </span>
+
+                <strong>
+                  {formatearDinero(
+                    transaccionSeleccionada.total
+                  )}
+                </strong>
+              </div>
+
             </div>
 
             <div className="reporte-ventas-readonly">
-              Este registro corresponde a una transacción confirmada y es
-              de solo consulta.
+
+              <LockKeyhole
+                size={17}
+                strokeWidth={1.9}
+              />
+
+              <span>
+                Este registro corresponde a una transacción confirmada y es de solo consulta.
+              </span>
+
             </div>
 
           </aside>
+
         </>
       )}
 

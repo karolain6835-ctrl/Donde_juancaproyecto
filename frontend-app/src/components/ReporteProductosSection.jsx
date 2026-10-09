@@ -1,4 +1,19 @@
 import { useMemo, useState } from "react";
+
+import {
+  Trophy,
+  Package,
+  BadgeDollarSign,
+  Tags,
+  CalendarRange,
+  BarChart3,
+  ArrowRight,
+  X,
+  LockKeyhole,
+  Boxes,
+  Percent,
+} from "lucide-react";
+
 import "./ReporteProductosSection.css";
 
 function ReporteProductosSection() {
@@ -89,47 +104,127 @@ function ReporteProductosSection() {
 
         <div>
           <h2>Productos más vendidos</h2>
+
           <p>
             Identifica los productos con mayor movimiento e ingresos.
           </p>
         </div>
 
-        <select
-          value={periodo}
-          onChange={(event) => setPeriodo(event.target.value)}
-        >
-          <option value="hoy">Hoy</option>
-          <option value="semana">Esta semana</option>
-          <option value="mes">Este mes</option>
-          <option value="personalizado">Personalizado</option>
-        </select>
+        <div className="reporte-productos-periodo">
+
+          <CalendarRange
+            size={16}
+            strokeWidth={1.9}
+          />
+
+          <select
+            value={periodo}
+            onChange={(event) =>
+              setPeriodo(event.target.value)
+            }
+          >
+            <option value="hoy">Hoy</option>
+            <option value="semana">Esta semana</option>
+            <option value="mes">Este mes</option>
+            <option value="personalizado">Personalizado</option>
+          </select>
+
+        </div>
 
       </section>
 
       <section className="reporte-productos-kpis">
 
         <article className="reporte-producto-kpi">
-          <span>Unidades vendidas</span>
-          <strong>{unidadesTotales}</strong>
-          <small>Productos del ranking</small>
+
+          <div className="reporte-producto-kpi-icon units">
+            <Boxes
+              size={20}
+              strokeWidth={1.9}
+            />
+          </div>
+
+          <span>
+            Unidades vendidas
+          </span>
+
+          <strong>
+            {unidadesTotales}
+          </strong>
+
+          <small>
+            Productos del ranking
+          </small>
+
         </article>
 
         <article className="reporte-producto-kpi">
-          <span>Ingresos generados</span>
-          <strong>{formatearDinero(ingresosTotales)}</strong>
-          <small>Ventas del ranking</small>
+
+          <div className="reporte-producto-kpi-icon income">
+            <BadgeDollarSign
+              size={20}
+              strokeWidth={1.9}
+            />
+          </div>
+
+          <span>
+            Ingresos generados
+          </span>
+
+          <strong>
+            {formatearDinero(ingresosTotales)}
+          </strong>
+
+          <small>
+            Ventas del ranking
+          </small>
+
         </article>
 
         <article className="reporte-producto-kpi">
-          <span>Producto líder</span>
-          <strong>{productos[0].producto}</strong>
-          <small>{productos[0].unidades} unidades</small>
+
+          <div className="reporte-producto-kpi-icon leader">
+            <Trophy
+              size={20}
+              strokeWidth={1.9}
+            />
+          </div>
+
+          <span>
+            Producto líder
+          </span>
+
+          <strong>
+            {productos[0].producto}
+          </strong>
+
+          <small>
+            {productos[0].unidades} unidades
+          </small>
+
         </article>
 
         <article className="reporte-producto-kpi">
-          <span>Categoría líder</span>
-          <strong>Cervezas</strong>
-          <small>Mayor participación</small>
+
+          <div className="reporte-producto-kpi-icon category">
+            <Tags
+              size={20}
+              strokeWidth={1.9}
+            />
+          </div>
+
+          <span>
+            Categoría líder
+          </span>
+
+          <strong>
+            Cervezas
+          </strong>
+
+          <small>
+            Mayor participación
+          </small>
+
         </article>
 
       </section>
@@ -139,16 +234,35 @@ function ReporteProductosSection() {
         <article className="reporte-productos-panel">
 
           <div className="reporte-productos-panel-header">
-            <div>
-              <h3>Ranking por unidades</h3>
-              <p>Volumen de productos vendidos</p>
+
+            <div className="reporte-productos-panel-title">
+
+              <div className="reporte-productos-panel-icon">
+                <Trophy
+                  size={18}
+                  strokeWidth={1.9}
+                />
+              </div>
+
+              <div>
+                <h3>
+                  Ranking por unidades
+                </h3>
+
+                <p>
+                  Volumen de productos vendidos
+                </p>
+              </div>
+
             </div>
+
           </div>
 
           <div className="productos-ranking">
 
             {productos.slice(0, 5).map((producto) => {
               const maximo = productos[0].unidades;
+
               const porcentaje =
                 (producto.unidades / maximo) * 100;
 
@@ -158,7 +272,9 @@ function ReporteProductosSection() {
                   className="producto-ranking-row"
                 >
 
-                  <div className="producto-ranking-position">
+                  <div
+                    className={`producto-ranking-position posicion-${producto.posicion}`}
+                  >
                     {producto.posicion}
                   </div>
 
@@ -167,8 +283,13 @@ function ReporteProductosSection() {
                     <div className="producto-ranking-info">
 
                       <div>
-                        <strong>{producto.producto}</strong>
-                        <span>{producto.categoria}</span>
+                        <strong>
+                          {producto.producto}
+                        </strong>
+
+                        <span>
+                          {producto.categoria}
+                        </span>
                       </div>
 
                       <strong>
@@ -178,12 +299,14 @@ function ReporteProductosSection() {
                     </div>
 
                     <div className="producto-ranking-track">
+
                       <div
                         className="producto-ranking-bar"
                         style={{
                           width: `${porcentaje}%`,
                         }}
                       ></div>
+
                     </div>
 
                   </div>
@@ -199,22 +322,43 @@ function ReporteProductosSection() {
         <article className="reporte-productos-panel">
 
           <div className="reporte-productos-panel-header">
-            <div>
-              <h3>Participación en ingresos</h3>
-              <p>Peso de cada producto dentro del ranking</p>
+
+            <div className="reporte-productos-panel-title">
+
+              <div className="reporte-productos-panel-icon">
+                <BarChart3
+                  size={18}
+                  strokeWidth={1.9}
+                />
+              </div>
+
+              <div>
+                <h3>
+                  Participación en ingresos
+                </h3>
+
+                <p>
+                  Peso de cada producto dentro del ranking
+                </p>
+              </div>
+
             </div>
+
           </div>
 
           <div className="productos-share-list">
 
             {productos.slice(0, 5).map((producto) => (
+
               <div
                 key={producto.id}
                 className="productos-share-row"
               >
 
                 <div>
-                  <strong>{producto.producto}</strong>
+                  <strong>
+                    {producto.producto}
+                  </strong>
 
                   <span>
                     {producto.categoria}
@@ -222,16 +366,23 @@ function ReporteProductosSection() {
                 </div>
 
                 <div className="producto-share-values">
+
                   <strong>
-                    {formatearDinero(producto.ingresos)}
+                    {formatearDinero(
+                      producto.ingresos
+                    )}
                   </strong>
 
                   <span>
-                    {calcularParticipacion(producto.ingresos)}%
+                    {calcularParticipacion(
+                      producto.ingresos
+                    )}%
                   </span>
+
                 </div>
 
               </div>
+
             ))}
 
           </div>
@@ -244,13 +395,35 @@ function ReporteProductosSection() {
 
         <div className="reporte-productos-panel-header">
 
-          <div>
-            <h3>Detalle de productos vendidos</h3>
+          <div className="reporte-productos-panel-title">
 
-            <p>
-              Ranking según unidades e ingresos generados
-            </p>
+            <div className="reporte-productos-panel-icon">
+              <Package
+                size={18}
+                strokeWidth={1.9}
+              />
+            </div>
+
+            <div>
+              <h3>
+                Detalle de productos vendidos
+              </h3>
+
+              <p>
+                Ranking según unidades e ingresos generados
+              </p>
+            </div>
+
           </div>
+
+          <span className="reporte-productos-readonly-badge">
+            <LockKeyhole
+              size={13}
+              strokeWidth={1.9}
+            />
+
+            Solo consulta
+          </span>
 
         </div>
 
@@ -273,6 +446,7 @@ function ReporteProductosSection() {
             <tbody>
 
               {productos.map((producto) => (
+
                 <tr key={producto.id}>
 
                   <td>
@@ -282,38 +456,52 @@ function ReporteProductosSection() {
                   </td>
 
                   <td>
-                    <strong>{producto.producto}</strong>
-                  </td>
-
-                  <td>{producto.categoria}</td>
-
-                  <td>
-                    <strong>{producto.unidades}</strong>
+                    <strong>
+                      {producto.producto}
+                    </strong>
                   </td>
 
                   <td>
-                    {formatearDinero(producto.ingresos)}
+                    {producto.categoria}
+                  </td>
+
+                  <td>
+                    <strong>
+                      {producto.unidades}
+                    </strong>
+                  </td>
+
+                  <td>
+                    {formatearDinero(
+                      producto.ingresos
+                    )}
                   </td>
 
                   <td>
                     {calcularParticipacion(
                       producto.ingresos
-                    )}
-                    %
+                    )}%
                   </td>
 
                   <td>
                     <button
+                      type="button"
                       className="reporte-producto-detail-button"
                       onClick={() =>
                         setProductoSeleccionado(producto)
                       }
                     >
                       Ver detalle
+
+                      <ArrowRight
+                        size={15}
+                        strokeWidth={1.9}
+                      />
                     </button>
                   </td>
 
                 </tr>
+
               ))}
 
             </tbody>
@@ -326,6 +514,7 @@ function ReporteProductosSection() {
 
       {productoSeleccionado && (
         <>
+
           <div
             className="reporte-producto-overlay"
             onClick={() =>
@@ -352,38 +541,70 @@ function ReporteProductosSection() {
               </div>
 
               <button
+                type="button"
                 className="drawer-close"
                 onClick={() =>
                   setProductoSeleccionado(null)
                 }
+                aria-label="Cerrar detalle"
               >
-                ×
+                <X
+                  size={20}
+                  strokeWidth={1.9}
+                />
               </button>
 
             </div>
 
             <div className="producto-rank-box">
 
-              <span>Posición en el ranking</span>
+              <div className="producto-rank-icon">
+                <Trophy
+                  size={21}
+                  strokeWidth={1.9}
+                />
+              </div>
 
-              <strong>
-                #{productoSeleccionado.posicion}
-              </strong>
+              <div>
+                <span>
+                  Posición en el ranking
+                </span>
+
+                <strong>
+                  #{productoSeleccionado.posicion}
+                </strong>
+              </div>
 
             </div>
 
             <div className="reporte-producto-detail-grid">
 
               <div>
-                <span>Unidades vendidas</span>
+                <span>
+                  Unidades vendidas
+                </span>
+
                 <strong>
+                  <Boxes
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {productoSeleccionado.unidades}
                 </strong>
               </div>
 
               <div>
-                <span>Ingresos</span>
+                <span>
+                  Ingresos
+                </span>
+
                 <strong>
+                  <BadgeDollarSign
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {formatearDinero(
                     productoSeleccionado.ingresos
                   )}
@@ -391,18 +612,33 @@ function ReporteProductosSection() {
               </div>
 
               <div>
-                <span>Participación</span>
+                <span>
+                  Participación
+                </span>
+
                 <strong>
+                  <Percent
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {calcularParticipacion(
                     productoSeleccionado.ingresos
-                  )}
-                  %
+                  )}%
                 </strong>
               </div>
 
               <div>
-                <span>Ingreso promedio por unidad</span>
+                <span>
+                  Ingreso promedio por unidad
+                </span>
+
                 <strong>
+                  <BadgeDollarSign
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {formatearDinero(
                     productoSeleccionado.ingresos /
                       productoSeleccionado.unidades
@@ -413,11 +649,20 @@ function ReporteProductosSection() {
             </div>
 
             <div className="reporte-producto-readonly">
-              Este reporte es informativo. La configuración del producto
-              se administra desde el módulo de Inventario.
+
+              <LockKeyhole
+                size={17}
+                strokeWidth={1.9}
+              />
+
+              <span>
+                Este reporte es informativo. La configuración del producto se administra desde el módulo de Inventario.
+              </span>
+
             </div>
 
           </aside>
+
         </>
       )}
 

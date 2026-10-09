@@ -1,7 +1,31 @@
 import { useMemo, useState } from "react";
+
+import {
+  Settings2,
+  Users,
+  ShieldCheck,
+  ClipboardList,
+  SlidersHorizontal,
+  UserRound,
+  UserCheck,
+  UserX,
+  Search,
+  Plus,
+  BadgeCheck,
+  Clock3,
+  Mail,
+  KeyRound,
+  Power,
+  PowerOff,
+  ArrowRight,
+  X,
+  LockKeyhole,
+} from "lucide-react";
+
 import RolesPermisosSection from "../components/RolesPermisosSection";
 import AuditoriaSection from "../components/AuditoriaSection";
 import ConfiguracionSection from "../components/ConfiguracionSection";
+
 import "./AdministracionPage.css";
 
 function AdministracionPage() {
@@ -176,10 +200,6 @@ function AdministracionPage() {
   return (
     <div className="administracion-page">
 
-      {/* =====================================================
-          ENCABEZADO
-      ====================================================== */}
-
       <header className="administracion-header">
 
         <div>
@@ -189,15 +209,9 @@ function AdministracionPage() {
 
           <h1 className="page-title">
             {seccionActiva === "usuarios" && "Usuarios"}
-
-            {seccionActiva === "roles" &&
-              "Roles y permisos"}
-
-            {seccionActiva === "auditoria" &&
-              "Auditoría"}
-
-            {seccionActiva === "configuracion" &&
-              "Configuración"}
+            {seccionActiva === "roles" && "Roles y permisos"}
+            {seccionActiva === "auditoria" && "Auditoría"}
+            {seccionActiva === "configuracion" && "Configuración"}
           </h1>
 
           <p className="page-description">
@@ -207,24 +221,27 @@ function AdministracionPage() {
 
         {seccionActiva === "usuarios" && (
           <button
-            className="primary-button"
+            type="button"
+            className="primary-button administracion-create-button"
             onClick={() =>
               setMostrarNuevoUsuario(true)
             }
           >
-            + Crear usuario
+            <Plus
+              size={17}
+              strokeWidth={1.9}
+            />
+
+            Crear usuario
           </button>
         )}
 
       </header>
 
-      {/* =====================================================
-          NAVEGACIÓN INTERNA
-      ====================================================== */}
-
       <nav className="administracion-nav">
 
         <button
+          type="button"
           className={
             seccionActiva === "usuarios"
               ? "active"
@@ -234,10 +251,16 @@ function AdministracionPage() {
             setSeccionActiva("usuarios")
           }
         >
+          <Users
+            size={16}
+            strokeWidth={1.9}
+          />
+
           Usuarios
         </button>
 
         <button
+          type="button"
           className={
             seccionActiva === "roles"
               ? "active"
@@ -247,10 +270,16 @@ function AdministracionPage() {
             setSeccionActiva("roles")
           }
         >
+          <ShieldCheck
+            size={16}
+            strokeWidth={1.9}
+          />
+
           Roles y permisos
         </button>
 
         <button
+          type="button"
           className={
             seccionActiva === "auditoria"
               ? "active"
@@ -260,10 +289,16 @@ function AdministracionPage() {
             setSeccionActiva("auditoria")
           }
         >
+          <ClipboardList
+            size={16}
+            strokeWidth={1.9}
+          />
+
           Auditoría
         </button>
 
         <button
+          type="button"
           className={
             seccionActiva === "configuracion"
               ? "active"
@@ -273,21 +308,33 @@ function AdministracionPage() {
             setSeccionActiva("configuracion")
           }
         >
+          <Settings2
+            size={16}
+            strokeWidth={1.9}
+          />
+
           Configuración
         </button>
 
       </nav>
 
-      {/* =====================================================
-          USUARIOS
-      ====================================================== */}
-
       {seccionActiva === "usuarios" && (
         <>
+
           <section className="administracion-kpis">
 
             <article className="administracion-kpi">
-              <span>Total usuarios</span>
+
+              <div className="administracion-kpi-icon total">
+                <Users
+                  size={20}
+                  strokeWidth={1.9}
+                />
+              </div>
+
+              <span>
+                Total usuarios
+              </span>
 
               <strong>
                 {usuarios.length}
@@ -296,10 +343,21 @@ function AdministracionPage() {
               <small>
                 Registrados en el sistema
               </small>
+
             </article>
 
             <article className="administracion-kpi">
-              <span>Activos</span>
+
+              <div className="administracion-kpi-icon active">
+                <UserCheck
+                  size={20}
+                  strokeWidth={1.9}
+                />
+              </div>
+
+              <span>
+                Activos
+              </span>
 
               <strong>
                 {
@@ -313,10 +371,21 @@ function AdministracionPage() {
               <small>
                 Con acceso habilitado
               </small>
+
             </article>
 
             <article className="administracion-kpi">
-              <span>Inactivos</span>
+
+              <div className="administracion-kpi-icon inactive">
+                <UserX
+                  size={20}
+                  strokeWidth={1.9}
+                />
+              </div>
+
+              <span>
+                Inactivos
+              </span>
 
               <strong>
                 {
@@ -330,10 +399,21 @@ function AdministracionPage() {
               <small>
                 Sin acceso al sistema
               </small>
+
             </article>
 
             <article className="administracion-kpi">
-              <span>Roles asignados</span>
+
+              <div className="administracion-kpi-icon roles">
+                <BadgeCheck
+                  size={20}
+                  strokeWidth={1.9}
+                />
+              </div>
+
+              <span>
+                Roles asignados
+              </span>
 
               <strong>
                 {
@@ -348,17 +428,17 @@ function AdministracionPage() {
               <small>
                 Perfiles distintos
               </small>
+
             </article>
 
           </section>
-
-          {/* FILTROS */}
 
           <section className="administracion-toolbar">
 
             <div className="administracion-filters">
 
               <button
+                type="button"
                 className={`filter-button ${
                   filtroEstado === "todos"
                     ? "active"
@@ -372,6 +452,7 @@ function AdministracionPage() {
               </button>
 
               <button
+                type="button"
                 className={`filter-button ${
                   filtroEstado === "activo"
                     ? "active"
@@ -385,6 +466,7 @@ function AdministracionPage() {
               </button>
 
               <button
+                type="button"
                 className={`filter-button ${
                   filtroEstado === "inactivo"
                     ? "active"
@@ -401,6 +483,12 @@ function AdministracionPage() {
 
             <div className="administracion-search">
 
+              <Search
+                className="administracion-search-icon"
+                size={18}
+                strokeWidth={1.9}
+              />
+
               <input
                 type="text"
                 placeholder="Buscar usuario..."
@@ -414,20 +502,29 @@ function AdministracionPage() {
 
           </section>
 
-          {/* TABLA */}
-
           <section className="administracion-panel">
 
             <div className="administracion-panel-header">
 
-              <div>
-                <h2>
-                  Usuarios del sistema
-                </h2>
+              <div className="administracion-panel-title">
 
-                <p>
-                  {usuariosFiltrados.length} usuarios encontrados
-                </p>
+                <div className="administracion-panel-icon">
+                  <Users
+                    size={18}
+                    strokeWidth={1.9}
+                  />
+                </div>
+
+                <div>
+                  <h2>
+                    Usuarios del sistema
+                  </h2>
+
+                  <p>
+                    {usuariosFiltrados.length} usuarios encontrados
+                  </p>
+                </div>
+
               </div>
 
             </div>
@@ -451,6 +548,7 @@ function AdministracionPage() {
 
                   {usuariosFiltrados.map(
                     (usuario) => (
+
                       <tr key={usuario.id}>
 
                         <td>
@@ -465,6 +563,11 @@ function AdministracionPage() {
 
                         <td>
                           <span className="administracion-role-chip">
+                            <ShieldCheck
+                              size={13}
+                              strokeWidth={1.9}
+                            />
+
                             {usuario.rol}
                           </span>
                         </td>
@@ -477,8 +580,7 @@ function AdministracionPage() {
                           <span
                             className={`administracion-status ${usuario.estado}`}
                           >
-                            {usuario.estado ===
-                            "activo"
+                            {usuario.estado === "activo"
                               ? "Activo"
                               : "Inactivo"}
                           </span>
@@ -486,6 +588,7 @@ function AdministracionPage() {
 
                         <td>
                           <button
+                            type="button"
                             className="administracion-detail-button"
                             onClick={() =>
                               setUsuarioSeleccionado(
@@ -494,10 +597,16 @@ function AdministracionPage() {
                             }
                           >
                             Ver detalle
+
+                            <ArrowRight
+                              size={15}
+                              strokeWidth={1.9}
+                            />
                           </button>
                         </td>
 
                       </tr>
+
                     )
                   )}
 
@@ -508,39 +617,25 @@ function AdministracionPage() {
             </div>
 
           </section>
+
         </>
       )}
-
-      {/* =====================================================
-          ROLES Y PERMISOS
-      ====================================================== */}
 
       {seccionActiva === "roles" && (
         <RolesPermisosSection />
       )}
 
-      {/* =====================================================
-          AUDITORÍA
-      ====================================================== */}
-
       {seccionActiva === "auditoria" && (
         <AuditoriaSection />
       )}
-
-      {/* =====================================================
-          CONFIGURACIÓN
-      ====================================================== */}
 
       {seccionActiva === "configuracion" && (
         <ConfiguracionSection />
       )}
 
-      {/* =====================================================
-          DRAWER DETALLE DE USUARIO
-      ====================================================== */}
-
       {usuarioSeleccionado && (
         <>
+
           <div
             className="administracion-overlay"
             onClick={() =>
@@ -567,27 +662,49 @@ function AdministracionPage() {
               </div>
 
               <button
+                type="button"
                 className="drawer-close"
                 onClick={() =>
                   setUsuarioSeleccionado(null)
                 }
+                aria-label="Cerrar detalle"
               >
-                ×
+                <X
+                  size={20}
+                  strokeWidth={1.9}
+                />
               </button>
 
             </div>
 
-            <div className="administracion-user-status">
+            <div
+              className={`administracion-user-status ${usuarioSeleccionado.estado}`}
+            >
 
               <span>
                 Estado
               </span>
 
               <strong>
-                {usuarioSeleccionado.estado ===
-                "activo"
-                  ? "Activo"
-                  : "Inactivo"}
+                {usuarioSeleccionado.estado === "activo"
+                  ? (
+                    <>
+                      <UserCheck
+                        size={17}
+                        strokeWidth={1.9}
+                      />
+                      Activo
+                    </>
+                  )
+                  : (
+                    <>
+                      <UserX
+                        size={17}
+                        strokeWidth={1.9}
+                      />
+                      Inactivo
+                    </>
+                  )}
               </strong>
 
             </div>
@@ -600,6 +717,11 @@ function AdministracionPage() {
                 </span>
 
                 <strong>
+                  <ShieldCheck
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {usuarioSeleccionado.rol}
                 </strong>
               </div>
@@ -610,64 +732,74 @@ function AdministracionPage() {
                 </span>
 
                 <strong>
+                  <Clock3
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {usuarioSeleccionado.ultimoAcceso}
                 </strong>
               </div>
 
             </div>
 
-            {/* CAMBIAR ROL */}
-
             <div className="administracion-role-editor">
 
               <label>
                 Cambiar rol
 
-                <select
-                  value={
-                    usuarioSeleccionado.rol
-                  }
-                  onChange={(event) =>
-                    cambiarRolUsuario(
-                      event.target.value
-                    )
-                  }
-                >
-                  <option>
-                    Administrador
-                  </option>
+                <div className="administracion-select-wrapper">
 
-                  <option>
-                    Mesera
-                  </option>
+                  <ShieldCheck
+                    size={16}
+                    strokeWidth={1.9}
+                  />
 
-                  <option>
-                    Mesero
-                  </option>
+                  <select
+                    value={
+                      usuarioSeleccionado.rol
+                    }
+                    onChange={(event) =>
+                      cambiarRolUsuario(
+                        event.target.value
+                      )
+                    }
+                  >
+                    <option>
+                      Administrador
+                    </option>
 
-                  <option>
-                    Caja
-                  </option>
+                    <option>
+                      Mesera
+                    </option>
 
-                  <option>
-                    Juegos
-                  </option>
-                </select>
+                    <option>
+                      Mesero
+                    </option>
+
+                    <option>
+                      Caja
+                    </option>
+
+                    <option>
+                      Juegos
+                    </option>
+                  </select>
+
+                </div>
 
               </label>
 
             </div>
 
-            {/* ACTIVAR / DESACTIVAR */}
-
             <div className="administracion-user-actions">
 
               <button
+                type="button"
                 className={
-                  usuarioSeleccionado.estado ===
-                  "activo"
+                  usuarioSeleccionado.estado === "activo"
                     ? "administracion-deactivate-button"
-                    : "drawer-primary-button"
+                    : "drawer-primary-button administracion-activate-button"
                 }
                 onClick={() =>
                   cambiarEstadoUsuario(
@@ -675,30 +807,50 @@ function AdministracionPage() {
                   )
                 }
               >
-                {usuarioSeleccionado.estado ===
-                "activo"
-                  ? "Desactivar usuario"
-                  : "Activar usuario"}
+                {usuarioSeleccionado.estado === "activo" ? (
+                  <>
+                    <PowerOff
+                      size={17}
+                      strokeWidth={1.9}
+                    />
+
+                    Desactivar usuario
+                  </>
+                ) : (
+                  <>
+                    <Power
+                      size={17}
+                      strokeWidth={1.9}
+                    />
+
+                    Activar usuario
+                  </>
+                )}
               </button>
 
             </div>
 
             <div className="administracion-readonly">
-              Los usuarios no se eliminan físicamente. La
-              desactivación conserva su historial y trazabilidad
-              dentro del sistema.
+
+              <LockKeyhole
+                size={17}
+                strokeWidth={1.9}
+              />
+
+              <span>
+                Los usuarios no se eliminan físicamente. La desactivación conserva su historial y trazabilidad dentro del sistema.
+              </span>
+
             </div>
 
           </aside>
+
         </>
       )}
 
-      {/* =====================================================
-          DRAWER CREAR USUARIO
-      ====================================================== */}
-
       {mostrarNuevoUsuario && (
         <>
+
           <div
             className="administracion-overlay"
             onClick={cerrarNuevoUsuario}
@@ -719,10 +871,15 @@ function AdministracionPage() {
               </div>
 
               <button
+                type="button"
                 className="drawer-close"
                 onClick={cerrarNuevoUsuario}
+                aria-label="Cerrar formulario"
               >
-                ×
+                <X
+                  size={20}
+                  strokeWidth={1.9}
+                />
               </button>
 
             </div>
@@ -735,111 +892,153 @@ function AdministracionPage() {
               <label>
                 Nombre completo
 
-                <input
-                  type="text"
-                  placeholder="Nombre del usuario"
-                  value={nuevoUsuario.nombre}
-                  onChange={(event) =>
-                    setNuevoUsuario(
-                      (actual) => ({
-                        ...actual,
-                        nombre:
-                          event.target.value,
-                      })
-                    )
-                  }
-                />
+                <div className="administracion-input-wrapper">
+
+                  <UserRound
+                    size={16}
+                    strokeWidth={1.9}
+                  />
+
+                  <input
+                    type="text"
+                    placeholder="Nombre del usuario"
+                    value={nuevoUsuario.nombre}
+                    onChange={(event) =>
+                      setNuevoUsuario(
+                        (actual) => ({
+                          ...actual,
+                          nombre:
+                            event.target.value,
+                        })
+                      )
+                    }
+                  />
+
+                </div>
 
               </label>
 
               <label>
                 Correo electrónico
 
-                <input
-                  type="email"
-                  placeholder="correo@dondejuanca.com"
-                  value={nuevoUsuario.email}
-                  onChange={(event) =>
-                    setNuevoUsuario(
-                      (actual) => ({
-                        ...actual,
-                        email:
-                          event.target.value,
-                      })
-                    )
-                  }
-                />
+                <div className="administracion-input-wrapper">
+
+                  <Mail
+                    size={16}
+                    strokeWidth={1.9}
+                  />
+
+                  <input
+                    type="email"
+                    placeholder="correo@dondejuanca.com"
+                    value={nuevoUsuario.email}
+                    onChange={(event) =>
+                      setNuevoUsuario(
+                        (actual) => ({
+                          ...actual,
+                          email:
+                            event.target.value,
+                        })
+                      )
+                    }
+                  />
+
+                </div>
 
               </label>
 
               <label>
                 Rol
 
-                <select
-                  value={nuevoUsuario.rol}
-                  onChange={(event) =>
-                    setNuevoUsuario(
-                      (actual) => ({
-                        ...actual,
-                        rol:
-                          event.target.value,
-                      })
-                    )
-                  }
-                >
-                  <option>
-                    Administrador
-                  </option>
+                <div className="administracion-select-wrapper">
 
-                  <option>
-                    Mesera
-                  </option>
+                  <ShieldCheck
+                    size={16}
+                    strokeWidth={1.9}
+                  />
 
-                  <option>
-                    Mesero
-                  </option>
+                  <select
+                    value={nuevoUsuario.rol}
+                    onChange={(event) =>
+                      setNuevoUsuario(
+                        (actual) => ({
+                          ...actual,
+                          rol:
+                            event.target.value,
+                        })
+                      )
+                    }
+                  >
+                    <option>
+                      Administrador
+                    </option>
 
-                  <option>
-                    Caja
-                  </option>
+                    <option>
+                      Mesera
+                    </option>
 
-                  <option>
-                    Juegos
-                  </option>
-                </select>
+                    <option>
+                      Mesero
+                    </option>
+
+                    <option>
+                      Caja
+                    </option>
+
+                    <option>
+                      Juegos
+                    </option>
+                  </select>
+
+                </div>
 
               </label>
 
               <label>
                 Contraseña temporal
 
-                <input
-                  type="password"
-                  placeholder="Contraseña temporal"
-                  value={nuevoUsuario.password}
-                  onChange={(event) =>
-                    setNuevoUsuario(
-                      (actual) => ({
-                        ...actual,
-                        password:
-                          event.target.value,
-                      })
-                    )
-                  }
-                />
+                <div className="administracion-input-wrapper">
+
+                  <KeyRound
+                    size={16}
+                    strokeWidth={1.9}
+                  />
+
+                  <input
+                    type="password"
+                    placeholder="Contraseña temporal"
+                    value={nuevoUsuario.password}
+                    onChange={(event) =>
+                      setNuevoUsuario(
+                        (actual) => ({
+                          ...actual,
+                          password:
+                            event.target.value,
+                        })
+                      )
+                    }
+                  />
+
+                </div>
 
               </label>
 
               <button
                 type="submit"
-                className="drawer-primary-button"
+                className="drawer-primary-button administracion-submit-button"
               >
+                <Plus
+                  size={17}
+                  strokeWidth={1.9}
+                />
+
                 Crear usuario
               </button>
 
             </form>
 
           </aside>
+
         </>
       )}
 

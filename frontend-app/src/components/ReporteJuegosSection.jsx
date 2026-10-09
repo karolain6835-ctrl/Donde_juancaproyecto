@@ -1,4 +1,22 @@
 import { useMemo, useState } from "react";
+
+import {
+  Gamepad2,
+  Clock3,
+  BadgeDollarSign,
+  Trophy,
+  CalendarRange,
+  BarChart3,
+  CircleDot,
+  Target,
+  ArrowRight,
+  X,
+  LockKeyhole,
+  Armchair,
+  UserRound,
+  Timer,
+} from "lucide-react";
+
 import "./ReporteJuegosSection.css";
 
 function ReporteJuegosSection() {
@@ -91,7 +109,9 @@ function ReporteJuegosSection() {
   );
 
   const duracionPromedio =
-    totalSesiones > 0 ? Math.round(totalMinutos / totalSesiones) : 0;
+    totalSesiones > 0
+      ? Math.round(totalMinutos / totalSesiones)
+      : 0;
 
   const juegoMasUsado =
     Object.entries(resumenPorTipo).sort(
@@ -122,60 +142,148 @@ function ReporteJuegosSection() {
     return `${horas} h ${mins} min`;
   }
 
+  function iconoTipo(tipo) {
+    if (tipo === "Billar") {
+      return <CircleDot size={15} strokeWidth={1.9} />;
+    }
+
+    if (tipo === "Tejo") {
+      return <Target size={15} strokeWidth={1.9} />;
+    }
+
+    return <Trophy size={15} strokeWidth={1.9} />;
+  }
+
   return (
     <div className="reporte-juegos-section">
 
       <section className="reporte-juegos-toolbar">
 
         <div>
-          <h2>Rendimiento de juegos</h2>
+          <h2>
+            Rendimiento de juegos
+          </h2>
+
           <p>
             Analiza utilización, duración e ingresos generados por los juegos.
           </p>
         </div>
 
-        <select
-          value={periodo}
-          onChange={(event) => setPeriodo(event.target.value)}
-        >
-          <option value="hoy">Hoy</option>
-          <option value="semana">Esta semana</option>
-          <option value="mes">Este mes</option>
-          <option value="personalizado">Personalizado</option>
-        </select>
+        <div className="reporte-juegos-periodo">
+
+          <CalendarRange
+            size={16}
+            strokeWidth={1.9}
+          />
+
+          <select
+            value={periodo}
+            onChange={(event) =>
+              setPeriodo(event.target.value)
+            }
+          >
+            <option value="hoy">Hoy</option>
+            <option value="semana">Esta semana</option>
+            <option value="mes">Este mes</option>
+            <option value="personalizado">Personalizado</option>
+          </select>
+
+        </div>
 
       </section>
 
       <section className="reporte-juegos-kpis">
 
         <article className="reporte-juego-kpi">
-          <span>Sesiones realizadas</span>
-          <strong>{totalSesiones}</strong>
-          <small>En el período mostrado</small>
+
+          <div className="reporte-juego-kpi-icon sessions">
+            <Gamepad2
+              size={20}
+              strokeWidth={1.9}
+            />
+          </div>
+
+          <span>
+            Sesiones realizadas
+          </span>
+
+          <strong>
+            {totalSesiones}
+          </strong>
+
+          <small>
+            En el período mostrado
+          </small>
+
         </article>
 
         <article className="reporte-juego-kpi">
-          <span>Horas de uso</span>
+
+          <div className="reporte-juego-kpi-icon time">
+            <Clock3
+              size={20}
+              strokeWidth={1.9}
+            />
+          </div>
+
+          <span>
+            Horas de uso
+          </span>
+
           <strong>
             {(totalMinutos / 60).toFixed(1)} h
           </strong>
-          <small>Uso acumulado</small>
+
+          <small>
+            Uso acumulado
+          </small>
+
         </article>
 
         <article className="reporte-juego-kpi">
-          <span>Ingresos generados</span>
+
+          <div className="reporte-juego-kpi-icon income">
+            <BadgeDollarSign
+              size={20}
+              strokeWidth={1.9}
+            />
+          </div>
+
+          <span>
+            Ingresos generados
+          </span>
+
           <strong>
             {formatearDinero(ingresosTotales)}
           </strong>
-          <small>Solo sesiones de juego</small>
+
+          <small>
+            Solo sesiones de juego
+          </small>
+
         </article>
 
         <article className="reporte-juego-kpi">
-          <span>Juego más utilizado</span>
-          <strong>{juegoMasUsado}</strong>
+
+          <div className="reporte-juego-kpi-icon leader">
+            <Trophy
+              size={20}
+              strokeWidth={1.9}
+            />
+          </div>
+
+          <span>
+            Juego más utilizado
+          </span>
+
+          <strong>
+            {juegoMasUsado}
+          </strong>
+
           <small>
             Duración promedio: {duracionPromedio} min
           </small>
+
         </article>
 
       </section>
@@ -185,10 +293,28 @@ function ReporteJuegosSection() {
         <article className="reporte-juegos-panel">
 
           <div className="reporte-juegos-panel-header">
-            <div>
-              <h3>Uso por tipo de juego</h3>
-              <p>Número de sesiones registradas</p>
+
+            <div className="reporte-juegos-panel-title">
+
+              <div className="reporte-juegos-panel-icon">
+                <BarChart3
+                  size={18}
+                  strokeWidth={1.9}
+                />
+              </div>
+
+              <div>
+                <h3>
+                  Uso por tipo de juego
+                </h3>
+
+                <p>
+                  Número de sesiones registradas
+                </p>
+              </div>
+
             </div>
+
           </div>
 
           <div className="juegos-usage-list">
@@ -207,7 +333,10 @@ function ReporteJuegosSection() {
                     <div className="juego-usage-info">
 
                       <div>
-                        <strong>{tipo}</strong>
+                        <strong className="juego-usage-name">
+                          {iconoTipo(tipo)}
+                          {tipo}
+                        </strong>
 
                         <span>
                           {datos.sesiones} sesiones ·{" "}
@@ -222,12 +351,14 @@ function ReporteJuegosSection() {
                     </div>
 
                     <div className="juego-usage-track">
+
                       <div
                         className="juego-usage-bar"
                         style={{
                           width: `${porcentaje}%`,
                         }}
                       ></div>
+
                     </div>
 
                   </div>
@@ -242,31 +373,66 @@ function ReporteJuegosSection() {
         <article className="reporte-juegos-panel">
 
           <div className="reporte-juegos-panel-header">
-            <div>
-              <h3>Ingresos por tipo</h3>
-              <p>Aporte económico de cada categoría</p>
+
+            <div className="reporte-juegos-panel-title">
+
+              <div className="reporte-juegos-panel-icon">
+                <BadgeDollarSign
+                  size={18}
+                  strokeWidth={1.9}
+                />
+              </div>
+
+              <div>
+                <h3>
+                  Ingresos por tipo
+                </h3>
+
+                <p>
+                  Aporte económico de cada categoría
+                </p>
+              </div>
+
             </div>
+
           </div>
 
           <div className="juegos-income-list">
 
             {Object.entries(resumenPorTipo).map(
               ([tipo, datos]) => (
+
                 <div
                   key={tipo}
                   className="juegos-income-row"
                 >
-                  <div>
-                    <strong>{tipo}</strong>
-                    <span>
-                      {datos.sesiones} sesiones
+
+                  <div className="juegos-income-info">
+
+                    <span className="juegos-income-icon">
+                      {iconoTipo(tipo)}
                     </span>
+
+                    <div>
+                      <strong>
+                        {tipo}
+                      </strong>
+
+                      <span>
+                        {datos.sesiones} sesiones
+                      </span>
+                    </div>
+
                   </div>
 
                   <strong>
-                    {formatearDinero(datos.ingresos)}
+                    {formatearDinero(
+                      datos.ingresos
+                    )}
                   </strong>
+
                 </div>
+
               )
             )}
 
@@ -279,12 +445,38 @@ function ReporteJuegosSection() {
       <section className="reporte-juegos-panel">
 
         <div className="reporte-juegos-panel-header">
-          <div>
-            <h3>Sesiones recientes</h3>
-            <p>
-              Historial de uso incluido en el reporte
-            </p>
+
+          <div className="reporte-juegos-panel-title">
+
+            <div className="reporte-juegos-panel-icon">
+              <Gamepad2
+                size={18}
+                strokeWidth={1.9}
+              />
+            </div>
+
+            <div>
+              <h3>
+                Sesiones recientes
+              </h3>
+
+              <p>
+                Historial de uso incluido en el reporte
+              </p>
+            </div>
+
           </div>
+
+          <span className="reporte-juegos-readonly-badge">
+
+            <LockKeyhole
+              size={13}
+              strokeWidth={1.9}
+            />
+
+            Solo consulta
+          </span>
+
         </div>
 
         <div className="reporte-juegos-table-wrapper">
@@ -308,23 +500,40 @@ function ReporteJuegosSection() {
             <tbody>
 
               {sesiones.map((sesion) => (
+
                 <tr key={sesion.id}>
 
                   <td>
-                    <strong>{sesion.id}</strong>
-                  </td>
-
-                  <td>{sesion.juego}</td>
-
-                  <td>
-                    <span className="reporte-juego-type">
-                      {sesion.tipo}
+                    <span className="reporte-juego-code">
+                      {sesion.id}
                     </span>
                   </td>
 
-                  <td>{sesion.mesa}</td>
+                  <td>
+                    <strong>
+                      {sesion.juego}
+                    </strong>
+                  </td>
 
-                  <td>{sesion.fecha}</td>
+                  <td>
+                    <span className="reporte-juego-type">
+
+                      {iconoTipo(
+                        sesion.tipo
+                      )}
+
+                      {sesion.tipo}
+
+                    </span>
+                  </td>
+
+                  <td>
+                    {sesion.mesa}
+                  </td>
+
+                  <td>
+                    {sesion.fecha}
+                  </td>
 
                   <td>
                     {formatearDuracion(
@@ -340,20 +549,29 @@ function ReporteJuegosSection() {
                     </strong>
                   </td>
 
-                  <td>{sesion.responsable}</td>
+                  <td>
+                    {sesion.responsable}
+                  </td>
 
                   <td>
                     <button
+                      type="button"
                       className="reporte-juego-detail-button"
                       onClick={() =>
                         setSesionSeleccionada(sesion)
                       }
                     >
                       Ver detalle
+
+                      <ArrowRight
+                        size={15}
+                        strokeWidth={1.9}
+                      />
                     </button>
                   </td>
 
                 </tr>
+
               ))}
 
             </tbody>
@@ -366,6 +584,7 @@ function ReporteJuegosSection() {
 
       {sesionSeleccionada && (
         <>
+
           <div
             className="reporte-juego-overlay"
             onClick={() =>
@@ -392,12 +611,17 @@ function ReporteJuegosSection() {
               </div>
 
               <button
+                type="button"
                 className="drawer-close"
                 onClick={() =>
                   setSesionSeleccionada(null)
                 }
+                aria-label="Cerrar detalle"
               >
-                ×
+                <X
+                  size={20}
+                  strokeWidth={1.9}
+                />
               </button>
 
             </div>
@@ -405,36 +629,75 @@ function ReporteJuegosSection() {
             <div className="reporte-juego-detail-grid">
 
               <div>
-                <span>Tipo</span>
+                <span>
+                  Tipo
+                </span>
+
                 <strong>
+                  {iconoTipo(
+                    sesionSeleccionada.tipo
+                  )}
+
                   {sesionSeleccionada.tipo}
                 </strong>
               </div>
 
               <div>
-                <span>Mesa</span>
+                <span>
+                  Mesa
+                </span>
+
                 <strong>
+                  <Armchair
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {sesionSeleccionada.mesa}
                 </strong>
               </div>
 
               <div>
-                <span>Fecha</span>
+                <span>
+                  Fecha
+                </span>
+
                 <strong>
+                  <CalendarRange
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {sesionSeleccionada.fecha}
                 </strong>
               </div>
 
               <div>
-                <span>Responsable</span>
+                <span>
+                  Responsable
+                </span>
+
                 <strong>
+                  <UserRound
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {sesionSeleccionada.responsable}
                 </strong>
               </div>
 
               <div>
-                <span>Duración</span>
+                <span>
+                  Duración
+                </span>
+
                 <strong>
+                  <Timer
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {formatearDuracion(
                     sesionSeleccionada.duracionMin
                   )}
@@ -442,8 +705,16 @@ function ReporteJuegosSection() {
               </div>
 
               <div>
-                <span>Ingreso generado</span>
+                <span>
+                  Ingreso generado
+                </span>
+
                 <strong>
+                  <BadgeDollarSign
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {formatearDinero(
                     sesionSeleccionada.ingresos
                   )}
@@ -454,22 +725,42 @@ function ReporteJuegosSection() {
 
             <div className="reporte-juego-income-box">
 
-              <span>Ingreso de la sesión</span>
+              <div className="reporte-juego-income-icon">
+                <BadgeDollarSign
+                  size={21}
+                  strokeWidth={1.9}
+                />
+              </div>
 
-              <strong>
-                {formatearDinero(
-                  sesionSeleccionada.ingresos
-                )}
-              </strong>
+              <div>
+                <span>
+                  Ingreso de la sesión
+                </span>
+
+                <strong>
+                  {formatearDinero(
+                    sesionSeleccionada.ingresos
+                  )}
+                </strong>
+              </div>
 
             </div>
 
             <div className="reporte-juego-readonly">
-              Este reporte es de consulta. Las sesiones se administran desde
-              el módulo Juegos.
+
+              <LockKeyhole
+                size={17}
+                strokeWidth={1.9}
+              />
+
+              <span>
+                Este reporte es de consulta. Las sesiones se administran desde el módulo Juegos.
+              </span>
+
             </div>
 
           </aside>
+
         </>
       )}
 

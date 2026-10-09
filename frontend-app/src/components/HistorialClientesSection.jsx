@@ -1,4 +1,21 @@
 import { useMemo, useState } from "react";
+
+import {
+  Search,
+  History,
+  Users,
+  BadgeDollarSign,
+  ReceiptText,
+  Armchair,
+  CalendarDays,
+  Clock3,
+  UserRound,
+  Package,
+  ArrowRight,
+  X,
+  LockKeyhole,
+} from "lucide-react";
+
 import "./HistorialClientesSection.css";
 
 function HistorialClientesSection() {
@@ -88,25 +105,50 @@ function HistorialClientesSection() {
     }).format(valor);
   }
 
+  const totalVentas = historial.reduce(
+    (total, registro) => total + registro.total,
+    0
+  );
+
+  const clientesDistintos = new Set(
+    historial.map((registro) => registro.cliente)
+  ).size;
+
+  const ticketPromedio =
+    historial.length > 0 ? totalVentas / historial.length : 0;
+
   return (
     <div className="historial-clientes-section">
 
       <section className="historial-clientes-toolbar">
 
         <div>
-          <h2>Consumos registrados</h2>
+          <h2>
+            Consumos registrados
+          </h2>
+
           <p>
             Consulta las visitas y pedidos asociados a clientes.
           </p>
         </div>
 
         <div className="historial-clientes-search">
+
+          <Search
+            className="historial-clientes-search-icon"
+            size={18}
+            strokeWidth={1.9}
+          />
+
           <input
             type="text"
             placeholder="Buscar cliente, pedido o mesa..."
             value={busqueda}
-            onChange={(event) => setBusqueda(event.target.value)}
+            onChange={(event) =>
+              setBusqueda(event.target.value)
+            }
           />
+
         </div>
 
       </section>
@@ -114,45 +156,83 @@ function HistorialClientesSection() {
       <section className="historial-clientes-kpis">
 
         <article className="historial-cliente-kpi">
-          <span>Consumos registrados</span>
-          <strong>{historial.length}</strong>
-          <small>En el historial</small>
+
+          <div className="historial-cliente-kpi-icon history">
+            <History size={20} strokeWidth={1.9} />
+          </div>
+
+          <span>
+            Consumos registrados
+          </span>
+
+          <strong>
+            {historial.length}
+          </strong>
+
+          <small>
+            En el historial
+          </small>
+
         </article>
 
         <article className="historial-cliente-kpi">
-          <span>Clientes distintos</span>
+
+          <div className="historial-cliente-kpi-icon clients">
+            <Users size={20} strokeWidth={1.9} />
+          </div>
+
+          <span>
+            Clientes distintos
+          </span>
+
           <strong>
-            {new Set(
-              historial.map((registro) => registro.cliente)
-            ).size}
+            {clientesDistintos}
           </strong>
-          <small>Con consumo registrado</small>
+
+          <small>
+            Con consumo registrado
+          </small>
+
         </article>
 
         <article className="historial-cliente-kpi">
-          <span>Ventas asociadas</span>
+
+          <div className="historial-cliente-kpi-icon sales">
+            <BadgeDollarSign size={20} strokeWidth={1.9} />
+          </div>
+
+          <span>
+            Ventas asociadas
+          </span>
+
           <strong>
-            {formatearDinero(
-              historial.reduce(
-                (total, registro) => total + registro.total,
-                0
-              )
-            )}
+            {formatearDinero(totalVentas)}
           </strong>
-          <small>Histórico mostrado</small>
+
+          <small>
+            Histórico mostrado
+          </small>
+
         </article>
 
         <article className="historial-cliente-kpi">
-          <span>Ticket promedio</span>
+
+          <div className="historial-cliente-kpi-icon average">
+            <ReceiptText size={20} strokeWidth={1.9} />
+          </div>
+
+          <span>
+            Ticket promedio
+          </span>
+
           <strong>
-            {formatearDinero(
-              historial.reduce(
-                (total, registro) => total + registro.total,
-                0
-              ) / historial.length
-            )}
+            {formatearDinero(ticketPromedio)}
           </strong>
-          <small>Por consumo</small>
+
+          <small>
+            Por consumo
+          </small>
+
         </article>
 
       </section>
@@ -160,13 +240,37 @@ function HistorialClientesSection() {
       <section className="historial-clientes-panel">
 
         <div className="historial-clientes-panel-header">
-          <div>
-            <h2>Historial de consumo</h2>
 
-            <p>
-              {historialFiltrado.length} registros encontrados
-            </p>
+          <div className="historial-clientes-panel-title">
+
+            <div className="historial-clientes-panel-icon">
+              <History
+                size={18}
+                strokeWidth={1.9}
+              />
+            </div>
+
+            <div>
+              <h2>
+                Historial de consumo
+              </h2>
+
+              <p>
+                {historialFiltrado.length} registros encontrados
+              </p>
+            </div>
+
           </div>
+
+          <span className="historial-clientes-readonly-badge">
+            <LockKeyhole
+              size={13}
+              strokeWidth={1.9}
+            />
+
+            Solo consulta
+          </span>
+
         </div>
 
         <div className="historial-clientes-table-wrapper">
@@ -190,58 +294,92 @@ function HistorialClientesSection() {
             <tbody>
 
               {historialFiltrado.map((registro) => (
+
                 <tr key={registro.id}>
 
                   <td>
-                    <strong>{registro.cliente}</strong>
+                    <strong>
+                      {registro.cliente}
+                    </strong>
                   </td>
 
-                  <td>{registro.pedido}</td>
-
-                  <td>{registro.mesa}</td>
-
-                  <td>{registro.fecha}</td>
-
-                  <td>{registro.hora}</td>
+                  <td>
+                    <span className="historial-cliente-order">
+                      {registro.pedido}
+                    </span>
+                  </td>
 
                   <td>
+                    {registro.mesa}
+                  </td>
+
+                  <td>
+                    {registro.fecha}
+                  </td>
+
+                  <td>
+                    {registro.hora}
+                  </td>
+
+                  <td>
+
                     <div className="historial-products-cell">
+
                       {registro.productos
                         .slice(0, 2)
                         .map((producto) => (
+
                           <span key={producto}>
                             {producto}
                           </span>
+
                         ))}
 
                       {registro.productos.length > 2 && (
+
                         <small>
                           +{registro.productos.length - 2}
                         </small>
+
                       )}
+
                     </div>
+
                   </td>
 
                   <td>
                     <strong>
-                      {formatearDinero(registro.total)}
+                      {formatearDinero(
+                        registro.total
+                      )}
                     </strong>
                   </td>
 
-                  <td>{registro.usuario}</td>
+                  <td>
+                    {registro.usuario}
+                  </td>
 
                   <td>
+
                     <button
+                      type="button"
                       className="historial-cliente-detail-button"
                       onClick={() =>
                         setRegistroSeleccionado(registro)
                       }
                     >
                       Ver detalle
+
+                      <ArrowRight
+                        size={15}
+                        strokeWidth={1.9}
+                      />
                     </button>
+
                   </td>
 
                 </tr>
+
               ))}
 
             </tbody>
@@ -254,9 +392,12 @@ function HistorialClientesSection() {
 
       {registroSeleccionado && (
         <>
+
           <div
             className="historial-cliente-overlay"
-            onClick={() => setRegistroSeleccionado(null)}
+            onClick={() =>
+              setRegistroSeleccionado(null)
+            }
           ></div>
 
           <aside className="historial-cliente-drawer">
@@ -278,12 +419,17 @@ function HistorialClientesSection() {
               </div>
 
               <button
+                type="button"
                 className="drawer-close"
                 onClick={() =>
                   setRegistroSeleccionado(null)
                 }
+                aria-label="Cerrar detalle"
               >
-                ×
+                <X
+                  size={20}
+                  strokeWidth={1.9}
+                />
               </button>
 
             </div>
@@ -291,29 +437,61 @@ function HistorialClientesSection() {
             <div className="historial-cliente-detail-grid">
 
               <div>
-                <span>Mesa</span>
+                <span>
+                  Mesa
+                </span>
+
                 <strong>
+                  <Armchair
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {registroSeleccionado.mesa}
                 </strong>
               </div>
 
               <div>
-                <span>Fecha</span>
+                <span>
+                  Fecha
+                </span>
+
                 <strong>
+                  <CalendarDays
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {registroSeleccionado.fecha}
                 </strong>
               </div>
 
               <div>
-                <span>Hora</span>
+                <span>
+                  Hora
+                </span>
+
                 <strong>
+                  <Clock3
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {registroSeleccionado.hora}
                 </strong>
               </div>
 
               <div>
-                <span>Atendido por</span>
+                <span>
+                  Atendido por
+                </span>
+
                 <strong>
+                  <UserRound
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {registroSeleccionado.usuario}
                 </strong>
               </div>
@@ -322,16 +500,33 @@ function HistorialClientesSection() {
 
             <div className="historial-cliente-products">
 
-              <h3>Productos consumidos</h3>
+              <div className="historial-cliente-section-heading">
+
+                <Package
+                  size={17}
+                  strokeWidth={1.9}
+                />
+
+                <h3>
+                  Productos consumidos
+                </h3>
+
+              </div>
 
               {registroSeleccionado.productos.map(
                 (producto, index) => (
+
                   <div
                     key={index}
                     className="historial-cliente-product-row"
                   >
-                    <span>{producto}</span>
+
+                    <span>
+                      {producto}
+                    </span>
+
                   </div>
+
                 )
               )}
 
@@ -339,22 +534,42 @@ function HistorialClientesSection() {
 
             <div className="historial-cliente-total">
 
-              <span>Total de la cuenta</span>
+              <div className="historial-cliente-total-icon">
+                <BadgeDollarSign
+                  size={20}
+                  strokeWidth={1.9}
+                />
+              </div>
 
-              <strong>
-                {formatearDinero(
-                  registroSeleccionado.total
-                )}
-              </strong>
+              <div>
+                <span>
+                  Total de la cuenta
+                </span>
+
+                <strong>
+                  {formatearDinero(
+                    registroSeleccionado.total
+                  )}
+                </strong>
+              </div>
 
             </div>
 
             <div className="historial-cliente-readonly">
-              Este registro pertenece al historial de consumo y es de solo
-              consulta.
+
+              <LockKeyhole
+                size={17}
+                strokeWidth={1.9}
+              />
+
+              <span>
+                Este registro pertenece al historial de consumo y es de solo consulta.
+              </span>
+
             </div>
 
           </aside>
+
         </>
       )}
 

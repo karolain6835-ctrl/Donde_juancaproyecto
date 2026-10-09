@@ -1,4 +1,22 @@
 import { useMemo, useState } from "react";
+
+import {
+  Search,
+  CircleDot,
+  Target,
+  Trophy,
+  CalendarDays,
+  Clock3,
+  Armchair,
+  Timer,
+  UserRound,
+  BadgeDollarSign,
+  ArrowRight,
+  X,
+  History,
+  LockKeyhole,
+} from "lucide-react";
+
 import "./HistorialJuegosSection.css";
 
 function HistorialJuegosSection() {
@@ -92,6 +110,18 @@ function HistorialJuegosSection() {
     return estado;
   }
 
+  function iconoTipo(tipo) {
+    if (tipo === "Billar") {
+      return <CircleDot size={16} strokeWidth={1.9} />;
+    }
+
+    if (tipo === "Tejo") {
+      return <Target size={16} strokeWidth={1.9} />;
+    }
+
+    return <Trophy size={16} strokeWidth={1.9} />;
+  }
+
   return (
     <div className="historial-juegos-section">
 
@@ -100,6 +130,7 @@ function HistorialJuegosSection() {
         <div className="historial-juegos-filters">
 
           <button
+            type="button"
             className={`filter-button ${
               filtroTipo === "todos" ? "active" : ""
             }`}
@@ -109,41 +140,55 @@ function HistorialJuegosSection() {
           </button>
 
           <button
+            type="button"
             className={`filter-button ${
               filtroTipo === "billar" ? "active" : ""
             }`}
             onClick={() => setFiltroTipo("billar")}
           >
+            <CircleDot size={14} strokeWidth={1.9} />
             Billar
           </button>
 
           <button
+            type="button"
             className={`filter-button ${
               filtroTipo === "tejo" ? "active" : ""
             }`}
             onClick={() => setFiltroTipo("tejo")}
           >
+            <Target size={14} strokeWidth={1.9} />
             Tejo
           </button>
 
           <button
+            type="button"
             className={`filter-button ${
               filtroTipo === "bolirana" ? "active" : ""
             }`}
             onClick={() => setFiltroTipo("bolirana")}
           >
+            <Trophy size={14} strokeWidth={1.9} />
             Bolirana
           </button>
 
         </div>
 
         <div className="historial-juegos-search">
+
+          <Search
+            className="historial-juegos-search-icon"
+            size={18}
+            strokeWidth={1.9}
+          />
+
           <input
             type="text"
             placeholder="Buscar sesión, juego o mesa..."
             value={busqueda}
             onChange={(event) => setBusqueda(event.target.value)}
           />
+
         </div>
 
       </section>
@@ -151,12 +196,30 @@ function HistorialJuegosSection() {
       <section className="historial-juegos-panel">
 
         <div className="historial-juegos-panel-header">
-          <div>
-            <h2>Historial de sesiones</h2>
-            <p>
-              {sesionesFiltradas.length} sesiones encontradas
-            </p>
+
+          <div className="historial-juegos-panel-title">
+
+            <div className="historial-juegos-panel-icon">
+              <History size={18} strokeWidth={1.9} />
+            </div>
+
+            <div>
+              <h2>
+                Historial de sesiones
+              </h2>
+
+              <p>
+                {sesionesFiltradas.length} sesiones encontradas
+              </p>
+            </div>
+
           </div>
+
+          <span className="historial-readonly">
+            <LockKeyhole size={13} strokeWidth={1.9} />
+            Solo consulta
+          </span>
+
         </div>
 
         <div className="historial-juegos-table-wrapper">
@@ -184,25 +247,45 @@ function HistorialJuegosSection() {
                 <tr key={sesion.id}>
 
                   <td>
-                    <strong>{sesion.codigo}</strong>
+                    <span className="historial-session-code">
+                      {sesion.codigo}
+                    </span>
                   </td>
 
-                  <td>{sesion.fecha}</td>
+                  <td>
+                    {sesion.fecha}
+                  </td>
 
-                  <td>{sesion.hora}</td>
+                  <td>
+                    {sesion.hora}
+                  </td>
 
                   <td>
                     <div className="historial-juego-name">
-                      <strong>{sesion.juego}</strong>
-                      <span>{sesion.tipo}</span>
+
+                      <strong>
+                        {iconoTipo(sesion.tipo)}
+                        {sesion.juego}
+                      </strong>
+
+                      <span>
+                        {sesion.tipo}
+                      </span>
+
                     </div>
                   </td>
 
-                  <td>{sesion.mesa}</td>
+                  <td>
+                    {sesion.mesa}
+                  </td>
 
-                  <td>{sesion.duracion}</td>
+                  <td>
+                    {sesion.duracion}
+                  </td>
 
-                  <td>{sesion.responsable}</td>
+                  <td>
+                    {sesion.responsable}
+                  </td>
 
                   <td>
                     <strong>
@@ -220,12 +303,18 @@ function HistorialJuegosSection() {
 
                   <td>
                     <button
+                      type="button"
                       className="historial-juego-detail-button"
                       onClick={() =>
                         setSesionSeleccionada(sesion)
                       }
                     >
                       Ver detalle
+
+                      <ArrowRight
+                        size={15}
+                        strokeWidth={1.9}
+                      />
                     </button>
                   </td>
 
@@ -242,6 +331,7 @@ function HistorialJuegosSection() {
 
       {sesionSeleccionada && (
         <>
+
           <div
             className="historial-juego-overlay"
             onClick={() => setSesionSeleccionada(null)}
@@ -266,17 +356,23 @@ function HistorialJuegosSection() {
               </div>
 
               <button
+                type="button"
                 className="drawer-close"
                 onClick={() => setSesionSeleccionada(null)}
+                aria-label="Cerrar detalle"
               >
-                ×
+                <X size={20} strokeWidth={1.9} />
               </button>
 
             </div>
 
-            <div className="historial-juego-drawer-status">
+            <div
+              className={`historial-juego-drawer-status ${sesionSeleccionada.estado}`}
+            >
 
-              <span>Estado final</span>
+              <span>
+                Estado final
+              </span>
 
               <strong>
                 {nombreEstado(sesionSeleccionada.estado)}
@@ -287,54 +383,114 @@ function HistorialJuegosSection() {
             <div className="historial-juego-detail-grid">
 
               <div>
-                <span>Fecha</span>
+                <span>
+                  Fecha
+                </span>
+
                 <strong>
+                  <CalendarDays
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {sesionSeleccionada.fecha}
                 </strong>
               </div>
 
               <div>
-                <span>Hora</span>
+                <span>
+                  Hora
+                </span>
+
                 <strong>
+                  <Clock3
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {sesionSeleccionada.hora}
                 </strong>
               </div>
 
               <div>
-                <span>Mesa</span>
+                <span>
+                  Mesa
+                </span>
+
                 <strong>
+                  <Armchair
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {sesionSeleccionada.mesa}
                 </strong>
               </div>
 
               <div>
-                <span>Duración</span>
+                <span>
+                  Duración
+                </span>
+
                 <strong>
+                  <Timer
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {sesionSeleccionada.duracion}
                 </strong>
               </div>
 
               <div>
-                <span>Responsable</span>
+                <span>
+                  Responsable
+                </span>
+
                 <strong>
+                  <UserRound
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {sesionSeleccionada.responsable}
                 </strong>
               </div>
 
               <div>
-                <span>Costo final</span>
+                <span>
+                  Costo final
+                </span>
+
                 <strong>
-                  {formatearDinero(sesionSeleccionada.costo)}
+                  <BadgeDollarSign
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
+                  {formatearDinero(
+                    sesionSeleccionada.costo
+                  )}
                 </strong>
               </div>
 
             </div>
 
             <div className="historial-juego-notice">
-              Este registro pertenece al historial de sesiones y es de solo consulta.
+
+              <LockKeyhole
+                size={17}
+                strokeWidth={1.9}
+              />
+
+              <span>
+                Este registro pertenece al historial de sesiones y es de solo consulta.
+              </span>
+
             </div>
 
           </aside>
+
         </>
       )}
 

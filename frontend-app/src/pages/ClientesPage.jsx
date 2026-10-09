@@ -1,5 +1,27 @@
 import { useMemo, useState } from "react";
+
+import {
+  Users,
+  UserRound,
+  UserCheck,
+  UserX,
+  History,
+  Search,
+  Plus,
+  Phone,
+  Mail,
+  CalendarDays,
+  ReceiptText,
+  BadgeDollarSign,
+  ArrowRight,
+  X,
+  Power,
+  PowerOff,
+  Package,
+} from "lucide-react";
+
 import HistorialClientesSection from "../components/HistorialClientesSection";
+
 import "./ClientesPage.css";
 
 function ClientesPage() {
@@ -166,12 +188,20 @@ function ClientesPage() {
     );
   }
 
+  const totalVisitas = clientes.reduce(
+    (total, cliente) => total + cliente.visitas,
+    0
+  );
+
   return (
     <div className="clientes-page">
 
       <header className="clientes-header">
+
         <div>
-          <p className="page-eyebrow">CLIENTES</p>
+          <p className="page-eyebrow">
+            CLIENTES
+          </p>
 
           <h1 className="page-title">
             {seccionActiva === "lista"
@@ -185,31 +215,45 @@ function ClientesPage() {
         </div>
 
         {seccionActiva === "lista" && (
-          <button className="primary-button">
-            + Nuevo cliente
+
+          <button
+            type="button"
+            className="primary-button clientes-new-button"
+          >
+            <Plus size={17} strokeWidth={1.9} />
+
+            Nuevo cliente
           </button>
+
         )}
+
       </header>
 
       <nav className="clientes-nav">
 
         <button
+          type="button"
           className={seccionActiva === "lista" ? "active" : ""}
           onClick={() => {
             setSeccionActiva("lista");
             setBusqueda("");
           }}
         >
+          <Users size={16} strokeWidth={1.9} />
+
           Lista de clientes
         </button>
 
         <button
+          type="button"
           className={seccionActiva === "historial" ? "active" : ""}
           onClick={() => {
             setSeccionActiva("historial");
             setBusqueda("");
           }}
         >
+          <History size={16} strokeWidth={1.9} />
+
           Historial de consumo
         </button>
 
@@ -217,26 +261,48 @@ function ClientesPage() {
 
       {seccionActiva === "lista" && (
         <>
+
           <section className="clientes-kpis">
 
             <button
+              type="button"
               className={`cliente-kpi ${
                 filtroEstado === "todos" ? "selected" : ""
               }`}
               onClick={() => setFiltroEstado("todos")}
             >
-              <span>Total clientes</span>
-              <strong>{clientes.length}</strong>
-              <small>Registrados</small>
+              <div className="cliente-kpi-icon total">
+                <Users size={20} strokeWidth={1.9} />
+              </div>
+
+              <span>
+                Total clientes
+              </span>
+
+              <strong>
+                {clientes.length}
+              </strong>
+
+              <small>
+                Registrados
+              </small>
             </button>
 
             <button
+              type="button"
               className={`cliente-kpi ${
                 filtroEstado === "activo" ? "selected" : ""
               }`}
               onClick={() => setFiltroEstado("activo")}
             >
-              <span>Activos</span>
+              <div className="cliente-kpi-icon active">
+                <UserCheck size={20} strokeWidth={1.9} />
+              </div>
+
+              <span>
+                Activos
+              </span>
+
               <strong>
                 {
                   clientes.filter(
@@ -244,16 +310,27 @@ function ClientesPage() {
                   ).length
                 }
               </strong>
-              <small>Disponibles para atención</small>
+
+              <small>
+                Disponibles para atención
+              </small>
             </button>
 
             <button
+              type="button"
               className={`cliente-kpi ${
                 filtroEstado === "inactivo" ? "selected" : ""
               }`}
               onClick={() => setFiltroEstado("inactivo")}
             >
-              <span>Inactivos</span>
+              <div className="cliente-kpi-icon inactive">
+                <UserX size={20} strokeWidth={1.9} />
+              </div>
+
+              <span>
+                Inactivos
+              </span>
+
               <strong>
                 {
                   clientes.filter(
@@ -261,19 +338,30 @@ function ClientesPage() {
                   ).length
                 }
               </strong>
-              <small>Fuera de uso</small>
+
+              <small>
+                Fuera de uso
+              </small>
             </button>
 
             <article className="cliente-kpi">
-              <span>Visitas acumuladas</span>
+
+              <div className="cliente-kpi-icon visits">
+                <CalendarDays size={20} strokeWidth={1.9} />
+              </div>
+
+              <span>
+                Visitas acumuladas
+              </span>
+
               <strong>
-                {clientes.reduce(
-                  (total, cliente) =>
-                    total + cliente.visitas,
-                  0
-                )}
+                {totalVisitas}
               </strong>
-              <small>Histórico registrado</small>
+
+              <small>
+                Histórico registrado
+              </small>
+
             </article>
 
           </section>
@@ -281,12 +369,17 @@ function ClientesPage() {
           <section className="clientes-toolbar">
 
             <div className="clientes-filters">
+
               {["todos", "activo", "inactivo"].map(
                 (estado) => (
+
                   <button
                     key={estado}
+                    type="button"
                     className={`filter-button ${
-                      filtroEstado === estado ? "active" : ""
+                      filtroEstado === estado
+                        ? "active"
+                        : ""
                     }`}
                     onClick={() =>
                       setFiltroEstado(estado)
@@ -298,11 +391,20 @@ function ClientesPage() {
                       ? "Activos"
                       : "Inactivos"}
                   </button>
+
                 )
               )}
+
             </div>
 
             <div className="clientes-search">
+
+              <Search
+                className="clientes-search-icon"
+                size={18}
+                strokeWidth={1.9}
+              />
+
               <input
                 type="text"
                 placeholder="Buscar cliente..."
@@ -311,6 +413,7 @@ function ClientesPage() {
                   setBusqueda(event.target.value)
                 }
               />
+
             </div>
 
           </section>
@@ -318,12 +421,25 @@ function ClientesPage() {
           <section className="clientes-panel">
 
             <div className="clientes-panel-header">
-              <div>
-                <h2>Directorio de clientes</h2>
-                <p>
-                  {clientesFiltrados.length} clientes encontrados
-                </p>
+
+              <div className="clientes-panel-title">
+
+                <div className="clientes-panel-icon">
+                  <Users size={18} strokeWidth={1.9} />
+                </div>
+
+                <div>
+                  <h2>
+                    Directorio de clientes
+                  </h2>
+
+                  <p>
+                    {clientesFiltrados.length} clientes encontrados
+                  </p>
+                </div>
+
               </div>
+
             </div>
 
             <div className="clientes-table-wrapper">
@@ -346,10 +462,13 @@ function ClientesPage() {
                 <tbody>
 
                   {clientesFiltrados.map((cliente) => (
+
                     <tr key={cliente.id}>
 
                       <td>
+
                         <div className="cliente-name-cell">
+
                           <strong>
                             {cliente.nombre}
                           </strong>
@@ -357,12 +476,20 @@ function ClientesPage() {
                           <span>
                             {cliente.email}
                           </span>
+
                         </div>
+
                       </td>
 
-                      <td>{cliente.documento}</td>
+                      <td>
+                        <span className="cliente-document">
+                          {cliente.documento}
+                        </span>
+                      </td>
 
-                      <td>{cliente.telefono}</td>
+                      <td>
+                        {cliente.telefono}
+                      </td>
 
                       <td>
                         <strong>
@@ -393,17 +520,26 @@ function ClientesPage() {
                       </td>
 
                       <td>
+
                         <button
+                          type="button"
                           className="cliente-detail-button"
                           onClick={() =>
                             setClienteSeleccionado(cliente)
                           }
                         >
                           Ver detalle
+
+                          <ArrowRight
+                            size={15}
+                            strokeWidth={1.9}
+                          />
                         </button>
+
                       </td>
 
                     </tr>
+
                   ))}
 
                 </tbody>
@@ -413,15 +549,17 @@ function ClientesPage() {
             </div>
 
           </section>
+
         </>
       )}
 
-  {seccionActiva === "historial" && (
-  <HistorialClientesSection />
-)}
+      {seccionActiva === "historial" && (
+        <HistorialClientesSection />
+      )}
 
       {clienteSeleccionado && (
         <>
+
           <div
             className="cliente-overlay"
             onClick={() =>
@@ -448,19 +586,25 @@ function ClientesPage() {
               </div>
 
               <button
+                type="button"
                 className="drawer-close"
                 onClick={() =>
                   setClienteSeleccionado(null)
                 }
+                aria-label="Cerrar detalle"
               >
-                ×
+                <X size={20} strokeWidth={1.9} />
               </button>
 
             </div>
 
-            <div className="cliente-drawer-status">
+            <div
+              className={`cliente-drawer-status ${clienteSeleccionado.estado}`}
+            >
 
-              <span>Estado</span>
+              <span>
+                Estado
+              </span>
 
               <strong>
                 {clienteSeleccionado.estado === "activo"
@@ -473,29 +617,49 @@ function ClientesPage() {
             <div className="cliente-detail-grid">
 
               <div>
-                <span>Teléfono</span>
+                <span>
+                  Teléfono
+                </span>
+
                 <strong>
+                  <Phone size={14} strokeWidth={1.9} />
+
                   {clienteSeleccionado.telefono}
                 </strong>
               </div>
 
               <div>
-                <span>Correo</span>
+                <span>
+                  Correo
+                </span>
+
                 <strong>
+                  <Mail size={14} strokeWidth={1.9} />
+
                   {clienteSeleccionado.email}
                 </strong>
               </div>
 
               <div>
-                <span>Visitas</span>
+                <span>
+                  Visitas
+                </span>
+
                 <strong>
+                  <CalendarDays size={14} strokeWidth={1.9} />
+
                   {clienteSeleccionado.visitas}
                 </strong>
               </div>
 
               <div>
-                <span>Ticket promedio</span>
+                <span>
+                  Ticket promedio
+                </span>
+
                 <strong>
+                  <BadgeDollarSign size={14} strokeWidth={1.9} />
+
                   {formatearDinero(
                     clienteSeleccionado.ticketPromedio
                   )}
@@ -506,50 +670,96 @@ function ClientesPage() {
 
             <div className="cliente-spending">
 
-              <span>Gasto acumulado</span>
+              <div className="cliente-spending-icon">
+                <BadgeDollarSign
+                  size={21}
+                  strokeWidth={1.9}
+                />
+              </div>
 
-              <strong>
-                {formatearDinero(
-                  clienteSeleccionado.gastoTotal
-                )}
-              </strong>
+              <div>
+                <span>
+                  Gasto acumulado
+                </span>
 
-            </div>
-
-            <div className="cliente-section">
-
-              <h3>Productos más consumidos</h3>
-
-              <div className="cliente-products-list">
-                {clienteSeleccionado.productosFavoritos.map(
-                  (producto) => (
-                    <span key={producto}>
-                      {producto}
-                    </span>
-                  )
-                )}
+                <strong>
+                  {formatearDinero(
+                    clienteSeleccionado.gastoTotal
+                  )}
+                </strong>
               </div>
 
             </div>
 
             <div className="cliente-section">
 
-              <h3>Últimas visitas</h3>
+              <div className="cliente-section-heading">
+
+                <Package
+                  size={17}
+                  strokeWidth={1.9}
+                />
+
+                <h3>
+                  Productos más consumidos
+                </h3>
+
+              </div>
+
+              <div className="cliente-products-list">
+
+                {clienteSeleccionado.productosFavoritos.map(
+                  (producto) => (
+
+                    <span key={producto}>
+                      {producto}
+                    </span>
+
+                  )
+                )}
+
+              </div>
+
+            </div>
+
+            <div className="cliente-section">
+
+              <div className="cliente-section-heading">
+
+                <History
+                  size={17}
+                  strokeWidth={1.9}
+                />
+
+                <h3>
+                  Últimas visitas
+                </h3>
+
+              </div>
 
               {clienteSeleccionado.ultimasVisitas.map(
                 (visita, index) => (
+
                   <div
                     key={index}
                     className="cliente-visit-row"
                   >
+
                     <div>
+
                       <strong>
+                        <ReceiptText
+                          size={14}
+                          strokeWidth={1.9}
+                        />
+
                         {visita.pedido}
                       </strong>
 
                       <span>
                         {visita.fecha}
                       </span>
+
                     </div>
 
                     <strong>
@@ -557,17 +767,20 @@ function ClientesPage() {
                         visita.total
                       )}
                     </strong>
+
                   </div>
+
                 )
               )}
 
             </div>
 
             <button
+              type="button"
               className={
                 clienteSeleccionado.estado === "activo"
                   ? "cliente-deactivate-button"
-                  : "drawer-primary-button"
+                  : "drawer-primary-button cliente-activate-button"
               }
               onClick={() =>
                 cambiarEstadoCliente(
@@ -575,12 +788,29 @@ function ClientesPage() {
                 )
               }
             >
-              {clienteSeleccionado.estado === "activo"
-                ? "Desactivar cliente"
-                : "Activar cliente"}
+              {clienteSeleccionado.estado === "activo" ? (
+                <>
+                  <PowerOff
+                    size={17}
+                    strokeWidth={1.9}
+                  />
+
+                  Desactivar cliente
+                </>
+              ) : (
+                <>
+                  <Power
+                    size={17}
+                    strokeWidth={1.9}
+                  />
+
+                  Activar cliente
+                </>
+              )}
             </button>
 
           </aside>
+
         </>
       )}
 

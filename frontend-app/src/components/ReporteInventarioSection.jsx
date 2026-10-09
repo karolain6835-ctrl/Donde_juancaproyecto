@@ -1,4 +1,21 @@
 import { useMemo, useState } from "react";
+
+import {
+  Boxes,
+  TriangleAlert,
+  PackageX,
+  ArrowLeftRight,
+  Tags,
+  BarChart3,
+  CalendarRange,
+  BadgeDollarSign,
+  PackageSearch,
+  ArrowRight,
+  X,
+  LockKeyhole,
+  Layers3,
+} from "lucide-react";
+
 import "./ReporteInventarioSection.css";
 
 function ReporteInventarioSection() {
@@ -83,12 +100,15 @@ function ReporteInventarioSection() {
   ];
 
   const valorInventario = 2520000;
+
   const stockBajo = productosCriticos.filter(
     (producto) => producto.estado === "bajo"
   ).length;
+
   const agotados = productosCriticos.filter(
     (producto) => producto.estado === "agotado"
   ).length;
+
   const movimientos = 84;
 
   const maxEvolucion = useMemo(() => {
@@ -109,7 +129,16 @@ function ReporteInventarioSection() {
     if (estado === "bajo") return "Stock bajo";
     if (estado === "critico") return "Crítico";
     if (estado === "agotado") return "Agotado";
+
     return estado;
+  }
+
+  function iconoEstado(estado) {
+    if (estado === "agotado") {
+      return <PackageX size={14} strokeWidth={1.9} />;
+    }
+
+    return <TriangleAlert size={14} strokeWidth={1.9} />;
   }
 
   return (
@@ -118,48 +147,141 @@ function ReporteInventarioSection() {
       <section className="reporte-inventario-toolbar">
 
         <div>
-          <h2>Estado del inventario</h2>
+          <h2>
+            Estado del inventario
+          </h2>
+
           <p>
             Analiza valor, disponibilidad y movimientos de existencias.
           </p>
         </div>
 
-        <select
-          value={periodo}
-          onChange={(event) => setPeriodo(event.target.value)}
-        >
-          <option value="hoy">Hoy</option>
-          <option value="semana">Esta semana</option>
-          <option value="mes">Este mes</option>
-          <option value="personalizado">Personalizado</option>
-        </select>
+        <div className="reporte-inventario-periodo">
+
+          <CalendarRange
+            size={16}
+            strokeWidth={1.9}
+          />
+
+          <select
+            value={periodo}
+            onChange={(event) =>
+              setPeriodo(event.target.value)
+            }
+          >
+            <option value="hoy">
+              Hoy
+            </option>
+
+            <option value="semana">
+              Esta semana
+            </option>
+
+            <option value="mes">
+              Este mes
+            </option>
+
+            <option value="personalizado">
+              Personalizado
+            </option>
+          </select>
+
+        </div>
 
       </section>
 
       <section className="reporte-inventario-kpis">
 
         <article className="reporte-inventario-kpi">
-          <span>Valor del inventario</span>
-          <strong>{formatearDinero(valorInventario)}</strong>
-          <small>Costo estimado actual</small>
+
+          <div className="reporte-inventario-kpi-icon value">
+            <BadgeDollarSign
+              size={20}
+              strokeWidth={1.9}
+            />
+          </div>
+
+          <span>
+            Valor del inventario
+          </span>
+
+          <strong>
+            {formatearDinero(valorInventario)}
+          </strong>
+
+          <small>
+            Costo estimado actual
+          </small>
+
         </article>
 
         <article className="reporte-inventario-kpi">
-          <span>Stock bajo</span>
-          <strong>{stockBajo}</strong>
-          <small>Productos por debajo del mínimo</small>
+
+          <div className="reporte-inventario-kpi-icon warning">
+            <TriangleAlert
+              size={20}
+              strokeWidth={1.9}
+            />
+          </div>
+
+          <span>
+            Stock bajo
+          </span>
+
+          <strong>
+            {stockBajo}
+          </strong>
+
+          <small>
+            Productos por debajo del mínimo
+          </small>
+
         </article>
 
         <article className="reporte-inventario-kpi">
-          <span>Agotados</span>
-          <strong>{agotados}</strong>
-          <small>Sin unidades disponibles</small>
+
+          <div className="reporte-inventario-kpi-icon empty">
+            <PackageX
+              size={20}
+              strokeWidth={1.9}
+            />
+          </div>
+
+          <span>
+            Agotados
+          </span>
+
+          <strong>
+            {agotados}
+          </strong>
+
+          <small>
+            Sin unidades disponibles
+          </small>
+
         </article>
 
         <article className="reporte-inventario-kpi">
-          <span>Movimientos</span>
-          <strong>{movimientos}</strong>
-          <small>Entradas y salidas del período</small>
+
+          <div className="reporte-inventario-kpi-icon movements">
+            <ArrowLeftRight
+              size={20}
+              strokeWidth={1.9}
+            />
+          </div>
+
+          <span>
+            Movimientos
+          </span>
+
+          <strong>
+            {movimientos}
+          </strong>
+
+          <small>
+            Entradas y salidas del período
+          </small>
+
         </article>
 
       </section>
@@ -169,23 +291,46 @@ function ReporteInventarioSection() {
         <article className="reporte-inventario-panel">
 
           <div className="reporte-inventario-panel-header">
-            <div>
-              <h3>Valor por categoría</h3>
-              <p>Distribución del inventario actual</p>
+
+            <div className="reporte-inventario-panel-title">
+
+              <div className="reporte-inventario-panel-icon">
+                <Tags
+                  size={18}
+                  strokeWidth={1.9}
+                />
+              </div>
+
+              <div>
+                <h3>
+                  Valor por categoría
+                </h3>
+
+                <p>
+                  Distribución del inventario actual
+                </p>
+              </div>
+
             </div>
+
           </div>
 
           <div className="inventario-category-list">
 
             {categorias.map((categoria) => (
+
               <div
                 key={categoria.nombre}
                 className="inventario-category-row"
               >
 
                 <div className="inventario-category-info">
+
                   <div>
-                    <strong>{categoria.nombre}</strong>
+                    <strong>
+                      {categoria.nombre}
+                    </strong>
+
                     <span>
                       {formatearDinero(categoria.valor)}
                     </span>
@@ -194,18 +339,22 @@ function ReporteInventarioSection() {
                   <strong>
                     {categoria.porcentaje}%
                   </strong>
+
                 </div>
 
                 <div className="inventario-category-track">
+
                   <div
                     className="inventario-category-bar"
                     style={{
                       width: `${categoria.porcentaje}%`,
                     }}
                   ></div>
+
                 </div>
 
               </div>
+
             ))}
 
           </div>
@@ -215,10 +364,28 @@ function ReporteInventarioSection() {
         <article className="reporte-inventario-panel">
 
           <div className="reporte-inventario-panel-header">
-            <div>
-              <h3>Evolución del inventario</h3>
-              <p>Valor estimado durante los últimos días</p>
+
+            <div className="reporte-inventario-panel-title">
+
+              <div className="reporte-inventario-panel-icon">
+                <BarChart3
+                  size={18}
+                  strokeWidth={1.9}
+                />
+              </div>
+
+              <div>
+                <h3>
+                  Evolución del inventario
+                </h3>
+
+                <p>
+                  Valor estimado durante los últimos días
+                </p>
+              </div>
+
             </div>
+
           </div>
 
           <div className="inventario-evolution-chart">
@@ -238,6 +405,7 @@ function ReporteInventarioSection() {
                   </div>
 
                   <div className="inventario-evolution-bar-area">
+
                     <div
                       className="inventario-evolution-bar"
                       style={{
@@ -247,9 +415,12 @@ function ReporteInventarioSection() {
                         )}%`,
                       }}
                     ></div>
+
                   </div>
 
-                  <span>{registro.fecha}</span>
+                  <span>
+                    {registro.fecha}
+                  </span>
 
                 </div>
               );
@@ -265,12 +436,35 @@ function ReporteInventarioSection() {
 
         <div className="reporte-inventario-panel-header">
 
-          <div>
-            <h3>Productos críticos</h3>
-            <p>
-              Referencias que requieren atención de inventario
-            </p>
+          <div className="reporte-inventario-panel-title">
+
+            <div className="reporte-inventario-panel-icon critical">
+              <PackageSearch
+                size={18}
+                strokeWidth={1.9}
+              />
+            </div>
+
+            <div>
+              <h3>
+                Productos críticos
+              </h3>
+
+              <p>
+                Referencias que requieren atención de inventario
+              </p>
+            </div>
+
           </div>
+
+          <span className="reporte-inventario-readonly-badge">
+            <LockKeyhole
+              size={13}
+              strokeWidth={1.9}
+            />
+
+            Solo consulta
+          </span>
 
         </div>
 
@@ -293,17 +487,26 @@ function ReporteInventarioSection() {
             <tbody>
 
               {productosCriticos.map((producto) => (
+
                 <tr key={producto.id}>
 
                   <td>
-                    <strong>{producto.producto}</strong>
+                    <strong>
+                      {producto.producto}
+                    </strong>
                   </td>
 
-                  <td>{producto.categoria}</td>
+                  <td>
+                    {producto.categoria}
+                  </td>
 
-                  <td>{producto.stock}</td>
+                  <td>
+                    {producto.stock}
+                  </td>
 
-                  <td>{producto.minimo}</td>
+                  <td>
+                    {producto.minimo}
+                  </td>
 
                   <td>
                     {formatearDinero(producto.valor)}
@@ -313,22 +516,31 @@ function ReporteInventarioSection() {
                     <span
                       className={`inventario-report-status ${producto.estado}`}
                     >
+                      {iconoEstado(producto.estado)}
+
                       {nombreEstado(producto.estado)}
                     </span>
                   </td>
 
                   <td>
                     <button
+                      type="button"
                       className="reporte-inventario-detail-button"
                       onClick={() =>
                         setProductoSeleccionado(producto)
                       }
                     >
                       Ver detalle
+
+                      <ArrowRight
+                        size={15}
+                        strokeWidth={1.9}
+                      />
                     </button>
                   </td>
 
                 </tr>
+
               ))}
 
             </tbody>
@@ -341,9 +553,12 @@ function ReporteInventarioSection() {
 
       {productoSeleccionado && (
         <>
+
           <div
             className="reporte-inventario-overlay"
-            onClick={() => setProductoSeleccionado(null)}
+            onClick={() =>
+              setProductoSeleccionado(null)
+            }
           ></div>
 
           <aside className="reporte-inventario-drawer">
@@ -365,21 +580,34 @@ function ReporteInventarioSection() {
               </div>
 
               <button
+                type="button"
                 className="drawer-close"
                 onClick={() =>
                   setProductoSeleccionado(null)
                 }
+                aria-label="Cerrar detalle"
               >
-                ×
+                <X
+                  size={20}
+                  strokeWidth={1.9}
+                />
               </button>
 
             </div>
 
-            <div className="reporte-inventario-status-box">
+            <div
+              className={`reporte-inventario-status-box ${productoSeleccionado.estado}`}
+            >
 
-              <span>Estado de inventario</span>
+              <span>
+                Estado de inventario
+              </span>
 
               <strong>
+                {iconoEstado(
+                  productoSeleccionado.estado
+                )}
+
                 {nombreEstado(
                   productoSeleccionado.estado
                 )}
@@ -390,30 +618,62 @@ function ReporteInventarioSection() {
             <div className="reporte-inventario-detail-grid">
 
               <div>
-                <span>Stock actual</span>
+                <span>
+                  Stock actual
+                </span>
+
                 <strong>
+                  <Boxes
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {productoSeleccionado.stock}
                 </strong>
               </div>
 
               <div>
-                <span>Stock mínimo</span>
+                <span>
+                  Stock mínimo
+                </span>
+
                 <strong>
+                  <Layers3
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {productoSeleccionado.minimo}
                 </strong>
               </div>
 
               <div>
-                <span>Diferencia</span>
-                <strong>
+                <span>
+                  Diferencia
+                </span>
+
+                <strong className="reporte-inventario-difference">
+                  <TriangleAlert
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {productoSeleccionado.stock -
                     productoSeleccionado.minimo}
                 </strong>
               </div>
 
               <div>
-                <span>Valor actual</span>
+                <span>
+                  Valor actual
+                </span>
+
                 <strong>
+                  <BadgeDollarSign
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {formatearDinero(
                     productoSeleccionado.valor
                   )}
@@ -423,12 +683,20 @@ function ReporteInventarioSection() {
             </div>
 
             <div className="reporte-inventario-notice">
-              Este reporte es informativo. Los ajustes de stock deben
-              realizarse desde el módulo de Inventario para conservar el
-              historial de movimientos.
+
+              <LockKeyhole
+                size={17}
+                strokeWidth={1.9}
+              />
+
+              <span>
+                Este reporte es informativo. Los ajustes de stock deben realizarse desde el módulo de Inventario para conservar el historial de movimientos.
+              </span>
+
             </div>
 
           </aside>
+
         </>
       )}
 

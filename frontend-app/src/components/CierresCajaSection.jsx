@@ -1,4 +1,22 @@
 import { useMemo, useState } from "react";
+
+import {
+  Search,
+  ClipboardCheck,
+  CircleCheck,
+  TriangleAlert,
+  Clock3,
+  UserRound,
+  CircleDollarSign,
+  ArrowDownToLine,
+  ArrowUpFromLine,
+  Calculator,
+  ArrowRight,
+  X,
+  LockKeyhole,
+  CalendarDays,
+} from "lucide-react";
+
 import "./CierresCajaSection.css";
 
 function CierresCajaSection() {
@@ -81,6 +99,7 @@ function CierresCajaSection() {
     if (estado === "cuadrado") return "Cuadrado";
     if (estado === "diferencia") return "Con diferencia";
     if (estado === "pendiente") return "Pendiente revisión";
+
     return estado;
   }
 
@@ -92,6 +111,7 @@ function CierresCajaSection() {
         <div className="cierres-filters">
 
           <button
+            type="button"
             className={`filter-button ${
               filtroEstado === "todos" ? "active" : ""
             }`}
@@ -101,41 +121,57 @@ function CierresCajaSection() {
           </button>
 
           <button
+            type="button"
             className={`filter-button ${
               filtroEstado === "cuadrado" ? "active" : ""
             }`}
             onClick={() => setFiltroEstado("cuadrado")}
           >
+            <CircleCheck size={14} strokeWidth={1.9} />
             Cuadrados
           </button>
 
           <button
+            type="button"
             className={`filter-button ${
               filtroEstado === "diferencia" ? "active" : ""
             }`}
             onClick={() => setFiltroEstado("diferencia")}
           >
+            <TriangleAlert size={14} strokeWidth={1.9} />
             Con diferencia
           </button>
 
           <button
+            type="button"
             className={`filter-button ${
               filtroEstado === "pendiente" ? "active" : ""
             }`}
             onClick={() => setFiltroEstado("pendiente")}
           >
+            <Clock3 size={14} strokeWidth={1.9} />
             Pendientes
           </button>
 
         </div>
 
         <div className="cierres-search">
+
+          <Search
+            className="cierres-search-icon"
+            size={18}
+            strokeWidth={1.9}
+          />
+
           <input
             type="text"
             placeholder="Buscar cierre..."
             value={busqueda}
-            onChange={(event) => setBusqueda(event.target.value)}
+            onChange={(event) =>
+              setBusqueda(event.target.value)
+            }
           />
+
         </div>
 
       </section>
@@ -143,13 +179,35 @@ function CierresCajaSection() {
       <section className="cierres-kpis">
 
         <article className="cierre-kpi">
-          <span>Cierres registrados</span>
-          <strong>{cierres.length}</strong>
-          <small>Historial disponible</small>
+
+          <div className="cierre-kpi-icon total">
+            <ClipboardCheck size={20} strokeWidth={1.9} />
+          </div>
+
+          <span>
+            Cierres registrados
+          </span>
+
+          <strong>
+            {cierres.length}
+          </strong>
+
+          <small>
+            Historial disponible
+          </small>
+
         </article>
 
         <article className="cierre-kpi">
-          <span>Cuadrados</span>
+
+          <div className="cierre-kpi-icon ok">
+            <CircleCheck size={20} strokeWidth={1.9} />
+          </div>
+
+          <span>
+            Cuadrados
+          </span>
+
           <strong>
             {
               cierres.filter(
@@ -157,11 +215,23 @@ function CierresCajaSection() {
               ).length
             }
           </strong>
-          <small>Sin diferencias</small>
+
+          <small>
+            Sin diferencias
+          </small>
+
         </article>
 
         <article className="cierre-kpi">
-          <span>Con diferencia</span>
+
+          <div className="cierre-kpi-icon difference">
+            <TriangleAlert size={20} strokeWidth={1.9} />
+          </div>
+
+          <span>
+            Con diferencia
+          </span>
+
           <strong>
             {
               cierres.filter(
@@ -169,11 +239,23 @@ function CierresCajaSection() {
               ).length
             }
           </strong>
-          <small>Requieren revisión</small>
+
+          <small>
+            Requieren revisión
+          </small>
+
         </article>
 
         <article className="cierre-kpi">
-          <span>Pendientes</span>
+
+          <div className="cierre-kpi-icon pending">
+            <Clock3 size={20} strokeWidth={1.9} />
+          </div>
+
+          <span>
+            Pendientes
+          </span>
+
           <strong>
             {
               cierres.filter(
@@ -181,7 +263,11 @@ function CierresCajaSection() {
               ).length
             }
           </strong>
-          <small>Sin finalizar</small>
+
+          <small>
+            Sin finalizar
+          </small>
+
         </article>
 
       </section>
@@ -189,13 +275,30 @@ function CierresCajaSection() {
       <section className="cierres-panel">
 
         <div className="cierres-panel-header">
-          <div>
-            <h2>Historial de cierres</h2>
 
-            <p>
-              {cierresFiltrados.length} registros encontrados
-            </p>
+          <div className="cierres-panel-title">
+
+            <div className="cierres-panel-icon">
+              <ClipboardCheck size={18} strokeWidth={1.9} />
+            </div>
+
+            <div>
+              <h2>
+                Historial de cierres
+              </h2>
+
+              <p>
+                {cierresFiltrados.length} registros encontrados
+              </p>
+            </div>
+
           </div>
+
+          <span className="cierres-readonly">
+            <LockKeyhole size={13} strokeWidth={1.9} />
+            Registro de auditoría
+          </span>
+
         </div>
 
         <div className="cierres-table-wrapper">
@@ -218,15 +321,22 @@ function CierresCajaSection() {
             <tbody>
 
               {cierresFiltrados.map((cierre) => (
+
                 <tr key={cierre.id}>
 
                   <td>
-                    <strong>{cierre.id}</strong>
+                    <span className="cierre-code">
+                      {cierre.id}
+                    </span>
                   </td>
 
-                  <td>{cierre.fecha}</td>
+                  <td>
+                    {cierre.fecha}
+                  </td>
 
-                  <td>{cierre.responsable}</td>
+                  <td>
+                    {cierre.responsable}
+                  </td>
 
                   <td>
                     {formatearDinero(cierre.esperado)}
@@ -260,16 +370,23 @@ function CierresCajaSection() {
 
                   <td>
                     <button
+                      type="button"
                       className="cierre-detail-button"
                       onClick={() =>
                         setCierreSeleccionado(cierre)
                       }
                     >
                       Ver detalle
+
+                      <ArrowRight
+                        size={15}
+                        strokeWidth={1.9}
+                      />
                     </button>
                   </td>
 
                 </tr>
+
               ))}
 
             </tbody>
@@ -282,9 +399,12 @@ function CierresCajaSection() {
 
       {cierreSeleccionado && (
         <>
+
           <div
             className="cierre-overlay"
-            onClick={() => setCierreSeleccionado(null)}
+            onClick={() =>
+              setCierreSeleccionado(null)
+            }
           ></div>
 
           <aside className="cierre-drawer">
@@ -306,19 +426,25 @@ function CierresCajaSection() {
               </div>
 
               <button
+                type="button"
                 className="drawer-close"
                 onClick={() =>
                   setCierreSeleccionado(null)
                 }
+                aria-label="Cerrar detalle"
               >
-                ×
+                <X size={20} strokeWidth={1.9} />
               </button>
 
             </div>
 
-            <div className="cierre-status-box">
+            <div
+              className={`cierre-status-box ${cierreSeleccionado.estado}`}
+            >
 
-              <span>Estado</span>
+              <span>
+                Estado
+              </span>
 
               <strong>
                 {nombreEstado(
@@ -331,15 +457,23 @@ function CierresCajaSection() {
             <div className="cierre-detail-grid">
 
               <div>
-                <span>Responsable</span>
+                <span>
+                  Responsable
+                </span>
+
                 <strong>
+                  <UserRound size={14} strokeWidth={1.9} />
                   {cierreSeleccionado.responsable}
                 </strong>
               </div>
 
               <div>
-                <span>Saldo inicial</span>
+                <span>
+                  Saldo inicial
+                </span>
+
                 <strong>
+                  <CircleDollarSign size={14} strokeWidth={1.9} />
                   {formatearDinero(
                     cierreSeleccionado.saldoInicial
                   )}
@@ -347,8 +481,12 @@ function CierresCajaSection() {
               </div>
 
               <div>
-                <span>Entradas</span>
-                <strong>
+                <span>
+                  Entradas
+                </span>
+
+                <strong className="cierre-entry">
+                  <ArrowDownToLine size={14} strokeWidth={1.9} />
                   {formatearDinero(
                     cierreSeleccionado.entradas
                   )}
@@ -356,8 +494,12 @@ function CierresCajaSection() {
               </div>
 
               <div>
-                <span>Salidas</span>
-                <strong>
+                <span>
+                  Salidas
+                </span>
+
+                <strong className="cierre-exit">
+                  <ArrowUpFromLine size={14} strokeWidth={1.9} />
                   {formatearDinero(
                     cierreSeleccionado.salidas
                   )}
@@ -365,8 +507,12 @@ function CierresCajaSection() {
               </div>
 
               <div>
-                <span>Saldo esperado</span>
+                <span>
+                  Saldo esperado
+                </span>
+
                 <strong>
+                  <Calculator size={14} strokeWidth={1.9} />
                   {formatearDinero(
                     cierreSeleccionado.esperado
                   )}
@@ -374,8 +520,12 @@ function CierresCajaSection() {
               </div>
 
               <div>
-                <span>Conteo físico</span>
+                <span>
+                  Conteo físico
+                </span>
+
                 <strong>
+                  <CircleDollarSign size={14} strokeWidth={1.9} />
                   {formatearDinero(
                     cierreSeleccionado.contado
                   )}
@@ -384,9 +534,19 @@ function CierresCajaSection() {
 
             </div>
 
-            <div className="cierre-difference-box">
+            <div
+              className={`cierre-difference-box ${
+                cierreSeleccionado.diferencia === 0
+                  ? "ok"
+                  : cierreSeleccionado.diferencia
+                  ? "alert"
+                  : "pending"
+              }`}
+            >
 
-              <span>Diferencia</span>
+              <span>
+                Diferencia
+              </span>
 
               <strong>
                 {formatearDinero(
@@ -398,7 +558,9 @@ function CierresCajaSection() {
 
             <div className="cierre-observation">
 
-              <span>Observación</span>
+              <span>
+                Observación
+              </span>
 
               <p>
                 {cierreSeleccionado.observacion}
@@ -407,11 +569,20 @@ function CierresCajaSection() {
             </div>
 
             <div className="cierre-readonly">
-              Los cierres confirmados forman parte del historial de caja y
-              deben conservarse como registros de auditoría.
+
+              <LockKeyhole
+                size={17}
+                strokeWidth={1.9}
+              />
+
+              <span>
+                Los cierres confirmados forman parte del historial de caja y deben conservarse como registros de auditoría.
+              </span>
+
             </div>
 
           </aside>
+
         </>
       )}
 

@@ -1,4 +1,21 @@
 import { useState } from "react";
+
+import {
+  Settings2,
+  Building2,
+  Clock3,
+  ReceiptText,
+  Phone,
+  Mail,
+  MapPin,
+  BadgePercent,
+  Coins,
+  Save,
+  CircleCheck,
+  X,
+  ShieldCheck,
+} from "lucide-react";
+
 import "./ConfiguracionSection.css";
 
 function ConfiguracionSection() {
@@ -41,7 +58,9 @@ function ConfiguracionSection() {
       <section className="configuracion-intro">
 
         <div>
-          <h2>Configuración general</h2>
+          <h2>
+            Configuración general
+          </h2>
 
           <p>
             Administra la información principal y parámetros básicos
@@ -51,6 +70,12 @@ function ConfiguracionSection() {
 
         {guardado && (
           <span className="configuracion-saved">
+
+            <CircleCheck
+              size={14}
+              strokeWidth={1.9}
+            />
+
             Cambios guardados
           </span>
         )}
@@ -59,16 +84,29 @@ function ConfiguracionSection() {
 
       <div className="configuracion-grid">
 
-        <section className="configuracion-card">
+        <section className="configuracion-card configuracion-card-business">
 
           <div className="configuracion-card-header">
 
-            <div>
-              <h3>Información del negocio</h3>
+            <div className="configuracion-card-title">
 
-              <p>
-                Datos generales que identifican el establecimiento.
-              </p>
+              <div className="configuracion-card-icon">
+                <Building2
+                  size={18}
+                  strokeWidth={1.9}
+                />
+              </div>
+
+              <div>
+                <h3>
+                  Información del negocio
+                </h3>
+
+                <p>
+                  Datos generales que identifican el establecimiento.
+                </p>
+              </div>
+
             </div>
 
           </div>
@@ -77,72 +115,127 @@ function ConfiguracionSection() {
 
             <label>
               Nombre del negocio
-              <input
-                type="text"
-                value={configuracion.nombreNegocio}
-                onChange={(event) =>
-                  actualizarCampo(
-                    "nombreNegocio",
-                    event.target.value
-                  )
-                }
-              />
+
+              <div className="configuracion-input-wrapper">
+
+                <Building2
+                  size={16}
+                  strokeWidth={1.9}
+                />
+
+                <input
+                  type="text"
+                  value={configuracion.nombreNegocio}
+                  onChange={(event) =>
+                    actualizarCampo(
+                      "nombreNegocio",
+                      event.target.value
+                    )
+                  }
+                />
+
+              </div>
+
             </label>
 
             <label>
               NIT
-              <input
-                type="text"
-                value={configuracion.nit}
-                onChange={(event) =>
-                  actualizarCampo(
-                    "nit",
-                    event.target.value
-                  )
-                }
-              />
+
+              <div className="configuracion-input-wrapper">
+
+                <ReceiptText
+                  size={16}
+                  strokeWidth={1.9}
+                />
+
+                <input
+                  type="text"
+                  value={configuracion.nit}
+                  onChange={(event) =>
+                    actualizarCampo(
+                      "nit",
+                      event.target.value
+                    )
+                  }
+                />
+
+              </div>
+
             </label>
 
             <label>
               Teléfono
-              <input
-                type="text"
-                value={configuracion.telefono}
-                onChange={(event) =>
-                  actualizarCampo(
-                    "telefono",
-                    event.target.value
-                  )
-                }
-              />
+
+              <div className="configuracion-input-wrapper">
+
+                <Phone
+                  size={16}
+                  strokeWidth={1.9}
+                />
+
+                <input
+                  type="text"
+                  value={configuracion.telefono}
+                  onChange={(event) =>
+                    actualizarCampo(
+                      "telefono",
+                      event.target.value
+                    )
+                  }
+                />
+
+              </div>
+
             </label>
 
             <label>
               Correo electrónico
-              <input
-                type="email"
-                value={configuracion.email}
-                onChange={(event) =>
-                  actualizarCampo(
-                    "email",
-                    event.target.value
-                  )
-                }
-              />
+
+              <div className="configuracion-input-wrapper">
+
+                <Mail
+                  size={16}
+                  strokeWidth={1.9}
+                />
+
+                <input
+                  type="email"
+                  value={configuracion.email}
+                  onChange={(event) =>
+                    actualizarCampo(
+                      "email",
+                      event.target.value
+                    )
+                  }
+                />
+
+              </div>
+
             </label>
 
             <label className="configuracion-full-field">
               Dirección
-              <input
-                type="text"
-                value={configuracion.direccion}
-                onChange={(event) =>
-                  actualizarCampo(
-                    "direccion",
-                    event.target.value
-                  )
-                }
-              />
+
+              <div className="configuracion-input-wrapper">
+
+                <MapPin
+                  size={16}
+                  strokeWidth={1.9}
+                />
+
+                <input
+                  type="text"
+                  value={configuracion.direccion}
+                  onChange={(event) =>
+                    actualizarCampo(
+                      "direccion",
+                      event.target.value
+                    )
+                  }
+                />
+
+              </div>
+
             </label>
 
           </div>
@@ -153,12 +246,25 @@ function ConfiguracionSection() {
 
           <div className="configuracion-card-header">
 
-            <div>
-              <h3>Horario de operación</h3>
+            <div className="configuracion-card-title">
 
-              <p>
-                Horario general utilizado por el sistema.
-              </p>
+              <div className="configuracion-card-icon">
+                <Clock3
+                  size={18}
+                  strokeWidth={1.9}
+                />
+              </div>
+
+              <div>
+                <h3>
+                  Horario de operación
+                </h3>
+
+                <p>
+                  Horario general utilizado por el sistema.
+                </p>
+              </div>
+
             </div>
 
           </div>
@@ -167,6 +273,7 @@ function ConfiguracionSection() {
 
             <label>
               Hora de apertura
+
               <input
                 type="time"
                 value={configuracion.horaApertura}
@@ -177,10 +284,12 @@ function ConfiguracionSection() {
                   )
                 }
               />
+
             </label>
 
             <label>
               Hora de cierre
+
               <input
                 type="time"
                 value={configuracion.horaCierre}
@@ -191,18 +300,30 @@ function ConfiguracionSection() {
                   )
                 }
               />
+
             </label>
 
           </div>
 
           <div className="configuracion-info-box">
 
-            <span>Horario configurado</span>
+            <div className="configuracion-info-icon">
+              <Clock3
+                size={17}
+                strokeWidth={1.9}
+              />
+            </div>
 
-            <strong>
-              {configuracion.horaApertura} –{" "}
-              {configuracion.horaCierre}
-            </strong>
+            <div>
+              <span>
+                Horario configurado
+              </span>
+
+              <strong>
+                {configuracion.horaApertura} –{" "}
+                {configuracion.horaCierre}
+              </strong>
+            </div>
 
           </div>
 
@@ -212,12 +333,25 @@ function ConfiguracionSection() {
 
           <div className="configuracion-card-header">
 
-            <div>
-              <h3>Facturación y moneda</h3>
+            <div className="configuracion-card-title">
 
-              <p>
-                Parámetros básicos utilizados en operaciones comerciales.
-              </p>
+              <div className="configuracion-card-icon">
+                <ReceiptText
+                  size={18}
+                  strokeWidth={1.9}
+                />
+              </div>
+
+              <div>
+                <h3>
+                  Facturación y moneda
+                </h3>
+
+                <p>
+                  Parámetros básicos utilizados en operaciones comerciales.
+                </p>
+              </div>
+
             </div>
 
           </div>
@@ -226,47 +360,80 @@ function ConfiguracionSection() {
 
             <label>
               Impuesto general (%)
-              <input
-                type="number"
-                min="0"
-                max="100"
-                value={configuracion.impuesto}
-                onChange={(event) =>
-                  actualizarCampo(
-                    "impuesto",
-                    event.target.value
-                  )
-                }
-              />
+
+              <div className="configuracion-input-wrapper">
+
+                <BadgePercent
+                  size={16}
+                  strokeWidth={1.9}
+                />
+
+                <input
+                  type="number"
+                  min="0"
+                  max="100"
+                  value={configuracion.impuesto}
+                  onChange={(event) =>
+                    actualizarCampo(
+                      "impuesto",
+                      event.target.value
+                    )
+                  }
+                />
+
+              </div>
+
             </label>
 
             <label>
               Moneda
-              <select
-                value={configuracion.moneda}
-                onChange={(event) =>
-                  actualizarCampo(
-                    "moneda",
-                    event.target.value
-                  )
-                }
-              >
-                <option value="COP">
-                  Peso colombiano (COP)
-                </option>
-              </select>
+
+              <div className="configuracion-input-wrapper">
+
+                <Coins
+                  size={16}
+                  strokeWidth={1.9}
+                />
+
+                <select
+                  value={configuracion.moneda}
+                  onChange={(event) =>
+                    actualizarCampo(
+                      "moneda",
+                      event.target.value
+                    )
+                  }
+                >
+                  <option value="COP">
+                    Peso colombiano (COP)
+                  </option>
+                </select>
+
+              </div>
+
             </label>
 
           </div>
 
           <div className="configuracion-info-box">
 
-            <span>Configuración comercial</span>
+            <div className="configuracion-info-icon">
+              <Coins
+                size={17}
+                strokeWidth={1.9}
+              />
+            </div>
 
-            <strong>
-              IVA {configuracion.impuesto}% ·{" "}
-              {configuracion.moneda}
-            </strong>
+            <div>
+              <span>
+                Configuración comercial
+              </span>
+
+              <strong>
+                IVA {configuracion.impuesto}% ·{" "}
+                {configuracion.moneda}
+              </strong>
+            </div>
 
           </div>
 
@@ -276,19 +443,38 @@ function ConfiguracionSection() {
 
       <section className="configuracion-actions">
 
-        <div>
-          <strong>Guardar configuración</strong>
+        <div className="configuracion-actions-info">
 
-          <p>
-            Los cambios importantes deben confirmarse antes de ser
-            aplicados.
-          </p>
+          <div className="configuracion-actions-icon">
+            <Settings2
+              size={19}
+              strokeWidth={1.9}
+            />
+          </div>
+
+          <div>
+            <strong>
+              Guardar configuración
+            </strong>
+
+            <p>
+              Los cambios importantes deben confirmarse antes de ser
+              aplicados.
+            </p>
+          </div>
+
         </div>
 
         <button
-          className="primary-button"
+          type="button"
+          className="primary-button configuracion-save-button"
           onClick={solicitarGuardado}
         >
+          <Save
+            size={17}
+            strokeWidth={1.9}
+          />
+
           Guardar cambios
         </button>
 
@@ -296,6 +482,7 @@ function ConfiguracionSection() {
 
       {confirmarCambios && (
         <>
+
           <div
             className="configuracion-overlay"
             onClick={() =>
@@ -318,32 +505,52 @@ function ConfiguracionSection() {
               </div>
 
               <button
+                type="button"
                 className="drawer-close"
                 onClick={() =>
                   setConfirmarCambios(false)
                 }
+                aria-label="Cerrar confirmación"
               >
-                ×
+                <X
+                  size={20}
+                  strokeWidth={1.9}
+                />
               </button>
 
             </div>
 
-            <p className="configuracion-confirmation-text">
-              Se actualizará la configuración general del negocio con
-              los valores ingresados.
-            </p>
+            <div className="configuracion-confirmation-notice">
+
+              <ShieldCheck
+                size={19}
+                strokeWidth={1.9}
+              />
+
+              <p className="configuracion-confirmation-text">
+                Se actualizará la configuración general del negocio con
+                los valores ingresados.
+              </p>
+
+            </div>
 
             <div className="configuracion-confirmation-summary">
 
               <div>
-                <span>Negocio</span>
+                <span>
+                  Negocio
+                </span>
+
                 <strong>
                   {configuracion.nombreNegocio}
                 </strong>
               </div>
 
               <div>
-                <span>Horario</span>
+                <span>
+                  Horario
+                </span>
+
                 <strong>
                   {configuracion.horaApertura} –{" "}
                   {configuracion.horaCierre}
@@ -351,14 +558,20 @@ function ConfiguracionSection() {
               </div>
 
               <div>
-                <span>Impuesto</span>
+                <span>
+                  Impuesto
+                </span>
+
                 <strong>
                   {configuracion.impuesto}%
                 </strong>
               </div>
 
               <div>
-                <span>Moneda</span>
+                <span>
+                  Moneda
+                </span>
+
                 <strong>
                   {configuracion.moneda}
                 </strong>
@@ -369,13 +582,20 @@ function ConfiguracionSection() {
             <div className="configuracion-confirmation-actions">
 
               <button
-                className="drawer-primary-button"
+                type="button"
+                className="drawer-primary-button configuracion-confirm-button"
                 onClick={confirmarGuardado}
               >
+                <CircleCheck
+                  size={17}
+                  strokeWidth={1.9}
+                />
+
                 Confirmar cambios
               </button>
 
               <button
+                type="button"
                 className="drawer-secondary-button"
                 onClick={() =>
                   setConfirmarCambios(false)
@@ -387,6 +607,7 @@ function ConfiguracionSection() {
             </div>
 
           </div>
+
         </>
       )}
 

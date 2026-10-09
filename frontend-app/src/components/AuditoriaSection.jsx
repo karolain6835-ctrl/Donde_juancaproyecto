@@ -1,4 +1,22 @@
 import { useMemo, useState } from "react";
+
+import {
+  Search,
+  ClipboardList,
+  Users,
+  Boxes,
+  CalendarDays,
+  SlidersHorizontal,
+  UserRound,
+  Layers3,
+  Pencil,
+  Plus,
+  ArrowRight,
+  X,
+  LockKeyhole,
+  History,
+} from "lucide-react";
+
 import "./AuditoriaSection.css";
 
 function AuditoriaSection() {
@@ -188,8 +206,13 @@ function AuditoriaSection() {
         key={clave}
         className="auditoria-change-row"
       >
-        <span>{clave}</span>
-        <strong>{String(valor)}</strong>
+        <span>
+          {clave}
+        </span>
+
+        <strong>
+          {String(valor)}
+        </strong>
       </div>
     ));
   }
@@ -200,13 +223,23 @@ function AuditoriaSection() {
       <section className="auditoria-toolbar">
 
         <div>
-          <h2>Registro de auditoría</h2>
+          <h2>
+            Registro de auditoría
+          </h2>
+
           <p>
             Consulta las acciones realizadas dentro del sistema.
           </p>
         </div>
 
         <div className="auditoria-search">
+
+          <Search
+            className="auditoria-search-icon"
+            size={18}
+            strokeWidth={1.9}
+          />
+
           <input
             type="text"
             placeholder="Buscar registro..."
@@ -215,6 +248,7 @@ function AuditoriaSection() {
               setBusqueda(event.target.value)
             }
           />
+
         </div>
 
       </section>
@@ -222,25 +256,87 @@ function AuditoriaSection() {
       <section className="auditoria-kpis">
 
         <article className="auditoria-kpi">
-          <span>Eventos registrados</span>
-          <strong>{registros.length}</strong>
-          <small>Historial disponible</small>
+
+          <div className="auditoria-kpi-icon events">
+            <ClipboardList
+              size={20}
+              strokeWidth={1.9}
+            />
+          </div>
+
+          <span>
+            Eventos registrados
+          </span>
+
+          <strong>
+            {registros.length}
+          </strong>
+
+          <small>
+            Historial disponible
+          </small>
+
         </article>
 
         <article className="auditoria-kpi">
-          <span>Usuarios involucrados</span>
-          <strong>{usuarios.length}</strong>
-          <small>Con actividad registrada</small>
+
+          <div className="auditoria-kpi-icon users">
+            <Users
+              size={20}
+              strokeWidth={1.9}
+            />
+          </div>
+
+          <span>
+            Usuarios involucrados
+          </span>
+
+          <strong>
+            {usuarios.length}
+          </strong>
+
+          <small>
+            Con actividad registrada
+          </small>
+
         </article>
 
         <article className="auditoria-kpi">
-          <span>Módulos afectados</span>
-          <strong>{modulos.length}</strong>
-          <small>Áreas con actividad</small>
+
+          <div className="auditoria-kpi-icon modules">
+            <Boxes
+              size={20}
+              strokeWidth={1.9}
+            />
+          </div>
+
+          <span>
+            Módulos afectados
+          </span>
+
+          <strong>
+            {modulos.length}
+          </strong>
+
+          <small>
+            Áreas con actividad
+          </small>
+
         </article>
 
         <article className="auditoria-kpi">
-          <span>Eventos de hoy</span>
+
+          <div className="auditoria-kpi-icon today">
+            <CalendarDays
+              size={20}
+              strokeWidth={1.9}
+            />
+          </div>
+
+          <span>
+            Eventos de hoy
+          </span>
+
           <strong>
             {
               registros.filter(
@@ -249,91 +345,131 @@ function AuditoriaSection() {
               ).length
             }
           </strong>
-          <small>2 de octubre de 2026</small>
+
+          <small>
+            2 de octubre de 2026
+          </small>
+
         </article>
 
       </section>
 
       <section className="auditoria-filters">
 
-        <select
-          value={filtroUsuario}
-          onChange={(event) =>
-            setFiltroUsuario(event.target.value)
-          }
-        >
-          <option value="todos">
-            Todos los usuarios
-          </option>
+        <div className="auditoria-filter-control">
 
-          {usuarios.map((usuario) => (
-            <option
-              key={usuario}
-              value={usuario}
-            >
-              {usuario}
+          <UserRound
+            size={15}
+            strokeWidth={1.9}
+          />
+
+          <select
+            value={filtroUsuario}
+            onChange={(event) =>
+              setFiltroUsuario(event.target.value)
+            }
+          >
+            <option value="todos">
+              Todos los usuarios
             </option>
-          ))}
-        </select>
 
-        <select
-          value={filtroModulo}
-          onChange={(event) =>
-            setFiltroModulo(event.target.value)
-          }
-        >
-          <option value="todos">
-            Todos los módulos
-          </option>
+            {usuarios.map((usuario) => (
+              <option
+                key={usuario}
+                value={usuario}
+              >
+                {usuario}
+              </option>
+            ))}
+          </select>
 
-          {modulos.map((modulo) => (
-            <option
-              key={modulo}
-              value={modulo}
-            >
-              {modulo}
+        </div>
+
+        <div className="auditoria-filter-control">
+
+          <Layers3
+            size={15}
+            strokeWidth={1.9}
+          />
+
+          <select
+            value={filtroModulo}
+            onChange={(event) =>
+              setFiltroModulo(event.target.value)
+            }
+          >
+            <option value="todos">
+              Todos los módulos
             </option>
-          ))}
-        </select>
 
-        <select
-          value={filtroAccion}
-          onChange={(event) =>
-            setFiltroAccion(event.target.value)
-          }
-        >
-          <option value="todas">
-            Todas las acciones
-          </option>
+            {modulos.map((modulo) => (
+              <option
+                key={modulo}
+                value={modulo}
+              >
+                {modulo}
+              </option>
+            ))}
+          </select>
 
-          {acciones.map((accion) => (
-            <option
-              key={accion}
-              value={accion}
-            >
-              {accion}
+        </div>
+
+        <div className="auditoria-filter-control">
+
+          <SlidersHorizontal
+            size={15}
+            strokeWidth={1.9}
+          />
+
+          <select
+            value={filtroAccion}
+            onChange={(event) =>
+              setFiltroAccion(event.target.value)
+            }
+          >
+            <option value="todas">
+              Todas las acciones
             </option>
-          ))}
-        </select>
 
-        <select
-          value={filtroFecha}
-          onChange={(event) =>
-            setFiltroFecha(event.target.value)
-          }
-        >
-          <option value="todas">
-            Todas las fechas
-          </option>
+            {acciones.map((accion) => (
+              <option
+                key={accion}
+                value={accion}
+              >
+                {accion}
+              </option>
+            ))}
+          </select>
 
-          <option value="02/10/2026">
-            02/10/2026
-          </option>
+        </div>
 
-          <option value="01/10/2026">
-            01/10/2026
-          </option>
-        </select>
+        <div className="auditoria-filter-control">
+
+          <CalendarDays
+            size={15}
+            strokeWidth={1.9}
+          />
+
+          <select
+            value={filtroFecha}
+            onChange={(event) =>
+              setFiltroFecha(event.target.value)
+            }
+          >
+            <option value="todas">
+              Todas las fechas
+            </option>
+
+            <option value="02/10/2026">
+              02/10/2026
+            </option>
+
+            <option value="01/10/2026">
+              01/10/2026
+            </option>
+          </select>
+
+        </div>
 
       </section>
 
@@ -341,13 +477,35 @@ function AuditoriaSection() {
 
         <div className="auditoria-panel-header">
 
-          <div>
-            <h2>Actividad del sistema</h2>
+          <div className="auditoria-panel-title">
 
-            <p>
-              {registrosFiltrados.length} registros encontrados
-            </p>
+            <div className="auditoria-panel-icon">
+              <History
+                size={18}
+                strokeWidth={1.9}
+              />
+            </div>
+
+            <div>
+              <h2>
+                Actividad del sistema
+              </h2>
+
+              <p>
+                {registrosFiltrados.length} registros encontrados
+              </p>
+            </div>
+
           </div>
+
+          <span className="auditoria-readonly-badge">
+            <LockKeyhole
+              size={13}
+              strokeWidth={1.9}
+            />
+
+            Solo consulta
+          </span>
 
         </div>
 
@@ -371,17 +529,26 @@ function AuditoriaSection() {
             <tbody>
 
               {registrosFiltrados.map((registro) => (
+
                 <tr key={registro.id}>
 
                   <td>
-                    <strong>{registro.id}</strong>
+                    <span className="auditoria-event-code">
+                      {registro.id}
+                    </span>
                   </td>
 
-                  <td>{registro.fecha}</td>
+                  <td>
+                    {registro.fecha}
+                  </td>
 
-                  <td>{registro.hora}</td>
+                  <td>
+                    {registro.hora}
+                  </td>
 
-                  <td>{registro.usuario}</td>
+                  <td>
+                    {registro.usuario}
+                  </td>
 
                   <td>
                     <span className="auditoria-module-chip">
@@ -393,24 +560,45 @@ function AuditoriaSection() {
                     <span
                       className={`auditoria-action ${registro.accion.toLowerCase()}`}
                     >
+                      {registro.accion === "Crear" ? (
+                        <Plus
+                          size={12}
+                          strokeWidth={1.9}
+                        />
+                      ) : (
+                        <Pencil
+                          size={12}
+                          strokeWidth={1.9}
+                        />
+                      )}
+
                       {registro.accion}
                     </span>
                   </td>
 
-                  <td>{registro.registro}</td>
+                  <td>
+                    {registro.registro}
+                  </td>
 
                   <td>
                     <button
+                      type="button"
                       className="auditoria-detail-button"
                       onClick={() =>
                         setRegistroSeleccionado(registro)
                       }
                     >
                       Ver detalle
+
+                      <ArrowRight
+                        size={15}
+                        strokeWidth={1.9}
+                      />
                     </button>
                   </td>
 
                 </tr>
+
               ))}
 
             </tbody>
@@ -423,6 +611,7 @@ function AuditoriaSection() {
 
       {registroSeleccionado && (
         <>
+
           <div
             className="auditoria-overlay"
             onClick={() =>
@@ -450,12 +639,17 @@ function AuditoriaSection() {
               </div>
 
               <button
+                type="button"
                 className="drawer-close"
                 onClick={() =>
                   setRegistroSeleccionado(null)
                 }
+                aria-label="Cerrar detalle"
               >
-                ×
+                <X
+                  size={20}
+                  strokeWidth={1.9}
+                />
               </button>
 
             </div>
@@ -463,29 +657,68 @@ function AuditoriaSection() {
             <div className="auditoria-detail-grid">
 
               <div>
-                <span>Usuario</span>
+                <span>
+                  Usuario
+                </span>
+
                 <strong>
+                  <UserRound
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {registroSeleccionado.usuario}
                 </strong>
               </div>
 
               <div>
-                <span>Módulo</span>
+                <span>
+                  Módulo
+                </span>
+
                 <strong>
+                  <Layers3
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {registroSeleccionado.modulo}
                 </strong>
               </div>
 
               <div>
-                <span>Acción</span>
+                <span>
+                  Acción
+                </span>
+
                 <strong>
+                  {registroSeleccionado.accion === "Crear" ? (
+                    <Plus
+                      size={14}
+                      strokeWidth={1.9}
+                    />
+                  ) : (
+                    <Pencil
+                      size={14}
+                      strokeWidth={1.9}
+                    />
+                  )}
+
                   {registroSeleccionado.accion}
                 </strong>
               </div>
 
               <div>
-                <span>Registro afectado</span>
+                <span>
+                  Registro afectado
+                </span>
+
                 <strong>
+                  <ClipboardList
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {registroSeleccionado.registro}
                 </strong>
               </div>
@@ -494,7 +727,9 @@ function AuditoriaSection() {
 
             <div className="auditoria-description">
 
-              <span>Descripción</span>
+              <span>
+                Descripción
+              </span>
 
               <p>
                 {registroSeleccionado.descripcion}
@@ -504,9 +739,18 @@ function AuditoriaSection() {
 
             <div className="auditoria-comparison">
 
-              <div className="auditoria-value-box">
+              <div className="auditoria-value-box before">
 
-                <h3>Antes</h3>
+                <div className="auditoria-value-heading">
+                  <History
+                    size={15}
+                    strokeWidth={1.9}
+                  />
+
+                  <h3>
+                    Antes
+                  </h3>
+                </div>
 
                 {renderObjeto(
                   registroSeleccionado.anterior
@@ -514,9 +758,18 @@ function AuditoriaSection() {
 
               </div>
 
-              <div className="auditoria-value-box">
+              <div className="auditoria-value-box after">
 
-                <h3>Después</h3>
+                <div className="auditoria-value-heading">
+                  <ArrowRight
+                    size={15}
+                    strokeWidth={1.9}
+                  />
+
+                  <h3>
+                    Después
+                  </h3>
+                </div>
 
                 {renderObjeto(
                   registroSeleccionado.posterior
@@ -527,11 +780,20 @@ function AuditoriaSection() {
             </div>
 
             <div className="auditoria-readonly">
-              Los registros de auditoría son de solo consulta. No deben
-              modificarse ni eliminarse desde la interfaz administrativa.
+
+              <LockKeyhole
+                size={17}
+                strokeWidth={1.9}
+              />
+
+              <span>
+                Los registros de auditoría son de solo consulta. No deben modificarse ni eliminarse desde la interfaz administrativa.
+              </span>
+
             </div>
 
           </aside>
+
         </>
       )}
 

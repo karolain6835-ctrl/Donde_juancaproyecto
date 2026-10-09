@@ -2,97 +2,301 @@
   width: 100%;
 }
 
+/* =========================
+   TOOLBAR
+========================= */
+
 .reporte-juegos-toolbar {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+
   gap: 20px;
+
   margin-bottom: 22px;
 }
 
 .reporte-juegos-toolbar h2 {
   color: var(--color-text);
+
+  font-family: var(--font-brand);
+
   font-size: 21px;
+  font-weight: 600;
 }
 
 .reporte-juegos-toolbar p {
   margin-top: 5px;
+
   color: var(--color-text-secondary);
+
   font-size: 13px;
+}
+
+.reporte-juegos-periodo {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  flex-shrink: 0;
+}
+
+.reporte-juegos-periodo > svg {
+  position: absolute;
+
+  left: 12px;
+
+  color: var(--color-text-secondary);
+
+  pointer-events: none;
 }
 
 .reporte-juegos-toolbar select {
   min-width: 180px;
-  padding: 11px 13px;
+
+  padding: 10px 13px 10px 37px;
+
   border: 1px solid var(--color-border);
   border-radius: 10px;
+
   background: white;
+
+  color: var(--color-text);
+
+  font-family: var(--font-ui);
+
+  outline: none;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
+
+.reporte-juegos-toolbar select:focus {
+  border-color: rgba(227, 122, 36, 0.7);
+
+  box-shadow:
+    0 0 0 3px rgba(227, 122, 36, 0.1);
+}
+
+/* =========================
+   KPIs
+========================= */
 
 .reporte-juegos-kpis {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
+
   gap: 18px;
+
   margin-bottom: 22px;
 }
 
 .reporte-juego-kpi {
-  padding: 22px;
+  padding: 20px;
+
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
+
   background: white;
-  box-shadow: var(--shadow-card);
+
+  box-shadow:
+    0 5px 18px rgba(30, 43, 34, 0.045);
+}
+
+.reporte-juego-kpi-icon {
+  width: 40px;
+  height: 40px;
+
+  display: grid;
+  place-items: center;
+
+  margin-bottom: 14px;
+
+  border-radius: 11px;
+}
+
+.reporte-juego-kpi-icon.sessions {
+  color: var(--color-primary);
+
+  background: var(--color-background-secondary);
+}
+
+.reporte-juego-kpi-icon.time {
+  color: var(--color-accent);
+
+  background: var(--color-accent-soft);
+}
+
+.reporte-juego-kpi-icon.income {
+  color: var(--color-success);
+
+  background: var(--color-success-bg);
+}
+
+.reporte-juego-kpi-icon.leader {
+  color: var(--color-warning);
+
+  background: var(--color-warning-bg);
 }
 
 .reporte-juego-kpi span {
   display: block;
+
   color: var(--color-text-secondary);
+
   font-size: 13px;
 }
 
 .reporte-juego-kpi strong {
   display: block;
-  margin-top: 8px;
+
+  margin-top: 7px;
+
   color: var(--color-text);
+
+  font-family: var(--font-brand);
+
   font-size: 25px;
+  font-weight: 600;
+
+  line-height: 1.1;
 }
 
 .reporte-juego-kpi small {
   display: block;
+
   margin-top: 8px;
+
   color: var(--color-text-secondary);
+
+  font-size: 12px;
 }
+
+/* =========================
+   MAIN GRID
+========================= */
 
 .reporte-juegos-main-grid {
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
+
   gap: 20px;
+
   margin-bottom: 20px;
 }
 
+/* =========================
+   PANEL
+========================= */
+
 .reporte-juegos-panel {
+  position: relative;
+
   overflow: hidden;
+
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
+
   background: white;
-  box-shadow: var(--shadow-card);
+
+  box-shadow:
+    0 5px 18px rgba(30, 43, 34, 0.045);
+}
+
+.reporte-juegos-panel::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 22px;
+
+  width: 44px;
+  height: 3px;
+
+  border-radius: 0 0 999px 999px;
+
+  background: var(--color-accent);
 }
 
 .reporte-juegos-panel-header {
-  padding: 20px 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 18px;
+
+  padding: 22px;
+
   border-bottom: 1px solid var(--color-border);
+}
+
+.reporte-juegos-panel-title {
+  display: flex;
+  align-items: center;
+
+  gap: 11px;
+}
+
+.reporte-juegos-panel-icon {
+  width: 36px;
+  height: 36px;
+
+  display: grid;
+  place-items: center;
+
+  flex-shrink: 0;
+
+  border-radius: 10px;
+
+  background: var(--color-background-secondary);
+
+  color: var(--color-primary);
 }
 
 .reporte-juegos-panel-header h3 {
   color: var(--color-text);
+
+  font-family: var(--font-brand);
+
   font-size: 18px;
+  font-weight: 600;
 }
 
 .reporte-juegos-panel-header p {
   margin-top: 5px;
+
   color: var(--color-text-secondary);
+
   font-size: 12px;
 }
+
+.reporte-juegos-readonly-badge {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 7px 10px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+
+  background: var(--color-background);
+
+  color: var(--color-text-secondary);
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* =========================
+   USAGE
+========================= */
 
 .juegos-usage-list {
   padding: 14px 22px 22px;
@@ -105,33 +309,62 @@
 .juego-usage-info {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+
   gap: 15px;
+
   margin-bottom: 8px;
 }
 
 .juego-usage-info > div {
   display: flex;
   flex-direction: column;
+
   gap: 4px;
+}
+
+.juego-usage-name {
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  color: var(--color-text);
+}
+
+.juego-usage-name svg {
+  color: var(--color-accent);
 }
 
 .juego-usage-info span {
   color: var(--color-text-secondary);
+
   font-size: 10px;
 }
 
 .juego-usage-track {
   height: 8px;
+
   overflow: hidden;
+
   border-radius: 999px;
-  background: var(--color-background);
+
+  background: var(--color-background-secondary);
 }
 
 .juego-usage-bar {
   height: 100%;
+
   border-radius: 999px;
+
   background: var(--color-accent);
+
+  transition: width 0.2s ease;
 }
+
+/* =========================
+   INCOME LIST
+========================= */
 
 .juegos-income-list {
   padding: 10px 22px 20px;
@@ -140,8 +373,12 @@
 .juegos-income-row {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+
   gap: 15px;
+
   padding: 15px 0;
+
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -149,16 +386,50 @@
   border-bottom: none;
 }
 
-.juegos-income-row > div {
+.juegos-income-info {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+
+  gap: 9px !important;
+}
+
+.juegos-income-info > div {
   display: flex;
   flex-direction: column;
+
   gap: 4px;
+}
+
+.juegos-income-icon {
+  width: 32px;
+  height: 32px;
+
+  display: grid !important;
+  place-items: center;
+
+  flex-shrink: 0;
+
+  border-radius: 9px;
+
+  background: var(--color-background-secondary);
+
+  color: var(--color-primary) !important;
 }
 
 .juegos-income-row span {
   color: var(--color-text-secondary);
+
   font-size: 10px;
 }
+
+.juegos-income-row strong {
+  color: var(--color-text);
+}
+
+/* =========================
+   TABLE
+========================= */
 
 .reporte-juegos-table-wrapper {
   overflow-x: auto;
@@ -167,137 +438,321 @@
 .reporte-juegos-table {
   width: 100%;
   min-width: 1050px;
+
   border-collapse: collapse;
 }
 
 .reporte-juegos-table th {
-  padding: 14px 18px;
-  background: #faf9f6;
+  padding: 13px 18px;
+
+  background: var(--color-background-secondary);
+
   color: var(--color-text-secondary);
+
   text-align: left;
+
   font-size: 11px;
+  font-weight: 700;
+
   text-transform: uppercase;
+
+  letter-spacing: 0.45px;
 }
 
 .reporte-juegos-table td {
   padding: 17px 18px;
+
   border-top: 1px solid var(--color-border);
+
   color: var(--color-text);
+
   font-size: 13px;
+}
+
+.reporte-juegos-table tbody tr {
+  transition: background 0.15s ease;
+}
+
+.reporte-juegos-table tbody tr:hover {
+  background: #fcfbf8;
+}
+
+.reporte-juego-code {
+  display: inline-flex;
+
+  padding: 5px 8px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 7px;
+
+  background: var(--color-background);
+
+  color: var(--color-text-secondary);
+
+  font-size: 11px;
+  font-weight: 700;
 }
 
 .reporte-juego-type {
   display: inline-flex;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: var(--color-background);
-  color: var(--color-primary);
-  font-size: 10px;
-  font-weight: 800;
-}
+  align-items: center;
 
-.reporte-juego-detail-button {
-  border: none;
-  background: transparent;
+  gap: 5px;
+
+  padding: 5px 9px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+
+  background: var(--color-background);
+
   color: var(--color-primary);
+
+  font-size: 10px;
   font-weight: 700;
 }
 
+/* =========================
+   DETAIL BUTTON
+========================= */
+
+.reporte-juego-detail-button {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
+  border: none;
+
+  background: transparent;
+
+  color: var(--color-primary);
+
+  font-family: var(--font-ui);
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: color 0.15s ease;
+}
+
+.reporte-juego-detail-button:hover {
+  color: var(--color-accent);
+}
+
+/* =========================
+   OVERLAY
+========================= */
+
 .reporte-juego-overlay {
   position: fixed;
+
   inset: 0;
+
   z-index: 90;
-  background: rgba(15, 35, 30, 0.28);
+
+  background: rgba(18, 30, 25, 0.34);
+
+  backdrop-filter: blur(1px);
 }
+
+/* =========================
+   DRAWER
+========================= */
 
 .reporte-juego-drawer {
   position: fixed;
+
   top: 0;
   right: 0;
+
   width: min(440px, 100%);
   height: 100vh;
+
   z-index: 100;
+
   padding: 26px;
+
   overflow-y: auto;
+
   background: white;
-  box-shadow: -12px 0 30px rgba(18, 48, 40, 0.12);
+
+  box-shadow:
+    -12px 0 32px rgba(30, 43, 34, 0.14);
 }
 
 .reporte-juego-drawer-header {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
+
   gap: 20px;
+
   padding-bottom: 22px;
+
   border-bottom: 1px solid var(--color-border);
 }
 
 .reporte-juego-drawer-header h2 {
   margin-top: 6px;
+
   color: var(--color-text);
-  font-size: 26px;
+
+  font-family: var(--font-brand);
+
+  font-size: 27px;
+  font-weight: 600;
 }
 
 .reporte-juego-drawer-header span {
   display: block;
+
   margin-top: 6px;
+
   color: var(--color-text-secondary);
+
   font-size: 12px;
 }
+
+/* =========================
+   DETAIL GRID
+========================= */
 
 .reporte-juego-detail-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
+
   gap: 12px;
+
   margin-top: 22px;
 }
 
 .reporte-juego-detail-grid div {
   padding: 15px;
+
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
+
+  background: white;
 }
 
 .reporte-juego-detail-grid span {
   display: block;
+
   color: var(--color-text-secondary);
+
   font-size: 11px;
 }
 
 .reporte-juego-detail-grid strong {
-  display: block;
+  display: flex;
+  align-items: center;
+
+  gap: 5px;
+
   margin-top: 5px;
+
   color: var(--color-text);
 }
 
+.reporte-juego-detail-grid strong svg {
+  flex-shrink: 0;
+
+  color: var(--color-text-secondary);
+}
+
+/* =========================
+   INCOME BOX
+========================= */
+
 .reporte-juego-income-box {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
   margin-top: 18px;
+
   padding: 17px;
+
   border-radius: var(--radius-md);
+
   background: var(--color-primary);
+}
+
+.reporte-juego-income-icon {
+  width: 42px;
+  height: 42px;
+
+  display: grid;
+  place-items: center;
+
+  flex-shrink: 0;
+
+  border-radius: 11px;
+
+  background: rgba(255, 255, 255, 0.1);
+
+  color: var(--color-accent);
 }
 
 .reporte-juego-income-box span {
   display: block;
+
   color: rgba(255, 255, 255, 0.7);
+
   font-size: 11px;
 }
 
 .reporte-juego-income-box strong {
   display: block;
+
   margin-top: 5px;
+
   color: white;
+
+  font-family: var(--font-brand);
+
   font-size: 22px;
+  font-weight: 600;
 }
 
+/* =========================
+   READ ONLY
+========================= */
+
 .reporte-juego-readonly {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 9px;
+
   margin-top: 18px;
+
   padding: 14px;
+
+  border: 1px solid var(--color-border);
   border-radius: 10px;
-  background: #f5f3ed;
+
+  background: var(--color-background-secondary);
+
   color: var(--color-text-secondary);
+
   font-size: 12px;
   line-height: 1.5;
 }
+
+.reporte-juego-readonly svg {
+  flex-shrink: 0;
+
+  margin-top: 1px;
+
+  color: var(--color-primary);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
 
 @media (max-width: 1000px) {
   .reporte-juegos-kpis {
@@ -310,9 +765,19 @@
 }
 
 @media (max-width: 700px) {
-  .reporte-juegos-toolbar {
+  .reporte-juegos-toolbar,
+  .reporte-juegos-panel-header {
     flex-direction: column;
+
     align-items: stretch;
+  }
+
+  .reporte-juegos-periodo {
+    width: 100%;
+  }
+
+  .reporte-juegos-toolbar select {
+    width: 100%;
   }
 
   .reporte-juegos-kpis,

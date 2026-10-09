@@ -1,4 +1,26 @@
 import { useMemo, useState } from "react";
+
+import {
+  Search,
+  ReceiptText,
+  CircleDollarSign,
+  CircleCheck,
+  Clock3,
+  UserRound,
+  Armchair,
+  WalletCards,
+  ArrowRight,
+  X,
+  Plus,
+  Split,
+  Banknote,
+  CreditCard,
+  Smartphone,
+  Package,
+  History,
+  RotateCcw,
+} from "lucide-react";
+
 import "./CuentasPendientesSection.css";
 
 function CuentasPendientesSection() {
@@ -194,13 +216,42 @@ function CuentasPendientesSection() {
     setMostrarPago(false);
   }
 
+  function iconoMetodo(metodo) {
+    if (metodo === "Efectivo") {
+      return <Banknote size={15} strokeWidth={1.9} />;
+    }
+
+    if (metodo === "Tarjeta") {
+      return <CreditCard size={15} strokeWidth={1.9} />;
+    }
+
+    return <Smartphone size={15} strokeWidth={1.9} />;
+  }
+
+  const totalFacturado = cuentas.reduce(
+    (total, cuenta) => total + cuenta.total,
+    0
+  );
+
+  const totalPagado = cuentas.reduce(
+    (total, cuenta) => total + cuenta.pagado,
+    0
+  );
+
+  const saldoPendiente = cuentas.reduce(
+    (total, cuenta) => total + obtenerSaldo(cuenta),
+    0
+  );
+
   return (
     <div className="cuentas-pendientes-section">
 
       <section className="cuentas-pendientes-toolbar">
 
         <div>
-          <h2>Cuentas abiertas</h2>
+          <h2>
+            Cuentas abiertas
+          </h2>
 
           <p>
             Controla saldos pendientes y pagos parciales.
@@ -208,12 +259,22 @@ function CuentasPendientesSection() {
         </div>
 
         <div className="cuentas-pendientes-search">
+
+          <Search
+            className="cuentas-pendientes-search-icon"
+            size={18}
+            strokeWidth={1.9}
+          />
+
           <input
             type="text"
             placeholder="Buscar mesa, pedido o mesero..."
             value={busqueda}
-            onChange={(event) => setBusqueda(event.target.value)}
+            onChange={(event) =>
+              setBusqueda(event.target.value)
+            }
           />
+
         </div>
 
       </section>
@@ -221,49 +282,95 @@ function CuentasPendientesSection() {
       <section className="cuentas-pendientes-kpis">
 
         <article className="cuenta-kpi">
-          <span>Cuentas pendientes</span>
-          <strong>{cuentas.length}</strong>
-          <small>Actualmente abiertas</small>
+
+          <div className="cuenta-kpi-icon accounts">
+            <ReceiptText
+              size={20}
+              strokeWidth={1.9}
+            />
+          </div>
+
+          <span>
+            Cuentas pendientes
+          </span>
+
+          <strong>
+            {cuentas.length}
+          </strong>
+
+          <small>
+            Actualmente abiertas
+          </small>
+
         </article>
 
         <article className="cuenta-kpi">
-          <span>Total facturado</span>
+
+          <div className="cuenta-kpi-icon billed">
+            <CircleDollarSign
+              size={20}
+              strokeWidth={1.9}
+            />
+          </div>
+
+          <span>
+            Total facturado
+          </span>
+
           <strong>
-            {formatearDinero(
-              cuentas.reduce(
-                (total, cuenta) => total + cuenta.total,
-                0
-              )
-            )}
+            {formatearDinero(totalFacturado)}
           </strong>
-          <small>Consumo acumulado</small>
+
+          <small>
+            Consumo acumulado
+          </small>
+
         </article>
 
         <article className="cuenta-kpi">
-          <span>Pagado</span>
+
+          <div className="cuenta-kpi-icon paid">
+            <CircleCheck
+              size={20}
+              strokeWidth={1.9}
+            />
+          </div>
+
+          <span>
+            Pagado
+          </span>
+
           <strong>
-            {formatearDinero(
-              cuentas.reduce(
-                (total, cuenta) => total + cuenta.pagado,
-                0
-              )
-            )}
+            {formatearDinero(totalPagado)}
           </strong>
-          <small>Abonos registrados</small>
+
+          <small>
+            Abonos registrados
+          </small>
+
         </article>
 
         <article className="cuenta-kpi">
-          <span>Saldo pendiente</span>
+
+          <div className="cuenta-kpi-icon pending">
+            <WalletCards
+              size={20}
+              strokeWidth={1.9}
+            />
+          </div>
+
+          <span>
+            Saldo pendiente
+          </span>
+
           <strong>
-            {formatearDinero(
-              cuentas.reduce(
-                (total, cuenta) =>
-                  total + obtenerSaldo(cuenta),
-                0
-              )
-            )}
+            {formatearDinero(saldoPendiente)}
           </strong>
-          <small>Por cobrar</small>
+
+          <small>
+            Por cobrar
+          </small>
+
         </article>
 
       </section>
@@ -271,12 +378,28 @@ function CuentasPendientesSection() {
       <section className="cuentas-pendientes-panel">
 
         <div className="cuentas-pendientes-panel-header">
-          <div>
-            <h2>Detalle de cuentas</h2>
-            <p>
-              {cuentasFiltradas.length} cuentas encontradas
-            </p>
+
+          <div className="cuentas-pendientes-panel-title">
+
+            <div className="cuentas-pendientes-panel-icon">
+              <ReceiptText
+                size={18}
+                strokeWidth={1.9}
+              />
+            </div>
+
+            <div>
+              <h2>
+                Detalle de cuentas
+              </h2>
+
+              <p>
+                {cuentasFiltradas.length} cuentas encontradas
+              </p>
+            </div>
+
           </div>
+
         </div>
 
         <div className="cuentas-pendientes-table-wrapper">
@@ -299,24 +422,37 @@ function CuentasPendientesSection() {
             <tbody>
 
               {cuentasFiltradas.map((cuenta) => (
+
                 <tr key={cuenta.id}>
 
                   <td>
-                    <strong>{cuenta.mesa}</strong>
+                    <strong>
+                      {cuenta.mesa}
+                    </strong>
                   </td>
 
-                  <td>{cuenta.pedido}</td>
+                  <td>
+                    <span className="cuenta-order-code">
+                      {cuenta.pedido}
+                    </span>
+                  </td>
 
-                  <td>{cuenta.mesero}</td>
+                  <td>
+                    {cuenta.mesero}
+                  </td>
 
-                  <td>{cuenta.tiempo}</td>
+                  <td>
+                    {cuenta.tiempo}
+                  </td>
 
                   <td>
                     {formatearDinero(cuenta.total)}
                   </td>
 
                   <td>
-                    {formatearDinero(cuenta.pagado)}
+                    <span className="cuenta-paid-value">
+                      {formatearDinero(cuenta.pagado)}
+                    </span>
                   </td>
 
                   <td>
@@ -328,26 +464,41 @@ function CuentasPendientesSection() {
                   </td>
 
                   <td>
+
                     <div className="cuenta-row-actions">
 
                       <button
+                        type="button"
                         className="cuenta-pay-button"
                         onClick={() => abrirCuenta(cuenta)}
                       >
+                        <CircleDollarSign
+                          size={14}
+                          strokeWidth={1.9}
+                        />
+
                         Cobrar
                       </button>
 
                       <button
+                        type="button"
                         className="cuenta-detail-button"
                         onClick={() => abrirCuenta(cuenta)}
                       >
                         Ver cuenta
+
+                        <ArrowRight
+                          size={14}
+                          strokeWidth={1.9}
+                        />
                       </button>
 
                     </div>
+
                   </td>
 
                 </tr>
+
               ))}
 
             </tbody>
@@ -360,6 +511,7 @@ function CuentasPendientesSection() {
 
       {cuentaSeleccionada && (
         <>
+
           <div
             className="cuenta-overlay"
             onClick={cerrarCuenta}
@@ -374,7 +526,9 @@ function CuentasPendientesSection() {
                   CUENTA PENDIENTE
                 </p>
 
-                <h2>{cuentaSeleccionada.mesa}</h2>
+                <h2>
+                  {cuentaSeleccionada.mesa}
+                </h2>
 
                 <span>
                   {cuentaSeleccionada.pedido}
@@ -382,10 +536,15 @@ function CuentasPendientesSection() {
               </div>
 
               <button
+                type="button"
                 className="drawer-close"
                 onClick={cerrarCuenta}
+                aria-label="Cerrar cuenta"
               >
-                ×
+                <X
+                  size={20}
+                  strokeWidth={1.9}
+                />
               </button>
 
             </div>
@@ -393,15 +552,31 @@ function CuentasPendientesSection() {
             <div className="cuenta-detail-summary">
 
               <div>
-                <span>Mesero</span>
+                <span>
+                  Mesero
+                </span>
+
                 <strong>
+                  <UserRound
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {cuentaSeleccionada.mesero}
                 </strong>
               </div>
 
               <div>
-                <span>Tiempo abierto</span>
+                <span>
+                  Tiempo abierto
+                </span>
+
                 <strong>
+                  <Clock3
+                    size={14}
+                    strokeWidth={1.9}
+                  />
+
                   {cuentaSeleccionada.tiempo}
                 </strong>
               </div>
@@ -410,14 +585,27 @@ function CuentasPendientesSection() {
 
             <div className="cuenta-products">
 
-              <h3>Productos y servicios</h3>
+              <div className="cuenta-section-heading">
+
+                <Package
+                  size={17}
+                  strokeWidth={1.9}
+                />
+
+                <h3>
+                  Productos y servicios
+                </h3>
+
+              </div>
 
               {cuentaSeleccionada.productos.map(
                 (producto, index) => (
+
                   <div
                     key={index}
                     className="cuenta-product-row"
                   >
+
                     <div>
                       <strong>
                         {producto.nombre}
@@ -433,7 +621,9 @@ function CuentasPendientesSection() {
                         producto.subtotal
                       )}
                     </strong>
+
                   </div>
+
                 )
               )}
 
@@ -442,7 +632,10 @@ function CuentasPendientesSection() {
             <div className="cuenta-totals">
 
               <div>
-                <span>Total</span>
+                <span>
+                  Total
+                </span>
+
                 <strong>
                   {formatearDinero(
                     cuentaSeleccionada.total
@@ -451,8 +644,11 @@ function CuentasPendientesSection() {
               </div>
 
               <div>
-                <span>Pagado</span>
-                <strong>
+                <span>
+                  Pagado
+                </span>
+
+                <strong className="cuenta-paid-value">
                   {formatearDinero(
                     cuentaSeleccionada.pagado
                   )}
@@ -460,156 +656,279 @@ function CuentasPendientesSection() {
               </div>
 
               <div className="cuenta-total-pending">
-                <span>Saldo pendiente</span>
+
+                <span>
+                  Saldo pendiente
+                </span>
+
                 <strong>
                   {formatearDinero(
-                    obtenerSaldo(cuentaSeleccionada)
+                    obtenerSaldo(
+                      cuentaSeleccionada
+                    )
                   )}
                 </strong>
+
               </div>
 
             </div>
 
             {cuentaSeleccionada.pagos.length > 0 && (
+
               <div className="cuenta-payment-history">
 
-                <h3>Pagos realizados</h3>
+                <div className="cuenta-section-heading">
+
+                  <History
+                    size={17}
+                    strokeWidth={1.9}
+                  />
+
+                  <h3>
+                    Pagos realizados
+                  </h3>
+
+                </div>
 
                 {cuentaSeleccionada.pagos.map(
                   (pago) => (
+
                     <div
                       key={pago.id}
                       className="cuenta-payment-row"
                     >
+
                       <div>
-                        <strong>{pago.metodo}</strong>
+
+                        <strong className="cuenta-payment-method">
+
+                          {iconoMetodo(pago.metodo)}
+
+                          {pago.metodo}
+
+                        </strong>
 
                         <span>
                           {pago.id} · {pago.hora}
                         </span>
+
                       </div>
 
                       <strong>
                         {formatearDinero(pago.valor)}
                       </strong>
+
                     </div>
+
                   )
                 )}
 
               </div>
+
             )}
 
             {!mostrarPago && !mostrarDivision && (
+
               <div className="cuenta-actions">
 
                 <button
+                  type="button"
                   className="drawer-primary-button"
                   onClick={() => setMostrarPago(true)}
                 >
+                  <Plus
+                    size={17}
+                    strokeWidth={1.9}
+                  />
+
                   Registrar pago
                 </button>
 
                 <button
+                  type="button"
                   className="drawer-secondary-button"
-                  onClick={() => setMostrarDivision(true)}
+                  onClick={() =>
+                    setMostrarDivision(true)
+                  }
                 >
+                  <Split
+                    size={17}
+                    strokeWidth={1.9}
+                  />
+
                   Dividir cuenta
                 </button>
 
               </div>
+
             )}
 
             {mostrarPago && (
+
               <div className="cuenta-payment-form">
 
-                <h3>Registrar pago</h3>
+                <div className="cuenta-section-heading">
+
+                  <CircleDollarSign
+                    size={17}
+                    strokeWidth={1.9}
+                  />
+
+                  <h3>
+                    Registrar pago
+                  </h3>
+
+                </div>
 
                 <label>
                   Valor
-                  <input
-                    type="number"
-                    placeholder="Valor del pago"
-                    value={valorPago}
-                    onChange={(event) =>
-                      setValorPago(event.target.value)
-                    }
-                  />
+
+                  <div className="cuenta-input-with-icon">
+
+                    <CircleDollarSign
+                      size={16}
+                      strokeWidth={1.9}
+                    />
+
+                    <input
+                      type="number"
+                      placeholder="Valor del pago"
+                      value={valorPago}
+                      onChange={(event) =>
+                        setValorPago(
+                          event.target.value
+                        )
+                      }
+                    />
+
+                  </div>
+
                 </label>
 
                 <label>
                   Método de pago
+
                   <select
                     value={metodoPago}
                     onChange={(event) =>
-                      setMetodoPago(event.target.value)
+                      setMetodoPago(
+                        event.target.value
+                      )
                     }
                   >
-                    <option>Efectivo</option>
-                    <option>Nequi</option>
-                    <option>Daviplata</option>
-                    <option>Tarjeta</option>
+                    <option>
+                      Efectivo
+                    </option>
+
+                    <option>
+                      Nequi
+                    </option>
+
+                    <option>
+                      Daviplata
+                    </option>
+
+                    <option>
+                      Tarjeta
+                    </option>
                   </select>
                 </label>
 
                 <div className="cuenta-form-actions">
 
                   <button
+                    type="button"
                     className="drawer-primary-button"
                     onClick={registrarPago}
                   >
+                    <CircleCheck
+                      size={17}
+                      strokeWidth={1.9}
+                    />
+
                     Confirmar pago
                   </button>
 
                   <button
+                    type="button"
                     className="drawer-secondary-button"
                     onClick={() => {
                       setMostrarPago(false);
                       setValorPago("");
                     }}
                   >
+                    <RotateCcw
+                      size={17}
+                      strokeWidth={1.9}
+                    />
+
                     Cancelar
                   </button>
 
                 </div>
 
               </div>
+
             )}
 
             {mostrarDivision && (
+
               <div className="cuenta-split-box">
 
-                <h3>Dividir cuenta</h3>
+                <div className="cuenta-section-heading">
+
+                  <Split
+                    size={17}
+                    strokeWidth={1.9}
+                  />
+
+                  <h3>
+                    Dividir cuenta
+                  </h3>
+
+                </div>
 
                 <p>
-                  Esta función permitirá dividir el saldo
-                  pendiente entre varias personas o pagos.
+                  Esta función permitirá dividir el saldo pendiente entre varias personas o pagos.
                 </p>
 
                 <div className="cuenta-split-example">
 
-                  <span>Saldo actual</span>
+                  <span>
+                    Saldo actual
+                  </span>
 
                   <strong>
                     {formatearDinero(
-                      obtenerSaldo(cuentaSeleccionada)
+                      obtenerSaldo(
+                        cuentaSeleccionada
+                      )
                     )}
                   </strong>
 
                 </div>
 
                 <button
+                  type="button"
                   className="drawer-secondary-button"
                   onClick={() =>
                     setMostrarDivision(false)
                   }
                 >
+                  <RotateCcw
+                    size={17}
+                    strokeWidth={1.9}
+                  />
+
                   Volver
                 </button>
 
               </div>
+
             )}
 
           </aside>
+
         </>
       )}
 

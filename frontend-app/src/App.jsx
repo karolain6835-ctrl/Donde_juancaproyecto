@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 
 import AdminLayout from "./layouts/AdminLayout/AdminLayout";
 
+import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import MesasPage from "./pages/MesasPage";
 import PedidosPage from "./pages/PedidosPage";
@@ -16,24 +17,98 @@ import AdministracionPage from "./pages/AdministracionPage";
 
 function App() {
   return (
-    <AdminLayout>
-      <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
+    <Routes>
 
-        <Route path="/operacion/mesas" element={<MesasPage />} />
-        <Route path="/operacion/pedidos" element={<PedidosPage />} />
-        <Route path="/operacion/kanban" element={<KanbanPage />} />
+      {/* INICIO DE SESIÓN */}
+      <Route
+        path="/login"
+        element={<LoginPage />}
+      />
 
-        <Route path="/inventario" element={<InventarioPage />} />
-        <Route path="/compras" element={<ComprasPage />} />
-        <Route path="/juegos" element={<JuegosPage />} />
-        <Route path="/caja" element={<CajaPage />} />
-        <Route path="/clientes" element={<ClientesPage />} />
-        <Route path="/reportes" element={<ReportesPage />} />
-        <Route path="/administracion" element={<AdministracionPage />} />
-      </Routes>
-    </AdminLayout>
+      {/* ENTRADA PRINCIPAL */}
+      <Route
+        path="/"
+        element={<Navigate to="/login" replace />}
+      />
+
+      {/* SISTEMA ADMINISTRATIVO */}
+      <Route
+        path="/*"
+        element={
+          <AdminLayout>
+            <Routes>
+
+              <Route
+                path="/dashboard"
+                element={<DashboardPage />}
+              />
+
+              <Route
+                path="/operacion/mesas"
+                element={<MesasPage />}
+              />
+
+              <Route
+                path="/operacion/pedidos"
+                element={<PedidosPage />}
+              />
+
+              <Route
+                path="/operacion/kanban"
+                element={<KanbanPage />}
+              />
+
+              <Route
+                path="/inventario"
+                element={<InventarioPage />}
+              />
+
+              <Route
+                path="/compras"
+                element={<ComprasPage />}
+              />
+
+              <Route
+                path="/juegos"
+                element={<JuegosPage />}
+              />
+
+              <Route
+                path="/caja"
+                element={<CajaPage />}
+              />
+
+              <Route
+                path="/clientes"
+                element={<ClientesPage />}
+              />
+
+              <Route
+                path="/reportes"
+                element={<ReportesPage />}
+              />
+
+              <Route
+                path="/administracion"
+                element={<AdministracionPage />}
+              />
+
+              <Route
+                path="*"
+                element={
+                  <Navigate
+                    to="/dashboard"
+                    replace
+                  />
+                }
+              />
+
+            </Routes>
+          </AdminLayout>
+        }
+      />
+
+    </Routes>
   );
 }
 
