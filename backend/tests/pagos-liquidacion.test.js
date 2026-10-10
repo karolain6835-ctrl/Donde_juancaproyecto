@@ -1,0 +1,183 @@
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const vm = require('node:vm');
+const mysql = require('mysql2/promise');
+
+// Pruebas optativas contra MySQL: solo escriben tablas TEMPORARY de esta conexión.
+test('pagos y liquidación con MySQL y tablas temporales', {
+  skip: process.env.RUN_MYSQL_PAYMENT_TESTS !== '1'
+}, async t => {
+  require('dotenv').config({ path: path.join(__dirname, '../.env'), quiet: true });
+  const real = await mysql.createConnection({
+    host: process.env.DB_HOST, port: process.env.DB_PORT,
+    user: process.env.DB_USER, password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME, connectTimeout: 5000
+  });
+  let fallar = null;
+  let falloCommit = false;
+  const conexion = {
+    beginTransaction: () => real.beginTransaction(),
+    query: async (sql, params) => {
+      if (fallar && sql.includes(fallar)) throw new Error('Fallo inyectado para probar rollback');
+      return real.query(sql, params);
+    },
+    commit: async () => {
+      if (falloCommit) throw new Error('Fallo de commit inyectado');
+      return real.commit();
+    },
+    rollback: () => real.rollback(),
+    end: async () => {}
+  };
+  const modulo = { exports: {} };
+  vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/controllers/pagosController.js'), 'utf8'), {
+    module: modulo,
+    exports: modulo.exports,
+    require: nombre => {
+      if (nombre === '../config/db') return { dbConfig: {} };
+      if (nombre === 'mysql2') return { createConnection: () => ({ promise: () => conexion }) };
+      if (nombre === '../services/liquidacionService') return require('../src/services/liquidacionService');
+      return require(nombre);
+    },
+    console: { error() {} }
+  });
+  const api = modulo.exports;
+  const invocar = async (handler, body, params = {}) => {
+    let respuesta;
+    await handler({ body, params }, {
+      status(status) { this.codigo = status; return this; },
+      json(data) { respuesta = { status: this.codigo, data: JSON.parse(JSON.stringify(data)) }; }
+    });
+    return respuesta;
+  };
+  const registrar = (id, importe, extra = {}) => invocar(api.registrarPago, {
+    id, metodo_de_pago: 'efectivo', total_seleccionado: importe,
+    pedidos_id: 'test-pedido', usuarios_id: 'test-usuario', ...extra
+  });
+  const verificar = (id, decision = 'verificado') => invocar(api.verificarPago,
+    { verificacion_estado: decision }, { id });
+  const tablas = ['mesas', 'pedidos', 'pedido_items', 'pagos', 'sesiones_juego',
+    'sesiones_division_cuentas', 'division_participantes'];
+  const preparar = async () => {
+    fallar = null;
+    falloCommit = false;
+    for (const tabla of tablas) await real.query(`DELETE FROM ${tabla}`);
+    await real.query("INSERT INTO mesas (id,numero,estado,creado_en) VALUES ('test-mesa',999,'ocupada',NOW())");
+    await real.query(`INSERT INTO pedidos (id,estado,creado_en,mesas_id,usuarios_id,clientes_id)
+      VALUES ('test-pedido','abierto',NOW(),'test-mesa','test-usuario','test-cliente')`);
+    await real.query(`INSERT INTO pedido_items
+      (id,precio_unitario,pedido_id,producto_id,cantidad_pedida,cantidad_pagada,estado,pedidos_id,productos_id)
+      VALUES ('test-item',100,'test-pedido','test-producto',10,0,'servido','test-pedido','test-producto')`);
+  };
+  const juego = (estado, costo) => real.query(`INSERT INTO sesiones_juego
+    (id,tipo_juego,costo_total,estado,activos_juego_id,mesas_id,iniciada_por,cerrada_por,pedido_items_id)
+    VALUES ('test-juego','billar',?,?,'test-activo','test-mesa','test-usuario','test-usuario','test-item')`, [costo, estado]);
+  try {
+    // Crear todas las copias antes de habilitar DELETE/UPDATE para evitar tocar tablas reales.
+    for (const tabla of tablas) {
+      await real.query(`CREATE TEMPORARY TABLE copia_${tabla} LIKE ${tabla}`);
+      await real.query(`CREATE TEMPORARY TABLE ${tabla} LIKE copia_${tabla}`);
+    }
+    await t.test('pendiente, parcial, final, cantidades e idempotencia', async () => {
+      await preparar();
+      let r = await registrar('test-p1', 400);
+      assert.equal(r.status, 201);
+      assert.equal(r.data.liquidacion.total_pagado, '0.00');
+      assert.equal(r.data.liquidacion.saldo_pendiente, '1000.00');
+      assert.equal(r.data.liquidacion.estado_mesa, 'en_cobro');
+      r = await verificar('test-p1');
+      assert.equal(r.data.liquidacion.saldo_pendiente, '600.00');
+      assert.equal(r.data.liquidacion.cuenta_liquidada, false);
+      assert.equal((await registrar('test-p1', 400)).status, 409);
+      assert.equal((await registrar('test-exceso', 601)).status, 409);
+      assert.equal((await registrar('test-p2', 600)).status, 201);
+      r = await verificar('test-p2');
+      assert.equal(r.status, 200);
+      assert.equal(r.data.liquidacion.total_pagado, '1000.00');
+      assert.equal(r.data.liquidacion.cuenta_liquidada, true);
+      assert.equal(r.data.liquidacion.estado_pedido, 'cerrado');
+      assert.equal(r.data.liquidacion.estado_mesa, 'disponible');
+      const [[item]] = await real.query("SELECT cantidad_pagada FROM pedido_items WHERE id='test-item'");
+      assert.equal(item.cantidad_pagada, 10);
+      assert.deepEqual((await verificar('test-p2')).data, r.data);
+      assert.equal((await registrar('test-p3', 1)).status, 409);
+      assert.equal((await verificar('test-p2', 'rechazado')).status, 409);
+    });
+    await t.test('reservas pendientes y rechazo no cuentan como dinero pagado', async () => {
+      await preparar();
+      await registrar('test-p1', 700);
+      assert.equal((await registrar('test-p2', 400)).status, 409);
+      const r = await verificar('test-p1', 'rechazado');
+      assert.equal(r.data.liquidacion.total_pagado, '0.00');
+      assert.equal(r.data.liquidacion.pagos_pendientes_verificacion, '0.00');
+      assert.equal((await registrar('test-p2', 1000)).status, 201);
+    });
+    await t.test('juegos activos y costos desconocidos impiden un cierre prematuro', async () => {
+      await preparar(); await juego('activa', null);
+      await registrar('test-p1', 1000);
+      let r = await verificar('test-p1');
+      assert.equal(r.data.liquidacion.saldo_pendiente, '0.00');
+      assert.equal(r.data.liquidacion.total_definitivo, false);
+      assert.equal(r.data.liquidacion.cuenta_liquidada, false);
+      await real.query("UPDATE sesiones_juego SET estado='cerrada', costo_total=150 WHERE id='test-juego'");
+      assert.equal((await registrar('test-p2', 151)).status, 409);
+      await registrar('test-p2', 150);
+      r = await verificar('test-p2');
+      assert.equal(r.data.liquidacion.total_cuenta, '1150.00');
+      assert.equal(r.data.liquidacion.cuenta_liquidada, true);
+    });
+    await t.test('otro pedido abierto conserva la mesa en cobro', async () => {
+      await preparar();
+      await real.query(`INSERT INTO pedidos (id,estado,creado_en,mesas_id,usuarios_id,clientes_id)
+        VALUES ('test-otro','abierto',NOW(),'test-mesa','test-usuario','test-cliente')`);
+      await registrar('test-p1', 1000);
+      const r = await verificar('test-p1');
+      assert.equal(r.data.liquidacion.cuenta_liquidada, true);
+      assert.equal(r.data.liquidacion.estado_mesa, 'en_cobro');
+    });
+    await t.test('importe exacto en centavos y límites de DECIMAL(10,0)', async () => {
+      await preparar();
+      await real.query("UPDATE pedido_items SET precio_unitario=100.05 WHERE id='test-item'");
+      assert.equal((await registrar('test-decimal', 1000.50)).status, 400);
+      await registrar('test-p1', 1000);
+      const r = await verificar('test-p1');
+      assert.equal(r.data.liquidacion.saldo_pendiente, '0.50');
+      assert.equal(r.data.liquidacion.cuenta_liquidada, false);
+      assert.equal((await registrar('test-p2', 1)).status, 409);
+    });
+    await t.test('participante: límites y actualización del estado', async () => {
+      await preparar();
+      await real.query(`INSERT INTO sesiones_division_cuentas (id,modalidad,usuarios_id,mesas_id)
+        VALUES ('test-division','items','test-usuario','test-mesa')`);
+      await real.query(`INSERT INTO division_participantes (id,sesion_division_id,nombre_cliente,total_asignado)
+        VALUES ('test-part','test-division','Prueba',400)`);
+      const extra = { sesion_division_id: 'test-division', participante_id: 'test-part' };
+      assert.equal((await registrar('test-exceso', 401, extra)).status, 409);
+      assert.equal((await registrar('test-p1', 400, extra)).status, 201);
+      assert.equal((await verificar('test-p1')).status, 200);
+      const [[p]] = await real.query("SELECT estado FROM division_participantes WHERE id='test-part'");
+      assert.equal(p.estado, 'pagado');
+    });
+    await t.test('rollback de registro y de verificación tras fallo SQL o commit', async () => {
+      await preparar();
+      fallar = 'UPDATE mesas';
+      assert.equal((await registrar('test-p1', 1000)).status, 500);
+      const [[cantidad]] = await real.query('SELECT COUNT(*) AS n FROM pagos');
+      assert.equal(cantidad.n, 0);
+      fallar = null;
+      await registrar('test-p1', 1000);
+      for (const tipo of ['sql', 'commit']) {
+        fallar = tipo === 'sql' ? 'UPDATE mesas' : null;
+        falloCommit = tipo === 'commit';
+        assert.equal((await verificar('test-p1')).status, 500);
+        const [[p]] = await real.query("SELECT estado FROM pagos WHERE id='test-p1'");
+        const [[pedido]] = await real.query("SELECT estado FROM pedidos WHERE id='test-pedido'");
+        assert.equal(p.estado, 'pendiente');
+        assert.equal(pedido.estado, 'abierto');
+      }
+    });
+  } finally {
+    await real.end();
+  }
+});
