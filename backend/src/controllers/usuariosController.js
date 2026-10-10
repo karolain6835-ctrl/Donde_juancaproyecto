@@ -1,4 +1,6 @@
 const db = require('../config/db');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 // 1. Registro de nuevo usuario/empleado (Simulado)
 exports.registrarUsuario = async (req, res) => {
@@ -20,29 +22,60 @@ exports.registrarUsuario = async (req, res) => {
   });
 };
 
-// 2. Inicio de Sesión / Login (Simulado)
+// 2. Inicio de sesión real (usuarios y rol de MySQL)
 exports.loginUsuario = async (req, res) => {
-  const { correo, contrasena } = req.body;
+  const { correo, contrasena } = req.body || {};
 
-  if (!correo || !contrasena) {
+  if (typeof correo !== 'string' || !correo.trim() ||
+      typeof contrasena !== 'string' || !contrasena || Buffer.byteLength(contrasena, 'utf8') > 72) {
     return res.status(400).json({ error: 'El correo y la contraseña son obligatorios.' });
   }
 
-  // Simulación de validación de credenciales
-  if (correo === "admin@dondejuanca.com" && contrasena === "123456") {
-    return res.json({
-      mensaje: "¡Inicio de sesión exitoso! Bienvenido al sistema de Donde Juanca. 🔓✨",
-      token_simulado: "jwt-token-dondejuanca-2026-xyz123",
+  const secreto = process.env.JWT_SECRET;
+  const vigencia = Number(process.env.JWT_EXPIRES_IN_SECONDS || 3600);
+  if (!secreto || Buffer.byteLength(secreto, 'utf8') < 32 ||
+      !Number.isSafeInteger(vigencia) || vigencia <= 0) {
+    console.error('Configuración JWT ausente o inválida.');
+    return res.status(500).json({ error: 'El inicio de sesión no está configurado correctamente.' });
+  }
+  try {
+    const [usuarios] = await db.promise().query(`
+      SELECT u.id, u.nombre, u.email, u.password_hash, u.estado, u.roles_id, r.nombre AS rol
+      FROM usuarios u JOIN roles r ON r.id = u.roles_id
+      WHERE u.email = ? LIMIT 1
+    `, [correo.trim()]);
+    const usuario = usuarios[0];
+    // Los marcadores de desarrollo no se interpretan como contraseñas en texto plano.
+    const hashValido = usuario && /^\$2[ab]\$(0[4-9]|[12]\d|3[01])\$[./A-Za-z0-9]{53}$/.test(usuario.password_hash);
+    if (!hashValido || !await bcrypt.compare(contrasena, usuario.password_hash)) {
+      return res.status(401).json({ error: 'Credenciales incorrectas.' });
+    }
+    if (usuario.estado !== 'activo') {
+      return res.status(403).json({ error: 'El usuario no está activo.' });
+    }
+    const token = jwt.sign({ roles_id: usuario.roles_id, rol: usuario.rol }, secreto, {
+      algorithm: 'HS256', subject: usuario.id, issuer: 'dondejuanca', expiresIn: vigencia
+    });
+    // No autenticar si el usuario fue desactivado o su contraseña cambió durante bcrypt.
+    const [actualizacion] = await db.promise().query(`
+      UPDATE usuarios SET ultimo_acceso = NOW()
+      WHERE id = ? AND estado = 'activo' AND BINARY password_hash = BINARY ? AND roles_id = ?
+    `, [usuario.id, usuario.password_hash, usuario.roles_id]);
+    if (actualizacion.affectedRows !== 1) {
+      return res.status(401).json({ error: 'Las credenciales o el estado cambiaron. Intenta nuevamente.' });
+    }
+    return res.status(200).json({
+      mensaje: '¡Inicio de sesión exitoso! Bienvenido al sistema de Donde Juanca. 🔓✨',
+      token, token_type: 'Bearer', expires_in: vigencia,
       usuario: {
-        nombre: "Karol Julio",
-        correo: correo,
-        rol: "Administrador"
+        id: usuario.id, nombre: usuario.nombre, correo: usuario.email,
+        roles_id: usuario.roles_id, rol: usuario.rol
       }
     });
-  } else {
-    return res.status(401).json({ 
-      error: 'Credenciales incorrectas. Intenta con admin@dondejuanca.com y contraseña 123456' 
-    });
+  } catch (error) {
+    // No imprimir la consulta ni valores que puedan contener password_hash.
+    console.error('Error al iniciar sesión:', error.code || error.name);
+    return res.status(500).json({ error: 'Error interno al iniciar sesión.' });
   }
 };
 // 3. Generar y registrar código OTP (Restablecimiento de contraseña)

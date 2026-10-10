@@ -3,6 +3,14 @@
 Todas las modificaciones estructurales y de datos importantes de la base de datos se documentarán en este archivo, siguiendo un orden cronológico inverso (lo más nuevo arriba).
 
 ---
+## [v2.21] - 2026-10-09
+### Añadido (preparado; no aplicado a los datos existentes)
+- `v2.21_passwords_desarrollo.sql`: actualización parametrizada y optativa de
+  `usuarios.password_hash`, ejecutada por `scripts/inicializar-login-desarrollo.js`.
+- El inicializador genera bcrypt con sal por usuario, conserva hashes válidos,
+  exige entorno de desarrollo/prueba para aplicar y muestra vista previa por defecto.
+- No modifica el esquema, estados, roles, OTP ni migraciones anteriores.
+
 ## Versión 10. - 2026-07-15
 ### Añadido
 - Endpoint `POST /api/productos` completamente funcional y conectado a MySQL.

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -21,9 +21,12 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [mostrarPassword, setMostrarPassword] = useState(false);
   const [error, setError] = useState("");
+  const [enviando, setEnviando] = useState(false);
+  const solicitudEnCurso = useRef(false);
 
-  function iniciarSesion(event) {
+  async function iniciarSesion(event) {
     event.preventDefault();
+    if (solicitudEnCurso.current) return;
 
     if (!email.trim() || !password.trim()) {
       setError("Ingresa tu correo y contraseña.");
@@ -31,13 +34,66 @@ function LoginPage() {
     }
 
     setError("");
+    solicitudEnCurso.current = true;
+    setEnviando(true);
 
-    /*
-      Inicio de sesión temporal/local.
-      Cuando conectemos autenticación con el backend,
-      esta navegación será reemplazada por la llamada real a la API.
-    */
-    navigate("/dashboard");
+    try {
+      let respuesta;
+      try {
+        respuesta = await fetch("http://localhost:5000/api/usuarios/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ correo: email, contrasena: password }),
+        });
+      } catch {
+        setError("No se pudo conectar con el servidor. Intenta nuevamente.");
+        return;
+      }
+
+      const datos = await respuesta.json().catch(() => null);
+      const mensaje = typeof datos?.error === "string"
+        ? datos.error
+        : typeof datos?.mensaje === "string" ? datos.mensaje : null;
+
+      if (!respuesta.ok) {
+        if (respuesta.status === 401) {
+          setError("Correo o contraseña incorrectos.");
+        } else if (respuesta.status === 403) {
+          setError(mensaje || "El usuario está inactivo o bloqueado.");
+        } else if (respuesta.status === 400) {
+          setError(mensaje || "Revisa el correo y la contraseña ingresados.");
+        } else {
+          setError("Ocurrió un error en el servidor. Intenta nuevamente más tarde.");
+        }
+        return;
+      }
+
+      if (typeof datos?.token !== "string" || !datos.token ||
+          !datos.usuario || typeof datos.usuario !== "object" ||
+          Array.isArray(datos.usuario)) {
+        setError("El servidor devolvió una respuesta de login inválida.");
+        return;
+      }
+
+      try {
+        localStorage.setItem("dondejuanca_usuario", JSON.stringify(datos.usuario));
+        localStorage.setItem("dondejuanca_token", datos.token);
+      } catch {
+        try {
+          localStorage.removeItem("dondejuanca_usuario");
+          localStorage.removeItem("dondejuanca_token");
+        } catch {
+          // El navegador puede bloquear también la eliminación del almacenamiento.
+        }
+        setError("No se pudo guardar la sesión en el navegador.");
+        return;
+      }
+
+      navigate("/dashboard");
+    } finally {
+      solicitudEnCurso.current = false;
+      setEnviando(false);
+    }
   }
 
   return (
@@ -201,7 +257,7 @@ function LoginPage() {
             </label>
 
             {error && (
-              <div className="login-error">
+              <div className="login-error" role="alert">
                 {error}
               </div>
             )}
@@ -209,8 +265,10 @@ function LoginPage() {
             <button
               type="submit"
               className="login-submit"
+              disabled={enviando}
+              aria-busy={enviando}
             >
-              Iniciar sesión
+              {enviando ? "Iniciando sesión…" : "Iniciar sesión"}
 
               <ArrowRight
                 size={18}

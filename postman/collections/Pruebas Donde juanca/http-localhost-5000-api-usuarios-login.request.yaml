@@ -1,0 +1,15 @@
+$kind: http-request
+name: " http://localhost:5000/api/usuarios/login"
+description: ""
+url: " http://localhost:5000/api/usuarios/login"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"correo\": \"juanca.admin@dondejuanca.com\",\r
+
+    \  \"contrasena\": \"incorrecta123\"\r
+
+    }"
+order: 4503596146253635
