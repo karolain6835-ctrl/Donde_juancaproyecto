@@ -1,0 +1,17 @@
+$kind: http-request
+name: http://localhost:5000/api/pedidos/beded72e-5143-45d8-9fbb-0def2ec84838/items
+description: ""
+url: http://localhost:5000/api/pedidos/beded72e-5143-45d8-9fbb-0def2ec84838/items
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"productos_id\": \"4b2b8ad5-1353-4e07-b87b-932faa6785b8\",\r
+
+    \  \"cantidad_pedida\": 1,\r
+
+    \  \"precio_unitario\": 5000\r
+
+    }"
+order: 4503596146251635

@@ -1,5 +1,8 @@
 const db = require('../config/db');
 const mysql = require('mysql2');
+const crypto = require('crypto');
+const { bloquearPedido, calcularCuenta, validarImporte, actualizarLiquidacion,
+  validarParticipante, errorLiquidacion, centavos } = require('../services/liquidacionService');
 
 // ==========================================
 // REGISTRAR PAGO
@@ -76,7 +79,7 @@ exports.registrarPago = async (req, res) => {
   // GENERAR ID DEL PAGO
   // ==========================================
 
-  const idPago = id || `pago-${Date.now()}`;
+  const idPago = id || `pago-${crypto.randomBytes(7).toString('hex')}`;
 
   if (typeof idPago !== 'string' || idPago.length > 20) {
     return res.status(400).json({
@@ -101,23 +104,11 @@ exports.registrarPago = async (req, res) => {
     // VALIDAR PEDIDO
     // ==========================================
 
-    const [pedidos] = await conexion.query(
-      `
-      SELECT id, mesas_id
-      FROM pedidos
-      WHERE id = ?
-      FOR UPDATE
-      `,
-      [pedidos_id]
-    );
-
-    if (pedidos.length === 0) {
-      const error = new Error('El pedido no existe.');
-      error.status = 404;
-      throw error;
-    }
-
-    const pedido = pedidos[0];
+    const pedido = await bloquearPedido(conexion, pedidos_id);
+    if (pedido.estado !== 'abierto') throw errorLiquidacion(409, 'El pedido no está abierto.');
+    const cuenta = await calcularCuenta(conexion, pedido);
+    if (cuenta.pagos.some(p => p.id === idPago)) throw errorLiquidacion(409, 'El pago ya existe.');
+    validarImporte(cuenta, centavos(importe));
 
     // ==========================================
     // VALIDAR SESIÓN DE DIVISIÓN
@@ -188,6 +179,7 @@ exports.registrarPago = async (req, res) => {
         error.status = 400;
         throw error;
       }
+      await validarParticipante(conexion, participante_id, centavos(importe));
     }
 
     // ==========================================
@@ -233,6 +225,9 @@ exports.registrarPago = async (req, res) => {
       usuarios_id
     ]);
 
+    // Registrar no equivale a verificar: el nuevo pago aún no reduce la deuda.
+    const liquidacion = await actualizarLiquidacion(conexion, pedido, await calcularCuenta(conexion, pedido));
+
     // ==========================================
     // CONFIRMAR TRANSACCIÓN
     // ==========================================
@@ -245,7 +240,8 @@ exports.registrarPago = async (req, res) => {
         'Pago registrado pendiente de verificación.',
       id_pago: idPago,
       estado: 'pendiente',
-      verificacion_estado: 'pendiente'
+      verificacion_estado: 'pendiente',
+      liquidacion
     });
   } catch (error) {
     // ==========================================
@@ -298,6 +294,66 @@ exports.registrarPago = async (req, res) => {
           errorConexion.message
         );
       }
+    }
+  }
+};
+
+// ==========================================
+// VERIFICAR PAGO Y LIQUIDAR (registrar un pago pendiente no liquida la deuda)
+// ==========================================
+exports.verificarPago = async (req, res) => {
+  const { verificacion_estado } = req.body || {};
+  if (!['verificado', 'rechazado'].includes(verificacion_estado)) {
+    return res.status(400).json({ error: 'verificacion_estado debe ser verificado o rechazado.' });
+  }
+  let conexion;
+  let transaccionIniciada = false;
+  try {
+    conexion = mysql.createConnection(db.dbConfig).promise();
+    await conexion.beginTransaction();
+    transaccionIniciada = true;
+    const [ubicacion] = await conexion.query('SELECT pedidos_id FROM pagos WHERE id = ?', [req.params.id]);
+    if (!ubicacion.length) throw errorLiquidacion(404, 'El pago no existe.');
+    const pedido = await bloquearPedido(conexion, ubicacion[0].pedidos_id);
+    const [pagos] = await conexion.query('SELECT * FROM pagos WHERE id = ? FOR UPDATE', [req.params.id]);
+    const pago = pagos[0];
+    if (!pago || pago.pedidos_id !== pedido.id) throw errorLiquidacion(409, 'El pago cambió durante la operación.');
+    const estado = verificacion_estado === 'verificado' ? 'pagado' : 'cancelado';
+    const repetido = pago.verificacion_estado === verificacion_estado && pago.estado === estado;
+    if (!repetido) {
+      if (pago.verificacion_estado !== 'pendiente' || pago.estado !== 'pendiente') {
+        throw errorLiquidacion(409, 'El pago ya fue procesado; no se puede cambiar su decisión.');
+      }
+      if (pedido.estado !== 'abierto') throw errorLiquidacion(409, 'El pedido no está abierto.');
+      const cuenta = await calcularCuenta(conexion, pedido);
+      if (verificacion_estado === 'verificado' && centavos(pago.total_seleccionado) > cuenta.saldo) {
+        throw errorLiquidacion(409, 'El pago supera el saldo actual del pedido.');
+      }
+      const [resultado] = await conexion.query(
+        'UPDATE pagos SET verificacion_estado = ?, estado = ? WHERE id = ?',
+        [verificacion_estado, estado, pago.id]
+      );
+      if (resultado.affectedRows !== 1) throw new Error('No se actualizó el pago.');
+    }
+    if (pago.participante_id) await validarParticipante(conexion, pago.participante_id);
+    const liquidacion = await actualizarLiquidacion(conexion, pedido, await calcularCuenta(conexion, pedido));
+    await conexion.commit();
+    transaccionIniciada = false;
+    return res.status(200).json({
+      mensaje: verificacion_estado === 'verificado' ? 'Pago verificado.' : 'Pago rechazado.',
+      id_pago: pago.id, estado, verificacion_estado, liquidacion
+    });
+  } catch (error) {
+    if (transaccionIniciada) {
+      try { await conexion.rollback(); }
+      catch (errorRollback) { console.error('Error al revertir verificación:', errorRollback.message); }
+    }
+    console.error('Error al verificar pago:', error.message);
+    return res.status(error.status || 500).json({ error: error.status ? error.message : 'Error al verificar el pago.' });
+  } finally {
+    if (conexion) {
+      try { await conexion.end(); }
+      catch (errorConexion) { console.error('Error al cerrar conexión de verificación:', errorConexion.message); }
     }
   }
 };

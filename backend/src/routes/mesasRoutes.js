@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const mesasController = require('../controllers/mesasController');
+const pedidosController = require('../controllers/pedidosController');
+
+// Ruta canónica para la cuenta consolidada de una mesa (productos + juegos).
+router.get('/:mesa_id/cuenta', pedidosController.obtenerCuentaConsolidada);
 
 // Usamos "/:estado" para que sea una variable dinámica en la URL
 router.get('/estado/:estado', mesasController.obtenerMesasPorEstado);

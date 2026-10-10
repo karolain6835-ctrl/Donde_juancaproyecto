@@ -1,0 +1,9 @@
+$kind: http-request
+name: http://localhost:5000/api/pedidos/items/48faacae-6bf4-475c-89c8-d818278c8fd8/cancelar
+description: ""
+url: http://localhost:5000/api/pedidos/items/48faacae-6bf4-475c-89c8-d818278c8fd8/cancelar
+method: PUT
+body:
+  type: json
+  content: ""
+order: 4503594904526774

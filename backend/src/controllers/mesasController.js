@@ -1,4 +1,5 @@
 const db = require('../config/db');
+const mysql = require('mysql2');
 
 // Obtener mesas filtradas por su estado
 const obtenerMesasPorEstado = (req, res) => {
@@ -59,111 +60,136 @@ const actualizarEstadoMesa = (req, res) => {
 // ==========================================
 // TRASLADAR CUENTA Y JUEGOS DE UNA MESA A OTRA
 // ==========================================
-const trasladarMesa = (req, res) => {
-  const { mesa_origen_id, mesa_destino_id } = req.body;
-
+const trasladarMesa = async (req, res) => {
+  const { mesa_origen_id, mesa_destino_id } = req.body || {};
   if (!mesa_origen_id || !mesa_destino_id) {
-    return res.status(400).json({ 
-      error: "Faltan datos. Se requiere la 'mesa_origen_id' y la 'mesa_destino_id'." 
-    });
+    return res.status(400).json({ error: "Faltan datos. Se requiere la 'mesa_origen_id' y la 'mesa_destino_id'." });
+  }
+  if (typeof mesa_origen_id !== 'string' || typeof mesa_destino_id !== 'string') {
+    return res.status(400).json({ error: 'Los identificadores de mesa deben ser cadenas.' });
+  }
+  if (mesa_origen_id.toLowerCase() === mesa_destino_id.toLowerCase()) {
+    return res.status(400).json({ error: 'La mesa de origen y la mesa de destino no pueden ser la misma.' });
   }
 
-  if (mesa_origen_id === mesa_destino_id) {
-    return res.status(400).json({ 
-      error: "La mesa de origen y la mesa de destino no pueden ser la misma." 
-    });
-  }
+  let conexion;
+  let transaccionIniciada = false;
+  let mensajeError = 'Error interno al procesar la solicitud.';
+  const rechazar = (status, mensaje) => { throw Object.assign(new Error(mensaje), { status }); };
+  try {
+    // Conexión exclusiva: otras peticiones no comparten esta transacción.
+    conexion = mysql.createConnection(db.dbConfig).promise();
+    await conexion.beginTransaction();
+    transaccionIniciada = true;
+    // Orden estable para serializar traslados concurrentes de las mismas mesas.
+    const [mesas] = await conexion.query(
+      'SELECT id, estado FROM mesas WHERE id IN (?, ?) ORDER BY id FOR UPDATE',
+      [mesa_origen_id, mesa_destino_id]
+    );
+    if (mesas.length !== 2) rechazar(404, 'La mesa de origen o de destino no existe.');
+    const origen = mesas.find(m => m.id.toLowerCase() === mesa_origen_id.toLowerCase());
+    const destino = mesas.find(m => m.id.toLowerCase() === mesa_destino_id.toLowerCase());
+    if (!origen || !destino) rechazar(404, 'La mesa de origen o de destino no existe.');
 
-  db.beginTransaction((errTx) => {
-    if (errTx) {
-      console.error('❌ Error al iniciar transacción:', errTx.message);
-      return res.status(500).json({ error: 'Error interno al procesar la solicitud.' });
+    mensajeError = 'Error al verificar disponibilidad de la mesa destino.';
+    const [ocupacion] = await conexion.query(`
+      SELECT id FROM pedidos WHERE mesas_id = ? AND estado = 'abierto'
+      UNION ALL
+      SELECT id FROM sesiones_juego WHERE mesas_id = ? AND estado = 'activa'
+      UNION ALL
+      SELECT id FROM sesiones_division_cuentas WHERE mesas_id = ?
+      UNION ALL
+      SELECT id FROM sesiones_division WHERE mesas_id = ?
+    `, [destino.id, destino.id, destino.id, destino.id]);
+    if (destino.estado !== 'disponible' || ocupacion.length) {
+      rechazar(400, 'La mesa de destino ya se encuentra ocupada con una cuenta activa.');
     }
 
-    // 1. Verificar si la mesa de destino ya tiene una cuenta abierta o juego en progreso
-    const sqlVerificarDestino = `
-      SELECT id FROM pedidos WHERE mesas_id = ? AND estado = 'abierto'
-      UNION
-      SELECT id FROM sesiones_juego WHERE mesas_id = ? AND estado = 'en_progreso'
+    // También mover juegos cerrados cuyo consumo pertenece a pedidos aún abiertos.
+    const juegosDeCuenta = `
+      sj.mesas_id = ? AND (sj.estado = 'activa' OR
+        (sj.estado = 'cerrada' AND EXISTS (
+          SELECT 1 FROM pedido_items pi
+          JOIN pedidos ped ON (pi.pedido_id = ped.id OR pi.pedidos_id = ped.id)
+          WHERE pi.id = sj.pedido_items_id AND ped.mesas_id = ? AND ped.estado = 'abierto'
+        )))
     `;
+    mensajeError = 'Error al trasladar las sesiones de juego.';
+    // Jugadores tienen referencia propia a mesa; rondas e ítems mantienen sus IDs.
+    await conexion.query(`
+      UPDATE jugadores j
+      JOIN ronda_jugadores rj ON rj.jugadores_id = j.id
+      JOIN rondas r ON r.id = rj.rondas_id
+      JOIN sesiones_juego sj ON sj.id = r.sesiones_juego_id
+      SET j.mesas_id = ?
+      WHERE j.mesas_id = ? AND (${juegosDeCuenta})
+    `, [destino.id, origen.id, origen.id, origen.id]);
+    const [resJuegos] = await conexion.query(`
+      UPDATE sesiones_juego sj SET sj.mesas_id = ? WHERE ${juegosDeCuenta}
+    `, [destino.id, origen.id, origen.id]);
 
-    db.query(sqlVerificarDestino, [mesa_destino_id, mesa_destino_id], (errDestino, resDestino) => {
-      if (errDestino) {
-        return db.rollback(() => {
-          console.error('❌ Error al verificar mesa destino:', errDestino.message);
-          res.status(500).json({ error: 'Error al verificar disponibilidad de la mesa destino.' });
-        });
-      }
+    mensajeError = 'Error al trasladar los pedidos a la nueva mesa.';
+    const [resPedido] = await conexion.query(`
+      UPDATE pedidos SET mesas_id = ? WHERE mesas_id = ? AND estado = 'abierto'
+    `, [destino.id, origen.id]);
 
-      if (resDestino.length > 0) {
-        return db.rollback(() => {
-          res.status(400).json({ 
-            error: 'La mesa de destino ya se encuentra ocupada con una cuenta activa.' 
-          });
-        });
-      }
+    // No hay estado ni pedido asociado en ninguna de las tablas de división.
+    mensajeError = 'Error al trasladar las sesiones de división.';
+    const [resDivision] = await conexion.query(
+      'UPDATE sesiones_division_cuentas SET mesas_id = ? WHERE mesas_id = ?', [destino.id, origen.id]
+    );
+    const [resDivisionOriginal] = await conexion.query(
+      'UPDATE sesiones_division SET mesas_id = ? WHERE mesas_id = ?', [destino.id, origen.id]
+    );
+    if (!resPedido.affectedRows && !resJuegos.affectedRows &&
+        !resDivision.affectedRows && !resDivisionOriginal.affectedRows) {
+      rechazar(404, 'La mesa de origen no tiene ningún pedido ni juego activo para trasladar.');
+    }
 
-      // 2. Mover el pedido abierto a la nueva mesa
-      const sqlMoverPedido = `
-        UPDATE pedidos 
-        SET mesas_id = ? 
-        WHERE mesas_id = ? AND estado = 'abierto'
-      `;
+    mensajeError = 'Error al actualizar los estados de las mesas.';
+    const estadoDestino = origen.estado === 'en_cobro' ? 'en_cobro' : 'ocupada';
+    const [resEstadoOrigen] = await conexion.query(
+      "UPDATE mesas SET estado = 'disponible' WHERE id = ?", [origen.id]
+    );
+    const [resEstadoDestino] = await conexion.query(
+      'UPDATE mesas SET estado = ? WHERE id = ?', [estadoDestino, destino.id]
+    );
+    if (resEstadoOrigen.affectedRows !== 1 || resEstadoDestino.affectedRows !== 1) {
+      throw new Error('No se actualizó exactamente una fila por mesa durante el traslado.');
+    }
+    // Verificar el estado real en la misma transacción antes de confirmar el traslado.
+    const [estadosFinales] = await conexion.query(
+      'SELECT id, estado FROM mesas WHERE id IN (?, ?) FOR UPDATE', [origen.id, destino.id]
+    );
+    if (estadosFinales.find(m => m.id === origen.id)?.estado !== 'disponible' ||
+        estadosFinales.find(m => m.id === destino.id)?.estado !== estadoDestino) {
+      throw new Error('Los estados de las mesas no coinciden con el resultado esperado del traslado.');
+    }
 
-      db.query(sqlMoverPedido, [mesa_destino_id, mesa_origen_id], (errPedido, resPedido) => {
-        if (errPedido) {
-          return db.rollback(() => {
-            console.error('❌ Error al trasladar el pedido:', errPedido.message);
-            res.status(500).json({ error: 'Error al trasladar los pedidos a la nueva mesa.' });
-          });
-        }
-
-        // 3. Mover las sesiones de juego activas a la nueva mesa
-        const sqlMoverJuegos = `
-          UPDATE sesiones_juego 
-          SET mesas_id = ? 
-          WHERE mesas_id = ? AND estado = 'en_progreso'
-        `;
-
-        db.query(sqlMoverJuegos, [mesa_destino_id, mesa_origen_id], (errJuegos, resJuegos) => {
-          if (errJuegos) {
-            return db.rollback(() => {
-              console.error('❌ Error al trasladar sesiones de juego:', errJuegos.message);
-              res.status(500).json({ error: 'Error al trasladar las sesiones de juego.' });
-            });
-          }
-
-          // Verificar si realmente había algo que mover
-          if (resPedido.affectedRows === 0 && resJuegos.affectedRows === 0) {
-            return db.rollback(() => {
-              res.status(404).json({ 
-                error: 'La mesa de origen no tiene ningún pedido ni juego activo para trasladar.' 
-              });
-            });
-          }
-
-          // 4. Confirmar la transacción
-          db.commit((errCommit) => {
-            if (errCommit) {
-              return db.rollback(() => {
-                console.error('❌ Error al confirmar la transacción:', errCommit.message);
-                res.status(500).json({ error: 'Error al finalizar el traslado.' });
-              });
-            }
-
-            return res.status(200).json({
-              exito: true,
-              mensaje: `¡Cuenta trasladada con éxito de la mesa ${mesa_origen_id} a la mesa ${mesa_destino_id}! 🔀`,
-              pedidos_movidos: resPedido.affectedRows,
-              juegos_movidos: resJuegos.affectedRows
-            });
-          });
-        });
-      });
+    mensajeError = 'Error al finalizar el traslado.';
+    await conexion.commit();
+    transaccionIniciada = false;
+    return res.status(200).json({
+      exito: true,
+      mensaje: `¡Cuenta trasladada con éxito de la mesa ${mesa_origen_id} a la mesa ${mesa_destino_id}! 🔀`,
+      pedidos_movidos: resPedido.affectedRows,
+      juegos_movidos: resJuegos.affectedRows
     });
-  });
+  } catch (error) {
+    if (transaccionIniciada) {
+      try { await conexion.rollback(); }
+      catch (errorRollback) { console.error('Error al revertir traslado:', errorRollback.message); }
+    }
+    console.error('Error al trasladar mesa:', error.message);
+    return res.status(error.status || 500).json({ error: error.status ? error.message : mensajeError });
+  } finally {
+    if (conexion) {
+      try { await conexion.end(); }
+      catch (errorConexion) { console.error('Error al cerrar conexión de traslado:', errorConexion.message); }
+    }
+  }
 };
-// EL MÓDULO SE EXPORTA AL FINAL DE TODO
+
 module.exports = {
   obtenerMesasPorEstado,
   actualizarEstadoMesa,

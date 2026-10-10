@@ -11,7 +11,7 @@ router.post('/:id_pedido/items', pedidosController.agregarItemPedido);
 // 3. Consultar la cuenta completa con sus detalles
 router.get('/:id', pedidosController.obtenerPedidoConDetalles);
 
-// 4. Calcular la cuenta consolidada (productos + juegos)
+// 4. Alias temporal de /api/mesas/:mesa_id/cuenta: `id` identifica una mesa.
 router.get('/:id/cuenta', pedidosController.obtenerCuentaConsolidada);
 
 // 5. Cancelar un item del pedido y liberar stock

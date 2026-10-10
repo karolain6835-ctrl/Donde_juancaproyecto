@@ -1,0 +1,13 @@
+$kind: http-request
+name: http://localhost:5000/api/pagos/pago-1791311549792/verificar
+description: ""
+url: http://localhost:5000/api/pagos/pago-1791311549792/verificar
+method: PATCH
+body:
+  type: json
+  content: "{\r
+
+    \  \"verificacion_estado\": \"rechazado\"\r
+
+    }"
+order: 4503596146246635

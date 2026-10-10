@@ -1,4 +1,5 @@
 const db = require('../config/db');
+const mysql = require('mysql2');
 const crypto = require('crypto'); // Generador de UUIDs
 
 // ==========================================
@@ -43,98 +44,80 @@ const crearPedido = (req, res) => {
 // ==========================================
 // 2. AGREGAR UN PRODUCTO AL PEDIDO Y DESCONTAR INVENTARIO
 // ==========================================
-const agregarItemPedido = (req, res) => {
-  const { id_pedido } = req.params;
-  const { productos_id, cantidad_pedida, precio_unitario } = req.body;
+// Conexi?n exclusiva: las consultas de otras peticiones no comparten la transacci?n.
+const errorPedido = (status, mensaje) => Object.assign(new Error(mensaje), { status });
 
-  if (!productos_id || !cantidad_pedida || !precio_unitario) {
-    return res.status(400).json({ 
-      error: "Faltan datos. Se requiere el producto, la cantidad y el precio." 
-    });
+const finalizarTransaccionPedido = async (conexion, transaccionIniciada, error, res, mensaje) => {
+  if (transaccionIniciada) {
+    try { await conexion.rollback(); }
+    catch (errorRollback) { console.error('Error al revertir pedido:', errorRollback.message); }
+  }
+  console.error('Error al procesar pedido:', error.message);
+  return res.status(error.status || 500).json({ error: error.status ? error.message : mensaje });
+};
+
+const cerrarConexionPedido = async (conexion) => {
+  if (conexion) {
+    try { await conexion.end(); }
+    catch (errorConexion) { console.error('Error al cerrar conexi?n de pedido:', errorConexion.message); }
+  }
+};
+
+const agregarItemPedido = async (req, res) => {
+  const { id_pedido } = req.params;
+  const { productos_id, cantidad_pedida, precio_unitario } = req.body || {};
+
+  if (!productos_id || !precio_unitario) {
+    return res.status(400).json({ error: 'Faltan datos. Se requiere el producto, la cantidad y el precio.' });
+  }
+  if (!Number.isSafeInteger(cantidad_pedida) || cantidad_pedida <= 0) {
+    return res.status(400).json({ error: 'cantidad_pedida debe ser un entero positivo.' });
   }
 
-  db.beginTransaction((errTx) => {
-    if (errTx) {
-      console.error('❌ Error al iniciar transacción:', errTx.message);
-      return res.status(500).json({ error: 'Error en el servidor al procesar la solicitud.' });
-    }
+  let conexion;
+  let transaccionIniciada = false;
+  try {
+    conexion = mysql.createConnection(db.dbConfig).promise();
+    await conexion.beginTransaction();
+    transaccionIniciada = true;
 
-    const sqlStock = 'SELECT stock, nombre FROM productos WHERE id = ? FOR UPDATE';
+    const [productos] = await conexion.query(
+      'SELECT cantidad_disponible, nombre FROM productos WHERE id = ? FOR UPDATE', [productos_id]
+    );
+    if (!productos.length) throw errorPedido(404, 'El producto especificado no existe.');
+    const producto = productos[0];
+    const insuficiente = () => errorPedido(400,
+      `Stock insuficiente para "${producto.nombre}". Disponible: ${producto.cantidad_disponible}, solicitado: ${cantidad_pedida}.`);
+    if (producto.cantidad_disponible < cantidad_pedida) throw insuficiente();
 
-    db.query(sqlStock, [productos_id], (errStock, resStock) => {
-      if (errStock) {
-        return db.rollback(() => {
-          console.error('❌ Error al consultar stock:', errStock.message);
-          res.status(500).json({ error: 'Error al verificar el inventario del producto.' });
-        });
-      }
+    const idItem = crypto.randomUUID();
+    const [insercion] = await conexion.query(
+      `INSERT INTO pedido_items
+       (id, precio_unitario, pedido_id, producto_id, cantidad_pedida, cantidad_pagada, estado, pedidos_id, productos_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [idItem, precio_unitario, id_pedido, productos_id, cantidad_pedida, 0, 'preparando', id_pedido, productos_id]
+    );
+    if (insercion.affectedRows !== 1) throw new Error('No se insert? el ?tem.');
 
-      if (resStock.length === 0) {
-        return db.rollback(() => {
-          res.status(404).json({ error: 'El producto especificado no existe.' });
-        });
-      }
+    const [descuento] = await conexion.query(
+      `UPDATE productos SET cantidad_disponible = cantidad_disponible - ?
+       WHERE id = ? AND cantidad_disponible >= ?`,
+      [cantidad_pedida, productos_id, cantidad_pedida]
+    );
+    if (descuento.affectedRows !== 1) throw insuficiente();
 
-      const producto = resStock[0];
-
-      if (producto.stock < cantidad_pedida) {
-        return db.rollback(() => {
-          res.status(400).json({ 
-            error: `Stock insuficiente para "${producto.nombre}". Disponible: ${producto.stock}, solicitado: ${cantidad_pedida}.` 
-          });
-        });
-      }
-
-      const idItem = crypto.randomUUID();
-      const estado = 'preparando'; 
-      const cantidad_pagada = 0; 
-
-      const sqlInsert = `
-        INSERT INTO pedido_items 
-        (id, precio_unitario, pedido_id, producto_id, cantidad_pedida, cantidad_pagada, estado, pedidos_id, productos_id) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `;
-
-      db.query(
-        sqlInsert, 
-        [idItem, precio_unitario, id_pedido, productos_id, cantidad_pedida, cantidad_pagada, estado, id_pedido, productos_id], 
-        (errInsert) => {
-          if (errInsert) {
-            return db.rollback(() => {
-              console.error('❌ Error al insertar item:', errInsert.message);
-              res.status(500).json({ error: 'Error al agregar el producto al pedido.' });
-            });
-          }
-
-          const sqlUpdateStock = 'UPDATE productos SET stock = stock - ? WHERE id = ?';
-
-          db.query(sqlUpdateStock, [cantidad_pedida, productos_id], (errUpdate) => {
-            if (errUpdate) {
-              return db.rollback(() => {
-                console.error('❌ Error al descontar inventario:', errUpdate.message);
-                res.status(500).json({ error: 'Error al actualizar el inventario.' });
-              });
-            }
-
-            db.commit((errCommit) => {
-              if (errCommit) {
-                return db.rollback(() => {
-                  console.error('❌ Error al confirmar transacción:', errCommit.message);
-                  res.status(500).json({ error: 'Error al finalizar el registro del item.' });
-                });
-              }
-
-              return res.status(201).json({
-                mensaje: '¡Producto agregado y stock descontado exitosamente! 🍺',
-                id_item: idItem,
-                stock_restante: producto.stock - cantidad_pedida
-              });
-            });
-          });
-        }
-      );
+    await conexion.commit();
+    transaccionIniciada = false;
+    return res.status(201).json({
+      mensaje: '?Producto agregado y stock descontado exitosamente! ??',
+      id_item: idItem,
+      stock_restante: producto.cantidad_disponible - cantidad_pedida
     });
-  });
+  } catch (error) {
+    return await finalizarTransaccionPedido(conexion, transaccionIniciada, error, res, 'Error al agregar el producto al pedido.');
+  } finally {
+    await cerrarConexionPedido(conexion);
+  }
 };
 
 // ==========================================
@@ -175,7 +158,8 @@ const obtenerPedidoConDetalles = (req, res) => {
 // 4. CALCULAR CUENTA CONSOLIDADA (PRODUCTOS + JUEGOS)
 // ==========================================
 const obtenerCuentaConsolidada = (req, res) => {
-  const { id } = req.params; 
+  // Compatibilidad temporal: la ruta de pedidos recibe el ID de mesa como `id`.
+  const mesa_id = req.params.mesa_id ?? req.params.id;
 
   const queryProductos = `
     SELECT COALESCE(pi.producto_id, pi.productos_id) AS producto_id, 
@@ -187,22 +171,27 @@ const obtenerCuentaConsolidada = (req, res) => {
     WHERE ped.mesas_id = ? AND ped.estado = 'abierto' AND pi.estado != 'cancelado'
   `;
 
+  // El esquema no registra inicio/fin: conservar las claves sin inventar tiempos.
+  // costo_tiempo mantiene el contrato y representa el costo_total registrado,
+  // no un importe calculado en vivo. NULL indica que aún no hay importe registrado.
   const queryJuegos = `
-    SELECT id, activos_juego_id, fecha_inicio, fecha_fin, precio_hora,
-           ROUND((TIMESTAMPDIFF(MINUTE, fecha_inicio, NOW()) / 60) * precio_hora, 2) AS costo_tiempo
-    FROM sesiones_juego
-    WHERE mesas_id = ? AND estado = 'en_progreso'
+    SELECT sj.id, sj.activos_juego_id, NULL AS fecha_inicio, NULL AS fecha_fin,
+           aj.precio_hora, sj.costo_total AS costo_tiempo
+    FROM sesiones_juego sj
+    JOIN activos_juego aj ON aj.id = sj.activos_juego_id
+    WHERE sj.mesas_id = ? AND sj.estado = 'activa'
   `;
 
-  db.query(queryProductos, [id], (err, productos) => {
+  db.query(queryProductos, [mesa_id], (err, productos) => {
     if (err) {
       console.error('❌ Error al consultar productos:', err.message);
       return res.status(500).json({ error: 'Error al consultar consumos de productos.' });
     }
 
-    db.query(queryJuegos, [id], (err, juegos) => {
+    db.query(queryJuegos, [mesa_id], (err, juegos) => {
       if (err) {
-        juegos = [];
+        console.error('Error al consultar juegos:', err.message);
+        return res.status(500).json({ error: 'Error al consultar consumos de juegos.' });
       }
 
       const totalProductos = (productos || []).reduce((acc, item) => acc + parseFloat(item.subtotal || 0), 0);
@@ -213,7 +202,7 @@ const obtenerCuentaConsolidada = (req, res) => {
         exito: true,
         mensaje: 'Cuenta consolidada calculada exitosamente 📊',
         data: {
-          mesa_id: id,
+          mesa_id,
           resumen: {
             subtotal_productos: totalProductos.toFixed(2),
             subtotal_juegos: totalJuegos.toFixed(2),
@@ -230,82 +219,50 @@ const obtenerCuentaConsolidada = (req, res) => {
 // ==========================================
 // 5. CANCELAR UN ÍTEM DEL PEDIDO Y LIBERAR STOCK
 // ==========================================
-const cancelarItemPedido = (req, res) => {
+const cancelarItemPedido = async (req, res) => {
   const { id } = req.params;
+  let conexion;
+  let transaccionIniciada = false;
+  try {
+    conexion = mysql.createConnection(db.dbConfig).promise();
+    await conexion.beginTransaction();
+    transaccionIniciada = true;
 
-  db.beginTransaction((errTx) => {
-    if (errTx) {
-      console.error('❌ Error al iniciar transacción:', errTx.message);
-      return res.status(500).json({ error: 'Error interno al procesar la solicitud.' });
+    const [items] = await conexion.query(
+      `SELECT id, COALESCE(producto_id, productos_id) AS producto_id, cantidad_pedida, estado
+       FROM pedido_items WHERE id = ? FOR UPDATE`, [id]
+    );
+    if (!items.length) throw errorPedido(404, 'El ?tem especificado no existe.');
+    const item = items[0];
+    if (item.estado === 'cancelado') throw errorPedido(400, 'El ?tem ya se encuentra cancelado.');
+    if (!Number.isSafeInteger(item.cantidad_pedida) || item.cantidad_pedida <= 0) {
+      throw errorPedido(400, 'El ?tem tiene una cantidad inv?lida para reintegrar.');
     }
 
-    const sqlObtenerItem = `
-      SELECT id, COALESCE(producto_id, productos_id) AS producto_id, cantidad_pedida, estado 
-      FROM pedido_items 
-      WHERE id = ? FOR UPDATE
-    `;
+    const [cancelacion] = await conexion.query(
+      "UPDATE pedido_items SET estado = 'cancelado' WHERE id = ? AND estado != 'cancelado'", [id]
+    );
+    if (cancelacion.affectedRows !== 1) throw errorPedido(400, 'El ?tem ya se encuentra cancelado.');
 
-    db.query(sqlObtenerItem, [id], (errItem, resItem) => {
-      if (errItem) {
-        return db.rollback(() => {
-          console.error('❌ Error al consultar el ítem:', errItem.message);
-          res.status(500).json({ error: 'Error al consultar el ítem a cancelar.' });
-        });
-      }
+    const [reintegro] = await conexion.query(
+      'UPDATE productos SET cantidad_disponible = cantidad_disponible + ? WHERE id = ?',
+      [item.cantidad_pedida, item.producto_id]
+    );
+    if (reintegro.affectedRows !== 1) throw errorPedido(404, 'El producto del ?tem no existe.');
 
-      if (resItem.length === 0) {
-        return db.rollback(() => {
-          res.status(404).json({ error: 'El ítem especificado no existe.' });
-        });
-      }
-
-      const item = resItem[0];
-
-      if (item.estado === 'cancelado') {
-        return db.rollback(() => {
-          res.status(400).json({ error: 'El ítem ya se encuentra cancelado.' });
-        });
-      }
-
-      const sqlCancelarItem = "UPDATE pedido_items SET estado = 'cancelado' WHERE id = ?";
-
-      db.query(sqlCancelarItem, [id], (errUpdateItem) => {
-        if (errUpdateItem) {
-          return db.rollback(() => {
-            console.error('❌ Error al actualizar el estado del ítem:', errUpdateItem.message);
-            res.status(500).json({ error: 'Error al cancelar el ítem.' });
-          });
-        }
-
-        const sqlReintegrarStock = 'UPDATE productos SET stock = stock + ? WHERE id = ?';
-
-        db.query(sqlReintegrarStock, [item.cantidad_pedida, item.producto_id], (errStock) => {
-          if (errStock) {
-            return db.rollback(() => {
-              console.error('❌ Error al devolver stock al inventario:', errStock.message);
-              res.status(500).json({ error: 'Error al actualizar el inventario.' });
-            });
-          }
-
-          db.commit((errCommit) => {
-            if (errCommit) {
-              return db.rollback(() => {
-                console.error('❌ Error al confirmar la transacción:', errCommit.message);
-                res.status(500).json({ error: 'Error al finalizar la cancelación.' });
-              });
-            }
-
-            return res.status(200).json({
-              exito: true,
-              mensaje: '¡Ítem cancelado con éxito y stock devuelto al inventario! 🔄',
-              id_item: id,
-              cantidad_reintegrada: item.cantidad_pedida
-            });
-          });
-        });
-      });
+    await conexion.commit();
+    transaccionIniciada = false;
+    return res.status(200).json({
+      exito: true,
+      mensaje: '??tem cancelado con ?xito y stock devuelto al inventario! ??',
+      id_item: id,
+      cantidad_reintegrada: item.cantidad_pedida
     });
-  });
+  } catch (error) {
+    return await finalizarTransaccionPedido(conexion, transaccionIniciada, error, res, 'Error al cancelar el ?tem.');
+  } finally {
+    await cerrarConexionPedido(conexion);
+  }
 };
 
 module.exports = {

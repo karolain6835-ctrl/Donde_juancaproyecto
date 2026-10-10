@@ -1,0 +1,17 @@
+$kind: http-request
+name: http://localhost:5000/api/pedidos
+description: ""
+url: http://localhost:5000/api/pedidos
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"mesas_id\": \"c1a2b3c4-d5e6-7890-1234-56789abcdef0\",\r
+
+    \  \"usuarios_id\": \"usr-003\",\r
+
+    \  \"clientes_id\": \"cli-001\"\r
+
+    }"
+order: 4503596146250635
