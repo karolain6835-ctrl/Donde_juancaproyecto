@@ -1,0 +1,6 @@
+$kind: http-request
+name: http://localhost:5000/api/productos/6fe747e7-0193-4d20-891a-9fad0ee486d0
+description: ""
+url: http://localhost:5000/api/productos/6fe747e7-0193-4d20-891a-9fad0ee486d0
+method: GET
+order: 4503593973449676
