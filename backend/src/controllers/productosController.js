@@ -186,7 +186,6 @@ const actualizarProducto = (req, res) => {
     codigo,
     precio_venta,
     costo_promedio,
-    cantidad,
     stock_minimo,
     estado,
     categorias_id,
@@ -223,7 +222,6 @@ const actualizarProducto = (req, res) => {
       codigo = ?,
       precio_venta = ?,
       costo_promedio_ponderado = ?,
-      cantidad_disponible = ?,
       stock_minimo = ?,
       estado = ?,
       categorias_id = ?,
@@ -237,7 +235,6 @@ const actualizarProducto = (req, res) => {
     codigo,
     precio_venta,
     costo_promedio || 0,
-    cantidad || 0,
     stock_minimo || 0,
     estado,
     categorias_id,
@@ -273,7 +270,10 @@ const actualizarProducto = (req, res) => {
     }
 
     return res.status(200).json({
-      mensaje: 'Producto actualizado correctamente.'
+      mensaje: 'Producto actualizado correctamente.',
+      ...(Object.prototype.hasOwnProperty.call(req.body, 'cantidad') ? {
+        aviso: 'cantidad se ignora en la edición general. Para cambiar existencias utiliza PUT /api/inventario/actualizar-stock.'
+      } : {})
     });
   });
 };
