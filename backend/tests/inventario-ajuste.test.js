@@ -61,6 +61,10 @@ test('ajuste de inventario contra MySQL con tablas temporales', {
       await real.query(`CREATE TEMPORARY TABLE copia_ajuste_${tabla} LIKE ${tabla}`);
       await real.query(`CREATE TEMPORARY TABLE ${tabla} LIKE copia_ajuste_${tabla}`);
     }
+    const [columnas] = await real.query('SHOW COLUMNS FROM movimientos_inventario');
+    if (!columnas.some(c => c.Field === 'creado_en')) {
+      await real.query(fs.readFileSync(path.join(__dirname, '../database/v2.22_movimientos_inventario_trazabilidad.sql'), 'utf8'));
+    }
     await real.query(`INSERT INTO usuarios (id,nombre,email,password_hash,estado,roles_id)
       VALUES ('test-user','Prueba','ajuste@example.invalid','fixture','activo',1)`);
     await real.query(`INSERT INTO productos
@@ -96,6 +100,7 @@ test('ajuste de inventario contra MySQL con tablas temporales', {
         assert.equal(m.cantidad, cantidad - 27);
         assert.equal(m.stock_antes, 27); assert.equal(m.stock_despues, cantidad);
         assert.equal(m.productos_id, 'test-producto'); assert.equal(m.usuarios_id, 'test-user');
+        assert.ok(m.creado_en); assert.equal(m.referencia_id, null);
         assert.match(m.id, /^[0-9a-f-]{36}$/);
       });
     }

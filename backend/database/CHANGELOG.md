@@ -3,6 +3,15 @@
 Todas las modificaciones estructurales y de datos importantes de la base de datos se documentarán en este archivo, siguiendo un orden cronológico inverso (lo más nuevo arriba).
 
 ---
+## [v2.22] - 2026-10-09
+### Añadido (preparado; pendiente de aplicación en tablas persistentes)
+- `v2.22_movimientos_inventario_trazabilidad.sql`: fecha nullable, referencia
+  polimórfica nullable e índice por fecha/ID. No rellena registros históricos.
+- Los movimientos nuevos usan UTC. Venta negativa significa salida por pedido;
+  venta positiva significa reversión por cancelación. La referencia es pedidos.id.
+- Ajustes sin entidad propia mantienen referencia_id NULL. El usuario del
+  movimiento de pedido es su responsable, no una identidad autenticada del ejecutor.
+
 ## [v2.21] - 2026-10-09
 ### Añadido (preparado; no aplicado a los datos existentes)
 - `v2.21_passwords_desarrollo.sql`: actualización parametrizada y optativa de

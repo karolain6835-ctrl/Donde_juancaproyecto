@@ -63,6 +63,25 @@ const cerrarConexionPedido = async (conexion) => {
   }
 };
 
+const registrarMovimientoPedido = async (conexion, pedido, producto_id, cantidad, stock_antes) => {
+  const [usuarios] = await conexion.query('SELECT id FROM usuarios WHERE id = ? LOCK IN SHARE MODE', [pedido.usuarios_id]);
+  if (!usuarios.length) throw errorPedido(409, 'El responsable del pedido no existe.');
+  const stock_despues = stock_antes + cantidad;
+  if (!Number.isInteger(stock_antes) || stock_despues < 0 || stock_despues > 2147483647 ||
+      cantidad < -2147483648 || cantidad > 2147483647) {
+    throw errorPedido(409, 'Existencia o movimiento fuera del rango permitido.');
+  }
+  // venta negativa: salida; venta positiva: reversión por cancelación.
+  const [movimiento] = await conexion.query(`
+    INSERT INTO movimientos_inventario
+    (id, tipo, cantidad, stock_antes, stock_despues, referencia_tipo,
+     referencia_id, productos_id, usuarios_id, creado_en)
+    VALUES (?, 'venta', ?, ?, ?, 'pedido', ?, ?, ?, UTC_TIMESTAMP())`,
+    [crypto.randomUUID(), cantidad, stock_antes, stock_despues, pedido.id, producto_id, pedido.usuarios_id]
+  );
+  if (movimiento.affectedRows !== 1) throw new Error('No se registró el movimiento del pedido.');
+};
+
 const agregarItemPedido = async (req, res) => {
   const { id_pedido } = req.params;
   const { productos_id, cantidad_pedida, precio_unitario } = req.body || {};
@@ -81,6 +100,8 @@ const agregarItemPedido = async (req, res) => {
     await conexion.beginTransaction();
     transaccionIniciada = true;
 
+    const [pedidos] = await conexion.query('SELECT id, usuarios_id FROM pedidos WHERE id = ? FOR UPDATE', [id_pedido]);
+    if (!pedidos.length) throw errorPedido(404, 'Pedido no encontrado.');
     const [productos] = await conexion.query(
       'SELECT cantidad_disponible, nombre FROM productos WHERE id = ? FOR UPDATE', [productos_id]
     );
@@ -105,6 +126,8 @@ const agregarItemPedido = async (req, res) => {
       [cantidad_pedida, productos_id, cantidad_pedida]
     );
     if (descuento.affectedRows !== 1) throw insuficiente();
+
+    await registrarMovimientoPedido(conexion, pedidos[0], productos_id, -cantidad_pedida, producto.cantidad_disponible);
 
     await conexion.commit();
     transaccionIniciada = false;
@@ -228,16 +251,33 @@ const cancelarItemPedido = async (req, res) => {
     await conexion.beginTransaction();
     transaccionIniciada = true;
 
+    // Descubrir el padre y bloquearlo antes del ítem, como pagos y Kanban.
+    const [referencias] = await conexion.query('SELECT pedido_id, pedidos_id FROM pedido_items WHERE id = ?', [id]);
+    if (!referencias.length) throw errorPedido(404, 'El ítem especificado no existe.');
+    const referencia = referencias[0];
+    if (referencia.pedido_id !== referencia.pedidos_id) throw errorPedido(409, 'Referencias de pedido inconsistentes.');
+    const [pedidos] = await conexion.query('SELECT id, usuarios_id FROM pedidos WHERE id = ? FOR UPDATE', [referencia.pedido_id]);
+    if (!pedidos.length) throw errorPedido(404, 'Pedido no encontrado.');
     const [items] = await conexion.query(
-      `SELECT id, COALESCE(producto_id, productos_id) AS producto_id, cantidad_pedida, estado
+      `SELECT id, pedido_id, pedidos_id, producto_id, productos_id, cantidad_pedida, estado
        FROM pedido_items WHERE id = ? FOR UPDATE`, [id]
     );
     if (!items.length) throw errorPedido(404, 'El ?tem especificado no existe.');
     const item = items[0];
+    if (item.pedido_id !== pedidos[0].id || item.pedidos_id !== pedidos[0].id || item.producto_id !== item.productos_id) {
+      throw errorPedido(409, 'Referencias del ítem inconsistentes.');
+    }
     if (item.estado === 'cancelado') throw errorPedido(400, 'El ?tem ya se encuentra cancelado.');
     if (!Number.isSafeInteger(item.cantidad_pedida) || item.cantidad_pedida <= 0) {
       throw errorPedido(400, 'El ?tem tiene una cantidad inv?lida para reintegrar.');
     }
+
+    const [productos] = await conexion.query(
+      'SELECT cantidad_disponible FROM productos WHERE id = ? FOR UPDATE', [item.producto_id]
+    );
+    if (!productos.length) throw errorPedido(404, 'El producto del ítem no existe.');
+    const stock_antes = productos[0].cantidad_disponible;
+    if (stock_antes + item.cantidad_pedida > 2147483647) throw errorPedido(409, 'El reintegro excede el rango del inventario.');
 
     const [cancelacion] = await conexion.query(
       "UPDATE pedido_items SET estado = 'cancelado' WHERE id = ? AND estado != 'cancelado'", [id]
@@ -249,6 +289,8 @@ const cancelarItemPedido = async (req, res) => {
       [item.cantidad_pedida, item.producto_id]
     );
     if (reintegro.affectedRows !== 1) throw errorPedido(404, 'El producto del ?tem no existe.');
+
+    await registrarMovimientoPedido(conexion, pedidos[0], item.producto_id, item.cantidad_pedida, stock_antes);
 
     await conexion.commit();
     transaccionIniciada = false;
