@@ -1,0 +1,19 @@
+$kind: http-request
+name: http://localhost:5000/api/clientes/f374444b-5254-4864-9b35-f9b718a97d6a
+description: ""
+url: http://localhost:5000/api/clientes/f374444b-5254-4864-9b35-f9b718a97d6a
+method: PUT
+body:
+  type: json
+  content: "{\r
+
+    \  \"nombre\": \"Cliente prueba actualizado\",\r
+
+    \  \"email\": null,\r
+
+    \  \"telefono\": null,\r
+
+    \  \"estado\": \"inactivo\"\r
+
+    }"
+order: 4503596146275635

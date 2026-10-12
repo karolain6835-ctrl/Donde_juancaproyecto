@@ -1,0 +1,19 @@
+$kind: http-request
+name: http://localhost:5000/api/clientes/registrar
+description: ""
+url: http://localhost:5000/api/clientes/registrar
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"nombre\": \"Cliente prueba API\",\r
+
+    \  \"email\": \"cliente.prueba@example.com\",\r
+
+    \  \"telefono\": \"3001234567\",\r
+
+    \  \"usuarios_id\": \"usr-003\"\r
+
+    }"
+order: 4503596146274635
