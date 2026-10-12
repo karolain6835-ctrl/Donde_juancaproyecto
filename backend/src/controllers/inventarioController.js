@@ -147,31 +147,25 @@ exports.obtenerMovimientos = async (req, res) => {
   }
 };
 
-// 2. Obtener alertas de stock bajo activas (Simulado para desarrollo ágil)
+// Condiciones actuales, sin persistencia ni filtro por estado del producto.
+// stock_minimo es INT NOT NULL; si otro esquema admite NULL, no satisface <=.
 exports.obtenerAlertas = async (req, res) => {
-  // Simulamos un listado de productos que ya cruzaron el stock mínimo en el bar
-  const alertasSimuladas = [
-    {
-      id: "ALERT-001",
-      producto: "Cerveza Club Colombia Dorada",
-      stock_actual: 5,
-      stock_minimo: 24,
-      mensaje: "¡Alerta Crítica! Quedan pocas unidades para el fin de semana.",
-      fecha: new Date()
-    },
-    {
-      id: "ALERT-002",
-      producto: "Aguardiente Antioqueño 750ml",
-      stock_actual: 2,
-      stock_minimo: 6,
-      mensaje: "Stock por debajo del límite permitido.",
-      fecha: new Date()
-    }
-  ];
-
-  res.json({
-    mensaje: "Alertas de inventario consultadas con éxito.",
-    total_alertas: alertasSimuladas.length,
-    alertas: alertasSimuladas
-  });
+  try {
+    const [alertas] = await db.promise().query(`
+      SELECT id AS productos_id, nombre AS producto,
+             cantidad_disponible AS stock_actual, stock_minimo,
+             CASE WHEN cantidad_disponible <= 0 THEN 'agotado' ELSE 'bajo' END AS tipo
+      FROM productos
+      WHERE cantidad_disponible <= stock_minimo
+      ORDER BY (cantidad_disponible <= 0) DESC, cantidad_disponible ASC, id ASC
+    `);
+    return res.status(200).json({
+      mensaje: 'Alertas de inventario consultadas correctamente.',
+      total_alertas: alertas.length,
+      alertas
+    });
+  } catch (error) {
+    console.error('Error al consultar alertas de inventario:', error.message);
+    return res.status(500).json({ error: 'No se pudieron consultar las alertas de inventario.' });
+  }
 };
