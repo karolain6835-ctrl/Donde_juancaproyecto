@@ -1,0 +1,6 @@
+$kind: http-request
+name: http://localhost:5000/api/mermas
+description: ""
+url: http://localhost:5000/api/mermas
+method: GET
+order: 4503596146258635

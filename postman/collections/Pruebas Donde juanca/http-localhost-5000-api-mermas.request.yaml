@@ -1,0 +1,21 @@
+$kind: http-request
+name: http://localhost:5000/api/mermas
+description: ""
+url: http://localhost:5000/api/mermas
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"productos_id\": \"4b2b8ad5-1353-4e07-b87b-932faa6785b8\",\r
+
+    \  \"cantidad\": 2,\r
+
+    \  \"merma_motivos_id\": \"m2\",\r
+
+    \  \"refrigeradores_id\": \"ref-001\",\r
+
+    \  \"usuarios_id\": \"usr-003\"\r
+
+    }"
+order: 4503596146257635
