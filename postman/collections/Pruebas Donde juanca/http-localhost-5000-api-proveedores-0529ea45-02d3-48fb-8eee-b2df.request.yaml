@@ -1,0 +1,9 @@
+$kind: http-request
+name: http://localhost:5000/api/proveedores/0529ea45-02d3-48fb-8eee-b2df2a601849
+description: ""
+url: http://localhost:5000/api/proveedores/0529ea45-02d3-48fb-8eee-b2df2a601849
+method: PUT
+body:
+  type: json
+  content: "{\r\n  \"estado\": \"activo\"\r\n}"
+order: 4503596146261635
