@@ -1,0 +1,8 @@
+$kind: http-request
+name: http://localhost:5000/api/inventario/movimientos
+description: ""
+url: http://localhost:5000/api/inventario/movimientos?limite=101
+method: GET
+queryParams:
+  limite: "101"
+order: 4503596146256635

@@ -1,0 +1,8 @@
+$kind: http-request
+name: " http://localhost:5000/api/pedidos/items/9fd12a63-0f4b-4ce2-9891-70bd0464b1bc/cancelar"
+description: ""
+url: http://localhost:5000/api/inventario/movimientos?tipo=venta
+method: GET
+queryParams:
+  tipo: venta
+order: 4503596146255635
