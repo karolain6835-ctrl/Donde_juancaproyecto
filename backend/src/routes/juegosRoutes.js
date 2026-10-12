@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const juegosController = require('../controllers/juegosController');
 
+router.get('/activos', juegosController.listarActivos);
+router.get('/sesiones', juegosController.listarSesiones);
+
 // Iniciar una nueva partida
 router.post('/iniciar', juegosController.iniciarJuego);
 
