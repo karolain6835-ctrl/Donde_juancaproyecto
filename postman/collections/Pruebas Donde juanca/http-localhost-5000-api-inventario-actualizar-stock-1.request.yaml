@@ -1,0 +1,17 @@
+$kind: http-request
+name: http://localhost:5000/api/inventario/actualizar-stock
+description: ""
+url: http://localhost:5000/api/inventario/actualizar-stock
+method: PUT
+body:
+  type: json
+  content: "{\r
+
+    \  \"producto_id\": \"4b2b8ad5-1353-4e07-b87b-932faa6785b8\",\r
+
+    \  \"nueva_cantidad\": 0,\r
+
+    \  \"usuarios_id\": \"usr-003\"\r
+
+    }"
+order: 4503596146269635
