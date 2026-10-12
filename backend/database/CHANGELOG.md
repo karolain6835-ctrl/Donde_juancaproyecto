@@ -3,6 +3,15 @@
 Todas las modificaciones estructurales y de datos importantes de la base de datos se documentarán en este archivo, siguiendo un orden cronológico inverso (lo más nuevo arriba).
 
 ---
+## [v2.23] - 2026-10-11
+### Añadido (preparado; no aplicado a MySQL)
+- `v2.23_sesiones_juego_tiempos_tarifa.sql`: agrega `fecha_inicio`, `fecha_fin`
+  y `tarifa_hora_aplicada`, nullable y con DEFAULT NULL para conservar históricos
+  sin inventar fechas ni tarifas. No ejecuta UPDATE sobre sesiones existentes.
+- Permite NULL en `cerrada_por`, conservando su FK y los valores existentes.
+- Agrega índices por activo/estado, mesa/estado y estado/inicio/ID.
+- Conserva `pedido_items_id`, estados y demás FK. Sin cambios de aplicación.
+
 ## [v2.22] - 2026-10-09
 ### Añadido (preparado; pendiente de aplicación en tablas persistentes)
 - `v2.22_movimientos_inventario_trazabilidad.sql`: fecha nullable, referencia
