@@ -1,5 +1,6 @@
 require('dotenv').config(); // 1. Cargamos las variables de entorno primero
 const express = require('express');
+const autenticar = require('./middleware/authMiddleware');
 const cors = require('cors');
 const categoriasRoutes = require('./routes/categoriasRoutes');
 const productosRoutes = require('./routes/productosRoutes');
@@ -33,22 +34,22 @@ app.get('/', (req, res) => {
 });
 
 // Registrar aquí las rutas de la API
-app.use('/api/categorias', categoriasRoutes); 
-app.use('/api/productos', productosRoutes);
-app.use('/api/mesas', mesasRoutes);
-app.use('/api/pedidos', pedidosRoutes);
-app.use('/api/pagos', pagosRoutes); 
-app.use('/api/juegos', juegosRoutes);
-app.use('/api/inventario', inventarioRoutes);
-app.use('/api/mermas', mermasRoutes);
-app.use('/api/proveedores', proveedoresRoutes);
-app.use('/api/compras', comprasRoutes);
-app.use('/api/clientes', clientesRoutes);
-app.use('/api/ventas', ventasRoutes);
-app.use('/api/cierres-caja', cierresCajaRoutes);
+app.use('/api/categorias', autenticar, categoriasRoutes);
+app.use('/api/productos', autenticar, productosRoutes);
+app.use('/api/mesas', autenticar, mesasRoutes);
+app.use('/api/pedidos', autenticar, pedidosRoutes);
+app.use('/api/pagos', autenticar, pagosRoutes);
+app.use('/api/juegos', autenticar, juegosRoutes);
+app.use('/api/inventario', autenticar, inventarioRoutes);
+app.use('/api/mermas', autenticar, mermasRoutes);
+app.use('/api/proveedores', autenticar, proveedoresRoutes);
+app.use('/api/compras', autenticar, comprasRoutes);
+app.use('/api/clientes', autenticar, clientesRoutes);
+app.use('/api/ventas', autenticar, ventasRoutes);
+app.use('/api/cierres-caja', autenticar, cierresCajaRoutes);
 app.use('/api/usuarios', usuariosRoutes);
-app.use('/api/kanban', kanbanRoutes);
-app.use('/api/sesiones-division', divisionesRoutes);
+app.use('/api/kanban', autenticar, kanbanRoutes);
+app.use('/api/sesiones-division', autenticar, divisionesRoutes);
 
 // 4. Manejo global de errores (SIEMPRE AL FINAL, justo antes del listen)
 app.use((err, req, res, next) => {
