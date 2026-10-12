@@ -89,6 +89,9 @@ test('ajuste de inventario contra MySQL con tablas temporales', {
         await preparar();
         const r = await ajustar(body(cantidad));
         assert.equal(r.status, 200);
+        assert.equal(r.data.producto_id, 'test-producto');
+        assert.equal(r.data.producto_nombre, 'Producto');
+        assert.equal(r.data.mensaje, `Inventario actualizado con éxito. Producto ahora tiene ${cantidad} unidades.`);
         assert.equal(r.data.stock_anterior, 27);
         assert.equal(r.data.stock_actual, cantidad);
         assert.equal(r.data.diferencia, cantidad - 27);
@@ -107,6 +110,8 @@ test('ajuste de inventario contra MySQL con tablas temporales', {
     await t.test('mismo valor sin movimiento ni commit', async () => {
       await preparar(); const antes = commits;
       const r = await ajustar(body(27));
+      assert.equal(r.data.producto_nombre, 'Producto');
+      assert.equal(r.data.mensaje, 'Sin cambios: la existencia ya coincide con nueva_cantidad.');
       assert.equal(r.status, 200); assert.equal(r.data.diferencia, 0);
       assert.equal((await leer()).movimientos.length, 0); assert.equal(commits, antes);
     });

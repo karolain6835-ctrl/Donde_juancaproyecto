@@ -22,13 +22,14 @@ exports.actualizarStock = async (req, res) => {
     await conexion.beginTransaction();
     transaccionIniciada = true;
     const [productos] = await conexion.query(
-      'SELECT cantidad_disponible FROM productos WHERE id = ? FOR UPDATE', [producto_id]
+      'SELECT cantidad_disponible, nombre FROM productos WHERE id = ? FOR UPDATE', [producto_id]
     );
     if (!productos.length) throw errorAjuste(404, 'Producto no encontrado.');
     const [usuarios] = await conexion.query('SELECT id FROM usuarios WHERE id = ? LOCK IN SHARE MODE', [usuarios_id]);
     if (!usuarios.length) throw errorAjuste(404, 'Usuario no encontrado.');
 
     const stock_antes = productos[0].cantidad_disponible;
+    const producto_nombre = productos[0].nombre;
     const diferencia = nueva_cantidad - stock_antes;
     // cantidad y existencias son INT con signo en el esquema instalado.
     if (!Number.isInteger(stock_antes) || diferencia < -2147483648 || diferencia > 2147483647) {
@@ -39,7 +40,7 @@ exports.actualizarStock = async (req, res) => {
       transaccionIniciada = false;
       return res.status(200).json({
         mensaje: 'Sin cambios: la existencia ya coincide con nueva_cantidad.',
-        producto_id, stock_anterior: stock_antes, stock_actual: nueva_cantidad, diferencia
+        producto_id, producto_nombre, stock_anterior: stock_antes, stock_actual: nueva_cantidad, diferencia
       });
     }
 
@@ -57,8 +58,8 @@ exports.actualizarStock = async (req, res) => {
     await conexion.commit();
     transaccionIniciada = false;
     return res.status(200).json({
-      mensaje: `¡Inventario actualizado con éxito! Producto [${producto_id}] ahora tiene ${nueva_cantidad} unidades.`,
-      producto_id, stock_anterior: stock_antes, stock_actual: nueva_cantidad, diferencia
+      mensaje: `Inventario actualizado con éxito. ${producto_nombre} ahora tiene ${nueva_cantidad} unidades.`,
+      producto_id, producto_nombre, stock_anterior: stock_antes, stock_actual: nueva_cantidad, diferencia
     });
   } catch (error) {
     if (transaccionIniciada) {
