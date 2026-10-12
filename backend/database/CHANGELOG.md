@@ -3,6 +3,29 @@
 Todas las modificaciones estructurales y de datos importantes de la base de datos se documentarán en este archivo, siguiendo un orden cronológico inverso (lo más nuevo arriba).
 
 ---
+## [v2.30] - 2026-10-12
+### Añadido (preparado; pendiente de aplicación a MySQL)
+- `v2.30_create_tabla_cierre_pagos.sql`: crea la relación cierre-pago con snapshot
+  de importe, método y fecha de inclusión; UNIQUE por pago, FK e índice por cierre/método.
+- No asocia pagos históricos automáticamente ni crea cierres.
+
+## [v2.29] - 2026-10-12
+### Añadido (preparado; pendiente de aplicación a MySQL)
+- `v2.29_agregar_verificado_en_pagos.sql`: agrega fecha de verificación nullable
+  e índice por estado/verificación/fecha/ID. No asigna fechas históricas.
+- El registro de verificado_en en pagosController queda pendiente; sin cambios de aplicación.
+
+## [v2.28] - 2026-10-12
+### Añadido (preparado; pendiente de aplicación a MySQL)
+- `v2.28_agregar_periodo_cierres_caja.sql`: agrega inicio y fin nullable, índice
+  de período y CHECK que exige ambos NULL o un intervalo con inicio anterior al fin.
+- No asigna períodos a cierres históricos.
+
+## [v2.27] - 2026-10-12
+### Modificado (preparado; pendiente de aplicación a MySQL)
+- `v2.27_modificar_importes_cierres_caja.sql`: amplía los cuatro importes de cierre
+  a DECIMAL(12,2), conservando la diferencia con signo. Sin UPDATE ni backfill.
+
 ## [v2.26] - 2026-10-12
 ### Añadido (preparado; pendiente de aplicación a MySQL)
 - `v2.26_create_tabla_comprobante_items.sql`: crea el detalle congelado de
