@@ -3,6 +3,28 @@
 Todas las modificaciones estructurales y de datos importantes de la base de datos se documentarán en este archivo, siguiendo un orden cronológico inverso (lo más nuevo arriba).
 
 ---
+## [v2.26] - 2026-10-12
+### Añadido (preparado; pendiente de aplicación a MySQL)
+- `v2.26_create_tabla_comprobante_items.sql`: crea el detalle congelado de
+  comprobantes, con referencia polimórfica sin FK, descripción, cantidad e importes.
+- Agrega unicidad por comprobante/renglón y comprobante/tipo/referencia, FK a
+  comprobantes y CHECK de cantidades e importes. No crea detalles históricos.
+
+## [v2.25] - 2026-10-12
+### Añadido (preparado; pendiente de aplicación a MySQL)
+- `v2.25_create_tabla_comprobantes.sql`: crea cabeceras con UUID técnico,
+  consecutivo visible, pedido único, snapshot del nombre del cliente, emisor,
+  fecha de emisión e importes congelados DECIMAL(12,2).
+- Agrega FK, índices y CHECK de coherencia de importes. No crea comprobantes
+  históricos ni agrega campos fiscales. Requiere validación de liquidación en backend.
+
+## [v2.24] - 2026-10-12
+### Modificado (preparado; pendiente de aplicación a MySQL)
+- `v2.24_modificar_pagos_total_seleccionado.sql`: amplía el importe de pagos de
+  DECIMAL(10,0) a DECIMAL(12,2), conservando diez dígitos enteros y añadiendo centavos.
+- Sin UPDATE ni backfill. El controlador de pagos permanece sin cambios y todavía
+  rechaza importes fraccionarios; su adaptación queda pendiente.
+
 ## [v2.23] - 2026-10-11
 ### Añadido (preparado; no aplicado a MySQL)
 - `v2.23_sesiones_juego_tiempos_tarifa.sql`: agrega `fecha_inicio`, `fecha_fin`

@@ -1,0 +1,2 @@
+ALTER TABLE pagos
+  MODIFY COLUMN total_seleccionado DECIMAL(12,2) NOT NULL;
