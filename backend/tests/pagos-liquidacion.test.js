@@ -17,9 +17,11 @@ test('pagos y liquidación con MySQL y tablas temporales', {
   });
   let fallar = null;
   let falloCommit = false;
+  let importeInsertado;
   const conexion = {
     beginTransaction: () => real.beginTransaction(),
     query: async (sql, params) => {
+      if (sql.includes('INSERT INTO pagos')) importeInsertado = params[2];
       if (fallar && sql.includes(fallar)) throw new Error('Fallo inyectado para probar rollback');
       return real.query(sql, params);
     },
@@ -136,16 +138,86 @@ test('pagos y liquidación con MySQL y tablas temporales', {
       assert.equal(r.data.liquidacion.cuenta_liquidada, true);
       assert.equal(r.data.liquidacion.estado_mesa, 'en_cobro');
     });
-    await t.test('importe exacto en centavos y límites de DECIMAL(10,0)', async () => {
+    const [columnasPagos] = await real.query('SHOW COLUMNS FROM pagos');
+    assert.equal(columnasPagos.find(c => c.Field === 'total_seleccionado').Type, 'decimal(12,2)', 'Se requiere v2.24 aplicada');
+    await t.test('importe exacto en centavos y deuda fraccionaria', async () => {
       await preparar();
       await real.query("UPDATE pedido_items SET precio_unitario=100.05 WHERE id='test-item'");
-      assert.equal((await registrar('test-decimal', 1000.50)).status, 400);
       await registrar('test-p1', 1000);
       const r = await verificar('test-p1');
       assert.equal(r.data.liquidacion.saldo_pendiente, '0.50');
       assert.equal(r.data.liquidacion.cuenta_liquidada, false);
       assert.equal((await registrar('test-p2', 1)).status, 409);
+      assert.equal((await registrar('test-exceso', '0.51')).status, 409);
+      const pendiente = await registrar('test-p2', 0.50);
+      assert.equal(pendiente.status, 201);
+      assert.equal(pendiente.data.liquidacion.saldo_pendiente, '0.50');
+      const final = await verificar('test-p2');
+      assert.equal(final.data.liquidacion.saldo_pendiente, '0.00');
+      assert.equal(final.data.liquidacion.cuenta_liquidada, true);
     });
+    for (const valor of [15000, '15000.00', 1000.50, '1000.50', 0.50, 0.01]) {
+      await t.test(`importe aceptado ${JSON.stringify(valor)}`, async () => {
+        await preparar();
+        await real.query("UPDATE pedido_items SET precio_unitario=2000 WHERE id='test-item'");
+        const r = await registrar('test-decimal', valor);
+        assert.equal(r.status, 201);
+        assert.equal(typeof importeInsertado, 'string');
+        assert.match(importeInsertado, /^\d+\.\d{2}$/);
+        const [[p]] = await real.query("SELECT total_seleccionado FROM pagos WHERE id='test-decimal'");
+        assert.equal(p.total_seleccionado, importeInsertado);
+        assert.equal(r.data.liquidacion.total_pagado, '0.00');
+        assert.equal(r.data.liquidacion.saldo_pendiente, '20000.00');
+      });
+    }
+    for (const valor of [0, -1, 1.001, '1.001', '1e3', true, false, null, '', ' ', 'abc', '10000000000', '9999999999.999', [], {}]) {
+      await t.test(`importe rechazado ${JSON.stringify(valor)}`, async () => {
+        await preparar();
+        assert.equal((await registrar('test-invalido', valor)).status, 400);
+        const [[r]] = await real.query('SELECT COUNT(*) AS n FROM pagos');
+        assert.equal(r.n, 0);
+      });
+    }
+    await t.test('limite DECIMAL(12,2) valido se rechaza por saldo, no por formato', async () => {
+      await preparar();
+      assert.equal((await registrar('test-maximo', '9999999999.99')).status, 409);
+    });
+    await t.test('1000.50 liquida exactamente tras verificacion', async () => {
+      await preparar();
+      await real.query("UPDATE pedido_items SET precio_unitario=100.05 WHERE id='test-item'");
+      assert.equal((await registrar('test-fraccion', '1000.50')).status, 201);
+      const r = await verificar('test-fraccion');
+      assert.equal(r.data.liquidacion.total_pagado, '1000.50');
+      assert.equal(r.data.liquidacion.cuenta_liquidada, true);
+    });
+    await t.test('division fraccionaria y exceso con centavos', async () => {
+      await preparar();
+      await real.query(`INSERT INTO sesiones_division_cuentas (id,modalidad,usuarios_id,mesas_id)
+        VALUES ('test-division','items','test-usuario','test-mesa')`);
+      await real.query(`INSERT INTO division_participantes (id,sesion_division_id,nombre_cliente,total_asignado)
+        VALUES ('test-part','test-division','Prueba',0.51)`);
+      const extra = {sesion_division_id:'test-division',participante_id:'test-part'};
+      assert.equal((await registrar('test-exceso', '0.52', extra)).status, 409);
+      assert.equal((await registrar('test-centavo', '0.01', extra)).status, 201);
+      await verificar('test-centavo');
+      assert.equal((await registrar('test-resto', '0.50', extra)).status, 201);
+      await verificar('test-resto');
+      const [[p]] = await real.query("SELECT estado FROM division_participantes WHERE id='test-part'");
+      assert.equal(p.estado, 'pagado');
+    });
+    for (const tipo of ['insert', 'update', 'commit']) {
+      await t.test(`rollback registro fraccionario ${tipo}`, async () => {
+        await preparar();
+        fallar = tipo === 'insert' ? 'INSERT INTO pagos' : tipo === 'update' ? 'UPDATE mesas' : null;
+        falloCommit = tipo === 'commit';
+        assert.equal((await registrar('test-fraccion', '0.50')).status, 500);
+        const [[p]] = await real.query('SELECT COUNT(*) AS n FROM pagos');
+        const [[pedido]] = await real.query("SELECT estado,total_general FROM pedidos WHERE id='test-pedido'");
+        const [[mesa]] = await real.query("SELECT estado FROM mesas WHERE id='test-mesa'");
+        assert.equal(p.n, 0); assert.equal(pedido.estado, 'abierto');
+        assert.equal(pedido.total_general, '0.00'); assert.equal(mesa.estado, 'ocupada');
+      });
+    }
     await t.test('participante: límites y actualización del estado', async () => {
       await preparar();
       await real.query(`INSERT INTO sesiones_division_cuentas (id,modalidad,usuarios_id,mesas_id)

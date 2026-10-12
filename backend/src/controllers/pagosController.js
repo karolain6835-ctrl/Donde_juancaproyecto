@@ -39,21 +39,22 @@ exports.registrarPago = async (req, res) => {
     });
   }
 
-  const importe = Number(total_seleccionado);
-
-  if (!Number.isFinite(importe) || importe <= 0) {
+  // Validar antes de convertir: no aceptar coerciones, exponentes ni redondeos.
+  const textoImporte = String(total_seleccionado);
+  if (!['number', 'string'].includes(typeof total_seleccionado) ||
+      !/^\d{1,10}(\.\d{1,2})?$/.test(textoImporte)) {
     return res.status(400).json({
-      error: 'total_seleccionado debe ser un importe mayor que 0.'
+      error: 'total_seleccionado debe ser decimal positivo con hasta dos decimales, sin notación exponencial.'
     });
   }
 
-  // La columna actual es DECIMAL(10,0)
-  if (!Number.isInteger(importe) || importe > 9999999999) {
+  const importeCentavos = centavos(textoImporte);
+  if (importeCentavos <= 0n || importeCentavos > 999999999999n) {
     return res.status(400).json({
-      error:
-        'total_seleccionado debe ser un importe entero de hasta 10 dígitos.'
+      error: 'total_seleccionado debe ser mayor que cero y no superar 9999999999.99.'
     });
   }
+  const importe = `${importeCentavos / 100n}.${String(importeCentavos % 100n).padStart(2, '0')}`;
 
   const metodosPermitidos = [
     'efectivo',
@@ -108,7 +109,7 @@ exports.registrarPago = async (req, res) => {
     if (pedido.estado !== 'abierto') throw errorLiquidacion(409, 'El pedido no está abierto.');
     const cuenta = await calcularCuenta(conexion, pedido);
     if (cuenta.pagos.some(p => p.id === idPago)) throw errorLiquidacion(409, 'El pago ya existe.');
-    validarImporte(cuenta, centavos(importe));
+    validarImporte(cuenta, importeCentavos);
 
     // ==========================================
     // VALIDAR SESIÓN DE DIVISIÓN
@@ -179,7 +180,7 @@ exports.registrarPago = async (req, res) => {
         error.status = 400;
         throw error;
       }
-      await validarParticipante(conexion, participante_id, centavos(importe));
+      await validarParticipante(conexion, participante_id, importeCentavos);
     }
 
     // ==========================================
