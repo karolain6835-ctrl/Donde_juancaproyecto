@@ -1,14 +1,15 @@
+const { autorizarRoles } = require('../middleware/rolesMiddleware');
 const express = require('express');
 const router = express.Router();
 const clientesController = require('../controllers/clientesController');
 
-router.get('/', clientesController.listarClientes);
-router.put('/:id', clientesController.actualizarCliente);
+router.get('/', autorizarRoles('Administrador', 'SuperAdmin', 'Mesero', 'Mesera', 'Cajero'), clientesController.listarClientes);
+router.put('/:id', autorizarRoles('Administrador', 'SuperAdmin'), clientesController.actualizarCliente);
 
 // Ruta para registrar un cliente
-router.post('/registrar', clientesController.registrarCliente);
+router.post('/registrar', autorizarRoles('Administrador', 'SuperAdmin', 'Mesero', 'Mesera', 'Cajero'), clientesController.registrarCliente);
 
 // Ruta para buscar un cliente específico por su ID/Cédula
-router.get('/:id', clientesController.obtenerCliente);
+router.get('/:id', autorizarRoles('Administrador', 'SuperAdmin', 'Mesero', 'Mesera', 'Cajero'), clientesController.obtenerCliente);
 
 module.exports = router;

@@ -40,14 +40,14 @@ test('pagos y liquidación con MySQL y tablas temporales', {
       if (nombre === '../config/db') return { dbConfig: {} };
       if (nombre === 'mysql2') return { createConnection: () => ({ promise: () => conexion }) };
       if (nombre === '../services/liquidacionService') return require('../src/services/liquidacionService');
-      return require(nombre);
+      return (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(nombre));
     },
     console: { error() {} }
   });
   const api = modulo.exports;
   const invocar = async (handler, body, params = {}) => {
     let respuesta;
-    await handler({ body, params }, {
+    await handler({ body, params, usuario: {id:'test-usuario'} }, {
       status(status) { this.codigo = status; return this; },
       json(data) { respuesta = { status: this.codigo, data: JSON.parse(JSON.stringify(data)) }; }
     });
@@ -55,7 +55,7 @@ test('pagos y liquidación con MySQL y tablas temporales', {
   };
   const registrar = (id, importe, extra = {}) => invocar(api.registrarPago, {
     id, metodo_de_pago: 'efectivo', total_seleccionado: importe,
-    pedidos_id: 'test-pedido', usuarios_id: 'test-usuario', ...extra
+    pedidos_id: 'test-pedido', ...extra
   });
   const verificar = (id, decision = 'verificado') => invocar(api.verificarPago,
     { verificacion_estado: decision }, { id });
@@ -85,6 +85,7 @@ test('pagos y liquidación con MySQL y tablas temporales', {
       await preparar();
       let r = await registrar('test-p1', 400);
       assert.equal(r.status, 201);
+      const [[registrado]]=await real.query("SELECT usuarios_id FROM pagos WHERE id='test-p1'");assert.equal(registrado.usuarios_id,'test-usuario');
       assert.equal(r.data.liquidacion.total_pagado, '0.00');
       assert.equal(r.data.liquidacion.saldo_pendiente, '1000.00');
       assert.equal(r.data.liquidacion.estado_mesa, 'en_cobro');
