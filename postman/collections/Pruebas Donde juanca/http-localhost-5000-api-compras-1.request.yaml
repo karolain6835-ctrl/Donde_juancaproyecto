@@ -1,0 +1,29 @@
+$kind: http-request
+name: http://localhost:5000/api/compras
+description: ""
+url: http://localhost:5000/api/compras
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"proveedores_id\": \"0529ea45-02d3-48fb-8eee-b2df2a601849\",\r
+
+    \  \"usuarios_id\": \"usr-003\",\r
+
+    \  \"items\": [\r
+
+    \    {\r
+
+    \      \"productos_id\": \"4b2b8ad5-1353-4e07-b87b-932faa6785b8\",\r
+
+    \      \"cantidad\": 5,\r
+
+    \      \"precio_unitario\": 2800\r
+
+    \    }\r
+
+    \  ]\r
+
+    }"
+order: 4503596146263635
