@@ -231,6 +231,42 @@ test('pagos y liquidación con MySQL y tablas temporales', {
       const [[p]] = await real.query("SELECT estado FROM division_participantes WHERE id='test-part'");
       assert.equal(p.estado, 'pagado');
     });
+    await t.test('fecha UTC en primera verificacion; repeticion conserva exactamente la fecha', async () => {
+      await preparar();
+      await registrar('test-fecha', '1000.00');
+      const leer = async () => {
+        const [[p]] = await real.query(`SELECT estado,verificacion_estado,
+          DATE_FORMAT(verificado_en,'%Y-%m-%d %H:%i:%s') AS fecha,
+          ABS(TIMESTAMPDIFF(SECOND,verificado_en,UTC_TIMESTAMP())) AS antiguedad
+          FROM pagos WHERE id='test-fecha'`);
+        return p;
+      };
+      assert.equal((await leer()).fecha, null);
+      assert.equal((await verificar('test-fecha')).status, 200);
+      const primera = await leer();
+      assert.match(primera.fecha, /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/);
+      assert.ok(primera.antiguedad <= 5);
+      // Garantizar que UTC_TIMESTAMP() sea distinto al repetir, sin depender de sleeps.
+      await real.query("UPDATE pagos SET verificado_en=UTC_TIMESTAMP()-INTERVAL 1 DAY WHERE id='test-fecha'");
+      const antes = await leer();
+      assert.equal((await verificar('test-fecha')).status, 200);
+      assert.equal((await leer()).fecha, antes.fecha);
+    });
+    await t.test('rechazo mantiene fecha NULL incluso al repetir', async () => {
+      await preparar(); await registrar('test-rechazo', '0.50');
+      for (let i=0; i<2; i++) {
+        assert.equal((await verificar('test-rechazo', 'rechazado')).status, 200);
+        const [[p]] = await real.query("SELECT verificado_en FROM pagos WHERE id='test-rechazo'");
+        assert.equal(p.verificado_en, null);
+      }
+    });
+    await t.test('pago historico verificado sin fecha no recibe backfill', async () => {
+      await preparar(); await registrar('test-historico', '0.50');
+      await real.query("UPDATE pagos SET estado='pagado',verificacion_estado='verificado',verificado_en=NULL WHERE id='test-historico'");
+      assert.equal((await verificar('test-historico')).status, 200);
+      const [[p]] = await real.query("SELECT verificado_en FROM pagos WHERE id='test-historico'");
+      assert.equal(p.verificado_en, null);
+    });
     await t.test('rollback de registro y de verificación tras fallo SQL o commit', async () => {
       await preparar();
       fallar = 'UPDATE mesas';
@@ -243,9 +279,10 @@ test('pagos y liquidación con MySQL y tablas temporales', {
         fallar = tipo === 'sql' ? 'UPDATE mesas' : null;
         falloCommit = tipo === 'commit';
         assert.equal((await verificar('test-p1')).status, 500);
-        const [[p]] = await real.query("SELECT estado FROM pagos WHERE id='test-p1'");
+        const [[p]] = await real.query("SELECT estado,verificado_en FROM pagos WHERE id='test-p1'");
         const [[pedido]] = await real.query("SELECT estado FROM pedidos WHERE id='test-pedido'");
         assert.equal(p.estado, 'pendiente');
+        assert.equal(p.verificado_en, null);
         assert.equal(pedido.estado, 'abierto');
       }
     });

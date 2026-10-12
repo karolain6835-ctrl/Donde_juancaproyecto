@@ -331,7 +331,9 @@ exports.verificarPago = async (req, res) => {
         throw errorLiquidacion(409, 'El pago supera el saldo actual del pedido.');
       }
       const [resultado] = await conexion.query(
-        'UPDATE pagos SET verificacion_estado = ?, estado = ? WHERE id = ?',
+        `UPDATE pagos SET verificacion_estado = ?, estado = ?${
+          verificacion_estado === 'verificado' ? ', verificado_en = UTC_TIMESTAMP()' : ''
+        } WHERE id = ?`,
         [verificacion_estado, estado, pago.id]
       );
       if (resultado.affectedRows !== 1) throw new Error('No se actualizó el pago.');
