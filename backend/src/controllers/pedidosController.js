@@ -29,15 +29,28 @@ const crearPedido = (req, res) => {
     VALUES (?, ?, ?, ?, ?, ?, ?)
   `;
 
-  db.query(query, [id, estado, sincronizado, creado_en, mesas_id, usuarios_id, clientes_id], (err, resultados) => {
-    if (err) {
-      console.error('❌ Error al crear el pedido:', err.message);
+  db.query('SELECT estado FROM clientes WHERE id = ?', [clientes_id], (errorCliente, clientes) => {
+    if (errorCliente) {
+      console.error('Error al consultar el cliente del pedido:', errorCliente.message);
       return res.status(500).json({ error: 'Hubo un error en el servidor al abrir el pedido.' });
     }
+    if (!clientes.length) {
+      return res.status(404).json({ error: 'El cliente especificado no existe.' });
+    }
+    if (clientes[0].estado !== 'activo') {
+      return res.status(409).json({ error: 'No puede asociarse un pedido a un cliente inactivo.' });
+    }
 
-    res.status(201).json({
-      mensaje: '¡Cuenta abierta con éxito para la mesa! 🍻',
-      id_pedido: id
+    db.query(query, [id, estado, sincronizado, creado_en, mesas_id, usuarios_id, clientes_id], (err, resultados) => {
+      if (err) {
+        console.error('❌ Error al crear el pedido:', err.message);
+        return res.status(500).json({ error: 'Hubo un error en el servidor al abrir el pedido.' });
+      }
+
+      res.status(201).json({
+        mensaje: '¡Cuenta abierta con éxito para la mesa! 🍻',
+        id_pedido: id
+      });
     });
   });
 };
