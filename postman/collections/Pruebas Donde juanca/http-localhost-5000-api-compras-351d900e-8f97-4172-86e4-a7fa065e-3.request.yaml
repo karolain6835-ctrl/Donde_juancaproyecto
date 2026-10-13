@@ -1,0 +1,17 @@
+$kind: http-request
+name: http://localhost:5000/api/compras/351d900e-8f97-4172-86e4-a7fa065e6e97/recepciones/b41b6643-f9d9-4270-80c3-147afd6ec4e2/
+description: ""
+url: http://localhost:5000/api/compras/351d900e-8f97-4172-86e4-a7fa065e6e97/recepciones/b41b6643-f9d9-4270-80c3-147afd6ec4e2/reversar
+method: PATCH
+body:
+  type: json
+  content: "{\r
+
+    \  \"motivo\": \"Corrección de entrega de prueba\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{json_web_token_033a}}"
+order: 4503596146294635
