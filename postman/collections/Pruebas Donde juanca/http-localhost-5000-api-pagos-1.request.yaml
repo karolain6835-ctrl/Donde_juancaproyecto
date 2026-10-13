@@ -11,9 +11,7 @@ body:
 
     \  \"total_seleccionado\": 15000,\r
 
-    \  \"pedidos_id\": \"ped-001\",\r
-
-    \  \"usuarios_id\": \"user-001\"\r
+    \  \"pedidos_id\": \"ped-001\"\r
 
     }"
 order: 4503578900138656

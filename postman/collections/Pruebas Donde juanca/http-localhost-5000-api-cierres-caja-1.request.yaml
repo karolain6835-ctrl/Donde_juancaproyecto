@@ -1,0 +1,17 @@
+$kind: http-request
+name: http://localhost:5000/api/cierres-caja
+description: ""
+url: http://localhost:5000/api/cierres-caja
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"fecha_inicio\": \"2026-10-12T00:00:00\",\r
+
+    \  \"fecha_fin\": \"2026-10-13T00:00:00\",\r
+
+    \  \"total_efectivo_real\": \"500.00\"\r
+
+    }"
+order: 4503596146283635

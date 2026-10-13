@@ -11,9 +11,7 @@ body:
 
     \  \"email\": \"cliente.prueba@example.com\",\r
 
-    \  \"telefono\": \"3001234567\",\r
-
-    \  \"usuarios_id\": \"usr-003\"\r
+    \  \"telefono\": \"3001234567\"\r
 
     }"
 order: 4503596146274635

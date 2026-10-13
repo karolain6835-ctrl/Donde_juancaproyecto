@@ -11,9 +11,7 @@ body:
 
     \  \"fecha_fin\": \"2026-10-13T00:00:00\",\r
 
-    \  \"total_efectivo_real\": \"500.00\",\r
-
-    \  \"usuarios_id\": \"usr-003\"\r
+    \  \"total_efectivo_real\": \"500.00\"\r
 
     }"
 order: 4503596146282635
