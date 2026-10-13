@@ -1,3 +1,5 @@
+const { ejecutor } = require('../services/identidadService');
+const { registrarAuditoria } = require('../services/auditoriaService');
 const db = require('../config/db');
 const mysql = require('mysql2');
 
@@ -32,35 +34,31 @@ const obtenerMesasPorEstado = (req, res) => {
 };
 
 // Actualizar el estado de una mesa
-const actualizarEstadoMesa = (req, res) => {
-  const { id } = req.params;
-  const { estado } = req.body;
-
-  const estadosPermitidos = ['disponible', 'ocupada', 'en_cobro'];
-  if (!estadosPermitidos.includes(estado)) {
-    return res.status(400).json({ error: "Estado no válido. Use: disponible, ocupada o en_cobro." });
-  }
-
-  const query = 'UPDATE mesas SET estado = ? WHERE id = ?';
-
-  db.query(query, [estado, id], (err, resultado) => {
-    if (err) {
-      console.error('❌ Error al actualizar mesa:', err.message);
-      return res.status(500).json({ error: 'Hubo un error al actualizar el estado de la mesa.' });
-    }
-
-    if (resultado.affectedRows === 0) {
-      return res.status(404).json({ error: 'Mesa no encontrada.' });
-    }
-
+const actualizarEstadoMesa = async (req,res) => {
+  const actor=ejecutor(req,res);if(!actor)return;
+  const {id}=req.params;const {estado}=req.body || {};
+  if(!['disponible','ocupada','en_cobro'].includes(estado))return res.status(400).json({error:'Estado no válido. Use: disponible, ocupada o en_cobro.'});
+  let conexion,abierta=false;
+  try {
+    conexion=mysql.createConnection(db.dbConfig).promise();await conexion.beginTransaction();abierta=true;
+    const [[mesa]]=await conexion.query('SELECT id,estado FROM mesas WHERE id=? FOR UPDATE',[id]);
+    if(!mesa)throw Object.assign(new Error('Mesa no encontrada.'),{status:404});
+    const [r]=await conexion.query('UPDATE mesas SET estado=? WHERE id=?',[estado,mesa.id]);
+    if(r.affectedRows!==1)throw new Error('No se actualizó la mesa.');
+    if(mesa.estado!==estado)await registrarAuditoria(conexion,actor,'mesas','mesa_estado_cambiado','mesas',mesa.id,{antes:{estado:mesa.estado},despues:{estado}});
+    await conexion.commit();abierta=false;
     res.json({ mensaje: `¡Mesa actualizada a '${estado}' con éxito! 🕹️` });
-  });
+  } catch(e){
+    if(abierta)await conexion.rollback();
+    return res.status(e.status||500).json({error:e.status?e.message:'Hubo un error al actualizar el estado de la mesa.'});
+  } finally {if(conexion)await conexion.end();}
 };
 
 // ==========================================
 // TRASLADAR CUENTA Y JUEGOS DE UNA MESA A OTRA
 // ==========================================
 const trasladarMesa = async (req, res) => {
+  const actor=ejecutor(req,res);if(!actor)return;
   const { mesa_origen_id, mesa_destino_id } = req.body || {};
   if (!mesa_origen_id || !mesa_destino_id) {
     return res.status(400).json({ error: "Faltan datos. Se requiere la 'mesa_origen_id' y la 'mesa_destino_id'." });
@@ -166,6 +164,12 @@ const trasladarMesa = async (req, res) => {
       throw new Error('Los estados de las mesas no coinciden con el resultado esperado del traslado.');
     }
 
+    await registrarAuditoria(conexion,actor,'mesas','mesa_trasladada','mesas',origen.id,{
+      mesa_origen_id:origen.id,mesa_destino_id:destino.id,
+      antes:{origen:origen.estado,destino:destino.estado},despues:{origen:'disponible',destino:estadoDestino},
+      pedidos_movidos:resPedido.affectedRows,juegos_movidos:resJuegos.affectedRows,
+      divisiones_movidas:resDivision.affectedRows,divisiones_originales_movidas:resDivisionOriginal.affectedRows
+    });
     mensajeError = 'Error al finalizar el traslado.';
     await conexion.commit();
     transaccionIniciada = false;

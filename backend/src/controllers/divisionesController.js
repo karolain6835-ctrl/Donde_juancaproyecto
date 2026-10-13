@@ -1,3 +1,6 @@
+const mysql = require('mysql2');
+const { randomUUID } = require('node:crypto');
+const { registrarAuditoria } = require('../services/auditoriaService');
 const { ejecutor } = require('../services/identidadService');
 const db = require('../config/db');
 
@@ -61,84 +64,33 @@ const iniciarSesionDivision = (req, res) => {
 // ==========================================
 // 2. ASIGNAR ÍTEMS A UN CLIENTE EN LA DIVISIÓN
 // ==========================================
-const asignarItemsACliente = (req, res) => {
-  const { id: sesion_division_id } = req.params;
-  const { nombre_cliente, items } = req.body;
-
-  if (!nombre_cliente || !items || !Array.isArray(items) || items.length === 0) {
-    return res.status(400).json({
-      error: 'Parámetros incompletos. Se requiere nombre_cliente y un arreglo de items con { pedido_item_id, cantidad, precio_unitario }.'
+const asignarItemsACliente = async (req,res) => {
+  const actor=ejecutor(req,res);if(!actor)return;
+  const {id:sesion_division_id}=req.params;
+  const {nombre_cliente,items}=req.body || {};
+  if(!nombre_cliente||!Array.isArray(items)||!items.length)return res.status(400).json({error:'Parámetros incompletos. Se requiere nombre_cliente y un arreglo de items con { pedido_item_id, cantidad, precio_unitario }.'});
+  let conexion,abierta=false;
+  try {
+    conexion=mysql.createConnection(db.dbConfig).promise();await conexion.beginTransaction();abierta=true;
+    const [[sesion]]=await conexion.query('SELECT id,usuarios_id FROM sesiones_division_cuentas WHERE id=? FOR UPDATE',[sesion_division_id]);
+    if(!sesion)throw Object.assign(new Error('La sesión de división no existe.'),{status:404});
+    const participanteId=randomUUID();let totalAsignado=0;
+    // Conservar el cálculo y las coerciones del contrato existente en esta fase.
+    const procesados=items.map(item=>{const cantidad=parseInt(item.cantidad,10)||1,precio=parseFloat(item.precio_unitario)||0;
+      const subtotal=cantidad*precio;totalAsignado+=subtotal;
+      return [randomUUID(),participanteId,item.pedido_item_id,cantidad,subtotal];});
+    const [p]=await conexion.query('INSERT INTO division_participantes (id,sesion_division_id,nombre_cliente,total_asignado) VALUES (?,?,?,?)',[participanteId,sesion_division_id,nombre_cliente,totalAsignado]);
+    if(p.affectedRows!==1)throw new Error('No se registró el participante.');
+    const [d]=await conexion.query('INSERT INTO division_items_detalle (id,participante_id,pedido_item_id,cantidad_asignada,subtotal) VALUES ?',[procesados]);
+    if(d.affectedRows!==items.length)throw new Error('No se registraron todos los detalles.');
+    await registrarAuditoria(conexion,actor,'divisiones','division_items_asignados','sesiones_division_cuentas',sesion.id,{
+      iniciador_original:sesion.usuarios_id,participante_id:participanteId,nombre_cliente,total_asignado:totalAsignado,
+      items:procesados.map(r=>({id:r[0],pedido_item_id:r[2],cantidad:r[3],subtotal:r[4]}))
     });
-  }
-
-  // 1. Validar existencia de la sesión de división
-  const querySesion = 'SELECT id, modalidad, mesas_id FROM sesiones_division_cuentas WHERE id = ?';
-  db.query(querySesion, [sesion_division_id], (errSesion, resSesion) => {
-    if (errSesion) {
-      console.error('❌ Error al verificar sesión:', errSesion.message);
-      return res.status(500).json({ error: 'Error al consultar la sesión.', detalles: errSesion.message });
-    }
-
-    if (resSesion.length === 0) {
-      return res.status(404).json({ error: 'La sesión de división no existe.' });
-    }
-
-    const participanteId = `part-${Date.now()}`;
-    let totalAsignado = 0;
-
-    const itemsProcesados = items.map((item, index) => {
-      const cantidad = parseInt(item.cantidad, 10) || 1;
-      const precio = parseFloat(item.precio_unitario) || 0;
-      const subtotal = cantidad * precio;
-      totalAsignado += subtotal;
-
-      return [
-        `det-${Date.now()}-${index}`,
-        participanteId,
-        item.pedido_item_id,
-        cantidad,
-        subtotal
-      ];
-    });
-
-    // 2. Registrar el participante
-    const sqlParticipante = `
-      INSERT INTO division_participantes (id, sesion_division_id, nombre_cliente, total_asignado)
-      VALUES (?, ?, ?, ?)
-    `;
-
-    db.query(sqlParticipante, [participanteId, sesion_division_id, nombre_cliente, totalAsignado], (errPart) => {
-      if (errPart) {
-        console.error('❌ Error al guardar participante:', errPart.message);
-        return res.status(500).json({ error: 'Error al registrar participante.', detalles: errPart.message });
-      }
-
-      // 3. Registrar los detalles de los ítems
-      const sqlDetalles = `
-        INSERT INTO division_items_detalle (id, participante_id, pedido_item_id, cantidad_asignada, subtotal)
-        VALUES ?
-      `;
-
-      db.query(sqlDetalles, [itemsProcesados], (errDet) => {
-        if (errDet) {
-          console.error('❌ Error al guardar detalle de ítems:', errDet.message);
-          return res.status(500).json({ error: 'Error al registrar detalle de ítems.', detalles: errDet.message });
-        }
-
-        return res.status(201).json({
-          exito: true,
-          mensaje: `Ítems asignados exitosamente a ${nombre_cliente} 🍕`,
-          data: {
-            participante_id: participanteId,
-            sesion_division_id,
-            nombre_cliente,
-            total_asignado: totalAsignado,
-            items_asignados: items.length
-          }
-        });
-      });
-    });
-  });
+    await conexion.commit();abierta=false;
+    return res.status(201).json({exito:true,mensaje:`Ítems asignados exitosamente a ${nombre_cliente} 🍕`,data:{participante_id:participanteId,sesion_division_id,nombre_cliente,total_asignado:totalAsignado,items_asignados:items.length}});
+  }catch(e){if(abierta)await conexion.rollback();return res.status(e.status||500).json({error:e.status?e.message:'Error al asignar los Ítems.'});}
+  finally{if(conexion)await conexion.end();}
 };
 
 module.exports = {

@@ -40,7 +40,7 @@ test('pagos y liquidación con MySQL y tablas temporales', {
       if (nombre === '../config/db') return { dbConfig: {} };
       if (nombre === 'mysql2') return { createConnection: () => ({ promise: () => conexion }) };
       if (nombre === '../services/liquidacionService') return require('../src/services/liquidacionService');
-      return (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(nombre));
+      return (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : (nombre === '../services/auditoriaService' ? require('../src/services/auditoriaService') : require(nombre)));
     },
     console: { error() {} }
   });
@@ -59,7 +59,7 @@ test('pagos y liquidación con MySQL y tablas temporales', {
   });
   const verificar = (id, decision = 'verificado') => invocar(api.verificarPago,
     { verificacion_estado: decision }, { id });
-  const tablas = ['mesas', 'pedidos', 'pedido_items', 'pagos', 'sesiones_juego',
+  const tablas = ['auditoria', 'mesas', 'pedidos', 'pedido_items', 'pagos', 'sesiones_juego',
     'sesiones_division_cuentas', 'division_participantes'];
   const preparar = async () => {
     fallar = null;

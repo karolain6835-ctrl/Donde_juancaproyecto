@@ -1,3 +1,4 @@
+const { registrarAuditoria } = require('../services/auditoriaService');
 const { ejecutor } = require('../services/identidadService');
 const crypto = require('crypto');
 const { errorCompra, idValido, objeto, filaEscrita, decimal, importe, conConexion, consultaCompras } = require('../services/comprasService');
@@ -131,10 +132,15 @@ exports.recibirCompra = (req,res) => {
   });
 };
 
-exports.cancelarCompra = (req,res) => conConexion(res, async conexion => {
+exports.cancelarCompra = (req,res) => {
+  const actor = ejecutor(req,res);
+  if (!actor) return;
+  return conConexion(res, async conexion => {
   const compra = await bloquearPendiente(conexion,req.params.id);
   const [resultado] = await conexion.query("UPDATE compras SET estado='cancelada' WHERE id=? AND estado='pendiente'",[compra.id]);
   filaEscrita(resultado);
+  await registrarAuditoria(conexion,actor,'compras','compra_cancelada','compras',compra.id,{antes:{estado:compra.estado},despues:{estado:'cancelada'},creador_original:compra.usuarios_id});
   const [[datos]] = await conexion.query(`${consultaCompras} WHERE c.id=?`,[compra.id]);
   return { body:{mensaje:'Compra cancelada correctamente.',datos} };
 });
+};

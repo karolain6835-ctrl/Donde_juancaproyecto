@@ -28,7 +28,7 @@ const cargar = (nombre, db) => {
     module: modulo, exports: modulo.exports, console,
     require: n => n === '../services/identidadService' ? identidad
       : n === '../config/db' ? (db || prohibido)
-      : n.startsWith('../services/') || n === 'mysql2' ? prohibido : require(n)
+      : n.startsWith('../services/') || n === 'mysql2' ? prohibido : (n === '../services/auditoriaService' ? require('../src/services/auditoriaService') : require(n))
   });
   return modulo.exports;
 };
@@ -63,7 +63,7 @@ test('Divisiones y responsable de pedido: MySQL real temporal', {
     password: process.env.DB_PASSWORD, database: process.env.DB_NAME
   });
   try {
-    for (const tabla of ['mesas', 'usuarios', 'clientes', 'pedidos', 'sesiones_division_cuentas']) {
+    for (const tabla of ['auditoria', 'mesas', 'usuarios', 'clientes', 'pedidos', 'sesiones_division_cuentas']) {
       await c.query(`CREATE TEMPORARY TABLE copia_identidad_${tabla} LIKE ${tabla}`);
       await c.query(`CREATE TEMPORARY TABLE ${tabla} LIKE copia_identidad_${tabla}`);
     }

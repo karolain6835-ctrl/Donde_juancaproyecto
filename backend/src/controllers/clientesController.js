@@ -1,3 +1,4 @@
+const { registrarAuditoria } = require('../services/auditoriaService');
 const { ejecutor } = require('../services/identidadService');
 const mysql = require('mysql2');
 const db = require('../config/db');
@@ -112,7 +113,10 @@ exports.registrarCliente = (req, res) => {
     return { status: 201, body: { mensaje: 'Cliente registrado correctamente.', cliente } };
   });
 };
-exports.actualizarCliente = (req, res) => ejecutar(res, async c => {
+exports.actualizarCliente = (req,res) => {
+  const actor = ejecutor(req,res);
+  if (!actor) return;
+  return ejecutar(res, async c => {
   validarBody(req.body, ['nombre', 'email', 'telefono', 'estado']);
   const cambios = [], valores = [];
   for (const [campo, valor] of Object.entries(req.body)) {
@@ -121,10 +125,15 @@ exports.actualizarCliente = (req, res) => ejecutar(res, async c => {
   }
   if (!cambios.length) throw errorCliente(400, 'Envía al menos un campo para actualizar.');
   const id = identificador(req.params.id);
-  const [[existe]] = await c.query('SELECT id FROM clientes WHERE id=? FOR UPDATE', [id]);
+  const [[existe]] = await c.query(`SELECT ${columnas} FROM clientes WHERE id=? FOR UPDATE`, [id]);
   if (!existe) throw errorCliente(404, 'Cliente inexistente.');
   const [update] = await c.query(`UPDATE clientes SET ${cambios.join(',')} WHERE id=?`, [...valores, id]);
   escrita(update);
   const [[cliente]] = await c.query(`SELECT ${columnas} FROM clientes WHERE id=?`, [id]);
+  await registrarAuditoria(c,actor,'clientes','cliente_actualizado','clientes',id,{
+    antes: Object.fromEntries(Object.keys(req.body).map(k=>[k,existe[k]])),
+    despues: Object.fromEntries(Object.keys(req.body).map(k=>[k,cliente[k]])),creador_original:cliente.usuarios_id
+  });
   return { body: { mensaje: 'Cliente actualizado correctamente.', cliente } };
 });
+};

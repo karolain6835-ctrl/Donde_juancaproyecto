@@ -1,3 +1,4 @@
+const { registrarAuditoria } = require('../services/auditoriaService');
 const { ejecutor } = require('../services/identidadService');
 const db = require('../config/db');
 const mysql = require('mysql2');
@@ -305,6 +306,8 @@ exports.registrarPago = async (req, res) => {
 // VERIFICAR PAGO Y LIQUIDAR (registrar un pago pendiente no liquida la deuda)
 // ==========================================
 exports.verificarPago = async (req, res) => {
+  const actor = ejecutor(req, res);
+  if (!actor) return;
   const { verificacion_estado } = req.body || {};
   if (!['verificado', 'rechazado'].includes(verificacion_estado)) {
     return res.status(400).json({ error: 'verificacion_estado debe ser verificado o rechazado.' });
@@ -323,12 +326,14 @@ exports.verificarPago = async (req, res) => {
     if (!pago || pago.pedidos_id !== pedido.id) throw errorLiquidacion(409, 'El pago cambió durante la operación.');
     const estado = verificacion_estado === 'verificado' ? 'pagado' : 'cancelado';
     const repetido = pago.verificacion_estado === verificacion_estado && pago.estado === estado;
+    let cuentaAnterior;
     if (!repetido) {
       if (pago.verificacion_estado !== 'pendiente' || pago.estado !== 'pendiente') {
         throw errorLiquidacion(409, 'El pago ya fue procesado; no se puede cambiar su decisión.');
       }
       if (pedido.estado !== 'abierto') throw errorLiquidacion(409, 'El pedido no está abierto.');
       const cuenta = await calcularCuenta(conexion, pedido);
+      cuentaAnterior = cuenta;
       if (verificacion_estado === 'verificado' && centavos(pago.total_seleccionado) > cuenta.saldo) {
         throw errorLiquidacion(409, 'El pago supera el saldo actual del pedido.');
       }
@@ -342,6 +347,16 @@ exports.verificarPago = async (req, res) => {
     }
     if (pago.participante_id) await validarParticipante(conexion, pago.participante_id);
     const liquidacion = await actualizarLiquidacion(conexion, pedido, await calcularCuenta(conexion, pedido));
+    if (!repetido) {
+      await registrarAuditoria(conexion, actor, 'pagos', verificacion_estado === 'verificado' ? 'pago_verificado' : 'pago_rechazado', 'pagos', pago.id, {
+        antes: { estado: pago.estado, verificacion_estado: pago.verificacion_estado },
+        despues: { estado, verificacion_estado }, registrador_original: pago.usuarios_id, pedido_id: pedido.id
+      });
+      await registrarAuditoria(conexion, actor, 'pagos', 'liquidacion_actualizada', 'pedidos', pedido.id, {
+        pago_id: pago.id, causa: verificacion_estado, estado_anterior: pedido.estado,
+        saldo_anterior_centavos: cuentaAnterior.saldo.toString(), despues: liquidacion
+      });
+    }
     await conexion.commit();
     transaccionIniciada = false;
     return res.status(200).json({

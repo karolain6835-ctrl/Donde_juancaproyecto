@@ -20,7 +20,7 @@ test('Clientes: HTTP y MySQL real en tablas temporales', { skip: process.env.RUN
     end: async () => { cierres++; }
   };
   try {
-    for (const tabla of ['clientes','usuarios']) {
+    for (const tabla of ['auditoria','clientes','usuarios']) {
       await real.query(`CREATE TEMPORARY TABLE copia_clientes_${tabla} LIKE ${tabla}`);
       await real.query(`CREATE TEMPORARY TABLE ${tabla} LIKE copia_clientes_${tabla}`);
     }
@@ -30,11 +30,11 @@ test('Clientes: HTTP y MySQL real en tablas temporales', { skip: process.env.RUN
     const modulo = { exports:{} };
     vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../src/controllers/clientesController.js'),'utf8'), {
       module:modulo,exports:modulo.exports,console:{ error() {} },
-      require: nombre => nombre === '../config/db' ? {dbConfig:{}} : nombre === 'mysql2' ? {createConnection:()=>{conexionesAbiertas++;return {promise:()=>conexion};}} : (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(nombre))
+      require: nombre => nombre === '../config/db' ? {dbConfig:{}} : nombre === 'mysql2' ? {createConnection:()=>{conexionesAbiertas++;return {promise:()=>conexion};}} : (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : (nombre === '../services/auditoriaService' ? require('../src/services/auditoriaService') : require(nombre)))
     });
     const rutas = {exports:{}};
     vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../src/routes/clientesRoutes.js'),'utf8'), {
-      module:rutas,require:nombre=>nombre === '../controllers/clientesController' ? modulo.exports : (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(nombre))
+      module:rutas,require:nombre=>nombre === '../controllers/clientesController' ? modulo.exports : (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : (nombre === '../services/auditoriaService' ? require('../src/services/auditoriaService') : require(nombre)))
     });
     const express = require('express'), app = express();
     app.use(express.json()); app.use((req,res,next)=>{req.usuario={id:actor,rol:'Administrador'};next();}); app.use('/api/clientes',rutas.exports);

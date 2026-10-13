@@ -37,12 +37,12 @@ test('proveedores y compras por HTTP con MySQL temporal', {
     const modulo={exports:{}};
     vm.runInNewContext(fs.readFileSync(path.join(__dirname,'..',archivo),'utf8'),{
       module:modulo,exports:modulo.exports,
-      require:n=>Object.hasOwn(dependencias,n) ? dependencias[n] : (n === '../services/identidadService' ? require('../src/services/identidadService') : n === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(n)),console:{error(){}}
+      require:n=>Object.hasOwn(dependencias,n) ? dependencias[n] : (n === '../services/identidadService' ? require('../src/services/identidadService') : n === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : (n === '../services/auditoriaService' ? require('../src/services/auditoriaService') : require(n))),console:{error(){}}
     });
     return modulo.exports;
   };
   try {
-    for(const tabla of ['proveedores','usuarios','productos','compras','compra_items','movimientos_inventario','historial_costos']) {
+    for(const tabla of ['auditoria','proveedores','usuarios','productos','compras','compra_items','movimientos_inventario','historial_costos']) {
       await real.query(`CREATE TEMPORARY TABLE copia_compras_${tabla} LIKE ${tabla}`);
       await real.query(`CREATE TEMPORARY TABLE ${tabla} LIKE copia_compras_${tabla}`);
     }
