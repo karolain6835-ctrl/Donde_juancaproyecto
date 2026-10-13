@@ -43,14 +43,14 @@ test('ajuste de inventario contra MySQL con tablas temporales', {
           query: (sql, params, cb) => real.query(sql, params).then(([r]) => cb(null, r), e => cb(e))
         };
         if (nombre === 'mysql2') return { createConnection: () => ({ promise: () => conexion }) };
-        return require(nombre);
+        return (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(nombre));
       },
       console: { error() {} }
     });
     return modulo.exports;
   };
   const ejecutar = (controlador, body, params = {}) => new Promise((resolve, reject) => {
-    Promise.resolve(controlador({ body, params }, {
+    Promise.resolve(controlador({ body, params, usuario: {id: 'test-user'} }, {
       code: 200,
       status(code) { this.code = code; return this; },
       json(data) { resolve({ status: this.code, data: JSON.parse(JSON.stringify(data)) }); }
@@ -72,7 +72,7 @@ test('ajuste de inventario contra MySQL con tablas temporales', {
       VALUES ('test-producto','Producto','TEST-AJUSTE',100,50,27,1,'activo',1,'test-prov','test-costo')`);
     const inventario = cargar('inventarioController.js');
     const productos = cargar('productosController.js');
-    const body = cantidad => ({ producto_id: 'test-producto', nueva_cantidad: cantidad, usuarios_id: 'test-user' });
+    const body = cantidad => ({ producto_id: 'test-producto', nueva_cantidad: cantidad });
     const ajustar = datos => ejecutar(inventario.actualizarStock, datos);
     const leer = async () => {
       const [[p]] = await real.query("SELECT cantidad_disponible FROM productos WHERE id='test-producto'");
@@ -118,7 +118,7 @@ test('ajuste de inventario contra MySQL con tablas temporales', {
     await t.test('producto y usuario inexistentes', async () => {
       await preparar();
       assert.equal((await ajustar({ ...body(30), producto_id: 'inexistente' })).status, 404);
-      assert.equal((await ajustar({ ...body(30), usuarios_id: 'inexistente' })).status, 404);
+      assert.equal((await ajustar({ ...body(30), usuarios_id: 'inexistente' })).status, 400);
       assert.deepEqual(await leer(), { cantidad: 27, movimientos: [] });
     });
     await t.test('cantidades invalidas y campos obligatorios', async () => {
@@ -126,7 +126,7 @@ test('ajuste de inventario contra MySQL con tablas temporales', {
       for (const valor of [-1, 1.5, '20', null, undefined, true, {}, [], 2147483648]) {
         assert.equal((await ajustar(body(valor))).status, 400);
       }
-      for (const campo of ['producto_id', 'nueva_cantidad', 'usuarios_id']) {
+      for (const campo of ['producto_id', 'nueva_cantidad']) {
         const datos = body(30); delete datos[campo];
         assert.equal((await ajustar(datos)).status, 400);
       }

@@ -1,3 +1,4 @@
+const { ejecutor } = require('../services/identidadService');
 const mysql = require('mysql2');
 const db = require('../config/db');
 const { randomUUID } = require('node:crypto');
@@ -91,22 +92,26 @@ exports.obtenerCliente = (req, res) => ejecutar(res, async c => {
   if (!cliente) throw errorCliente(404, 'Cliente inexistente.');
   return { body: { mensaje: 'Cliente encontrado.', cliente } };
 }, true);
-exports.registrarCliente = (req, res) => ejecutar(res, async c => {
-  validarBody(req.body, ['id', 'nombre', 'email', 'telefono', 'usuarios_id']);
-  const b = req.body;
-  const id = b.id === undefined ? randomUUID() : identificador(b.id);
-  const nombre = texto(b.nombre, 'nombre', 100);
-  const usuario = identificador(b.usuarios_id);
-  const email = b.email === undefined ? null : contacto(b.email, 'email');
-  const telefono = b.telefono === undefined ? null : contacto(b.telefono, 'telefono');
-  const [[existe]] = await c.query('SELECT id FROM usuarios WHERE id=? LOCK IN SHARE MODE', [usuario]);
-  if (!existe) throw errorCliente(404, 'Usuario inexistente.');
-  const [insert] = await c.query(`INSERT INTO clientes (id,nombre,email,telefono,estado,delete_at,usuarios_id)
-    VALUES (?,?,?,?,'activo',NULL,?)`, [id, nombre, email, telefono, usuario]);
-  escrita(insert);
-  const [[cliente]] = await c.query(`SELECT ${columnas} FROM clientes WHERE id=?`, [id]);
-  return { status: 201, body: { mensaje: 'Cliente registrado correctamente.', cliente } };
-});
+exports.registrarCliente = (req, res) => {
+  const actor = ejecutor(req, res, ['usuarios_id']);
+  if (!actor) return;
+  return ejecutar(res, async c => {
+    validarBody(req.body, ['id', 'nombre', 'email', 'telefono']);
+    const b = req.body;
+    const id = b.id === undefined ? randomUUID() : identificador(b.id);
+    const nombre = texto(b.nombre, 'nombre', 100);
+    const usuario = identificador(actor);
+    const email = b.email === undefined ? null : contacto(b.email, 'email');
+    const telefono = b.telefono === undefined ? null : contacto(b.telefono, 'telefono');
+    const [[existe]] = await c.query('SELECT id FROM usuarios WHERE id=? LOCK IN SHARE MODE', [usuario]);
+    if (!existe) throw errorCliente(404, 'Usuario inexistente.');
+    const [insert] = await c.query(`INSERT INTO clientes (id,nombre,email,telefono,estado,delete_at,usuarios_id)
+      VALUES (?,?,?,?,'activo',NULL,?)`, [id, nombre, email, telefono, usuario]);
+    escrita(insert);
+    const [[cliente]] = await c.query(`SELECT ${columnas} FROM clientes WHERE id=?`, [id]);
+    return { status: 201, body: { mensaje: 'Cliente registrado correctamente.', cliente } };
+  });
+};
 exports.actualizarCliente = (req, res) => ejecutar(res, async c => {
   validarBody(req.body, ['nombre', 'email', 'telefono', 'estado']);
   const cambios = [], valores = [];

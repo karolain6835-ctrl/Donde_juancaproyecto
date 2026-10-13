@@ -1,3 +1,4 @@
+const { ejecutor } = require('../services/identidadService');
 const db = require('../config/db');
 const mysql = require('mysql2');
 const crypto = require('crypto');
@@ -42,7 +43,9 @@ const obtenerPedidosKanban = async (req, res) => {
 // ==========================================
 const actualizarEstadoPedido = async (req, res) => {
   const { id } = req.params;
-  const { nuevo_estado, usuarios_id } = req.body || {};
+  const usuarios_id = ejecutor(req, res);
+  if (!usuarios_id) return;
+  const { nuevo_estado } = req.body || {};
   // La lectura del tablero llama "preparacion" a la columna "preparando".
   const estadoDestino = nuevo_estado === 'preparacion' ? 'preparando' : nuevo_estado;
   if (!['enviado', 'preparando', 'servido'].includes(estadoDestino)) {

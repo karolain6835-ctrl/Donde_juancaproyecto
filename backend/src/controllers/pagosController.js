@@ -1,3 +1,4 @@
+const { ejecutor } = require('../services/identidadService');
 const db = require('../config/db');
 const mysql = require('mysql2');
 const crypto = require('crypto');
@@ -8,12 +9,13 @@ const { bloquearPedido, calcularCuenta, validarImporte, actualizarLiquidacion,
 // REGISTRAR PAGO
 // ==========================================
 exports.registrarPago = async (req, res) => {
+  const usuarios_id = ejecutor(req, res);
+  if (!usuarios_id) return;
   const {
     id,
     metodo_de_pago,
     total_seleccionado,
     pedidos_id,
-    usuarios_id,
     sesion_division_id,
     participante_id
   } = req.body || {};
@@ -25,7 +27,7 @@ exports.registrarPago = async (req, res) => {
   if (!metodo_de_pago || !pedidos_id || !usuarios_id) {
     return res.status(400).json({
       error:
-        'Faltan campos obligatorios (metodo_de_pago, pedidos_id, usuarios_id).'
+        'Faltan campos obligatorios (metodo_de_pago, pedidos_id).'
     });
   }
 

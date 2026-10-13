@@ -26,6 +26,7 @@ test('API juegos: MySQL real con tablas temporales, sin escrituras persistentes'
     password: process.env.DB_PASSWORD, database: process.env.DB_NAME, connectTimeout: 5000
   });
   let fallo, server, cierres = 0, solicitudes = 0;
+  let actor='u1', conexionesAbiertas=0;
   const conexion = {
     beginTransaction: () => real.beginTransaction(),
     query: async (sql, parametros) => {
@@ -58,15 +59,15 @@ test('API juegos: MySQL real con tablas temporales, sin escrituras persistentes'
     vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/controllers/juegosController.js'), 'utf8'), {
       module: modulo, exports: modulo.exports,
       require: nombre => nombre === '../config/db' ? { dbConfig: {} }
-        : nombre === 'mysql2' ? { createConnection: () => ({ promise: () => conexion }) }
-        : nombre === '../services/juegosService' ? { calcularCosto } : require(nombre),
+        : nombre === 'mysql2' ? { createConnection: () => {conexionesAbiertas++;return { promise: () => conexion };} }
+        : nombre === '../services/juegosService' ? { calcularCosto } : (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(nombre)),
       console: { error() {} }
     });
     const rutas = { exports: {} };
     vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/routes/juegosRoutes.js'), 'utf8'), {
-      module: rutas, require: nombre => nombre === '../controllers/juegosController' ? modulo.exports : require(nombre)
+      module: rutas, require: nombre => nombre === '../controllers/juegosController' ? modulo.exports : (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(nombre))
     });
-    const app = require('express')(); app.use(require('express').json()); app.use('/api/juegos', rutas.exports);
+    const app = require('express')(); app.use(require('express').json()); app.use((req,res,next)=>{req.usuario={id:actor,rol:'Administrador'};next();}); app.use('/api/juegos', rutas.exports);
     server = await new Promise(resolve => { const s = app.listen(0, '127.0.0.1', () => resolve(s)); });
     const base = `http://127.0.0.1:${server.address().port}/api/juegos`;
     const request = async (ruta, metodo = 'GET', body) => {
@@ -74,9 +75,9 @@ test('API juegos: MySQL real con tablas temporales, sin escrituras persistentes'
       const r = await fetch(base + ruta, { method: metodo, headers: { 'Content-Type': 'application/json' }, body: body === undefined ? undefined : JSON.stringify(body) });
       return { status: r.status, data: await r.json() };
     };
-    const body = { activos_juego_id:'a1', mesas_id:'m1', iniciada_por:'u1', pedido_items_id:'i1' };
+    const body = { activos_juego_id:'a1', mesas_id:'m1', pedido_items_id:'i1' };
     const preparar = async () => {
-      fallo = null; await real.query('DELETE FROM sesiones_juego');
+      actor='u1'; fallo = null; await real.query('DELETE FROM sesiones_juego');
       await real.query("UPDATE activos_juego SET estado='disponible',precio_hora=3600.00");
     };
     const estado = async () => {
@@ -126,34 +127,35 @@ test('API juegos: MySQL real con tablas temporales, sin escrituras persistentes'
       await preparar(); const id = await iniciar();
       await real.query('UPDATE sesiones_juego SET fecha_inicio=UTC_TIMESTAMP()-INTERVAL 3600 SECOND');
       await real.query('UPDATE activos_juego SET precio_hora=1.00');
-      const r = await request(`/${id}/terminar`,'PUT',{cerrada_por:'u2'});
-      assert.equal(r.status,200); assert.equal(r.data.datos.estado,'cerrada'); assert.equal(r.data.datos.cerrada_por,'u2');
+      actor='u2';
+      const r = await request(`/${id}/terminar`,'PUT',{});
+      assert.equal(r.status,200); assert.equal(r.data.datos.estado,'cerrada'); assert.equal(r.data.datos.cerrada_por,'u2'); assert.equal(r.data.datos.iniciada_por,'u1');
       const [[s]] = await real.query('SELECT TIMESTAMPDIFF(SECOND,fecha_inicio,fecha_fin) AS segundos,CAST(costo_total AS CHAR) AS costo FROM sesiones_juego');
       assert.equal(s.costo,calcularCosto('3600.00',s.segundos)); assert.equal(r.data.total_cobrado,s.costo);
       assert.equal((await estado()).activo,'disponible');
-      const antes = await estado(); assert.equal((await request(`/${id}/terminar`,'PUT',{cerrada_por:'u2'})).status,409);
+      const antes = await estado(); assert.equal((await request(`/${id}/terminar`,'PUT',{})).status,409);
       assert.deepEqual(await estado(),antes);
       assert.equal((await request('/sesiones?estado=cerrada')).data.datos.length,1);
       assert.equal((await request('/sesiones?estado=activa')).data.datos.length,0);
     });
     await t.test('cierre: usuario/sesion inexistentes y costo del cliente rechazado', async () => {
       await preparar(); const id = await iniciar();
-      assert.equal((await request('/no-existe/terminar','PUT',{cerrada_por:'u1'})).status,404);
-      assert.equal((await request(`/${id}/terminar`,'PUT',{cerrada_por:'no-existe'})).status,404);
+      assert.equal((await request('/no-existe/terminar','PUT',{})).status,404);
+      assert.equal((await request(`/${id}/terminar`,'PUT',{cerrada_por:'no-existe'})).status,400);
       assert.equal((await request(`/${id}/terminar`,'PUT',{cerrada_por:'u1',costo_total:1})).status,400);
       assert.equal((await estado()).sesiones[0].estado,'activa');
     });
     for (const columna of ['fecha_inicio','tarifa_hora_aplicada']) await t.test(`historica sin ${columna}`, async () => {
       await preparar(); const id = await iniciar(); await real.query(`UPDATE sesiones_juego SET ${columna}=NULL`);
-      const r = await request(`/${id}/terminar`,'PUT',{cerrada_por:'u1'});
+      const r = await request(`/${id}/terminar`,'PUT',{});
       assert.equal(r.status,409); assert.match(r.data.error,/conciliación/);
       assert.equal((await estado()).activo,'ocupado'); assert.equal((await estado()).sesiones[0].estado,'activa');
     });
     await t.test('duracion negativa y costo fuera de rango no cierran', async () => {
       await preparar(); const id = await iniciar(); await real.query('UPDATE sesiones_juego SET fecha_inicio=UTC_TIMESTAMP()+INTERVAL 1 DAY');
-      assert.equal((await request(`/${id}/terminar`,'PUT',{cerrada_por:'u1'})).status,409);
+      assert.equal((await request(`/${id}/terminar`,'PUT',{})).status,409);
       await real.query('UPDATE sesiones_juego SET fecha_inicio=UTC_TIMESTAMP()-INTERVAL 2 HOUR,tarifa_hora_aplicada=99999999.99');
-      assert.equal((await request(`/${id}/terminar`,'PUT',{cerrada_por:'u1'})).status,409);
+      assert.equal((await request(`/${id}/terminar`,'PUT',{})).status,409);
       assert.equal((await estado()).sesiones[0].estado,'activa');
     });
     for (const operacion of ['insert-sesion','insert-sesion-cero','update-activo','update-activo-cero','commit']) await t.test(`rollback inicio ${operacion}`, async () => {
@@ -163,10 +165,10 @@ test('API juegos: MySQL real con tablas temporales, sin escrituras persistentes'
     });
     for (const operacion of ['update-sesion','update-sesion-cero','update-activo','update-activo-cero','commit']) await t.test(`rollback cierre ${operacion}`, async () => {
       await preparar(); const id = await iniciar(); const antes = await estado(); fallo = operacion;
-      assert.equal((await request(`/${id}/terminar`,'PUT',{cerrada_por:'u1'})).status,500);
+      assert.equal((await request(`/${id}/terminar`,'PUT',{})).status,500);
       assert.deepEqual(await estado(),antes);
     });
-    assert.equal(cierres,solicitudes,'Cada solicitud libera su conexion');
+    assert.equal(cierres,conexionesAbiertas,'Cada solicitud libera su conexion');
   } finally {
     if (server) await new Promise(resolve => server.close(resolve));
     await real.end();

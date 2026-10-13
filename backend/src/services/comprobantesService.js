@@ -47,9 +47,9 @@ const ejecutar = async (res, operacion, lectura = false) => {
     if (c) { try { await c.end(); } catch (e) { console.error('Cierre comprobantes:', e.message); } }
   }
 };
-const emitir = async (c, body) => {
-  if (!body || typeof body !== 'object' || Array.isArray(body) || Object.keys(body).some(k=>!['pedido_id','usuarios_id'].includes(k))) throw error(400,'Envía únicamente pedido_id y usuarios_id.');
-  const pedidoId = id(body.pedido_id), usuarioId = id(body.usuarios_id);
+const emitir = async (c, body, actor) => {
+  if (!body || typeof body !== 'object' || Array.isArray(body) || Object.keys(body).some(k=>!['pedido_id'].includes(k))) throw error(400,'Envía únicamente pedido_id y usuarios_id.');
+  const pedidoId = id(body.pedido_id), usuarioId = id(actor);
   const pedido = await bloquearPedido(c,pedidoId);
   const [[usuario]] = await c.query('SELECT id FROM usuarios WHERE id=? LOCK IN SHARE MODE',[usuarioId]);
   if (!usuario) throw error(404,'Usuario emisor inexistente.');

@@ -1,3 +1,4 @@
+const { ejecutor } = require('../services/identidadService');
 const mysql = require('mysql2');
 const db = require('../config/db');
 const { randomUUID } = require('node:crypto');
@@ -56,54 +57,62 @@ exports.listarSesiones = (req, res) => ejecutar(res, async c => {
     ORDER BY s.fecha_inicio DESC,s.id DESC`, valores);
   return { body: { mensaje: 'Sesiones consultadas correctamente.', datos } };
 });
-exports.iniciarJuego = (req, res) => ejecutar(res, async c => {
-  campos(req.body, ['activos_juego_id', 'mesas_id', 'iniciada_por', 'pedido_items_id']);
-  const b = req.body;
-  const [[activo]] = await c.query('SELECT id,estado,tipo,CAST(precio_hora AS CHAR) AS precio_hora FROM activos_juego WHERE id=? FOR UPDATE', [b.activos_juego_id]);
-  if (!activo) throw fallo(404, 'Activo inexistente.');
-  if (activo.estado !== 'disponible') throw fallo(409, 'El activo no está disponible.');
-  const [activas] = await c.query("SELECT id FROM sesiones_juego WHERE activos_juego_id=? AND estado='activa' FOR UPDATE", [activo.id]);
-  if (activas.length) throw fallo(409, 'El activo ya tiene una sesión activa.');
-  const [[mesa]] = await c.query('SELECT id FROM mesas WHERE id=? LOCK IN SHARE MODE', [b.mesas_id]);
-  if (!mesa) throw fallo(404, 'Mesa inexistente.');
-  const [[usuario]] = await c.query('SELECT id FROM usuarios WHERE id=? LOCK IN SHARE MODE', [b.iniciada_por]);
-  if (!usuario) throw fallo(404, 'Usuario inexistente.');
-  const [[item]] = await c.query(`SELECT pi.id,p.mesas_id FROM pedido_items pi
-    JOIN pedidos p ON p.id=pi.pedidos_id WHERE pi.id=? LOCK IN SHARE MODE`, [b.pedido_items_id]);
-  if (!item) throw fallo(404, 'Ítem inexistente.');
-  if (item.mesas_id !== b.mesas_id) throw fallo(400, 'El ítem pertenece a otra mesa.');
-  calcularCosto(activo.precio_hora, 0);
-  const id = randomUUID();
-  const [insert] = await c.query(`INSERT INTO sesiones_juego
-    (id,tipo_juego,estado,costo_total,activos_juego_id,mesas_id,iniciada_por,cerrada_por,pedido_items_id,fecha_inicio,fecha_fin,tarifa_hora_aplicada)
-    VALUES (?,?,'activa',NULL,?,?,?,NULL,?,UTC_TIMESTAMP(),NULL,?)`,
-  [id, activo.tipo, activo.id, b.mesas_id, b.iniciada_por, b.pedido_items_id, activo.precio_hora]);
-  escrito(insert);
-  const [update] = await c.query("UPDATE activos_juego SET estado='ocupado' WHERE id=? AND estado='disponible'", [activo.id]);
-  escrito(update);
-  const [[datos]] = await c.query(`${consultaSesion} WHERE s.id=?`, [id]);
-  return { status: 201, body: { mensaje: 'Sesión de juego iniciada correctamente.', id_sesion: id, datos } };
-}, true);
-exports.terminarJuego = (req, res) => ejecutar(res, async c => {
-  campos(req.body, ['cerrada_por']);
-  if (!idValido(req.params.id)) throw fallo(400, 'ID de sesión no válido.');
-  const [[sesion]] = await c.query(`SELECT id,estado,fecha_inicio,CAST(tarifa_hora_aplicada AS CHAR) AS tarifa_hora_aplicada,
-    activos_juego_id FROM sesiones_juego WHERE id=? FOR UPDATE`, [req.params.id]);
-  if (!sesion) throw fallo(404, 'Sesión inexistente.');
-  if (sesion.estado !== 'activa') throw fallo(409, 'La sesión no está activa.');
-  if (sesion.fecha_inicio === null || sesion.tarifa_hora_aplicada === null) throw fallo(409, 'La sesión histórica requiere conciliación de fecha de inicio y tarifa.');
-  const [[usuario]] = await c.query('SELECT id FROM usuarios WHERE id=? LOCK IN SHARE MODE', [req.body.cerrada_por]);
-  if (!usuario) throw fallo(404, 'Usuario inexistente.');
-  const [[activo]] = await c.query('SELECT id FROM activos_juego WHERE id=? FOR UPDATE', [sesion.activos_juego_id]);
-  if (!activo) throw fallo(409, 'La sesión no tiene un activo válido.');
-  const [[tiempo]] = await c.query(`SELECT DATE_FORMAT(UTC_TIMESTAMP(),'%Y-%m-%d %H:%i:%s') AS fecha_fin,
-    TIMESTAMPDIFF(SECOND,fecha_inicio,UTC_TIMESTAMP()) AS segundos FROM sesiones_juego WHERE id=?`, [sesion.id]);
-  const costo = calcularCosto(sesion.tarifa_hora_aplicada, tiempo.segundos);
-  const [update] = await c.query(`UPDATE sesiones_juego SET estado='cerrada',fecha_fin=?,cerrada_por=?,costo_total=?
-    WHERE id=? AND estado='activa'`, [tiempo.fecha_fin, req.body.cerrada_por, costo, sesion.id]);
-  escrito(update);
-  const [liberar] = await c.query("UPDATE activos_juego SET estado='disponible' WHERE id=?", [activo.id]);
-  escrito(liberar);
-  const [[datos]] = await c.query(`${consultaSesion} WHERE s.id=?`, [sesion.id]);
-  return { body: { mensaje: 'Sesión de juego finalizada correctamente.', id_sesion: sesion.id, total_cobrado: costo, datos } };
-}, true);
+exports.iniciarJuego = (req, res) => {
+  const actor = ejecutor(req, res, ['iniciada_por', 'usuarios_id']);
+  if (!actor) return;
+  return ejecutar(res, async c => {
+    campos(req.body, ['activos_juego_id', 'mesas_id', 'pedido_items_id']);
+    const b = req.body;
+    const [[activo]] = await c.query('SELECT id,estado,tipo,CAST(precio_hora AS CHAR) AS precio_hora FROM activos_juego WHERE id=? FOR UPDATE', [b.activos_juego_id]);
+    if (!activo) throw fallo(404, 'Activo inexistente.');
+    if (activo.estado !== 'disponible') throw fallo(409, 'El activo no está disponible.');
+    const [activas] = await c.query("SELECT id FROM sesiones_juego WHERE activos_juego_id=? AND estado='activa' FOR UPDATE", [activo.id]);
+    if (activas.length) throw fallo(409, 'El activo ya tiene una sesión activa.');
+    const [[mesa]] = await c.query('SELECT id FROM mesas WHERE id=? LOCK IN SHARE MODE', [b.mesas_id]);
+    if (!mesa) throw fallo(404, 'Mesa inexistente.');
+    const [[usuario]] = await c.query('SELECT id FROM usuarios WHERE id=? LOCK IN SHARE MODE', [actor]);
+    if (!usuario) throw fallo(404, 'Usuario inexistente.');
+    const [[item]] = await c.query(`SELECT pi.id,p.mesas_id FROM pedido_items pi
+      JOIN pedidos p ON p.id=pi.pedidos_id WHERE pi.id=? LOCK IN SHARE MODE`, [b.pedido_items_id]);
+    if (!item) throw fallo(404, 'Ítem inexistente.');
+    if (item.mesas_id !== b.mesas_id) throw fallo(400, 'El ítem pertenece a otra mesa.');
+    calcularCosto(activo.precio_hora, 0);
+    const id = randomUUID();
+    const [insert] = await c.query(`INSERT INTO sesiones_juego
+      (id,tipo_juego,estado,costo_total,activos_juego_id,mesas_id,iniciada_por,cerrada_por,pedido_items_id,fecha_inicio,fecha_fin,tarifa_hora_aplicada)
+      VALUES (?,?,'activa',NULL,?,?,?,NULL,?,UTC_TIMESTAMP(),NULL,?)`,
+    [id, activo.tipo, activo.id, b.mesas_id, actor, b.pedido_items_id, activo.precio_hora]);
+    escrito(insert);
+    const [update] = await c.query("UPDATE activos_juego SET estado='ocupado' WHERE id=? AND estado='disponible'", [activo.id]);
+    escrito(update);
+    const [[datos]] = await c.query(`${consultaSesion} WHERE s.id=?`, [id]);
+    return { status: 201, body: { mensaje: 'Sesión de juego iniciada correctamente.', id_sesion: id, datos } };
+  }, true);
+};
+exports.terminarJuego = (req, res) => {
+  const actor = ejecutor(req, res, ['cerrada_por', 'usuarios_id']);
+  if (!actor) return;
+  return ejecutar(res, async c => {
+    campos(req.body || {}, []);
+    if (!idValido(req.params.id)) throw fallo(400, 'ID de sesión no válido.');
+    const [[sesion]] = await c.query(`SELECT id,estado,fecha_inicio,CAST(tarifa_hora_aplicada AS CHAR) AS tarifa_hora_aplicada,
+      activos_juego_id FROM sesiones_juego WHERE id=? FOR UPDATE`, [req.params.id]);
+    if (!sesion) throw fallo(404, 'Sesión inexistente.');
+    if (sesion.estado !== 'activa') throw fallo(409, 'La sesión no está activa.');
+    if (sesion.fecha_inicio === null || sesion.tarifa_hora_aplicada === null) throw fallo(409, 'La sesión histórica requiere conciliación de fecha de inicio y tarifa.');
+    const [[usuario]] = await c.query('SELECT id FROM usuarios WHERE id=? LOCK IN SHARE MODE', [actor]);
+    if (!usuario) throw fallo(404, 'Usuario inexistente.');
+    const [[activo]] = await c.query('SELECT id FROM activos_juego WHERE id=? FOR UPDATE', [sesion.activos_juego_id]);
+    if (!activo) throw fallo(409, 'La sesión no tiene un activo válido.');
+    const [[tiempo]] = await c.query(`SELECT DATE_FORMAT(UTC_TIMESTAMP(),'%Y-%m-%d %H:%i:%s') AS fecha_fin,
+      TIMESTAMPDIFF(SECOND,fecha_inicio,UTC_TIMESTAMP()) AS segundos FROM sesiones_juego WHERE id=?`, [sesion.id]);
+    const costo = calcularCosto(sesion.tarifa_hora_aplicada, tiempo.segundos);
+    const [update] = await c.query(`UPDATE sesiones_juego SET estado='cerrada',fecha_fin=?,cerrada_por=?,costo_total=?
+      WHERE id=? AND estado='activa'`, [tiempo.fecha_fin, actor, costo, sesion.id]);
+    escrito(update);
+    const [liberar] = await c.query("UPDATE activos_juego SET estado='disponible' WHERE id=?", [activo.id]);
+    escrito(liberar);
+    const [[datos]] = await c.query(`${consultaSesion} WHERE s.id=?`, [sesion.id]);
+    return { body: { mensaje: 'Sesión de juego finalizada correctamente.', id_sesion: sesion.id, total_cobrado: costo, datos } };
+  }, true);
+};

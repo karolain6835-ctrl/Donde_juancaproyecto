@@ -9,6 +9,7 @@ test('Clientes: HTTP y MySQL real en tablas temporales', { skip: process.env.RUN
   const real = await require('mysql2/promise').createConnection({ host:process.env.DB_HOST,
     port:process.env.DB_PORT,user:process.env.DB_USER,password:process.env.DB_PASSWORD,database:process.env.DB_NAME });
   let server, fallo, cierres = 0, solicitudes = 0;
+  let actor='u1', conexionesAbiertas=0;
   const conexion = {
     query: async (sql, valores) => {
       if (fallo === 'escritura' && /^(INSERT|UPDATE)/.test(sql)) throw new Error('Fallo inyectado');
@@ -29,14 +30,14 @@ test('Clientes: HTTP y MySQL real en tablas temporales', { skip: process.env.RUN
     const modulo = { exports:{} };
     vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../src/controllers/clientesController.js'),'utf8'), {
       module:modulo,exports:modulo.exports,console:{ error() {} },
-      require: nombre => nombre === '../config/db' ? {dbConfig:{}} : nombre === 'mysql2' ? {createConnection:()=>({promise:()=>conexion})} : require(nombre)
+      require: nombre => nombre === '../config/db' ? {dbConfig:{}} : nombre === 'mysql2' ? {createConnection:()=>{conexionesAbiertas++;return {promise:()=>conexion};}} : (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(nombre))
     });
     const rutas = {exports:{}};
     vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../src/routes/clientesRoutes.js'),'utf8'), {
-      module:rutas,require:nombre=>nombre === '../controllers/clientesController' ? modulo.exports : require(nombre)
+      module:rutas,require:nombre=>nombre === '../controllers/clientesController' ? modulo.exports : (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(nombre))
     });
     const express = require('express'), app = express();
-    app.use(express.json()); app.use('/api/clientes',rutas.exports);
+    app.use(express.json()); app.use((req,res,next)=>{req.usuario={id:actor,rol:'Administrador'};next();}); app.use('/api/clientes',rutas.exports);
     server = await new Promise(resolve=>{const s=app.listen(0,'127.0.0.1',()=>resolve(s));});
     const base=`http://127.0.0.1:${server.address().port}/api/clientes`;
     const request=async(ruta='',metodo='GET',body)=>{
@@ -44,7 +45,7 @@ test('Clientes: HTTP y MySQL real en tablas temporales', { skip: process.env.RUN
       const r=await fetch(base+ruta,{method:metodo,headers:{'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)});
       return {status:r.status,data:await r.json()};
     };
-    const body={id:'c1',nombre:'Ana Perez',email:'ana@example.invalid',telefono:'3001234567',usuarios_id:'u1'};
+    const body={id:'c1',nombre:'Ana Perez',email:'ana@example.invalid',telefono:'3001234567'};
     const crear=async(datos=body)=>{const r=await request('/registrar','POST',datos);assert.equal(r.status,201,JSON.stringify(r.data));return r.data.cliente;};
     const reset=async()=>{fallo=null;await real.query('DELETE FROM clientes');};
     await t.test('listado vacio y contrato',async()=>{
@@ -58,7 +59,7 @@ test('Clientes: HTTP y MySQL real en tablas temporales', { skip: process.env.RUN
       assert.equal('puntos' in cliente,false);
     });
     await t.test('sin email, telefono y generacion UUID',async()=>{
-      const cliente=await crear({nombre:'Luis',usuarios_id:'u1'});
+      const cliente=await crear({nombre:'Luis'});
       assert.match(cliente.id,/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
       assert.equal(cliente.email,null);assert.equal(cliente.telefono,null);
     });
@@ -81,7 +82,7 @@ test('Clientes: HTTP y MySQL real en tablas temporales', { skip: process.env.RUN
       assert.equal((await request('/c1')).data.cliente.id,'c1');assert.equal((await request('/no-existe')).status,404);
     });
     await t.test('usuario inexistente y email duplicado',async()=>{
-      assert.equal((await request('/registrar','POST',{...body,id:'c3',usuarios_id:'no-existe'})).status,404);
+      assert.equal((await request('/registrar','POST',{...body,id:'c3',usuarios_id:'no-existe'})).status,400);
       assert.equal((await request('/registrar','POST',{...body,id:'c3'})).status,409);
       assert.equal((await request('/registrar','POST',{...body,id:'c3',email:'ANA@example.invalid'})).status,409);
       assert.equal((await request('/registrar','POST',{...body,email:'otro@example.invalid'})).status,409);
@@ -93,7 +94,7 @@ test('Clientes: HTTP y MySQL real en tablas temporales', { skip: process.env.RUN
       await t.test(`campo adicional ${campo}`,async()=>assert.equal((await request('/registrar','POST',{...body,[campo]:'valor'})).status,400));
     }
     await t.test('nombre y usuario obligatorios',async()=>{
-      for(const campo of ['nombre','usuarios_id']) {const b={...body};delete b[campo];assert.equal((await request('/registrar','POST',b)).status,400);}
+      for(const campo of ['nombre']) {const b={...body};delete b[campo];assert.equal((await request('/registrar','POST',b)).status,400);}
     });
     await t.test('actualizacion, desactivacion, reactivacion y nullable',async()=>{
       const r=await request('/c1','PUT',{nombre:'Ana Nueva',email:null,telefono:null,estado:'inactivo'});
@@ -117,7 +118,7 @@ test('Clientes: HTTP y MySQL real en tablas temporales', { skip: process.env.RUN
       fallo=null;await crear();fallo=tipo;assert.equal((await request('/c1','PUT',{nombre:'Cambio'})).status,500);
       const [[c]]=await real.query("SELECT nombre FROM clientes WHERE id='c1'");assert.equal(c.nombre,'Ana Perez');
     });
-    assert.equal(cierres,solicitudes);
+    assert.equal(cierres,conexionesAbiertas);
   } finally {
     if(server) await new Promise(resolve=>server.close(resolve));
     await real.end();

@@ -1,3 +1,4 @@
+const { ejecutor } = require('../services/identidadService');
 const db = require('../config/db');
 const mysql = require('mysql2');
 const crypto = require('crypto');
@@ -40,9 +41,11 @@ const conConexion = async (res, operacion, lectura = false) => {
 };
 
 exports.registrarMerma = async (req, res) => {
-  const { productos_id, cantidad, merma_motivos_id, refrigeradores_id, usuarios_id } = req.body || {};
+  const usuarios_id = ejecutor(req, res);
+  if (!usuarios_id) return;
+  const { productos_id, cantidad, merma_motivos_id, refrigeradores_id } = req.body || {};
   if (![productos_id, merma_motivos_id, refrigeradores_id, usuarios_id].every(idValido)) {
-    return res.status(400).json({ error: 'productos_id, merma_motivos_id, refrigeradores_id y usuarios_id son obligatorios y deben ser IDs válidos.' });
+    return res.status(400).json({ error: 'productos_id, merma_motivos_id y refrigeradores_id son obligatorios y deben ser IDs válidos.' });
   }
   if (!Number.isInteger(cantidad) || cantidad <= 0 || cantidad > 2147483647) {
     return res.status(400).json({ error: 'cantidad debe ser un número entero positivo dentro del rango INT.' });

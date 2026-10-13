@@ -15,6 +15,7 @@ test('API de mermas contra MySQL con tablas temporales', {
     password: process.env.DB_PASSWORD, database: process.env.DB_NAME, connectTimeout: 5000
   });
   let fallo;
+  let actor='u1';
   let cierres = 0;
   let server;
   const conexion = {
@@ -51,14 +52,14 @@ test('API de mermas contra MySQL con tablas temporales', {
     vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/controllers/mermasController.js'), 'utf8'), {
       module: modulo, exports: modulo.exports,
       require: nombre => nombre === '../config/db' ? { dbConfig: {} }
-        : nombre === 'mysql2' ? { createConnection: () => ({ promise: () => conexion }) } : require(nombre),
+        : nombre === 'mysql2' ? { createConnection: () => ({ promise: () => conexion }) } : (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(nombre)),
       console: { error() {} }
     });
     const rutas = { exports: {} };
     vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/routes/mermasRoutes.js'), 'utf8'), {
-      module: rutas, require: nombre => nombre === '../controllers/mermasController' ? modulo.exports : require(nombre)
+      module: rutas, require: nombre => nombre === '../controllers/mermasController' ? modulo.exports : (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(nombre))
     });
-    const app = express(); app.use(express.json()); app.use('/api/mermas', rutas.exports);
+    const app = express(); app.use(express.json()); app.use((req,res,next)=>{req.usuario={id:actor,rol:'Administrador'};next();}); app.use('/api/mermas', rutas.exports);
     server = await new Promise(resolve => { const s = app.listen(0, '127.0.0.1', () => resolve(s)); });
     const url = `http://127.0.0.1:${server.address().port}/api/mermas`;
     const request = async (metodo = 'GET', body, query = '') => {
@@ -66,7 +67,7 @@ test('API de mermas contra MySQL con tablas temporales', {
         headers: { 'Content-Type': 'application/json' }, body: body === undefined ? undefined : JSON.stringify(body) });
       return { status: r.status, data: await r.json() };
     };
-    const datos = { productos_id:'p1', cantidad:3, merma_motivos_id:'m1', refrigeradores_id:'r1', usuarios_id:'u1' };
+    const datos = { productos_id:'p1', cantidad:3, merma_motivos_id:'m1', refrigeradores_id:'r1' };
     const preparar = async () => {
       fallo = null;
       await real.query('DELETE FROM mermas'); await real.query('DELETE FROM movimientos_inventario');
@@ -92,7 +93,7 @@ test('API de mermas contra MySQL con tablas temporales', {
       assert.equal(m.stock_antes,27); assert.equal(m.stock_despues,24);
       assert.equal(m.referencia_tipo,'merma'); assert.equal(m.referencia_id,m.merma_id);
       assert.equal(m.merma_id,r.data.datos.id); assert.equal(m.id,r.data.datos.movimientos_inventario_id);
-      assert.equal(m.usuarios_id,'u1'); assert.equal(m.productos_id,'p1');
+      assert.equal(r.data.datos.usuarios_id,actor);assert.equal(m.usuarios_id,actor); assert.equal(m.productos_id,'p1');
       assert.equal(m.fechas_iguales,1); assert.ok(m.antiguedad < 5);
     });
     await t.test('decimal exacto, costo cero y merma que agota existencia', async () => {
@@ -103,7 +104,7 @@ test('API de mermas contra MySQL con tablas temporales', {
       assert.equal(r.status,201); assert.equal(r.data.datos.valor_economico,'0.00');
       assert.deepEqual(await estado(),[0,2,2]);
     });
-    for (const campo of ['productos_id','merma_motivos_id','refrigeradores_id','usuarios_id']) {
+    for (const campo of ['productos_id','merma_motivos_id','refrigeradores_id']) {
       await t.test(`referencia inexistente ${campo}`,async()=>{
         await preparar(); assert.equal((await request('POST',{...datos,[campo]:'inexistente'})).status,404);
         assert.deepEqual(await estado(),[27,0,0]);
@@ -140,8 +141,9 @@ test('API de mermas contra MySQL con tablas temporales', {
     }
     const fixtures = async () => {
       await preparar();
-      for (const body of [datos,{...datos,merma_motivos_id:'m2',usuarios_id:'u2'},
-        {...datos,productos_id:'p2',refrigeradores_id:'r2',usuarios_id:'u2'}]) {
+      for (const [indice,body] of [datos,{...datos,merma_motivos_id:'m2'},
+        {...datos,productos_id:'p2',refrigeradores_id:'r2'}].entries()) {
+        actor=indice===0?'u1':'u2';
         assert.equal((await request('POST',body)).status,201);
       }
     };

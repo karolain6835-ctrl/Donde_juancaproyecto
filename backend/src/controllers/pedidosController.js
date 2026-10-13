@@ -1,3 +1,4 @@
+const { ejecutor } = require('../services/identidadService');
 const db = require('../config/db');
 const mysql = require('mysql2');
 const crypto = require('crypto'); // Generador de UUIDs
@@ -63,9 +64,9 @@ const cerrarConexionPedido = async (conexion) => {
   }
 };
 
-const registrarMovimientoPedido = async (conexion, pedido, producto_id, cantidad, stock_antes) => {
-  const [usuarios] = await conexion.query('SELECT id FROM usuarios WHERE id = ? LOCK IN SHARE MODE', [pedido.usuarios_id]);
-  if (!usuarios.length) throw errorPedido(409, 'El responsable del pedido no existe.');
+const registrarMovimientoPedido = async (conexion, pedido, producto_id, cantidad, stock_antes, actor) => {
+  const [usuarios] = await conexion.query('SELECT id FROM usuarios WHERE id = ? LOCK IN SHARE MODE', [actor]);
+  if (!usuarios.length) throw errorPedido(409, 'El ejecutor del movimiento no existe.');
   const stock_despues = stock_antes + cantidad;
   if (!Number.isInteger(stock_antes) || stock_despues < 0 || stock_despues > 2147483647 ||
       cantidad < -2147483648 || cantidad > 2147483647) {
@@ -77,12 +78,14 @@ const registrarMovimientoPedido = async (conexion, pedido, producto_id, cantidad
     (id, tipo, cantidad, stock_antes, stock_despues, referencia_tipo,
      referencia_id, productos_id, usuarios_id, creado_en)
     VALUES (?, 'venta', ?, ?, ?, 'pedido', ?, ?, ?, UTC_TIMESTAMP())`,
-    [crypto.randomUUID(), cantidad, stock_antes, stock_despues, pedido.id, producto_id, pedido.usuarios_id]
+    [crypto.randomUUID(), cantidad, stock_antes, stock_despues, pedido.id, producto_id, actor]
   );
   if (movimiento.affectedRows !== 1) throw new Error('No se registró el movimiento del pedido.');
 };
 
 const agregarItemPedido = async (req, res) => {
+  const actor = ejecutor(req, res);
+  if (!actor) return;
   const { id_pedido } = req.params;
   const { productos_id, cantidad_pedida, precio_unitario } = req.body || {};
 
@@ -127,7 +130,7 @@ const agregarItemPedido = async (req, res) => {
     );
     if (descuento.affectedRows !== 1) throw insuficiente();
 
-    await registrarMovimientoPedido(conexion, pedidos[0], productos_id, -cantidad_pedida, producto.cantidad_disponible);
+    await registrarMovimientoPedido(conexion, pedidos[0], productos_id, -cantidad_pedida, producto.cantidad_disponible, actor);
 
     await conexion.commit();
     transaccionIniciada = false;
@@ -243,6 +246,8 @@ const obtenerCuentaConsolidada = (req, res) => {
 // 5. CANCELAR UN ÍTEM DEL PEDIDO Y LIBERAR STOCK
 // ==========================================
 const cancelarItemPedido = async (req, res) => {
+  const actor = ejecutor(req, res);
+  if (!actor) return;
   const { id } = req.params;
   let conexion;
   let transaccionIniciada = false;
@@ -290,7 +295,7 @@ const cancelarItemPedido = async (req, res) => {
     );
     if (reintegro.affectedRows !== 1) throw errorPedido(404, 'El producto del ?tem no existe.');
 
-    await registrarMovimientoPedido(conexion, pedidos[0], item.producto_id, item.cantidad_pedida, stock_antes);
+    await registrarMovimientoPedido(conexion, pedidos[0], item.producto_id, item.cantidad_pedida, stock_antes, actor);
 
     await conexion.commit();
     transaccionIniciada = false;

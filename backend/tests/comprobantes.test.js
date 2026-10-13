@@ -9,6 +9,7 @@ test('Comprobantes: HTTP y MySQL real con tablas temporales', {skip:process.env.
   require('dotenv').config({path:path.join(__dirname,'../.env'),quiet:true});
   const real=await require('mysql2/promise').createConnection({host:process.env.DB_HOST,port:process.env.DB_PORT,user:process.env.DB_USER,password:process.env.DB_PASSWORD,database:process.env.DB_NAME});
   let server,fallo,cola=Promise.resolve(),descuadre=false;
+  let actor='u1';
   // Las tablas temporales no pueden compartirse entre conexiones. Serializar exclusivamente
   // el arnés permite solicitudes HTTP simultáneas sin mezclar transacciones en esta conexión.
   const crearConexion=()=>{
@@ -56,24 +57,24 @@ test('Comprobantes: HTTP y MySQL real con tablas temporales', {skip:process.env.
     };
     const servicio={exports:{}};
     vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../src/services/comprobantesService.js'),'utf8'),{
-      module:servicio,console:{error(){}},require:n=>n==='../config/db'?{dbConfig:{}}:n==='mysql2'?{createConnection:()=>({promise:crearConexion})}:n==='./liquidacionService'?liquidacion:require(n)
+      module:servicio,console:{error(){}},require:n=>n==='../config/db'?{dbConfig:{}}:n==='mysql2'?{createConnection:()=>({promise:crearConexion})}:n==='./liquidacionService'?liquidacion:(n === '../services/identidadService' ? require('../src/services/identidadService') : n === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(n))
     });
     const controlador={exports:{}};
     vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../src/controllers/ventasController.js'),'utf8'),{
-      module:controlador,exports:controlador.exports,require:n=>n==='../services/comprobantesService'?servicio.exports:require(n)
+      module:controlador,exports:controlador.exports,require:n=>n==='../services/comprobantesService'?servicio.exports:(n === '../services/identidadService' ? require('../src/services/identidadService') : n === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(n))
     });
     const rutas={exports:{}};
     vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../src/routes/ventasRoutes.js'),'utf8'),{
-      module:rutas,require:n=>n==='../controllers/ventasController'?controlador.exports:require(n)
+      module:rutas,require:n=>n==='../controllers/ventasController'?controlador.exports:(n === '../services/identidadService' ? require('../src/services/identidadService') : n === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(n))
     });
-    const express=require('express'),app=express();app.use(express.json());app.use('/api/ventas',rutas.exports);
+    const express=require('express'),app=express();app.use(express.json()); app.use((req,res,next)=>{req.usuario={id:actor,rol:'Administrador'};next();});app.use('/api/ventas',rutas.exports);
     server=await new Promise(resolve=>{const s=app.listen(0,'127.0.0.1',()=>resolve(s));});
     const base=`http://127.0.0.1:${server.address().port}/api/ventas`;
     const req=async(ruta,method='GET',body)=>{const r=await fetch(base+ruta,{method,headers:{'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)});return {status:r.status,data:await r.json()};};
-    const body={pedido_id:'p1',usuarios_id:'u1'};
+    const body={pedido_id:'p1'};
     const emitir=()=>req('/facturar','POST',body);
     const conteo=async()=>{const [[c]]=await real.query('SELECT COUNT(*) AS n FROM comprobantes');const [[i]]=await real.query('SELECT COUNT(*) AS n FROM comprobante_items');return [c.n,i.n];};
-    for(const [campo,valor]of [['pedido_id','no-existe'],['usuarios_id','no-existe']])await t.test(`${campo} inexistente`,async()=>{await reset();assert.equal((await req('/facturar','POST',{...body,[campo]:valor})).status,404);});
+    for(const [campo,valor]of [['pedido_id','no-existe']])await t.test(`${campo} inexistente`,async()=>{await reset();assert.equal((await req('/facturar','POST',{...body,[campo]:valor})).status,404);});
     for(const estado of ['abierto','cancelado'])await t.test(`pedido ${estado}`,async()=>{await reset();await real.query('UPDATE pedidos SET estado=?',[estado]);assert.equal((await emitir()).status,409);});
     await t.test('cerrado con deuda o pago pendiente',async()=>{
       await reset();await real.query('UPDATE pagos SET total_seleccionado=20');assert.equal((await emitir()).status,409);
@@ -87,7 +88,7 @@ test('Comprobantes: HTTP y MySQL real con tablas temporales', {skip:process.env.
     });
     await t.test('snapshot exacto, exclusiones, nombres congelados, no modifica consumos',async()=>{
       await reset();const r=await emitir();assert.equal(r.status,201,JSON.stringify(r.data));const c=r.data.comprobante;
-      assert.equal(c.total_productos,'20.50');assert.equal(c.total_juegos,'0.51');assert.equal(c.total_general,'21.01');assert.equal(c.total_pagado,'21.01');
+      assert.equal(c.usuarios_id,actor);assert.equal(c.total_productos,'20.50');assert.equal(c.total_juegos,'0.51');assert.equal(c.total_general,'21.01');assert.equal(c.total_pagado,'21.01');
       assert.equal(c.items.length,2);assert.equal(c.items[0].referencia_id,'i1');assert.equal(c.items[0].descripcion,'Producto Original');assert.equal(c.items[0].cantidad,2);assert.equal(c.items[0].precio_unitario,'10.25');
       assert.equal(c.items[1].referencia_id,'s1');assert.equal(c.items[1].descripcion,'Billar Original');assert.equal(c.items[1].subtotal,'0.51');
       assert.equal(c.items.reduce((a,i)=>a+liquidacion.centavos(i.subtotal),0n),liquidacion.centavos(c.total_general));
@@ -117,7 +118,7 @@ test('Comprobantes: HTTP y MySQL real con tablas temporales', {skip:process.env.
       for(const q of ['limite=101','pagina=0','limite=1.5','pedido_id='])assert.equal((await req(`/comprobantes?${q}`)).status,400);
     });
     await t.test('body restringido y campos obligatorios',async()=>{
-      await reset();for(const b of [{},{pedido_id:'p1'},{...body,metodo_pago:'efectivo'},{...body,total:21.01},{...body,numero:1},{...body,cliente:'c1'}])assert.equal((await req('/facturar','POST',b)).status,400);
+      await reset();for(const b of [{},{...body,usuarios_id:'u2'},{...body,metodo_pago:'efectivo'},{...body,total:21.01},{...body,numero:1},{...body,cliente:'c1'}])assert.equal((await req('/facturar','POST',b)).status,400);
     });
   }finally{if(server)await new Promise(resolve=>server.close(resolve));await real.end();}
 });

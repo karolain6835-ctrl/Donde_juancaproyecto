@@ -1,15 +1,18 @@
+const { ejecutor } = require('../services/identidadService');
 const db = require('../config/db');
 
 // ==========================================
 // 1. INICIAR SESIÓN DE DIVISIÓN DE CUENTA
 // ==========================================
 const iniciarSesionDivision = (req, res) => {
-  const { mesas_id, usuarios_id, modalidad } = req.body;
+  const usuarios_id = ejecutor(req, res);
+  if (!usuarios_id) return;
+  const { mesas_id, modalidad } = req.body || {};
 
   // Validación de campos obligatorios
   if (!mesas_id || !usuarios_id || !modalidad) {
     return res.status(400).json({ 
-      error: 'Faltan parámetros obligatorios: mesas_id, usuarios_id o modalidad.' 
+      error: 'Faltan parámetros obligatorios: mesas_id o modalidad.'
     });
   }
 

@@ -31,14 +31,14 @@ test('trazabilidad y lectura contra MySQL con tablas temporales', {
     vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/controllers', archivo), 'utf8'), {
       module: modulo, exports: modulo.exports,
       require: nombre => nombre === '../config/db' ? { dbConfig: {} }
-        : nombre === 'mysql2' ? { createConnection: () => ({ promise: () => conexion }) } : require(nombre),
+        : nombre === 'mysql2' ? { createConnection: () => ({ promise: () => conexion }) } : (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(nombre)),
       console: { error() {} }
     });
     return modulo.exports;
   };
   const ejecutar = async (fn, req) => {
     let resultado;
-    await fn(req, { code: 200, status(code) { this.code = code; return this; },
+    await fn({...req,usuario:{id:'u2'}}, { code: 200, status(code) { this.code = code; return this; },
       json(data) { resultado = { status: this.code, data: JSON.parse(JSON.stringify(data)) }; } });
     return resultado;
   };
@@ -90,15 +90,16 @@ test('trazabilidad y lectura contra MySQL con tablas temporales', {
       assert.equal(m.tipo, 'venta'); assert.equal(m.cantidad, -3);
       assert.equal(m.stock_antes, 27); assert.equal(m.stock_despues, 24);
       assert.equal(m.referencia_tipo, 'pedido'); assert.equal(m.referencia_id, 'pedido-test');
-      assert.equal(m.usuarios_id, 'u1'); assert.ok(m.creado_en);
+      assert.equal(m.usuarios_id, 'u2'); assert.ok(m.creado_en);
       assert.equal((await cancelar(r.data.id_item)).status, 200);
       assert.equal(await cantidad(), 27);
       m = (await movimientos()).find(x => x.cantidad > 0);
       assert.equal(m.tipo, 'venta'); assert.equal(m.cantidad, 3);
       assert.equal(m.stock_antes, 24); assert.equal(m.stock_despues, 27);
-      assert.equal(m.referencia_id, 'pedido-test'); assert.equal(m.usuarios_id, 'u1'); assert.ok(m.creado_en);
+      assert.equal(m.referencia_id, 'pedido-test'); assert.equal(m.usuarios_id, 'u2'); assert.ok(m.creado_en);
       assert.equal((await cancelar(r.data.id_item)).status, 400);
       assert.equal(await cantidad(), 27); assert.equal((await movimientos()).length, 2);
+      const [[pedido]]=await real.query("SELECT usuarios_id FROM pedidos WHERE id='pedido-test'");assert.equal(pedido.usuarios_id,'u1');
     });
     for (const modo of ['insert', 'cero']) {
       await t.test(`rollback salida por fallo movimiento ${modo}`, async () => {

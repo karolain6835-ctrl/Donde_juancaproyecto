@@ -7,7 +7,7 @@ test('JWT y montaje: MySQL real con tablas temporales', {skip:process.env.RUN_MY
   let server,fallo=false;
   const db={promise:()=>({query:(sql,p)=>{if(fallo)throw new Error('Fallo privado SQL');return real.query(sql,p);}})};
   const load=(archivo,deps)=>{const m={exports:{}};vm.runInNewContext(fs.readFileSync(path.join(__dirname,archivo),'utf8'),{
-    module:m,exports:m.exports,process,Buffer,console:{log(){},error(){}},require:n=>Object.hasOwn(deps,n)?deps[n]:n==='../middleware/rolesMiddleware'?require('../src/middleware/rolesMiddleware'):require(n)
+    module:m,exports:m.exports,process,Buffer,console:{log(){},error(){}},require:n=>Object.hasOwn(deps,n)?deps[n]:(n === '../services/identidadService' ? require('../src/services/identidadService') : n === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(n))
   });return m.exports;};
   try{
     for(const tabla of ['usuarios','roles','clientes']){await real.query(`CREATE TEMPORARY TABLE copia_auth_${tabla} LIKE ${tabla}`);await real.query(`CREATE TEMPORARY TABLE ${tabla} LIKE copia_auth_${tabla}`);}

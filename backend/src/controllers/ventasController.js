@@ -1,3 +1,4 @@
+const { ejecutor } = require('../services/identidadService');
 // 1. Crear un nuevo pedido/orden de consumo (Simulado)
 exports.crearPedido = async (req, res) => {
   const { mesa_id, cliente_id, items } = req.body;
@@ -16,6 +17,10 @@ exports.crearPedido = async (req, res) => {
 };
 
 const comprobantes = require('../services/comprobantesService');
-exports.generarFactura = (req,res) => comprobantes.ejecutar(res,c=>comprobantes.emitir(c,req.body));
+exports.generarFactura = (req,res) => {
+  const actor = ejecutor(req, res);
+  if (!actor) return;
+  return comprobantes.ejecutar(res,c=>comprobantes.emitir(c,req.body,actor));
+};
 exports.listarComprobantes = (req,res) => comprobantes.ejecutar(res,c=>comprobantes.listar(c,req.query),true);
 exports.obtenerComprobante = (req,res) => comprobantes.ejecutar(res,async c=>({body:{comprobante:await comprobantes.detalle(c,comprobantes.id(req.params.id))}}),true);

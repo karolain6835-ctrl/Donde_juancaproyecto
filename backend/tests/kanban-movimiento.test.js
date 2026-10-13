@@ -45,13 +45,13 @@ test('movimiento Kanban contra MySQL con tablas temporales', {
           dbConfig: {}, query: (sql, cb) => real.query(sql).then(([r]) => cb(null, r), e => cb(e))
         };
         if (nombre === 'mysql2') return { createConnection: () => ({ promise: () => conexion }) };
-        return require(nombre);
+        return (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(nombre));
       },
       console: { error() {} }
     });
     const mover = async (estado, id = 'test-item', usuario = 'test-user') => {
       let resultado;
-      await modulo.exports.actualizarEstadoPedido({ params: { id }, body: { nuevo_estado: estado, usuarios_id: usuario } }, {
+      await modulo.exports.actualizarEstadoPedido({ params: { id }, usuario: {id:usuario}, body: { nuevo_estado: estado } }, {
         status(code) { this.code = code; return this; },
         json(data) { resultado = { status: this.code, data: JSON.parse(JSON.stringify(data)) }; }
       });
@@ -104,7 +104,7 @@ test('movimiento Kanban contra MySQL con tablas temporales', {
       for (const estado of ['pendiente', 'en_preparacion', 'entregado', 'listo', 'cancelado', 'servido', 'enviado']) {
         assert.equal((await mover(estado)).status, 400);
       }
-      assert.equal((await mover('preparando', 'test-item', '')).status, 400);
+      assert.equal((await mover('preparando', 'test-item', '')).status, 401);
       assert.equal((await mover('preparando', 'test-item', 'inexistente')).status, 400);
       const [[n]] = await real.query('SELECT COUNT(*) AS n FROM kanban_movimientos');
       assert.equal(n.n, 0);

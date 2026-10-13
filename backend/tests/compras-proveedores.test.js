@@ -13,6 +13,7 @@ test('proveedores y compras por HTTP con MySQL temporal', {
   const real = await mysql.createConnection({host:process.env.DB_HOST,port:process.env.DB_PORT,
     user:process.env.DB_USER,password:process.env.DB_PASSWORD,database:process.env.DB_NAME,connectTimeout:5000});
   let server, fallo = null, numero = 0, cierres = 0;
+  let actor='u1';
   const conexion = {
     beginTransaction:()=>real.beginTransaction(),
     query:async(sql,params)=>{
@@ -36,7 +37,7 @@ test('proveedores y compras por HTTP con MySQL temporal', {
     const modulo={exports:{}};
     vm.runInNewContext(fs.readFileSync(path.join(__dirname,'..',archivo),'utf8'),{
       module:modulo,exports:modulo.exports,
-      require:n=>Object.hasOwn(dependencias,n) ? dependencias[n] : require(n),console:{error(){}}
+      require:n=>Object.hasOwn(dependencias,n) ? dependencias[n] : (n === '../services/identidadService' ? require('../src/services/identidadService') : n === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(n)),console:{error(){}}
     });
     return modulo.exports;
   };
@@ -58,7 +59,7 @@ test('proveedores y compras por HTTP con MySQL temporal', {
     });
     const proveedores=cargar('src/controllers/proveedoresController.js',{'../services/comprasService':service});
     const compras=cargar('src/controllers/comprasController.js',{'../services/comprasService':service});
-    const app=express();app.use(express.json());
+    const app=express();app.use(express.json()); app.use((req,res,next)=>{req.usuario={id:actor,rol:'Administrador'};next();});
     app.use('/api/proveedores',cargar('src/routes/proveedoresRoutes.js',{'../controllers/proveedoresController':proveedores}));
     app.use('/api/compras',cargar('src/routes/comprasRoutes.js',{'../controllers/comprasController':compras}));
     server=await new Promise(resolve=>{const s=app.listen(0,'127.0.0.1',()=>resolve(s));});
@@ -67,12 +68,12 @@ test('proveedores y compras por HTTP con MySQL temporal', {
       const r=await fetch(base+ruta,{method,headers:{'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)});
       return {status:r.status,data:await r.json()};
     };
-    const datos={proveedores_id:'prov1',usuarios_id:'u1',items:[
+    const datos={proveedores_id:'prov1',items:[
       {productos_id:'p1',cantidad:5,precio_unitario:2800},
       {productos_id:'p2',cantidad:3,precio_unitario:0.10}
     ]};
     const crear=(body=datos)=>request('/compras','POST',body);
-    const recibir=id=>request('/compras/'+id+'/recibir','PATCH');
+    const recibir=async id=>{const anterior=actor;actor='u2';try{return await request('/compras/'+id+'/recibir','PATCH');}finally{actor=anterior;}};
     const cancelar=id=>request('/compras/'+id+'/cancelar','PATCH');
     const preparar=async()=>{
       fallo=null;numero=0;
@@ -122,7 +123,7 @@ test('proveedores y compras por HTTP con MySQL temporal', {
       }
       assert.equal((await crear({...datos,items:[]})).status,400);
       assert.equal((await crear({...datos,proveedores_id:'inexistente'})).status,404);
-      assert.equal((await crear({...datos,usuarios_id:'inexistente'})).status,404);
+      assert.equal((await crear({...datos,usuarios_id:'inexistente'})).status,400);
       assert.equal((await crear({...datos,items:[{...datos.items[0],productos_id:'inexistente'}]})).status,404);
       await real.query("UPDATE proveedores SET estado='inactivo' WHERE id='prov1'");
       assert.equal((await crear()).status,400);
@@ -136,7 +137,7 @@ test('proveedores y compras por HTTP con MySQL temporal', {
     await t.test('recepcion, movimientos correctos, costos intactos y segunda recepcion rechazada',async()=>{
       await preparar();const r=await crear();const id=r.data.datos.id;
       const antes=await estado();const recibida=await recibir(id);assert.equal(recibida.status,200);
-      assert.equal(recibida.data.datos.estado,'recibida');assert.equal(recibida.data.datos.total_recibido,'14000.30');
+      assert.equal(recibida.data.datos.usuarios_id,'u1');assert.equal(recibida.data.datos.estado,'recibida');assert.equal(recibida.data.datos.total_recibido,'14000.30');
       const despues=await estado();assert.deepEqual(despues.productos.map(p=>p.cantidad_disponible),[32,30]);
       for(let i=0;i<2;i++) {
         assert.equal(despues.productos[i].costo_promedio_ponderado,antes.productos[i].costo_promedio_ponderado);
@@ -146,7 +147,7 @@ test('proveedores y compras por HTTP con MySQL temporal', {
       assert.equal(mov.length,2);
       for(const [i,m] of mov.entries()) {
         assert.equal(m.tipo,'compra');assert.equal(m.referencia_tipo,'compra');assert.equal(m.referencia_id,id);
-        assert.equal(m.usuarios_id,'u1');assert.equal(m.cantidad,i===0?5:3);
+        assert.equal(m.usuarios_id,'u2');assert.equal(m.cantidad,i===0?5:3);
         assert.equal(m.stock_antes,27);assert.equal(m.stock_despues,i===0?32:30);assert.ok(m.creado_en);
       }
       const [[hist]]=await real.query('SELECT COUNT(*) AS n FROM historial_costos');assert.equal(hist.n,0);
@@ -173,7 +174,7 @@ test('proveedores y compras por HTTP con MySQL temporal', {
     });
     await t.test('GET filtros, combinacion, paginacion y vacio',async()=>{
       await preparar();const a=await crear();await recibir(a.data.datos.id);
-      const b=await crear({...datos,proveedores_id:'prov2',usuarios_id:'u2'});await cancelar(b.data.datos.id);
+      actor='u2';const b=await crear({...datos,proveedores_id:'prov2'});await cancelar(b.data.datos.id);actor='u1';
       await crear();
       for(const [q,total] of [['',3],['estado=pendiente',1],['proveedores_id=prov1',2],['usuarios_id=u2',1],
         ['estado=recibida&proveedores_id=prov1&usuarios_id=u1',1],['proveedores_id=inexistente',0]]) {

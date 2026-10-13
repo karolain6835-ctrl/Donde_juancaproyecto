@@ -21,7 +21,7 @@ test('alertas calculadas contra MySQL con productos temporales', {
       require:n=>n==='../config/db' ? {promise:()=>({query:sql=>{
         if(fallo) return Promise.reject(new Error('Fallo SQL inyectado'));
         return real.query(sql);
-      }})} : require(n),console:{error(){}}
+      }})} : n==='../services/identidadService' ? require('../src/services/identidadService') : require(n),console:{error(){}}
     });
     const consultar = async()=>{
       let r;

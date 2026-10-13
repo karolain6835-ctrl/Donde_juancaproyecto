@@ -1,14 +1,17 @@
+const { ejecutor } = require('../services/identidadService');
 const db = require('../config/db');
 const mysql = require('mysql2');
 const crypto = require('crypto');
 
 // 1. Ajustar la existencia operativa y registrar su movimiento atómicamente.
 exports.actualizarStock = async (req, res) => {
-  const { producto_id, nueva_cantidad, usuarios_id } = req.body || {};
+  const usuarios_id = ejecutor(req, res);
+  if (!usuarios_id) return;
+  const { producto_id, nueva_cantidad } = req.body || {};
 
   if (typeof producto_id !== 'string' || !producto_id.trim() ||
       typeof usuarios_id !== 'string' || !usuarios_id.trim() || nueva_cantidad === undefined) {
-    return res.status(400).json({ error: 'producto_id, nueva_cantidad y usuarios_id son obligatorios.' });
+    return res.status(400).json({ error: 'producto_id y nueva_cantidad son obligatorios.' });
   }
   if (!Number.isInteger(nueva_cantidad) || nueva_cantidad < 0 || nueva_cantidad > 2147483647) {
     return res.status(400).json({ error: 'nueva_cantidad debe ser un número entero entre 0 y 2147483647.' });

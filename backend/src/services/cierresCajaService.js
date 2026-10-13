@@ -82,9 +82,9 @@ const detalle=async(c,cierreId)=>{
     DATE_FORMAT(incluido_en,'%Y-%m-%dT%H:%i:%sZ') AS incluido_en FROM cierre_pagos WHERE cierres_caja_id=? ORDER BY pagos_id`,[cierre.id]);
   return {...cierre,reporte,pagos};
 };
-const crear=async(c,b)=>{
-  if(!b||typeof b!=='object'||Array.isArray(b)||Object.keys(b).some(k=>!['fecha_inicio','fecha_fin','total_efectivo_real','usuarios_id'].includes(k)))throw error(400,'Body inválido o con campos no permitidos.');
-  const [inicio,fin]=periodo(b),real=importeReal(b.total_efectivo_real),usuario=id(b.usuarios_id);
+const crear=async(c,b,actor)=>{
+  if(!b||typeof b!=='object'||Array.isArray(b)||Object.keys(b).some(k=>!['fecha_inicio','fecha_fin','total_efectivo_real'].includes(k)))throw error(400,'Body inválido o con campos no permitidos.');
+  const [inicio,fin]=periodo(b),real=importeReal(b.total_efectivo_real),usuario=id(actor);
   const [[u]]=await c.query('SELECT id FROM usuarios WHERE id=? LOCK IN SHARE MODE',[usuario]);
   if(!u)throw error(404,'Usuario inexistente.');
   const pagos=await elegibles(c,inicio,fin,true);

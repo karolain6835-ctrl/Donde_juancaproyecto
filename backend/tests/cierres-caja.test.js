@@ -3,6 +3,7 @@ test('Cierres: MySQL real y tablas temporales', {skip:process.env.RUN_MYSQL_CIER
   require('dotenv').config({path:path.join(__dirname,'../.env'),quiet:true});
   const real=await require('mysql2/promise').createConnection({host:process.env.DB_HOST,port:process.env.DB_PORT,user:process.env.DB_USER,password:process.env.DB_PASSWORD,database:process.env.DB_NAME});
   let server,fallo;
+  let actor='u1';
   const conexion={beginTransaction:()=>real.beginTransaction(),query:async(sql,p)=>{
     if(fallo&&sql.includes(fallo)){const e=new Error('Fallo inyectado');if(fallo==='duplicado')e.code='ER_DUP_ENTRY';throw e;}
     if(fallo==='duplicado'&&sql.includes('INSERT INTO cierre_pagos'))throw Object.assign(new Error('Carrera inyectada'),{code:'ER_DUP_ENTRY'});
@@ -14,15 +15,15 @@ test('Cierres: MySQL real y tablas temporales', {skip:process.env.RUN_MYSQL_CIER
     }
     const [columns]=await real.query('SHOW COLUMNS FROM pagos');assert.ok(columns.some(c=>c.Field==='verificado_en'),'Requiere v2.29');
     await real.query("INSERT INTO usuarios (id,nombre,email,password_hash,estado,roles_id) VALUES ('u1','Responsable','cierres@example.invalid','fixture','activo',1)");
-    const load=(archivo,dependencias)=>{const m={exports:{}};vm.runInNewContext(fs.readFileSync(path.join(__dirname,archivo),'utf8'),{module:m,exports:m.exports,console:{error(){}},require:n=>Object.hasOwn(dependencias,n)?dependencias[n]:require(n)});return m.exports;};
+    const load=(archivo,dependencias)=>{const m={exports:{}};vm.runInNewContext(fs.readFileSync(path.join(__dirname,archivo),'utf8'),{module:m,exports:m.exports,console:{error(){}},require:n=>Object.hasOwn(dependencias,n)?dependencias[n]:(n === '../services/identidadService' ? require('../src/services/identidadService') : n === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(n))});return m.exports;};
     const servicio=load('../src/services/cierresCajaService.js',{'mysql2':{createConnection:()=>({promise:()=>conexion})},'../config/db':{dbConfig:{}},'./liquidacionService':require('../src/services/liquidacionService')});
     const controlador=load('../src/controllers/cierresCajaController.js',{'../services/cierresCajaService':servicio});
     const rutas=load('../src/routes/cierresCajaRoutes.js',{'../controllers/cierresCajaController':controlador});
-    const express=require('express'),app=express();app.use(express.json());app.use('/api/cierres-caja',rutas);
+    const express=require('express'),app=express();app.use(express.json()); app.use((req,res,next)=>{req.usuario={id:actor,rol:'Administrador'};next();});app.use('/api/cierres-caja',rutas);
     server=await new Promise(resolve=>{const s=app.listen(0,'127.0.0.1',()=>resolve(s));});
     const base=`http://127.0.0.1:${server.address().port}/api/cierres-caja`;
     const req=async(ruta='',method='GET',b)=>{const r=await fetch(base+ruta,{method,headers:{'Content-Type':'application/json'},body:b===undefined?undefined:JSON.stringify(b)});return {status:r.status,data:await r.json()};};
-    const body={fecha_inicio:'2026-10-01T00:00:00',fecha_fin:'2026-10-02T00:00:00',total_efectivo_real:'11.00',usuarios_id:'u1'};
+    const body={fecha_inicio:'2026-10-01T00:00:00',fecha_fin:'2026-10-02T00:00:00',total_efectivo_real:'11.00'};
     const query='?fecha_inicio=2026-10-01T00:00:00&fecha_fin=2026-10-02T00:00:00';
     const pago=async(id,metodo='efectivo',importe='10.25',estado='pagado',verificacion='verificado',fecha='2026-10-01 12:00:00')=>real.query(`INSERT INTO pagos (id,metodo_de_pago,total_seleccionado,estado,verificacion_estado,creado_en,verificado_en,pedidos_id,usuarios_id)
       VALUES (?,?,?,?,?,'2026-09-01',?,'pedido-parcial','u1')`,[id,metodo,importe,estado,verificacion,fecha]);
@@ -42,7 +43,7 @@ test('Cierres: MySQL real y tablas temporales', {skip:process.env.RUN_MYSQL_CIER
     for(const [contado,diferencia]of [['11.00','0.75'],['9.00','-1.25']])await t.test(`cierre snapshot y diferencia ${diferencia}`,async()=>{
       await reset();await pago('cash');await pago('nequi','nequi','0.50');
       const r=await req('','POST',{...body,total_efectivo_real:contado});assert.equal(r.status,201,JSON.stringify(r.data));const c=r.data.cierre;
-      assert.equal(c.diferencia_efectivo,diferencia);assert.equal(c.total_general,'10.75');assert.equal(c.pagos.length,2);assert.equal(c.pagos[0].importe,'10.25');assert.equal(c.pagos[0].metodo_de_pago,'efectivo');
+      assert.equal(c.usuarios_id,actor);assert.equal(c.reporte.usuarios_id,actor);assert.equal(c.diferencia_efectivo,diferencia);assert.equal(c.total_general,'10.75');assert.equal(c.pagos.length,2);assert.equal(c.pagos[0].importe,'10.25');assert.equal(c.pagos[0].metodo_de_pago,'efectivo');
       assert.equal(c.reporte.tipo,'diario');assert.equal(c.reporte.fecha_inicio,'2026-10-01');assert.equal(c.reporte.fecha_fin,'2026-10-02');assert.equal(c.reporte.creado_en,c.fecha);
       assert.ok(c.pagos.every(p=>p.incluido_en===c.fecha));assert.equal(c.reporte.datos_json.total_general,c.total_general);
       assert.deepEqual(await conteo(),[1,1,2]);assert.equal((await req('/resumen'+query)).data.cantidad_pagos,0);assert.equal((await req('','POST',body)).status,409);
@@ -62,7 +63,7 @@ test('Cierres: MySQL real y tablas temporales', {skip:process.env.RUN_MYSQL_CIER
     await t.test('fechas, decimales, usuario y paginacion invalidos',async()=>{
       await reset();await pago('cash');
       for(const b of [{...body,fecha_inicio:'2026-02-30T00:00:00'},{...body,fecha_fin:body.fecha_inicio},{...body,fecha_inicio:'2026-10-01T00:00:00Z'},...[-1,'1.001',true,null,'1e3','10000000000'].map(v=>({...body,total_efectivo_real:v})),{...body,extra:1}])assert.equal((await req('','POST',b)).status,400);
-      assert.equal((await req('','POST',{...body,usuarios_id:'no-existe'})).status,404);
+      assert.equal((await req('','POST',{...body,usuarios_id:'no-existe'})).status,400);
       assert.equal((await req('/no-existe')).status,404);assert.equal((await req('/resumen')).status,400);
       for(const q of ['limite=101','pagina=0','fecha_inicio=mal'])assert.equal((await req('?'+q)).status,400);
       assert.deepEqual(await conteo(),[0,0,0]);
