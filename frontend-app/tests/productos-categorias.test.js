@@ -90,7 +90,7 @@ test('Servicios con HTTP simulado y apiClient real', async t => {
       for (const r of requests) assert.equal(r.headers.get('Authorization'), 'Bearer token-prueba');
     });
     await t.test('Proveedor solo por lectura para selector', async () => {
-      respond({ datos: [{ id: 'proveedor-real', contacto_nombre: 'Contacto', estado: 'activo' }] });
+      respond({ datos: [{ id: 'proveedor-real', contacto_nombre: 'Contacto', telefono: null, email: null, estado: 'activo' }] });
       assert.equal((await listarProveedores())[0].nombre, 'Contacto');
       assert.equal(requests.at(-1).method, 'GET');
     });

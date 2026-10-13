@@ -1,3 +1,4 @@
+import ProveedoresSection from "../components/ProveedoresSection";
 import Can from "../components/Can";
 import { formatCurrency as formatearDinero } from "../utils/formatCurrency";
 import { useMemo, useState } from "react";
@@ -16,11 +17,6 @@ import {
   ArrowRight,
   X,
   Building2,
-  Phone,
-  Mail,
-  Power,
-  PowerOff,
-  ReceiptText,
 } from "lucide-react";
 
 import "./ComprasPage.css";
@@ -31,7 +27,7 @@ function ComprasPage() {
   const [busqueda, setBusqueda] = useState("");
 
   const [ordenSeleccionada, setOrdenSeleccionada] = useState(null);
-  const [proveedorSeleccionado, setProveedorSeleccionado] = useState(null);
+
 
   const [ordenes, setOrdenes] = useState([
     {
@@ -125,33 +121,6 @@ function ComprasPage() {
     },
   ]);
 
-  const [proveedores, setProveedores] = useState([
-    {
-      id: 1,
-      nombre: "Bavaria",
-      contacto: "Andrés Gómez",
-      telefono: "300 555 1420",
-      email: "ventas@bavaria.com",
-      activo: true,
-    },
-    {
-      id: 2,
-      nombre: "Dislicores Medellín",
-      contacto: "María Pérez",
-      telefono: "301 448 2366",
-      email: "pedidos@dislicores.com",
-      activo: true,
-    },
-    {
-      id: 3,
-      nombre: "Distribuciones El Bar",
-      contacto: "Carlos Ruiz",
-      telefono: "312 770 1845",
-      email: "ventas@elbar.com",
-      activo: false,
-    },
-  ]);
-
   const ordenesFiltradas = useMemo(() => {
     return ordenes.filter((orden) => {
       const coincideEstado =
@@ -167,17 +136,6 @@ function ComprasPage() {
       return coincideEstado && coincideBusqueda;
     });
   }, [ordenes, filtroEstado, busqueda]);
-
-  const proveedoresFiltrados = useMemo(() => {
-    const texto = busqueda.toLowerCase();
-
-    return proveedores.filter(
-      (proveedor) =>
-        proveedor.nombre.toLowerCase().includes(texto) ||
-        proveedor.contacto.toLowerCase().includes(texto) ||
-        proveedor.email.toLowerCase().includes(texto)
-    );
-  }, [proveedores, busqueda]);
 
   const pendientes = ordenes.filter(
     (orden) => orden.estado === "pendiente"
@@ -217,28 +175,6 @@ function ComprasPage() {
     );
   }
 
-  function cambiarEstadoProveedor(id) {
-    setProveedores((actuales) =>
-      actuales.map((proveedor) =>
-        proveedor.id === id
-          ? {
-              ...proveedor,
-              activo: !proveedor.activo,
-            }
-          : proveedor
-      )
-    );
-
-    setProveedorSeleccionado((actual) =>
-      actual && actual.id === id
-        ? {
-            ...actual,
-            activo: !actual.activo,
-          }
-        : actual
-    );
-  }
-
   return (
     <div className="compras-page">
 
@@ -262,11 +198,11 @@ function ComprasPage() {
           <p className="page-description">
             {seccionActiva === "ordenes"
               ? "Gestiona compras y recepción de mercancía."
-              : "Administra proveedores y consulta su historial de compras."}
+              : "Consulta y administra los datos de contacto de proveedores."}
           </p>
         </div>
 
-        <Can permission="compras.crear"><button
+        {seccionActiva === "ordenes" && <Can permission="compras.crear"><button
           type="button"
           className="primary-button compras-primary-action"
         >
@@ -275,10 +211,8 @@ function ComprasPage() {
             strokeWidth={1.9}
           />
 
-          {seccionActiva === "ordenes"
-            ? "Nueva compra"
-            : "Nuevo proveedor"}
-        </button></Can>
+          Nueva compra
+        </button></Can>}
 
       </header>
 
@@ -630,202 +564,7 @@ function ComprasPage() {
           PROVEEDORES
       ========================= */}
 
-      {seccionActiva === "proveedores" && (
-        <>
-
-          <section className="compras-toolbar">
-
-            <div className="proveedores-summary">
-
-              <span>
-                {
-                  proveedores.filter(
-                    (proveedor) => proveedor.activo
-                  ).length
-                }{" "}
-                activos
-              </span>
-
-              <span>
-                {
-                  proveedores.filter(
-                    (proveedor) => !proveedor.activo
-                  ).length
-                }{" "}
-                inactivos
-              </span>
-
-            </div>
-
-            <div className="compras-search">
-
-              <Search
-                className="compras-search-icon"
-                size={18}
-                strokeWidth={1.9}
-              />
-
-              <input
-                type="text"
-                placeholder="Buscar proveedor..."
-                value={busqueda}
-                onChange={(event) =>
-                  setBusqueda(event.target.value)
-                }
-              />
-
-            </div>
-
-          </section>
-
-          <section className="proveedores-grid">
-
-            {proveedoresFiltrados.map((proveedor) => (
-
-              <article
-                key={proveedor.id}
-                className="proveedor-card"
-              >
-
-                <div className="proveedor-card-icon">
-                  <Building2
-                    size={20}
-                    strokeWidth={1.9}
-                  />
-                </div>
-
-                <div className="proveedor-card-header">
-
-                  <div>
-                    <h3>
-                      {proveedor.nombre}
-                    </h3>
-
-                    <span
-                      className={`proveedor-status ${
-                        proveedor.activo
-                          ? "activo"
-                          : "inactivo"
-                      }`}
-                    >
-                      {proveedor.activo
-                        ? "Activo"
-                        : "Inactivo"}
-                    </span>
-                  </div>
-
-                </div>
-
-                <div className="proveedor-info">
-
-                  <span>
-                    Contacto
-                  </span>
-
-                  <strong>
-                    <UserRound
-                      size={14}
-                      strokeWidth={1.9}
-                    />
-
-                    {proveedor.contacto}
-                  </strong>
-
-                </div>
-
-                <div className="proveedor-info">
-
-                  <span>
-                    Teléfono
-                  </span>
-
-                  <strong>
-                    <Phone
-                      size={14}
-                      strokeWidth={1.9}
-                    />
-
-                    {proveedor.telefono}
-                  </strong>
-
-                </div>
-
-                <div className="proveedor-info">
-
-                  <span>
-                    Correo
-                  </span>
-
-                  <strong>
-                    <Mail
-                      size={14}
-                      strokeWidth={1.9}
-                    />
-
-                    {proveedor.email}
-                  </strong>
-
-                </div>
-
-                <div className="proveedor-card-footer">
-
-                  <button
-                    type="button"
-                    className="compra-detail-button"
-                    onClick={() =>
-                      setProveedorSeleccionado(proveedor)
-                    }
-                  >
-                    Ver detalle
-
-                    <ArrowRight
-                      size={15}
-                      strokeWidth={1.9}
-                    />
-                  </button>
-
-                  <Can permission="proveedores.editar"><button
-                    type="button"
-                    className={
-                      proveedor.activo
-                        ? "proveedor-toggle-button deactivate"
-                        : "proveedor-toggle-button activate"
-                    }
-                    onClick={() =>
-                      cambiarEstadoProveedor(proveedor.id)
-                    }
-                  >
-                    {proveedor.activo ? (
-                      <PowerOff
-                        size={14}
-                        strokeWidth={1.9}
-                      />
-                    ) : (
-                      <Power
-                        size={14}
-                        strokeWidth={1.9}
-                      />
-                    )}
-
-                    {proveedor.activo
-                      ? "Desactivar"
-                      : "Activar"}
-                  </button></Can>
-
-                </div>
-
-              </article>
-
-            ))}
-
-          </section>
-
-        </>
-      )}
-
-      {/* =========================
-          DRAWER ORDEN
-      ========================= */}
+      {seccionActiva === "proveedores" && <ProveedoresSection />}
 
       {ordenSeleccionada && (
         <>
@@ -1047,177 +786,6 @@ function ComprasPage() {
           DRAWER PROVEEDOR
       ========================= */}
 
-      {proveedorSeleccionado && (
-        <>
-
-          <div
-            className="compra-overlay"
-            onClick={() =>
-              setProveedorSeleccionado(null)
-            }
-          ></div>
-
-          <aside className="compra-drawer">
-
-            <div className="compra-drawer-header">
-
-              <div>
-                <p className="page-eyebrow">
-                  DETALLE DEL PROVEEDOR
-                </p>
-
-                <h2>
-                  {proveedorSeleccionado.nombre}
-                </h2>
-              </div>
-
-              <button
-                type="button"
-                className="drawer-close"
-                onClick={() =>
-                  setProveedorSeleccionado(null)
-                }
-                aria-label="Cerrar detalle"
-              >
-                <X
-                  size={20}
-                  strokeWidth={1.9}
-                />
-              </button>
-
-            </div>
-
-            <div
-              className={`compra-drawer-status ${
-                proveedorSeleccionado.activo
-                  ? "recibida"
-                  : "cancelada"
-              }`}
-            >
-              <span>
-                Estado
-              </span>
-
-              <strong>
-                {proveedorSeleccionado.activo
-                  ? "Activo"
-                  : "Inactivo"}
-              </strong>
-            </div>
-
-            <div className="compra-detail-grid">
-
-              <div>
-                <span>
-                  Contacto
-                </span>
-
-                <strong>
-                  <UserRound
-                    size={14}
-                    strokeWidth={1.9}
-                  />
-
-                  {proveedorSeleccionado.contacto}
-                </strong>
-              </div>
-
-              <div>
-                <span>
-                  Teléfono
-                </span>
-
-                <strong>
-                  <Phone
-                    size={14}
-                    strokeWidth={1.9}
-                  />
-
-                  {proveedorSeleccionado.telefono}
-                </strong>
-              </div>
-
-              <div>
-                <span>
-                  Correo
-                </span>
-
-                <strong>
-                  <Mail
-                    size={14}
-                    strokeWidth={1.9}
-                  />
-
-                  {proveedorSeleccionado.email}
-                </strong>
-              </div>
-
-              <div>
-                <span>
-                  Órdenes registradas
-                </span>
-
-                <strong>
-                  <ReceiptText
-                    size={14}
-                    strokeWidth={1.9}
-                  />
-
-                  {
-                    ordenes.filter(
-                      (orden) =>
-                        orden.proveedor ===
-                        proveedorSeleccionado.nombre
-                    ).length
-                  }
-                </strong>
-              </div>
-
-            </div>
-
-            <div className="proveedor-history">
-
-              <h3>
-                Historial de compras
-              </h3>
-
-              {ordenes
-                .filter(
-                  (orden) =>
-                    orden.proveedor ===
-                    proveedorSeleccionado.nombre
-                )
-                .map((orden) => (
-
-                  <div
-                    key={orden.id}
-                    className="proveedor-history-row"
-                  >
-
-                    <div>
-                      <strong>
-                        {orden.id}
-                      </strong>
-
-                      <span>
-                        {orden.fecha}
-                      </span>
-                    </div>
-
-                    <strong>
-                      {formatearDinero(orden.total)}
-                    </strong>
-
-                  </div>
-
-                ))}
-
-            </div>
-
-          </aside>
-
-        </>
-      )}
 
     </div>
   );
