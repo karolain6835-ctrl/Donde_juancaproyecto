@@ -1,3 +1,4 @@
+import { formatDate, formatTime } from "../utils/dateTime";
 import { useMemo, useState } from "react";
 
 import {
@@ -141,8 +142,8 @@ function MantenimientoJuegosSection() {
   }
 
   function cambiarEstado(id, nuevoEstado) {
-    const fechaActual = "02/10/2026";
-    const horaActual = "16:45";
+    const fechaActual = formatDate(new Date());
+    const horaActual = formatTime(new Date());
 
     setMantenimientos((actuales) =>
       actuales.map((mantenimiento) =>

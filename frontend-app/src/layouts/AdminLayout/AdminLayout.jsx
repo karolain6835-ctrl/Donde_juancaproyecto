@@ -1,3 +1,4 @@
+import Can from "../../components/Can";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
 
@@ -72,7 +73,7 @@ function AdminLayout({ children }) {
 
           {/* DASHBOARD */}
 
-          <NavLink
+          <Can permission="dashboard.ver"><NavLink
             to="/dashboard"
             className={navLinkClass}
           >
@@ -83,7 +84,7 @@ function AdminLayout({ children }) {
             />
 
             <span>Dashboard</span>
-          </NavLink>
+          </NavLink></Can>
 
           {/* OPERACIÓN */}
 
@@ -101,7 +102,7 @@ function AdminLayout({ children }) {
 
             <div className="nav-submenu">
 
-              <NavLink
+              <Can permission="mesas.ver"><NavLink
                 to="/operacion/mesas"
                 className={subNavLinkClass}
               >
@@ -112,9 +113,9 @@ function AdminLayout({ children }) {
                 />
 
                 <span>Mesas</span>
-              </NavLink>
+              </NavLink></Can>
 
-              <NavLink
+              <Can permission="pedidos.ver"><NavLink
                 to="/operacion/pedidos"
                 className={subNavLinkClass}
               >
@@ -125,9 +126,9 @@ function AdminLayout({ children }) {
                 />
 
                 <span>Pedidos</span>
-              </NavLink>
+              </NavLink></Can>
 
-              <NavLink
+              <Can permission="kanban.ver"><NavLink
                 to="/operacion/kanban"
                 className={subNavLinkClass}
               >
@@ -138,14 +139,14 @@ function AdminLayout({ children }) {
                 />
 
                 <span>Kanban</span>
-              </NavLink>
+              </NavLink></Can>
 
             </div>
           </div>
 
           {/* INVENTARIO */}
 
-          <NavLink
+          <Can permission="inventario.ver"><NavLink
             to="/inventario"
             className={navLinkClass}
           >
@@ -156,11 +157,11 @@ function AdminLayout({ children }) {
             />
 
             <span>Inventario</span>
-          </NavLink>
+          </NavLink></Can>
 
           {/* COMPRAS */}
 
-          <NavLink
+          <Can permission="compras.ver"><NavLink
             to="/compras"
             className={navLinkClass}
           >
@@ -171,11 +172,11 @@ function AdminLayout({ children }) {
             />
 
             <span>Compras</span>
-          </NavLink>
+          </NavLink></Can>
 
           {/* JUEGOS */}
 
-          <NavLink
+          <Can permission="juegos.ver"><NavLink
             to="/juegos"
             className={navLinkClass}
           >
@@ -186,11 +187,11 @@ function AdminLayout({ children }) {
             />
 
             <span>Juegos</span>
-          </NavLink>
+          </NavLink></Can>
 
           {/* CAJA */}
 
-          <NavLink
+          <Can permission="caja.ver"><NavLink
             to="/caja"
             className={navLinkClass}
           >
@@ -201,11 +202,11 @@ function AdminLayout({ children }) {
             />
 
             <span>Caja y pagos</span>
-          </NavLink>
+          </NavLink></Can>
 
           {/* CLIENTES */}
 
-          <NavLink
+          <Can permission="clientes.ver"><NavLink
             to="/clientes"
             className={navLinkClass}
           >
@@ -216,11 +217,11 @@ function AdminLayout({ children }) {
             />
 
             <span>Clientes</span>
-          </NavLink>
+          </NavLink></Can>
 
           {/* REPORTES */}
 
-          <NavLink
+          <Can permission="reportes.ver"><NavLink
             to="/reportes"
             className={navLinkClass}
           >
@@ -231,11 +232,11 @@ function AdminLayout({ children }) {
             />
 
             <span>Reportes</span>
-          </NavLink>
+          </NavLink></Can>
 
           {/* ADMINISTRACIÓN */}
 
-          <NavLink
+          <Can permission="administracion.ver"><NavLink
             to="/administracion"
             className={navLinkClass}
           >
@@ -246,7 +247,7 @@ function AdminLayout({ children }) {
             />
 
             <span>Administración</span>
-          </NavLink>
+          </NavLink></Can>
 
         </nav>
 

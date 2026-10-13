@@ -43,57 +43,57 @@ function App() {
 
               <Route
                 path="/dashboard"
-                element={<DashboardPage />}
+                element={<ProtectedRoute permission="dashboard.ver"><DashboardPage /></ProtectedRoute>}
               />
 
               <Route
                 path="/operacion/mesas"
-                element={<MesasPage />}
+                element={<ProtectedRoute permission="mesas.ver"><MesasPage /></ProtectedRoute>}
               />
 
               <Route
                 path="/operacion/pedidos"
-                element={<PedidosPage />}
+                element={<ProtectedRoute permission="pedidos.ver"><PedidosPage /></ProtectedRoute>}
               />
 
               <Route
                 path="/operacion/kanban"
-                element={<KanbanPage />}
+                element={<ProtectedRoute permission="kanban.ver"><KanbanPage /></ProtectedRoute>}
               />
 
               <Route
                 path="/inventario"
-                element={<InventarioPage />}
+                element={<ProtectedRoute permission="inventario.ver"><InventarioPage /></ProtectedRoute>}
               />
 
               <Route
                 path="/compras"
-                element={<ComprasPage />}
+                element={<ProtectedRoute permission="compras.ver"><ComprasPage /></ProtectedRoute>}
               />
 
               <Route
                 path="/juegos"
-                element={<JuegosPage />}
+                element={<ProtectedRoute permission="juegos.ver"><JuegosPage /></ProtectedRoute>}
               />
 
               <Route
                 path="/caja"
-                element={<CajaPage />}
+                element={<ProtectedRoute permission="caja.ver"><CajaPage /></ProtectedRoute>}
               />
 
               <Route
                 path="/clientes"
-                element={<ClientesPage />}
+                element={<ProtectedRoute permission="clientes.ver"><ClientesPage /></ProtectedRoute>}
               />
 
               <Route
                 path="/reportes"
-                element={<ReportesPage />}
+                element={<ProtectedRoute permission="reportes.ver"><ReportesPage /></ProtectedRoute>}
               />
 
               <Route
                 path="/administracion"
-                element={<AdministracionPage />}
+                element={<ProtectedRoute permission="administracion.ver"><AdministracionPage /></ProtectedRoute>}
               />
 
               <Route

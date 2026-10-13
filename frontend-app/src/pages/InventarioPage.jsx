@@ -1,3 +1,7 @@
+import { useAuth } from "../context/useAuth";
+import { can } from "../utils/permissions";
+import Can from "../components/Can";
+import { formatCurrency as formatearDinero } from "../utils/formatCurrency";
 /*
  * Evidencia: GA7-220501096-AA3-EV01
  * Codificación de módulos del software stand-alone, web y móvil.
@@ -74,6 +78,7 @@ import "./InventarioPage.css";
  * los filtros de búsqueda y las operaciones CRUD realizadas desde la interfaz.
  */
 function InventarioPage() {
+  const { user } = useAuth();
 
   const [seccionActiva, setSeccionActiva] = useState("resumen");
 
@@ -463,19 +468,7 @@ function InventarioPage() {
    * Convierte un valor numérico al formato monetario colombiano (COP)
    * para presentar precios y costos de forma legible en la interfaz.
    */
-  function formatearDinero(valor) {
 
-    return new Intl.NumberFormat("es-CO", {
-
-      style: "currency",
-
-      currency: "COP",
-
-      maximumFractionDigits: 0,
-
-    }).format(valor);
-
-  }
 
 
 
@@ -903,7 +896,7 @@ function InventarioPage() {
 
         {seccionActiva === "productos" && (
 
-          <button
+          <Can permission="productos.crear"><button
 
             type="button"
 
@@ -916,7 +909,7 @@ function InventarioPage() {
 
             Nuevo producto
 
-          </button>
+          </button></Can>
 
         )}
 
@@ -924,7 +917,7 @@ function InventarioPage() {
 
         {seccionActiva === "categorias" && (
 
-          <button
+          <Can permission="categorias.crear"><button
 
             type="button"
 
@@ -936,7 +929,7 @@ function InventarioPage() {
 
             Nueva categoría
 
-          </button>
+          </button></Can>
 
         )}
 
@@ -1960,7 +1953,7 @@ function InventarioPage() {
 
 
 
-                  <button
+                  <Can permission="categorias.editar"><button
 
                     type="button"
 
@@ -2012,7 +2005,7 @@ function InventarioPage() {
 
                       : "Activar"}
 
-                  </button>
+                  </button></Can>
 
                 </div>
 
@@ -2036,7 +2029,7 @@ function InventarioPage() {
 
 
 
-      {seccionActiva === "refrigeradores" && (
+      {seccionActiva === "refrigeradores" && can(user, "inventario.movimientos") && (
 
         <RefrigeradoresSection />
 
@@ -2044,7 +2037,7 @@ function InventarioPage() {
 
 
 
-      {seccionActiva === "movimientos" && (
+      {seccionActiva === "movimientos" && can(user, "inventario.movimientos") && (
 
         <MovimientosSection />
 
@@ -2052,7 +2045,7 @@ function InventarioPage() {
 
 
 
-      {seccionActiva === "alertas" && (
+      {seccionActiva === "alertas" && can(user, "alertas.ver") && (
 
         <AlertasSection />
 
@@ -2060,7 +2053,7 @@ function InventarioPage() {
 
 
 
-      {seccionActiva === "mermas" && (
+      {seccionActiva === "mermas" && can(user, "mermas.ver") && (
 
         <MermasSection />
 
@@ -2578,7 +2571,7 @@ function InventarioPage() {
 
             <div className="inventario-drawer-actions">
 
-              <button
+              <Can permission="inventario.ajustar"><button
 
                 type="button"
 
@@ -2598,11 +2591,11 @@ function InventarioPage() {
 
                 Ajustar stock
 
-              </button>
+              </button></Can>
 
 
 
-              <button
+              <Can permission="productos.editar"><button
                 type="button"
                 className="drawer-secondary-button"
                 onClick={() =>
@@ -2615,9 +2608,9 @@ function InventarioPage() {
                 />
 
                 Editar producto
-              </button>
+              </button></Can>
 
-              <button
+              <Can permission="productos.eliminar"><button
                 type="button"
                 className="drawer-secondary-button"
                 onClick={() =>
@@ -2636,11 +2629,11 @@ function InventarioPage() {
                 {eliminandoProducto
                   ? "Eliminando..."
                   : "Eliminar producto"}
-              </button>
+              </button></Can>
 
 
 
-              <button
+              <Can permission="inventario.movimientos"><button
 
                 type="button"
 
@@ -2660,7 +2653,7 @@ function InventarioPage() {
 
                 Ver movimientos
 
-              </button>
+              </button></Can>
 
             </div>
 
@@ -2822,7 +2815,7 @@ function InventarioPage() {
 
             <div className="inventario-drawer-actions">
 
-              <button
+              <Can permission="categorias.editar"><button
 
                 type="button"
 
@@ -2842,11 +2835,11 @@ function InventarioPage() {
 
                 Editar categoría
 
-              </button>
+              </button></Can>
 
 
 
-              <button
+              <Can permission="categorias.editar"><button
 
                 type="button"
 
@@ -2894,7 +2887,7 @@ function InventarioPage() {
 
                   : "Activar categoría"}
 
-              </button>
+              </button></Can>
 
             </div>
 

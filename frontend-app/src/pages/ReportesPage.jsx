@@ -1,3 +1,6 @@
+import Can from "../components/Can";
+import { useAuth } from "../context/useAuth";
+import { can } from "../utils/permissions";
 import { useState } from "react";
 
 import {
@@ -17,6 +20,7 @@ import ReporteCajaSection from "../components/ReporteCajaSection";
 import "./ReportesPage.css";
 
 function ReportesPage() {
+  const { user } = useAuth();
   const [seccionActiva, setSeccionActiva] = useState("ventas");
 
   return (
@@ -46,7 +50,7 @@ function ReportesPage() {
 
       <nav className="reportes-nav">
 
-        <button
+        <Can permission="comprobantes.ver"><button
           type="button"
           className={seccionActiva === "ventas" ? "active" : ""}
           onClick={() => setSeccionActiva("ventas")}
@@ -57,9 +61,9 @@ function ReportesPage() {
           />
 
           Ventas
-        </button>
+        </button></Can>
 
-        <button
+        <Can permission="inventario.movimientos"><button
           type="button"
           className={seccionActiva === "inventario" ? "active" : ""}
           onClick={() => setSeccionActiva("inventario")}
@@ -70,9 +74,9 @@ function ReportesPage() {
           />
 
           Inventario
-        </button>
+        </button></Can>
 
-        <button
+        <Can permission="inventario.movimientos"><button
           type="button"
           className={seccionActiva === "productos" ? "active" : ""}
           onClick={() => setSeccionActiva("productos")}
@@ -83,9 +87,9 @@ function ReportesPage() {
           />
 
           Productos más vendidos
-        </button>
+        </button></Can>
 
-        <button
+        <Can permission="inventario.movimientos"><button
           type="button"
           className={seccionActiva === "juegos" ? "active" : ""}
           onClick={() => setSeccionActiva("juegos")}
@@ -96,9 +100,9 @@ function ReportesPage() {
           />
 
           Juegos
-        </button>
+        </button></Can>
 
-        <button
+        <Can permission="cierres.ver"><button
           type="button"
           className={seccionActiva === "caja" ? "active" : ""}
           onClick={() => setSeccionActiva("caja")}
@@ -109,27 +113,27 @@ function ReportesPage() {
           />
 
           Caja
-        </button>
+        </button></Can>
 
       </nav>
 
-      {seccionActiva === "ventas" && (
+      {seccionActiva === "ventas" && can(user, "comprobantes.ver") && (
         <ReporteVentasSection />
       )}
 
-      {seccionActiva === "inventario" && (
+      {seccionActiva === "inventario" && can(user, "inventario.movimientos") && (
         <ReporteInventarioSection />
       )}
 
-      {seccionActiva === "productos" && (
+      {seccionActiva === "productos" && can(user, "inventario.movimientos") && (
         <ReporteProductosSection />
       )}
 
-      {seccionActiva === "juegos" && (
+      {seccionActiva === "juegos" && can(user, "inventario.movimientos") && (
         <ReporteJuegosSection />
       )}
 
-      {seccionActiva === "caja" && (
+      {seccionActiva === "caja" && can(user, "cierres.ver") && (
         <ReporteCajaSection />
       )}
 

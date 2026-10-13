@@ -1,3 +1,5 @@
+import { formatDate } from "../utils/dateTime";
+import Can from "../components/Can";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -20,11 +22,11 @@ import "./DashboardPage.css";
 function DashboardPage() {
   const navigate = useNavigate();
 
-  const fechaActual = new Intl.DateTimeFormat("es-CO", {
+  const fechaActual = formatDate(new Date(), {
     weekday: "long",
     day: "numeric",
     month: "long",
-  }).format(new Date());
+  });
 
   const fechaFormateada =
     fechaActual.charAt(0).toUpperCase() + fechaActual.slice(1);
@@ -215,7 +217,7 @@ function DashboardPage() {
               </p>
             </div>
 
-            <button
+            <Can permission="mesas.ver"><button
               type="button"
               className="text-button"
               onClick={() =>
@@ -228,7 +230,7 @@ function DashboardPage() {
                 size={16}
                 strokeWidth={1.9}
               />
-            </button>
+            </button></Can>
 
           </div>
 
@@ -296,7 +298,7 @@ function DashboardPage() {
               </p>
             </div>
 
-            <button
+            <Can permission="inventario.ver"><button
               type="button"
               className="text-button"
               onClick={() =>
@@ -309,7 +311,7 @@ function DashboardPage() {
                 size={16}
                 strokeWidth={1.9}
               />
-            </button>
+            </button></Can>
 
           </div>
 
@@ -383,7 +385,7 @@ function DashboardPage() {
               </p>
             </div>
 
-            <button
+            <Can permission="juegos.ver"><button
               type="button"
               className="text-button"
               onClick={() =>
@@ -396,7 +398,7 @@ function DashboardPage() {
                 size={16}
                 strokeWidth={1.9}
               />
-            </button>
+            </button></Can>
 
           </div>
 
@@ -597,7 +599,7 @@ function DashboardPage() {
 
           <div className="quick-actions">
 
-            <button
+            <Can permission="compras.crear"><button
               type="button"
               onClick={() =>
                 navigate("/compras")
@@ -611,9 +613,9 @@ function DashboardPage() {
               </span>
 
               Nueva compra
-            </button>
+            </button></Can>
 
-            <button
+            <Can permission="productos.crear"><button
               type="button"
               onClick={() =>
                 navigate("/inventario")
@@ -627,9 +629,9 @@ function DashboardPage() {
               </span>
 
               Registrar producto
-            </button>
+            </button></Can>
 
-            <button
+            <Can permission="usuarios.registrar"><button
               type="button"
               onClick={() =>
                 navigate("/administracion")
@@ -643,9 +645,9 @@ function DashboardPage() {
               </span>
 
               Crear usuario
-            </button>
+            </button></Can>
 
-            <button
+            <Can permission="cierres.crear"><button
               type="button"
               className="accent-action"
               onClick={() =>
@@ -660,7 +662,7 @@ function DashboardPage() {
               </span>
 
               Cerrar caja
-            </button>
+            </button></Can>
 
           </div>
 

@@ -1,3 +1,6 @@
+import { formatTime } from "../utils/dateTime";
+import Can from "../components/Can";
+import { formatCurrency as formatearDinero } from "../utils/formatCurrency";
 import { useMemo, useState } from "react";
 
 import {
@@ -7,7 +10,6 @@ import {
   CircleCheck,
   Clock3,
   UserRound,
-  Armchair,
   WalletCards,
   ArrowRight,
   X,
@@ -145,13 +147,7 @@ function CuentasPendientesSection() {
     );
   }, [cuentas, busqueda]);
 
-  function formatearDinero(valor) {
-    return new Intl.NumberFormat("es-CO", {
-      style: "currency",
-      currency: "COP",
-      maximumFractionDigits: 0,
-    }).format(valor);
-  }
+
 
   function obtenerSaldo(cuenta) {
     return cuenta.total - cuenta.pagado;
@@ -185,7 +181,7 @@ function CuentasPendientesSection() {
       id: `PG-${900 + Math.floor(Math.random() * 90)}`,
       metodo: metodoPago,
       valor,
-      hora: "16:52",
+      hora: formatTime(new Date()),
     };
 
     const nuevoPagado = cuentaSeleccionada.pagado + valor;
@@ -731,7 +727,7 @@ function CuentasPendientesSection() {
 
               <div className="cuenta-actions">
 
-                <button
+                <Can permission="pagos.crear"><button
                   type="button"
                   className="drawer-primary-button"
                   onClick={() => setMostrarPago(true)}
@@ -742,9 +738,9 @@ function CuentasPendientesSection() {
                   />
 
                   Registrar pago
-                </button>
+                </button></Can>
 
-                <button
+                <Can permission="divisiones.crear"><button
                   type="button"
                   className="drawer-secondary-button"
                   onClick={() =>
@@ -757,7 +753,7 @@ function CuentasPendientesSection() {
                   />
 
                   Dividir cuenta
-                </button>
+                </button></Can>
 
               </div>
 
@@ -836,7 +832,7 @@ function CuentasPendientesSection() {
 
                 <div className="cuenta-form-actions">
 
-                  <button
+                  <Can permission="pagos.crear"><button
                     type="button"
                     className="drawer-primary-button"
                     onClick={registrarPago}
@@ -847,7 +843,7 @@ function CuentasPendientesSection() {
                     />
 
                     Confirmar pago
-                  </button>
+                  </button></Can>
 
                   <button
                     type="button"

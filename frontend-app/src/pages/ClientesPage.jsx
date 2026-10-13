@@ -1,8 +1,9 @@
+import Can from "../components/Can";
+import { formatCurrency as formatearDinero } from "../utils/formatCurrency";
 import { useMemo, useState } from "react";
 
 import {
   Users,
-  UserRound,
   UserCheck,
   UserX,
   History,
@@ -152,13 +153,7 @@ function ClientesPage() {
     });
   }, [clientes, busqueda, filtroEstado]);
 
-  function formatearDinero(valor) {
-    return new Intl.NumberFormat("es-CO", {
-      style: "currency",
-      currency: "COP",
-      maximumFractionDigits: 0,
-    }).format(valor);
-  }
+
 
   function cambiarEstadoCliente(id) {
     setClientes((actuales) =>
@@ -216,14 +211,14 @@ function ClientesPage() {
 
         {seccionActiva === "lista" && (
 
-          <button
+          <Can permission="clientes.crear"><button
             type="button"
             className="primary-button clientes-new-button"
           >
             <Plus size={17} strokeWidth={1.9} />
 
             Nuevo cliente
-          </button>
+          </button></Can>
 
         )}
 
@@ -775,7 +770,7 @@ function ClientesPage() {
 
             </div>
 
-            <button
+            <Can permission="clientes.actualizar"><button
               type="button"
               className={
                 clienteSeleccionado.estado === "activo"
@@ -807,7 +802,7 @@ function ClientesPage() {
                   Activar cliente
                 </>
               )}
-            </button>
+            </button></Can>
 
           </aside>
 

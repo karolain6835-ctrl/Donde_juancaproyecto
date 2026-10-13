@@ -1,3 +1,7 @@
+import { useAuth } from "../context/useAuth";
+import { can } from "../utils/permissions";
+import Can from "../components/Can";
+import { formatCurrency as formatearDinero } from "../utils/formatCurrency";
 import { useMemo, useState } from "react";
 
 import {
@@ -26,7 +30,8 @@ import CierresCajaSection from "../components/CierresCajaSection";
 import "./CajaPage.css";
 
 function CajaPage() {
-  const [seccionActiva, setSeccionActiva] = useState("pagos");
+  const { user } = useAuth();
+  const [seccionActiva, setSeccionActiva] = useState(() => can(user, "pagos.ver") ? "pagos" : "pendientes");
   const [movimientoSeleccionado, setMovimientoSeleccionado] = useState(null);
   const [mostrarCierre, setMostrarCierre] = useState(false);
 
@@ -80,13 +85,7 @@ function CajaPage() {
     return resumen;
   }, [pagos]);
 
-  function formatearDinero(valor) {
-    return new Intl.NumberFormat("es-CO", {
-      style: "currency",
-      currency: "COP",
-      maximumFractionDigits: 0,
-    }).format(valor);
-  }
+
 
   function iconoMetodo(metodo) {
     if (metodo === "Efectivo") {
@@ -130,36 +129,36 @@ function CajaPage() {
 
       <nav className="caja-nav">
 
-        <button
+        <Can permission="pagos.ver"><button
           type="button"
           className={seccionActiva === "pagos" ? "active" : ""}
           onClick={() => setSeccionActiva("pagos")}
         >
           <WalletCards size={16} strokeWidth={1.9} />
           Pagos
-        </button>
+        </button></Can>
 
-        <button
+        <Can permission="pagos.crear"><button
           type="button"
           className={seccionActiva === "pendientes" ? "active" : ""}
           onClick={() => setSeccionActiva("pendientes")}
         >
           <ReceiptText size={16} strokeWidth={1.9} />
           Cuentas pendientes
-        </button>
+        </button></Can>
 
-        <button
+        <Can permission="cierres.ver"><button
           type="button"
           className={seccionActiva === "cierres" ? "active" : ""}
           onClick={() => setSeccionActiva("cierres")}
         >
           <ClipboardCheck size={16} strokeWidth={1.9} />
           Cierres de caja
-        </button>
+        </button></Can>
 
       </nav>
 
-      {seccionActiva === "pagos" && (
+      {seccionActiva === "pagos" && can(user, "pagos.ver") && (
         <>
 
           <section className="caja-status-panel">
@@ -391,7 +390,7 @@ function CajaPage() {
 
               </div>
 
-              <button
+              <Can permission="cierres.crear"><button
                 type="button"
                 className="caja-review-button"
                 onClick={() => setMostrarCierre(true)}
@@ -402,9 +401,9 @@ function CajaPage() {
                 />
 
                 Revisar cierre
-              </button>
+              </button></Can>
 
-              <button
+              <Can permission="cierres.crear"><button
                 type="button"
                 className="caja-close-button"
                 onClick={() => setMostrarCierre(true)}
@@ -415,7 +414,7 @@ function CajaPage() {
                 />
 
                 Cerrar caja
-              </button>
+              </button></Can>
 
             </article>
 
@@ -530,11 +529,11 @@ function CajaPage() {
         </>
       )}
 
-      {seccionActiva === "pendientes" && (
+      {seccionActiva === "pendientes" && can(user, "pagos.crear") && (
         <CuentasPendientesSection />
       )}
 
-      {seccionActiva === "cierres" && (
+      {seccionActiva === "cierres" && can(user, "cierres.ver") && (
         <CierresCajaSection />
       )}
 
@@ -812,7 +811,7 @@ function CajaPage() {
 
             </div>
 
-            <button
+            <Can permission="cierres.crear"><button
               type="button"
               className="drawer-primary-button caja-confirm-close"
             >
@@ -822,7 +821,7 @@ function CajaPage() {
               />
 
               Confirmar cierre
-            </button>
+            </button></Can>
 
           </aside>
 

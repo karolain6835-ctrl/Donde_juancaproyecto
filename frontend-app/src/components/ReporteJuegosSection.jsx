@@ -1,3 +1,4 @@
+import { formatCurrency as formatearDinero } from "../utils/formatCurrency";
 import { useMemo, useState } from "react";
 
 import {
@@ -124,13 +125,7 @@ function ReporteJuegosSection() {
     )
   );
 
-  function formatearDinero(valor) {
-    return new Intl.NumberFormat("es-CO", {
-      style: "currency",
-      currency: "COP",
-      maximumFractionDigits: 0,
-    }).format(valor);
-  }
+
 
   function formatearDuracion(minutos) {
     const horas = Math.floor(minutos / 60);

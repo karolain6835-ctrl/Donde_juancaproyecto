@@ -1,3 +1,4 @@
+import { formatCurrency as formatearDinero } from "../utils/formatCurrency";
 import { useMemo, useState } from "react";
 
 import {
@@ -97,13 +98,7 @@ function HistorialClientesSection() {
     );
   }, [busqueda]);
 
-  function formatearDinero(valor) {
-    return new Intl.NumberFormat("es-CO", {
-      style: "currency",
-      currency: "COP",
-      maximumFractionDigits: 0,
-    }).format(valor);
-  }
+
 
   const totalVentas = historial.reduce(
     (total, registro) => total + registro.total,

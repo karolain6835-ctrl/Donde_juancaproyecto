@@ -1,3 +1,4 @@
+import Can from "../components/Can";
 import { useState } from "react";
 
 import {
@@ -135,7 +136,7 @@ function PedidosPage() {
           </p>
         </div>
 
-        <button
+        <Can permission="pedidos.crear"><button
           type="button"
           className="primary-button pedidos-new-button"
         >
@@ -145,7 +146,7 @@ function PedidosPage() {
           />
 
           Nuevo pedido
-        </button>
+        </button></Can>
 
       </header>
 
@@ -634,7 +635,7 @@ function PedidosPage() {
                 Ver pedido completo
               </button>
 
-              <button
+              <Can permission="pedidos.agregarItems"><button
                 type="button"
                 className="drawer-secondary-button"
               >
@@ -644,7 +645,7 @@ function PedidosPage() {
                 />
 
                 Agregar productos
-              </button>
+              </button></Can>
 
             </div>
 

@@ -1,3 +1,4 @@
+import Can from "../components/Can";
 import { useMemo, useState } from "react";
 
 import {
@@ -216,7 +217,7 @@ function AlertasSection() {
           </small>
         </button>
 
-        <button
+        <Can permission="alertas.silenciar"><button
           type="button"
           className={`alerta-kpi ${
             filtroEstado === "silenciada"
@@ -248,9 +249,9 @@ function AlertasSection() {
           <small>
             Sin notificación activa
           </small>
-        </button>
+        </button></Can>
 
-        <button
+        <Can permission="alertas.resolver"><button
           type="button"
           className={`alerta-kpi ${
             filtroEstado === "resuelta"
@@ -281,7 +282,7 @@ function AlertasSection() {
           <small>
             Historial cerrado
           </small>
-        </button>
+        </button></Can>
 
       </section>
 
@@ -608,7 +609,7 @@ function AlertasSection() {
 
             <div className="alerta-actions">
 
-              <button
+              <Can permission="alertas.resolver"><button
                 type="button"
                 className="drawer-primary-button"
                 onClick={() =>
@@ -624,9 +625,9 @@ function AlertasSection() {
                 />
 
                 Marcar como resuelta
-              </button>
+              </button></Can>
 
-              <button
+              <Can permission="alertas.vista"><button
                 type="button"
                 className="drawer-secondary-button"
                 onClick={() =>
@@ -642,9 +643,9 @@ function AlertasSection() {
                 />
 
                 Marcar como vista
-              </button>
+              </button></Can>
 
-              <button
+              <Can permission="alertas.silenciar"><button
                 type="button"
                 className="drawer-secondary-button"
                 onClick={() =>
@@ -660,7 +661,7 @@ function AlertasSection() {
                 />
 
                 Silenciar alerta
-              </button>
+              </button></Can>
 
             </div>
 

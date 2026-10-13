@@ -1,3 +1,4 @@
+import { formatCurrency } from "../utils/formatCurrency";
 import { useMemo, useState } from "react";
 
 import {
@@ -14,7 +15,6 @@ import {
   ArrowRight,
   X,
   LockKeyhole,
-  CalendarDays,
 } from "lucide-react";
 
 import "./CierresCajaSection.css";
@@ -84,15 +84,7 @@ function CierresCajaSection() {
   }, [busqueda, filtroEstado]);
 
   function formatearDinero(valor) {
-    if (valor === null || valor === undefined) {
-      return "Pendiente";
-    }
-
-    return new Intl.NumberFormat("es-CO", {
-      style: "currency",
-      currency: "COP",
-      maximumFractionDigits: 0,
-    }).format(valor);
+    return formatCurrency(valor, "Pendiente");
   }
 
   function nombreEstado(estado) {

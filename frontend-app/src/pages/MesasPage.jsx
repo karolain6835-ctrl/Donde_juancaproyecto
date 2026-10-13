@@ -1,3 +1,4 @@
+import Can from "../components/Can";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -491,7 +492,7 @@ function MesasPage() {
                   para iniciar una nueva atención.
                 </p>
 
-                <button
+                <Can permission="pedidos.crear"><button
                   type="button"
                   className="drawer-primary-button"
                   onClick={abrirMesa}
@@ -502,7 +503,7 @@ function MesasPage() {
                   />
 
                   Abrir mesa
-                </button>
+                </button></Can>
 
               </div>
             )}

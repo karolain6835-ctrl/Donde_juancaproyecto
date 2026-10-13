@@ -1,3 +1,4 @@
+import { formatCurrency as formatearDinero } from "../utils/formatCurrency";
 import { useMemo, useState } from "react";
 
 import {
@@ -117,13 +118,7 @@ function ReporteInventarioSection() {
     );
   }, [evolucionInventario]);
 
-  function formatearDinero(valor) {
-    return new Intl.NumberFormat("es-CO", {
-      style: "currency",
-      currency: "COP",
-      maximumFractionDigits: 0,
-    }).format(valor);
-  }
+
 
   function nombreEstado(estado) {
     if (estado === "bajo") return "Stock bajo";

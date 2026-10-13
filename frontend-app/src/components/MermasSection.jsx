@@ -1,3 +1,5 @@
+import { formatDate, formatTime } from "../utils/dateTime";
+import Can from "../components/Can";
 import { useMemo, useState } from "react";
 
 import {
@@ -145,8 +147,8 @@ function MermasSection() {
       cantidad,
       motivo: formulario.motivo,
       usuario: "Karol",
-      fecha: "02/10/2026",
-      hora: "16:30",
+      fecha: formatDate(new Date()),
+      hora: formatTime(new Date()),
       observacion:
         formulario.observacion ||
         "Sin observación adicional.",
@@ -218,7 +220,7 @@ function MermasSection() {
 
           </div>
 
-          <button
+          <Can permission="mermas.registrar"><button
             type="button"
             className="primary-button mermas-new-button"
             onClick={() =>
@@ -231,7 +233,7 @@ function MermasSection() {
             />
 
             Registrar merma
-          </button>
+          </button></Can>
 
         </div>
 

@@ -1,3 +1,5 @@
+import { useAuth } from "../context/useAuth";
+import { can } from "../utils/permissions";
 import {
   LayoutDashboard,
   Boxes,
@@ -11,6 +13,8 @@ import {
 import "./InventarioNav.css";
 
 function InventarioNav({ seccionActiva, onCambiarSeccion }) {
+  const { user } = useAuth();
+  const sectionPermissions = { resumen: "productos.ver", productos: "productos.ver", categorias: "categorias.ver", refrigeradores: "inventario.movimientos", movimientos: "inventario.movimientos", alertas: "alertas.ver", mermas: "mermas.ver" };
   const secciones = [
     {
       id: "resumen",
@@ -54,7 +58,7 @@ function InventarioNav({ seccionActiva, onCambiarSeccion }) {
       className="inventario-nav"
       aria-label="Secciones de inventario"
     >
-      {secciones.map((seccion) => {
+      {secciones.filter(seccion => can(user, sectionPermissions[seccion.id])).map((seccion) => {
         const Icono = seccion.icono;
         const activa = seccionActiva === seccion.id;
 

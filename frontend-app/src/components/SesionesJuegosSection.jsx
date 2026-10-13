@@ -1,3 +1,5 @@
+import Can from "../components/Can";
+import { formatCurrency as formatearDinero } from "../utils/formatCurrency";
 import { useMemo, useState } from "react";
 
 import {
@@ -79,13 +81,7 @@ function SesionesJuegosSection() {
     );
   }, [sesiones, busqueda]);
 
-  function formatearDinero(valor) {
-    return new Intl.NumberFormat("es-CO", {
-      style: "currency",
-      currency: "COP",
-      maximumFractionDigits: 0,
-    }).format(valor);
-  }
+
 
   function abrirDetalle(sesion) {
     setSesionSeleccionada(sesion);
@@ -620,7 +616,7 @@ function SesionesJuegosSection() {
 
             {!confirmacionFinalizar && (
 
-              <button
+              <Can permission="juegos.finalizar"><button
                 type="button"
                 className="drawer-primary-button sesion-finalizar-main"
                 onClick={solicitarFinalizacion}
@@ -631,7 +627,7 @@ function SesionesJuegosSection() {
                 />
 
                 Finalizar sesión
-              </button>
+              </button></Can>
 
             )}
 
@@ -707,7 +703,7 @@ function SesionesJuegosSection() {
 
                 <div className="sesion-finalizar-actions">
 
-                  <button
+                  <Can permission="juegos.finalizar"><button
                     type="button"
                     className="drawer-primary-button"
                     onClick={finalizarSesion}
@@ -718,7 +714,7 @@ function SesionesJuegosSection() {
                     />
 
                     Confirmar finalización
-                  </button>
+                  </button></Can>
 
                   <button
                     type="button"

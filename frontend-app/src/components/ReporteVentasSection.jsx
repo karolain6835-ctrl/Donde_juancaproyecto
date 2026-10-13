@@ -1,3 +1,4 @@
+import { formatCurrency as formatearDinero } from "../utils/formatCurrency";
 import { useMemo, useState } from "react";
 
 import {
@@ -101,13 +102,7 @@ function ReporteVentasSection() {
     ...ventasPorHora.map((registro) => registro.valor)
   );
 
-  function formatearDinero(valor) {
-    return new Intl.NumberFormat("es-CO", {
-      style: "currency",
-      currency: "COP",
-      maximumFractionDigits: 0,
-    }).format(valor);
-  }
+
 
   function iconoMetodo(metodo) {
     if (metodo === "Efectivo") {

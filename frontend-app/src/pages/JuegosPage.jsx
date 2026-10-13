@@ -1,3 +1,5 @@
+import Can from "../components/Can";
+import { formatCurrency as formatearDinero } from "../utils/formatCurrency";
 import { useMemo, useState } from "react";
 
 import {
@@ -96,13 +98,7 @@ function JuegosPage() {
     });
   }, [busqueda, filtroEstado]);
 
-  function formatearDinero(valor) {
-    return new Intl.NumberFormat("es-CO", {
-      style: "currency",
-      currency: "COP",
-      maximumFractionDigits: 0,
-    }).format(valor);
-  }
+
 
   function nombreEstado(estado) {
     if (estado === "disponible") return "Disponible";
@@ -175,14 +171,14 @@ function JuegosPage() {
           Historial
         </button>
 
-        <button
+        <Can permission="usuarios.registrar"><button
           type="button"
           className={seccionActiva === "mantenimiento" ? "active" : ""}
           onClick={() => setSeccionActiva("mantenimiento")}
         >
           <Wrench size={16} strokeWidth={1.9} />
           Mantenimiento
-        </button>
+        </button></Can>
 
       </nav>
 
@@ -449,7 +445,7 @@ function JuegosPage() {
       )}
 
       {seccionActiva === "mantenimiento" && (
-        <MantenimientoJuegosSection />
+        <Can permission="usuarios.registrar"><MantenimientoJuegosSection /></Can>
       )}
 
       {juegoSeleccionado && (
@@ -569,7 +565,7 @@ function JuegosPage() {
             </div>
 
             {juegoSeleccionado.estado === "disponible" && (
-              <button
+              <Can permission="juegos.iniciar"><button
                 type="button"
                 className="drawer-primary-button"
               >
@@ -579,7 +575,7 @@ function JuegosPage() {
                 />
 
                 Iniciar sesión
-              </button>
+              </button></Can>
             )}
 
             {juegoSeleccionado.estado === "ocupado" && (
@@ -597,7 +593,7 @@ function JuegosPage() {
                   Ver sesión activa
                 </button>
 
-                <button
+                <Can permission="juegos.finalizar"><button
                   type="button"
                   className="drawer-secondary-button"
                 >
@@ -607,7 +603,7 @@ function JuegosPage() {
                   />
 
                   Finalizar sesión
-                </button>
+                </button></Can>
 
               </div>
             )}

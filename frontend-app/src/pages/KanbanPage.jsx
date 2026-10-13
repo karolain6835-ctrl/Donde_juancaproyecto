@@ -1,3 +1,4 @@
+import Can from "../components/Can";
 import { useMemo, useState } from "react";
 
 import {
@@ -373,7 +374,7 @@ function KanbanPage() {
                       </div>
 
                       {item.estado === "enviado" && (
-                        <button
+                        <Can permission="kanban.actualizar"><button
                           type="button"
                           className="kanban-action primary"
                           onClick={() =>
@@ -389,11 +390,11 @@ function KanbanPage() {
                           />
 
                           Iniciar preparación
-                        </button>
+                        </button></Can>
                       )}
 
                       {item.estado === "preparando" && (
-                        <button
+                        <Can permission="kanban.actualizar"><button
                           type="button"
                           className="kanban-action success"
                           onClick={() =>
@@ -409,7 +410,7 @@ function KanbanPage() {
                           />
 
                           Marcar servido
-                        </button>
+                        </button></Can>
                       )}
 
                       {item.estado === "servido" && (

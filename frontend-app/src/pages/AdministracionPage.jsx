@@ -1,3 +1,4 @@
+import Can from "../components/Can";
 import { useMemo, useState } from "react";
 
 import {
@@ -5,7 +6,6 @@ import {
   Users,
   ShieldCheck,
   ClipboardList,
-  SlidersHorizontal,
   UserRound,
   UserCheck,
   UserX,
@@ -220,7 +220,7 @@ function AdministracionPage() {
         </div>
 
         {seccionActiva === "usuarios" && (
-          <button
+          <Can permission="usuarios.registrar"><button
             type="button"
             className="primary-button administracion-create-button"
             onClick={() =>
@@ -233,7 +233,7 @@ function AdministracionPage() {
             />
 
             Crear usuario
-          </button>
+          </button></Can>
         )}
 
       </header>
@@ -794,7 +794,7 @@ function AdministracionPage() {
 
             <div className="administracion-user-actions">
 
-              <button
+              <Can permission="usuarios.cambiarEstado"><button
                 type="button"
                 className={
                   usuarioSeleccionado.estado === "activo"
@@ -826,7 +826,7 @@ function AdministracionPage() {
                     Activar usuario
                   </>
                 )}
-              </button>
+              </button></Can>
 
             </div>
 

@@ -1,3 +1,4 @@
+import { formatCurrency as formatearDinero } from "../utils/formatCurrency";
 import { useMemo, useState } from "react";
 
 import {
@@ -85,13 +86,7 @@ function ReporteProductosSection() {
     );
   }, [productos]);
 
-  function formatearDinero(valor) {
-    return new Intl.NumberFormat("es-CO", {
-      style: "currency",
-      currency: "COP",
-      maximumFractionDigits: 0,
-    }).format(valor);
-  }
+
 
   function calcularParticipacion(ingresos) {
     return ((ingresos / ingresosTotales) * 100).toFixed(1);

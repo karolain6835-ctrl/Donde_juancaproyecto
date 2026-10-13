@@ -1,3 +1,4 @@
+import { formatCurrency as formatearDinero } from "../utils/formatCurrency";
 import { useMemo, useState } from "react";
 
 import {
@@ -96,13 +97,7 @@ function HistorialJuegosSection() {
     });
   }, [busqueda, filtroTipo]);
 
-  function formatearDinero(valor) {
-    return new Intl.NumberFormat("es-CO", {
-      style: "currency",
-      currency: "COP",
-      maximumFractionDigits: 0,
-    }).format(valor);
-  }
+
 
   function nombreEstado(estado) {
     if (estado === "finalizada") return "Finalizada";

@@ -1,3 +1,5 @@
+import Can from "../components/Can";
+import { formatCurrency as formatearDinero } from "../utils/formatCurrency";
 import { useMemo, useState } from "react";
 
 import {
@@ -189,13 +191,7 @@ function ComprasPage() {
     (orden) => orden.estado === "cancelada"
   ).length;
 
-  function formatearDinero(valor) {
-    return new Intl.NumberFormat("es-CO", {
-      style: "currency",
-      currency: "COP",
-      maximumFractionDigits: 0,
-    }).format(valor);
-  }
+
 
   function nombreEstado(estado) {
     if (estado === "pendiente") return "Pendiente";
@@ -270,7 +266,7 @@ function ComprasPage() {
           </p>
         </div>
 
-        <button
+        <Can permission="compras.crear"><button
           type="button"
           className="primary-button compras-primary-action"
         >
@@ -282,7 +278,7 @@ function ComprasPage() {
           {seccionActiva === "ordenes"
             ? "Nueva compra"
             : "Nuevo proveedor"}
-        </button>
+        </button></Can>
 
       </header>
 
@@ -788,7 +784,7 @@ function ComprasPage() {
                     />
                   </button>
 
-                  <button
+                  <Can permission="proveedores.editar"><button
                     type="button"
                     className={
                       proveedor.activo
@@ -814,7 +810,7 @@ function ComprasPage() {
                     {proveedor.activo
                       ? "Desactivar"
                       : "Activar"}
-                  </button>
+                  </button></Can>
 
                 </div>
 
@@ -1008,7 +1004,7 @@ function ComprasPage() {
 
               <div className="compra-actions">
 
-                <button
+                <Can permission="compras.recibir"><button
                   type="button"
                   className="drawer-primary-button"
                   onClick={() =>
@@ -1021,9 +1017,9 @@ function ComprasPage() {
                   />
 
                   Recibir compra
-                </button>
+                </button></Can>
 
-                <button
+                <Can permission="compras.recibir"><button
                   type="button"
                   className="drawer-secondary-button"
                   onClick={() =>
@@ -1036,7 +1032,7 @@ function ComprasPage() {
                   />
 
                   Cancelar orden
-                </button>
+                </button></Can>
 
               </div>
 
