@@ -1,5 +1,8 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { apiClient } from "../services/apiClient";
+import { isUsableSession } from "../services/sessionStorage";
+import { useAuth } from "../context/useAuth";
 
 import {
   Mail,
@@ -16,6 +19,7 @@ import "./LoginPage.css";
 
 function LoginPage() {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -38,29 +42,24 @@ function LoginPage() {
     setEnviando(true);
 
     try {
-      let respuesta;
+      let datos;
       try {
-        respuesta = await fetch("http://localhost:5000/api/usuarios/login", {
+        datos = await apiClient("/usuarios/login", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ correo: email, contrasena: password }),
+          body: { correo: email, contrasena: password },
+          auth: false,
         });
-      } catch {
-        setError("No se pudo conectar con el servidor. Intenta nuevamente.");
-        return;
-      }
-
-      const datos = await respuesta.json().catch(() => null);
-      const mensaje = typeof datos?.error === "string"
-        ? datos.error
-        : typeof datos?.mensaje === "string" ? datos.mensaje : null;
-
-      if (!respuesta.ok) {
-        if (respuesta.status === 401) {
+      } catch (errorApi) {
+        const mensaje = typeof errorApi.data?.error === "string"
+          ? errorApi.data.error
+          : typeof errorApi.data?.mensaje === "string" ? errorApi.data.mensaje : null;
+        if (errorApi.code === "NETWORK_ERROR") {
+          setError("No se pudo conectar con el servidor. Intenta nuevamente.");
+        } else if (errorApi.status === 401) {
           setError("Correo o contraseña incorrectos.");
-        } else if (respuesta.status === 403) {
+        } else if (errorApi.status === 403) {
           setError(mensaje || "El usuario está inactivo o bloqueado.");
-        } else if (respuesta.status === 400) {
+        } else if (errorApi.status === 400) {
           setError(mensaje || "Revisa el correo y la contraseña ingresados.");
         } else {
           setError("Ocurrió un error en el servidor. Intenta nuevamente más tarde.");
@@ -68,23 +67,13 @@ function LoginPage() {
         return;
       }
 
-      if (typeof datos?.token !== "string" || !datos.token ||
-          !datos.usuario || typeof datos.usuario !== "object" ||
-          Array.isArray(datos.usuario)) {
+      if (!isUsableSession(datos?.token, datos?.usuario)) {
         setError("El servidor devolvió una respuesta de login inválida.");
         return;
       }
-
       try {
-        localStorage.setItem("dondejuanca_usuario", JSON.stringify(datos.usuario));
-        localStorage.setItem("dondejuanca_token", datos.token);
+        login(datos.token, datos.usuario);
       } catch {
-        try {
-          localStorage.removeItem("dondejuanca_usuario");
-          localStorage.removeItem("dondejuanca_token");
-        } catch {
-          // El navegador puede bloquear también la eliminación del almacenamiento.
-        }
         setError("No se pudo guardar la sesión en el navegador.");
         return;
       }

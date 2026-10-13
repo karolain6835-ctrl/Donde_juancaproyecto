@@ -1,5 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 
+import ProtectedRoute from "./routes/ProtectedRoute";
+
 import AdminLayout from "./layouts/AdminLayout/AdminLayout";
 
 import LoginPage from "./pages/LoginPage";
@@ -35,6 +37,7 @@ function App() {
       <Route
         path="/*"
         element={
+          <ProtectedRoute>
           <AdminLayout>
             <Routes>
 
@@ -105,6 +108,7 @@ function App() {
 
             </Routes>
           </AdminLayout>
+          </ProtectedRoute>
         }
       />
 

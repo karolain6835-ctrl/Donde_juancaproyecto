@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import { useAuth } from "../../context/useAuth";
 
 import {
   LayoutDashboard,
@@ -22,6 +23,10 @@ import iconoDondeJuanca from "../../assets/brand/logos/icono.png";
 import "./AdminLayout.css";
 
 function AdminLayout({ children }) {
+  const { user } = useAuth();
+  const nombre = typeof user?.nombre === "string" && user.nombre.trim() ? user.nombre : "Usuario";
+  const rol = typeof user?.rol === "string" && user.rol.trim() ? user.rol : "Sin rol";
+  const inicial = nombre.trim().charAt(0).toUpperCase();
   function navLinkClass({ isActive }) {
     return isActive ? "nav-link active" : "nav-link";
   }
@@ -262,7 +267,7 @@ function AdminLayout({ children }) {
         <header className="admin-header">
 
           <div className="header-welcome">
-            <h3>Buenos días, Karol</h3>
+            <h3>Buenos días, {nombre}</h3>
 
             <p>
               Esto es lo que está pasando hoy en Donde Juanca.
@@ -308,12 +313,12 @@ function AdminLayout({ children }) {
 
             <div className="header-user">
               <div className="user-avatar small">
-                K
+                {inicial}
               </div>
 
               <div className="header-user-copy">
-                <strong>Karol</strong>
-                <span>Administrador</span>
+                <strong>{nombre}</strong>
+                <span>{rol}</span>
               </div>
             </div>
 

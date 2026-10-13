@@ -1,7 +1,15 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/useAuth";
 import "./UserProfileMenu.css";
 
 function UserProfileMenu() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const nombre = typeof user?.nombre === "string" && user.nombre.trim() ? user.nombre : "Usuario";
+  const rol = typeof user?.rol === "string" && user.rol.trim() ? user.rol : "Sin rol";
+  const correo = typeof user?.correo === "string" ? user.correo : typeof user?.email === "string" ? user.email : "Sin correo";
+  const inicial = nombre.trim().charAt(0).toUpperCase();
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [panelActivo, setPanelActivo] = useState(null);
   const [confirmarSalida, setConfirmarSalida] = useState(false);
@@ -22,12 +30,12 @@ function UserProfileMenu() {
           onClick={() => setMenuAbierto((actual) => !actual)}
         >
           <div className="user-profile-avatar">
-            K
+            {inicial}
           </div>
 
           <div className="user-profile-info">
-            <strong>Karol</strong>
-            <span>Administrador</span>
+            <strong>{nombre}</strong>
+            <span>{rol}</span>
           </div>
 
           <span
@@ -132,12 +140,12 @@ function UserProfileMenu() {
                 <div className="profile-main-card">
 
                   <div className="profile-large-avatar">
-                    K
+                    {inicial}
                   </div>
 
                   <div>
-                    <h3>Karol</h3>
-                    <span>Administrador</span>
+                    <h3>{nombre}</h3>
+                    <span>{rol}</span>
                   </div>
 
                 </div>
@@ -146,18 +154,18 @@ function UserProfileMenu() {
 
                   <div>
                     <span>Nombre</span>
-                    <strong>Karol</strong>
+                    <strong>{nombre}</strong>
                   </div>
 
                   <div>
                     <span>Rol</span>
-                    <strong>Administrador</strong>
+                    <strong>{rol}</strong>
                   </div>
 
                   <div className="profile-full-field">
                     <span>Correo</span>
                     <strong>
-                      karol@dondejuanca.com
+                      {correo}
                     </strong>
                   </div>
 
@@ -242,7 +250,8 @@ function UserProfileMenu() {
               <button
                 className="drawer-primary-button"
                 onClick={() => {
-                  setConfirmarSalida(false);
+                  logout();
+                  navigate("/login");
                 }}
               >
                 Cerrar sesión
@@ -258,8 +267,7 @@ function UserProfileMenu() {
             </div>
 
             <div className="profile-notice">
-              Por ahora esta acción es visual. Después eliminará la sesión
-              o token de autenticación y llevará al login.
+              Se eliminará la sesión guardada y volverás al inicio de sesión.
             </div>
 
           </div>
