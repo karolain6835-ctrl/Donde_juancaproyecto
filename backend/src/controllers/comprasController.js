@@ -1,4 +1,4 @@
-const { registrarAuditoria } = require('../services/auditoriaService');
+const recepciones = require('../services/recepcionesCompraService');
 const { ejecutor } = require('../services/identidadService');
 const crypto = require('crypto');
 const { errorCompra, idValido, objeto, filaEscrita, decimal, importe, conConexion, consultaCompras } = require('../services/comprasService');
@@ -42,11 +42,11 @@ exports.crearCompra = (req,res) => {
     }
     const id = crypto.randomUUID();
     const [cabecera] = await conexion.query(`INSERT INTO compras
-      (id,estado,total_estimado,total_recibido,creado_en,proveedores_id,usuarios_id)
-      VALUES (?,'pendiente',?,0,UTC_TIMESTAMP(),?,?)`,[id,decimal(total),proveedores[0].id,usuarios[0].id]);
+      (id,estado,total_estimado,total_recibido,creado_en,proveedores_id,usuarios_id,modelo_recepcion)
+      VALUES (?,'pendiente',?,0,UTC_TIMESTAMP(),?,?,'v2')`,[id,decimal(total),proveedores[0].id,usuarios[0].id]);
     filaEscrita(cabecera);
     for (const item of preparados) {
-      const [resultado] = await conexion.query('INSERT INTO compra_items (id,cantidad,precio_unitario,compras_id,productos_id) VALUES (?,?,?,?,?)',
+      const [resultado] = await conexion.query('INSERT INTO compra_items (id,cantidad,precio_unitario,compras_id,productos_id,cantidad_cancelada) VALUES (?,?,?,?,?,0)',
         [crypto.randomUUID(),item.cantidad,item.precio,id,item.productos_id]);
       filaEscrita(resultado);
     }
@@ -59,7 +59,7 @@ exports.obtenerCompras = (req,res) => conConexion(res, async conexion => {
   const query = req.query || {};
   const permitidos = ['estado','proveedores_id','usuarios_id','pagina','limite'];
   if (Object.keys(query).some(k=>!permitidos.includes(k)) || Object.values(query).some(v=>typeof v !== 'string') ||
-      (query.estado !== undefined && !['pendiente','recibida','cancelada'].includes(query.estado)) ||
+      (query.estado !== undefined && !['pendiente','parcialmente_recibida','recibida','cancelada','cerrada_parcial'].includes(query.estado)) ||
       ['proveedores_id','usuarios_id'].some(k=>query[k] !== undefined && !idValido(query[k]))) throw errorCompra(400,'Filtros inválidos.');
   const entero = (v,defecto) => v === undefined ? defecto : /^[1-9]\d*$/.test(v) ? Number(v) : NaN;
   const pagina = entero(query.pagina,1), limite = entero(query.limite,20), offset = (pagina-1)*limite;
@@ -77,70 +77,19 @@ exports.obtenerCompra = (req,res) => conConexion(res, async conexion => {
   if (!idValido(req.params.id)) throw errorCompra(400,'ID de compra inválido.');
   const [[datos]] = await conexion.query(`${consultaCompras} WHERE c.id=?`,[req.params.id]);
   if (!datos) throw errorCompra(404,'Compra no encontrada.');
-  const [items] = await conexion.query(`SELECT ci.id,ci.cantidad,CAST(ci.precio_unitario AS CHAR) AS precio_unitario,
-    ci.compras_id,ci.productos_id,p.nombre AS producto_nombre FROM compra_items ci
-    LEFT JOIN productos p ON p.id=ci.productos_id WHERE ci.compras_id=? ORDER BY ci.productos_id,ci.id`,[datos.id]);
+  const items = await recepciones.items(conexion,datos);
+  const [nombres]=await conexion.query('SELECT ci.id,p.nombre FROM compra_items ci LEFT JOIN productos p ON p.id=ci.productos_id WHERE ci.compras_id=?',[datos.id]);
+  for(const item of items)item.producto_nombre=nombres.find(n=>n.id===item.id)?.nombre??null;
   return { body:{mensaje:'Compra consultada correctamente.',datos:{...datos,items}} };
 },true);
 
-const bloquearPendiente = async (conexion,id) => {
-  if (!idValido(id)) throw errorCompra(400,'ID de compra inválido.');
-  const [[compra]] = await conexion.query('SELECT id,estado,usuarios_id FROM compras WHERE id=? FOR UPDATE',[id]);
-  if (!compra) throw errorCompra(404,'Compra no encontrada.');
-  if (compra.estado !== 'pendiente') throw errorCompra(409,'Solo una compra pendiente admite esta operación.');
-  return compra;
+const operar = (req,res,operacion) => {
+  const actor=ejecutor(req,res);if(!actor)return;
+  return conConexion(res,c=>operacion(c,actor));
 };
-
-exports.recibirCompra = (req,res) => {
-  const actor = ejecutor(req, res, ['usuarios_id']);
-  if (!actor) return;
-  return conConexion(res, async conexion => {
-    const compra = await bloquearPendiente(conexion,req.params.id);
-    const [items] = await conexion.query('SELECT id,productos_id,cantidad FROM compra_items WHERE compras_id=? ORDER BY productos_id,id FOR UPDATE',[compra.id]);
-    if (!items.length) throw errorCompra(409,'La compra no tiene ítems.');
-    const productos = new Map();
-    for (const item of items) {
-      if (!Number.isInteger(item.cantidad) || item.cantidad<=0 || item.cantidad>2147483647) throw errorCompra(409,'La compra contiene cantidades inválidas.');
-      if (!productos.has(item.productos_id)) {
-        const [[producto]] = await conexion.query('SELECT id,cantidad_disponible FROM productos WHERE id=? FOR UPDATE',[item.productos_id]);
-        if (!producto) throw errorCompra(404,'Producto de la compra no encontrado.');
-        // Canonicalizar también ítems históricos con variantes de mayúsculas del mismo ID.
-        item.productos_id = producto.id;
-        if (!productos.has(producto.id)) productos.set(producto.id,producto);
-      }
-    }
-    const [usuarios] = await conexion.query('SELECT id FROM usuarios WHERE id=? LOCK IN SHARE MODE',[actor]);
-    if (!usuarios.length) throw errorCompra(409,'El receptor de la compra no existe.');
-    for (const item of items) {
-      const producto = productos.get(item.productos_id);
-      const antes = producto.cantidad_disponible, despues = antes+item.cantidad;
-      if (!Number.isInteger(antes) || antes<0 || despues>2147483647) throw errorCompra(409,'La recepción excede el rango del inventario.');
-      const [actualizacion] = await conexion.query('UPDATE productos SET cantidad_disponible=? WHERE id=?',[despues,producto.id]);
-      filaEscrita(actualizacion);
-      const [movimiento] = await conexion.query(`INSERT INTO movimientos_inventario
-        (id,tipo,cantidad,stock_antes,stock_despues,referencia_tipo,referencia_id,productos_id,usuarios_id,creado_en)
-        VALUES (?,'compra',?,?,?,'compra',?,?,?,UTC_TIMESTAMP())`,
-        [crypto.randomUUID(),item.cantidad,antes,despues,compra.id,producto.id,actor]);
-      filaEscrita(movimiento);
-      producto.cantidad_disponible = despues;
-    }
-    const [resultado] = await conexion.query("UPDATE compras SET estado='recibida',total_recibido=total_estimado WHERE id=? AND estado='pendiente'",[compra.id]);
-    filaEscrita(resultado);
-    const [[datos]] = await conexion.query(`${consultaCompras} WHERE c.id=?`,[compra.id]);
-    // Costos e historial quedan deliberadamente pendientes: su relación por producto es ambigua.
-    return { body:{mensaje:'Compra recibida correctamente.',datos} };
-  });
-};
-
-exports.cancelarCompra = (req,res) => {
-  const actor = ejecutor(req,res);
-  if (!actor) return;
-  return conConexion(res, async conexion => {
-  const compra = await bloquearPendiente(conexion,req.params.id);
-  const [resultado] = await conexion.query("UPDATE compras SET estado='cancelada' WHERE id=? AND estado='pendiente'",[compra.id]);
-  filaEscrita(resultado);
-  await registrarAuditoria(conexion,actor,'compras','compra_cancelada','compras',compra.id,{antes:{estado:compra.estado},despues:{estado:'cancelada'},creador_original:compra.usuarios_id});
-  const [[datos]] = await conexion.query(`${consultaCompras} WHERE c.id=?`,[compra.id]);
-  return { body:{mensaje:'Compra cancelada correctamente.',datos} };
-});
-};
+exports.recibirCompra=(req,res)=>operar(req,res,(c,actor)=>recepciones.recibir(c,req.params.id,req.body,actor,req.headers?.['idempotency-key']));
+exports.cancelarCompra=(req,res)=>operar(req,res,(c,actor)=>recepciones.cancelar(c,req.params.id,actor,req.body));
+exports.cancelarPendiente=(req,res)=>operar(req,res,(c,actor)=>recepciones.cancelar(c,req.params.id,actor,req.body,true));
+exports.reversarRecepcion=(req,res)=>operar(req,res,(c,actor)=>recepciones.reversar(c,req.params.id,req.params.recepcion_id,req.body,actor));
+exports.listarRecepciones=(req,res)=>conConexion(res,c=>recepciones.listarRecepciones(c,req.params.id,req.query),true);
+exports.obtenerRecepcion=(req,res)=>conConexion(res,async c=>({body:{recepcion:await recepciones.detalleRecepcion(c,req.params.id,req.params.recepcion_id)}}),true);

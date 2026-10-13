@@ -21,9 +21,10 @@ test('Fase 3B: actores y atomicidad con MySQL temporal',{skip:process.env.RUN_MY
  };
  const call=async(fn,body={},params={})=>{let r;await fn({body,params,usuario:{id:'u2'}},{status(s){this.s=s;return this;},json(data){r={status:this.s||200,data};}});return r;};
  try{
-  for(const table of ['auditoria','usuarios','mesas','pedidos','pedido_items','pagos','sesiones_juego','clientes','compras','productos','sesiones_division_cuentas','sesiones_division','division_participantes','division_items_detalle','jugadores','ronda_jugadores','rondas']){
+  for(const table of ['auditoria','usuarios','mesas','pedidos','pedido_items','pagos','sesiones_juego','clientes','compras','compra_items','productos','sesiones_division_cuentas','sesiones_division','division_participantes','division_items_detalle','jugadores','ronda_jugadores','rondas']){
    await real.query('CREATE TEMPORARY TABLE copia_audit_'+table+' LIKE '+table);await real.query('CREATE TEMPORARY TABLE '+table+' LIKE copia_audit_'+table);
   }
+  for(const statement of fs.readFileSync(path.join(__dirname,'../database/v2.31_compras_recepciones_parciales.sql'),'utf8').split(';').filter(s=>s.trim()))await real.query(statement);
   for(const u of ['u1','u2'])await real.query("INSERT INTO usuarios(id,nombre,email,password_hash,estado,roles_id) VALUES (?,?,?,'fixture','activo',1)",[u,u,u+'@example.invalid']);
   await real.query("INSERT INTO clientes(id,nombre,estado,usuarios_id) VALUES ('cl','Cliente','activo','u1')");
   const reset=async()=>{

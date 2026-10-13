@@ -3,6 +3,14 @@
 Todas las modificaciones estructurales y de datos importantes de la base de datos se documentarán en este archivo, siguiendo un orden cronológico inverso (lo más nuevo arriba).
 
 ---
+## [v2.34 / v2.33 / v2.32 / v2.31] - 2026-10-12
+### Preparadas; pendientes de aplicar a la base persistente
+- v2.31: estados, modelo legado/v2, cantidades canceladas e indice de compras.
+- v2.32: version de inventario y trigger para todo cambio de existencias o CPP.
+- v2.33: recepciones y lineas, idempotencia, actores y movimientos de reverso.
+- v2.34: historial financiero de recepciones y reversos.
+- Sin backfill de recepciones, fechas, cantidades ni costos historicos.
+
 ## [v2.30] - 2026-10-12
 ### Añadido (preparado; pendiente de aplicación a MySQL)
 - `v2.30_create_tabla_cierre_pagos.sql`: crea la relación cierre-pago con snapshot

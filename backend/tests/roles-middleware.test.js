@@ -28,7 +28,7 @@ const cases = [
  ['A','PUT','inventario/actualizar-stock'],['A','GET','inventario/movimientos'],['MB','GET','inventario/alertas'],
  ['A','POST','mermas'],['B','GET','mermas'],['B','GET','mermas/motivos'],
  ['A','GET','proveedores'],['A','POST','proveedores'],['A','PUT','proveedores/x'],
- ['A','GET','compras'],['A','GET','compras/x'],['A','POST','compras'],['A','PATCH','compras/x/recibir'],['A','PATCH','compras/x/cancelar'],
+ ['A','GET','compras'],['A','GET','compras/x'],['A','POST','compras'],['A','PATCH','compras/x/recibir'],['A','PATCH','compras/x/cancelar'],['A','PATCH','compras/x/cancelar-pendiente'],['A','GET','compras/x/recepciones'],['A','GET','compras/x/recepciones/y'],['A','PATCH','compras/x/recepciones/y/reversar'],
  ['MC','GET','clientes'],['MC','GET','clientes/x'],['MC','POST','clientes/registrar'],['A','PUT','clientes/x'],
  ['A','POST','ventas/pedido'],['C','POST','ventas/facturar'],['C','GET','ventas/comprobantes'],['C','GET','ventas/comprobantes/x'],
  ['C','GET','cierres-caja/resumen'],['C','POST','cierres-caja'],['C','GET','cierres-caja'],['C','GET','cierres-caja/x'],

@@ -35,6 +35,7 @@ const conConexion = async (res, operacion, lectura = false) => {
       try { await conexion.rollback(); }
       catch (rollback) { console.error('Error al revertir compras/proveedores:', rollback.message); }
     }
+    if (['ER_LOCK_DEADLOCK','ER_LOCK_WAIT_TIMEOUT','ER_DUP_ENTRY'].includes(error.code)) return res.status(409).json({error:'Conflicto concurrente o referencia duplicada; reintente la consulta.'});
     console.error('Error en compras/proveedores:', error.message);
     return res.status(error.status || 500).json({ error: error.status ? error.message : 'No se pudo completar la operación.' });
   } finally {
@@ -47,7 +48,7 @@ const conConexion = async (res, operacion, lectura = false) => {
 
 const consultaCompras = `SELECT c.id,c.estado,
   CAST(c.total_estimado AS CHAR) AS total_estimado,CAST(c.total_recibido AS CHAR) AS total_recibido,
-  DATE_FORMAT(c.creado_en,'%Y-%m-%dT%H:%i:%sZ') AS creado_en,c.proveedores_id,c.usuarios_id
+  DATE_FORMAT(c.creado_en,'%Y-%m-%dT%H:%i:%sZ') AS creado_en,c.proveedores_id,c.usuarios_id,c.modelo_recepcion
   FROM compras c`;
 
 module.exports = { errorCompra, idValido, objeto, filaEscrita, decimal, importe, conConexion, consultaCompras };

@@ -10,8 +10,8 @@ test('proveedores y compras por HTTP con MySQL temporal', {
   skip: process.env.RUN_MYSQL_COMPRAS_TESTS !== '1'
 }, async t => {
   require('dotenv').config({path:path.join(__dirname,'../.env'),quiet:true});
-  const real = await mysql.createConnection({host:process.env.DB_HOST,port:process.env.DB_PORT,
-    user:process.env.DB_USER,password:process.env.DB_PASSWORD,database:process.env.DB_NAME,connectTimeout:5000});
+  const sandbox=await require('./helpers/comprasSandbox').crear();
+  const real=sandbox.connection;
   let server, fallo = null, numero = 0, cierres = 0;
   let actor='u1';
   const conexion = {
@@ -42,10 +42,6 @@ test('proveedores y compras por HTTP con MySQL temporal', {
     return modulo.exports;
   };
   try {
-    for(const tabla of ['auditoria','proveedores','usuarios','productos','compras','compra_items','movimientos_inventario','historial_costos']) {
-      await real.query(`CREATE TEMPORARY TABLE copia_compras_${tabla} LIKE ${tabla}`);
-      await real.query(`CREATE TEMPORARY TABLE ${tabla} LIKE copia_compras_${tabla}`);
-    }
     for(const n of ['1','2']) {
       await real.query("INSERT INTO proveedores (id,contacto_nombre,estado) VALUES (?,?,'activo')",['prov'+n,'Proveedor '+n]);
       await real.query("INSERT INTO usuarios (id,nombre,email,password_hash,estado,roles_id) VALUES (?,?,?,'fixture','activo',1)",
@@ -58,7 +54,8 @@ test('proveedores y compras por HTTP con MySQL temporal', {
       '../config/db':{dbConfig:{}},'mysql2':{createConnection:()=>({promise:()=>conexion})}
     });
     const proveedores=cargar('src/controllers/proveedoresController.js',{'../services/comprasService':service});
-    const compras=cargar('src/controllers/comprasController.js',{'../services/comprasService':service});
+    const recepciones=cargar('src/services/recepcionesCompraService.js',{'./comprasService':service,'./auditoriaService':require('../src/services/auditoriaService')});
+    const compras=cargar('src/controllers/comprasController.js',{'../services/comprasService':service,'../services/recepcionesCompraService':recepciones});
     const app=express();app.use(express.json()); app.use((req,res,next)=>{req.usuario={id:actor,rol:'Administrador'};next();});
     app.use('/api/proveedores',cargar('src/routes/proveedoresRoutes.js',{'../controllers/proveedoresController':proveedores}));
     app.use('/api/compras',cargar('src/routes/comprasRoutes.js',{'../controllers/comprasController':compras}));
@@ -77,7 +74,7 @@ test('proveedores y compras por HTTP con MySQL temporal', {
     const cancelar=id=>request('/compras/'+id+'/cancelar','PATCH');
     const preparar=async()=>{
       fallo=null;numero=0;
-      for(const tabla of ['movimientos_inventario','compra_items','compras']) await real.query(`DELETE FROM ${tabla}`);
+      for(const tabla of ['historial_costos_recepciones','recepcion_compra_items','recepciones_compra','movimientos_inventario','compra_items','compras']) await real.query(`DELETE FROM ${tabla}`);
       await real.query('UPDATE productos SET cantidad_disponible=27');
       await real.query("UPDATE proveedores SET estado='activo'");
     };
@@ -140,7 +137,7 @@ test('proveedores y compras por HTTP con MySQL temporal', {
       assert.equal(recibida.data.datos.usuarios_id,'u1');assert.equal(recibida.data.datos.estado,'recibida');assert.equal(recibida.data.datos.total_recibido,'14000.30');
       const despues=await estado();assert.deepEqual(despues.productos.map(p=>p.cantidad_disponible),[32,30]);
       for(let i=0;i<2;i++) {
-        assert.equal(despues.productos[i].costo_promedio_ponderado,antes.productos[i].costo_promedio_ponderado);
+        assert.notEqual(despues.productos[i].costo_promedio_ponderado,antes.productos[i].costo_promedio_ponderado);
         assert.equal(despues.productos[i].historial_costos_id,antes.productos[i].historial_costos_id);
       }
       const [mov]=await real.query('SELECT * FROM movimientos_inventario ORDER BY productos_id');
@@ -193,6 +190,6 @@ test('proveedores y compras por HTTP con MySQL temporal', {
     });
   } finally {
     if(server) await new Promise(resolve=>{server.close(resolve);server.closeAllConnections();});
-    await real.rollback();await real.end();
+    await real.rollback();await sandbox.close();
   }
 });

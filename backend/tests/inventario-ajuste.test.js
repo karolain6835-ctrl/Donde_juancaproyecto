@@ -150,8 +150,8 @@ test('ajuste de inventario contra MySQL con tablas temporales', {
       r = await ejecutar(productos.actualizarProducto, { ...datos, nombre: 'Otro nombre' }, { id: 'test-producto' });
       assert.equal(r.status, 200);
       assert.deepEqual(await leer(), { cantidad: 27, movimientos: [] });
-      const [[p]] = await real.query("SELECT nombre,precio_venta,stock_minimo FROM productos WHERE id='test-producto'");
-      assert.equal(p.nombre, 'Otro nombre'); assert.equal(Number(p.precio_venta), 150); assert.equal(p.stock_minimo, 2);
+      const [[p]] = await real.query("SELECT nombre,precio_venta,stock_minimo,costo_promedio_ponderado FROM productos WHERE id='test-producto'");
+      assert.equal(p.costo_promedio_ponderado,'50.00');assert.match(r.data.aviso_costo,/CPP/);assert.equal(p.nombre, 'Otro nombre'); assert.equal(Number(p.precio_venta), 150); assert.equal(p.stock_minimo, 2);
     });
   } finally {
     await real.rollback();

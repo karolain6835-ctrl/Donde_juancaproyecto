@@ -139,7 +139,7 @@ const crearProducto = (req, res) => {
     nombre,
     codigo,
     precio_venta,
-    costo_promedio || 0,
+    0, // CPP inicial: solo las recepciones controladas establecen costo.
     cantidad || 0,
     stock_minimo || 0,
     estado,
@@ -221,7 +221,6 @@ const actualizarProducto = (req, res) => {
       nombre = ?,
       codigo = ?,
       precio_venta = ?,
-      costo_promedio_ponderado = ?,
       stock_minimo = ?,
       estado = ?,
       categorias_id = ?,
@@ -234,7 +233,6 @@ const actualizarProducto = (req, res) => {
     nombre,
     codigo,
     precio_venta,
-    costo_promedio || 0,
     stock_minimo || 0,
     estado,
     categorias_id,
@@ -271,6 +269,9 @@ const actualizarProducto = (req, res) => {
 
     return res.status(200).json({
       mensaje: 'Producto actualizado correctamente.',
+      ...(Object.hasOwn(req.body,'costo_promedio') || Object.hasOwn(req.body,'costo_promedio_ponderado') ? {
+        aviso_costo: 'El CPP no se modifica mediante edicion general; se conserva el costo actual.'
+      } : {}),
       ...(Object.prototype.hasOwnProperty.call(req.body, 'cantidad') ? {
         aviso: 'cantidad se ignora en la edición general. Para cambiar existencias utiliza PUT /api/inventario/actualizar-stock.'
       } : {})
