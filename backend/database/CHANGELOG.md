@@ -3,6 +3,11 @@
 Todas las modificaciones estructurales y de datos importantes de la base de datos se documentarán en este archivo, siguiendo un orden cronológico inverso (lo más nuevo arriba).
 
 ---
+## [v2.36] - 2026-10-13
+### Preparada; pendiente de aplicar a la base persistente
+- `productos.historial_costos_id` admite NULL al crear sin historial legado previo.
+- Conserva la FK y los historiales existentes. CPP inicial en cero; recepciones sin cambios.
+
 ## [v2.35] - 2026-10-13
 ### Preparada; pendiente de aplicar a la base persistente
 - Episodios persistentes de alertas, snapshots, actores e historial.

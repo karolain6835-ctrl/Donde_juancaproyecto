@@ -82,25 +82,28 @@ const obtenerProductoPorId = (req, res) => {
 // CREATE - CREAR PRODUCTO
 // ==========================================
 const crearProducto = (req, res) => {
+  const body = req.body;
+  const campos = ['nombre', 'codigo', 'precio_venta', 'cantidad', 'stock_minimo', 'categorias_id', 'proveedores_id'];
+  if (!body || typeof body !== 'object' || Array.isArray(body) || Object.keys(body).some(campo => !campos.includes(campo))) {
+    return res.status(400).json({ error: 'Envía únicamente nombre, codigo, precio_venta, cantidad, stock_minimo, categorias_id y proveedores_id.' });
+  }
   const {
     nombre,
     codigo,
     precio_venta,
-    costo_promedio,
     cantidad,
     stock_minimo,
     categorias_id,
-    proveedores_id,
-    historial_costos_id
-  } = req.body;
+    proveedores_id
+  } = body;
 
   if (
-    !nombre ||
-    !codigo ||
+    typeof nombre !== 'string' || !nombre.trim() || nombre.length > 150 ||
+    typeof codigo !== 'string' || !codigo.trim() || codigo.length > 50 ||
     precio_venta === undefined ||
     !categorias_id ||
-    !proveedores_id ||
-    !historial_costos_id
+    typeof proveedores_id !== 'string' || !proveedores_id.trim() || proveedores_id.length > 36 ||
+    !Number.isInteger(Number(categorias_id)) || Number(categorias_id) <= 0
   ) {
     return res.status(400).json({
       error:
@@ -108,10 +111,15 @@ const crearProducto = (req, res) => {
     });
   }
 
-  if (Number(precio_venta) <= 0) {
+  if (!['number', 'string'].includes(typeof precio_venta) || !Number.isFinite(Number(precio_venta)) || Number(precio_venta) <= 0) {
     return res.status(400).json({
       error: 'El precio de venta debe ser mayor que 0.'
     });
+  }
+
+  if ([cantidad, stock_minimo].some(valor => valor !== undefined &&
+      (!Number.isInteger(valor) || valor < 0 || valor > 2147483647))) {
+    return res.status(400).json({ error: 'cantidad y stock_minimo deben ser enteros no negativos dentro del rango permitido.' });
   }
 
   const id = crypto.randomUUID();
@@ -136,8 +144,8 @@ const crearProducto = (req, res) => {
 
   const valores = [
     id,
-    nombre,
-    codigo,
+    nombre.trim(),
+    codigo.trim(),
     precio_venta,
     0, // CPP inicial: solo las recepciones controladas establecen costo.
     cantidad || 0,
@@ -145,7 +153,7 @@ const crearProducto = (req, res) => {
     estado,
     categorias_id,
     proveedores_id,
-    historial_costos_id
+    null
   ];
 
   db.query(query, valores, (err) => {
@@ -160,6 +168,10 @@ const crearProducto = (req, res) => {
           error:
             'Ya existe un producto con ese código.'
         });
+      }
+
+      if (err.code === 'ER_NO_REFERENCED_ROW_2') {
+        return res.status(404).json({ error: 'La categoría o el proveedor especificado no existe.' });
       }
 
       return res.status(500).json({
@@ -185,12 +197,10 @@ const actualizarProducto = (req, res) => {
     nombre,
     codigo,
     precio_venta,
-    costo_promedio,
     stock_minimo,
     estado,
     categorias_id,
-    proveedores_id,
-    historial_costos_id
+    proveedores_id
   } = req.body;
 
   if (
@@ -199,8 +209,7 @@ const actualizarProducto = (req, res) => {
     precio_venta === undefined ||
     !estado ||
     !categorias_id ||
-    !proveedores_id ||
-    !historial_costos_id
+    !proveedores_id
   ) {
     return res.status(400).json({
       error:
@@ -224,8 +233,7 @@ const actualizarProducto = (req, res) => {
       stock_minimo = ?,
       estado = ?,
       categorias_id = ?,
-      proveedores_id = ?,
-      historial_costos_id = ?
+      proveedores_id = ?
     WHERE id = ?
   `;
 
@@ -237,7 +245,6 @@ const actualizarProducto = (req, res) => {
     estado,
     categorias_id,
     proveedores_id,
-    historial_costos_id,
     id
   ];
 
