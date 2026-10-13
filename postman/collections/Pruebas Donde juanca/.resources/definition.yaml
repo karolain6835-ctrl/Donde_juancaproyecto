@@ -1,5 +1,4 @@
 $kind: collection
-name: Pruebas Donde juanca
 variables:
   - key: json_web_token_0nv5
     secret: true
@@ -14,5 +13,11 @@ variables:
     secret: true
     disabled: false
   - key: password_desarrollo
+    secret: true
+    disabled: false
+  - key: json_web_token_0064
+    secret: true
+    disabled: false
+  - key: json_web_token_0xho
     secret: true
     disabled: false

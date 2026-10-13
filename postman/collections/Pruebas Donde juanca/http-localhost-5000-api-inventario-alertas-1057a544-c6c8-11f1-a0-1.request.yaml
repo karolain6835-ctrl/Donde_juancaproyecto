@@ -1,0 +1,13 @@
+$kind: http-request
+name: http://localhost:5000/api/inventario/alertas/1057a544-c6c8-11f1-a080-30c599879abf/silenciar
+description: ""
+url: http://localhost:5000/api/inventario/alertas/1057a544-c6c8-11f1-a080-30c599879abf/silenciar
+method: PATCH
+body:
+  type: json
+  content: "{}"
+auth:
+  type: bearer
+  credentials:
+    token: "{{json_web_token_033a}}"
+order: 4503596146301635
