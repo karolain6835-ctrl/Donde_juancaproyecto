@@ -1,7 +1,11 @@
+import { listarProductos, crearProducto, actualizarProducto, eliminarProducto as eliminarProductoAPI } from "../services/productosService";
+import { listarCategorias } from "../services/categoriasService";
+import { listarProveedores } from "../services/proveedoresService";
 import { useAuth } from "../context/useAuth";
 import { can } from "../utils/permissions";
 import Can from "../components/Can";
 import { formatCurrency as formatearDinero } from "../utils/formatCurrency";
+import { parseCOPInput, formatCOPInput } from "../utils/copInput";
 /*
  * Evidencia: GA7-220501096-AA3-EV01
  * Codificación de módulos del software stand-alone, web y móvil.
@@ -17,7 +21,7 @@ import { formatCurrency as formatearDinero } from "../utils/formatCurrency";
  * la información mostrada en pantalla con los datos almacenados en MySQL.
  */
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 
 
@@ -47,9 +51,7 @@ import {
 
   Tags,
 
-  Power,
 
-  PowerOff,
 
   Trash2,
 } from "lucide-react";
@@ -111,246 +113,78 @@ function InventarioPage() {
   const [mensajeProducto, setMensajeProducto] = useState("");
   const [errorFormularioProducto, setErrorFormularioProducto] = useState("");
 
+  const [categorias, setCategorias] = useState([]);
+  const [proveedores, setProveedores] = useState([]);
+  const [cargandoCategorias, setCargandoCategorias] = useState(true);
+  const [errorCategorias, setErrorCategorias] = useState("");
+  const [cargandoProveedores, setCargandoProveedores] = useState(false);
+  const [errorProveedores, setErrorProveedores] = useState("");
+  const [filtroCategoria, setFiltroCategoria] = useState("");
+  const operacionEnCurso = useRef(false);
   const [formProducto, setFormProducto] = useState({
-    nombre: "",
-    codigo: "",
-    precio_venta: "",
-    costo_promedio: "",
-    cantidad: "",
-    stock_minimo: "",
-    categorias_id: "1",
-    proveedores_id: "prov-001",
-    historial_costos_id: "hist-001",
-    estado: "activo",
+    nombre: "", codigo: "", precio_venta: "", costo_promedio: 0, cantidad: 0,
+    stock_minimo: 0, categorias_id: "", proveedores_id: "", estado: "activo",
   });
+  const puedeEscribir = can(user, "productos.editar");
 
-
-
-  /*
-   * Al cargar el componente por primera vez se consulta el listado de productos
-   * almacenados en la base de datos para mostrar información real en la interfaz.
-   */
-  useEffect(() => {
-
-    cargarProductos();
-
+  const cargarProductos = useCallback(async (signal) => {
+    try {
+      setCargandoProductos(true);
+      setErrorProductos("");
+      const datos = await listarProductos({ signal });
+      if (!signal?.aborted) setProductos(datos);
+    } catch (error) {
+      if (!signal?.aborted) setErrorProductos(error.status === 403 ? "No tienes permiso para consultar productos." : error.message);
+    } finally {
+      if (!signal?.aborted) setCargandoProductos(false);
+    }
   }, []);
 
-
-
-  /**
-   * Consulta los productos registrados mediante el endpoint GET /api/productos.
-   * La respuesta del backend se adapta al formato que utiliza la interfaz
-   * para mostrar precios, stock, categoría, estado y demás datos del producto.
-   */
-  async function cargarProductos() {
-
+  const cargarCategorias = useCallback(async (signal) => {
     try {
-
-      setCargandoProductos(true);
-
-      setErrorProductos("");
-
-
-
-      const respuesta = await fetch(
-
-        "http://localhost:5000/api/productos"
-
-      );
-
-
-
-      const datos = await respuesta.json();
-
-
-
-      if (!respuesta.ok) {
-
-        throw new Error(
-
-          datos.error || "No se pudieron cargar los productos."
-
-        );
-
-      }
-
-
-
-      const productosAdaptados = (datos.datos || []).map((producto) => {
-
-        const stock = Number(producto.cantidad_disponible || 0);
-
-        const minimo = Number(producto.stock_minimo || 0);
-
-
-
-        let estadoStock = "normal";
-
-
-
-        if (stock <= 0) {
-
-          estadoStock = "agotado";
-
-        } else if (stock <= minimo / 2) {
-
-          estadoStock = "critico";
-
-        } else if (stock <= minimo) {
-
-          estadoStock = "bajo";
-
-        }
-
-
-
-        return {
-
-          id: producto.id,
-
-          codigo: producto.codigo,
-
-          nombre: producto.nombre,
-
-          categoria: producto.categoria_nombre || "Sin categoría",
-
-          stock,
-
-          minimo,
-
-          costo: Number(
-
-            producto.costo_promedio_ponderado || 0
-
-          ),
-
-          precio: Number(producto.precio_venta || 0),
-
-          activo: producto.estado === "activo",
-
-          estadoStock,
-
-
-
-          // Datos reales para futuras acciones de edición
-
-          categorias_id: producto.categorias_id,
-
-          proveedores_id: producto.proveedores_id,
-
-          historial_costos_id: producto.historial_costos_id,
-
-        };
-
-      });
-
-
-
-      setProductos(productosAdaptados);
-
+      setCargandoCategorias(true);
+      setErrorCategorias("");
+      const datos = await listarCategorias({ signal });
+      if (!signal?.aborted) setCategorias(datos);
     } catch (error) {
-
-      console.error("Error al cargar productos:", error);
-
-      setErrorProductos(error.message);
-
+      if (!signal?.aborted) setErrorCategorias(error.status === 403 ? "No tienes permiso para consultar categor\u00edas." : error.message);
     } finally {
-
-      setCargandoProductos(false);
-
+      if (!signal?.aborted) setCargandoCategorias(false);
     }
+  }, []);
 
-  }
+  const cargarProveedores = useCallback(async (signal) => {
+    try {
+      setCargandoProveedores(true);
+      setErrorProveedores("");
+      const datos = await listarProveedores({ signal });
+      if (!signal?.aborted) setProveedores(datos);
+    } catch (error) {
+      if (!signal?.aborted) setErrorProveedores(error.message);
+    } finally {
+      if (!signal?.aborted) setCargandoProveedores(false);
+    }
+  }, []);
 
+  useEffect(() => {
+    const controller = new AbortController();
+    // Iniciar la carga asíncrona; no actualizar estado durante el montaje del efecto.
+    Promise.resolve().then(() => {
+      if (controller.signal.aborted) return;
+      cargarProductos(controller.signal);
+      cargarCategorias(controller.signal);
+      if (puedeEscribir) cargarProveedores(controller.signal);
+    });
+    return () => controller.abort();
+  }, [cargarProductos, cargarCategorias, cargarProveedores, puedeEscribir]);
 
+  const productosConCategoria = useMemo(() => productos.map(producto => ({
+    ...producto, categoria: categorias.find(categoria => categoria.id === producto.categorias_id)?.nombre || producto.categoria,
+  })), [productos, categorias]);
 
-  // ==========================================
-
-  // CATEGORÍAS TEMPORALES DEL FRONTEND
-
-  // ==========================================
-
-  const [categorias, setCategorias] = useState([
-
-    {
-
-      id: 1,
-
-      nombre: "Cervezas",
-
-      descripcion: "Cervezas nacionales e importadas.",
-
-      activo: true,
-
-    },
-
-    {
-
-      id: 2,
-
-      nombre: "Licores",
-
-      descripcion: "Aguardientes, rones y otros licores.",
-
-      activo: true,
-
-    },
-
-    {
-
-      id: 3,
-
-      nombre: "Gaseosas",
-
-      descripcion: "Bebidas gaseosas y refrescos.",
-
-      activo: true,
-
-    },
-
-    {
-
-      id: 4,
-
-      nombre: "Comidas",
-
-      descripcion: "Productos preparados de cocina.",
-
-      activo: true,
-
-    },
-
-    {
-
-      id: 5,
-
-      nombre: "Snacks",
-
-      descripcion: "Productos de consumo rápido.",
-
-      activo: false,
-
-    },
-
-  ]);
-
-
-
-  // ==========================================
-
-  // FILTROS DE PRODUCTOS
-
-  // ==========================================
-
-  /*
-   * Filtra los productos por estado de stock y por el texto ingresado
-   * en el buscador. useMemo evita recalcular el resultado si no cambian
-   * los datos, la búsqueda o el filtro seleccionado.
-   */
   const productosFiltrados = useMemo(() => {
 
-    return productos.filter((producto) => {
+    return productosConCategoria.filter((producto) => {
 
       const coincideEstado =
 
@@ -374,11 +208,11 @@ function InventarioPage() {
 
 
 
-      return coincideEstado && coincideBusqueda;
+      return coincideEstado && coincideBusqueda && (!filtroCategoria || producto.categorias_id === filtroCategoria);
 
     });
 
-  }, [productos, busqueda, filtroEstado]);
+  }, [productosConCategoria, busqueda, filtroEstado, filtroCategoria]);
 
 
 
@@ -430,9 +264,7 @@ function InventarioPage() {
 
     (producto) =>
 
-      producto.estadoStock === "bajo" ||
-
-      producto.estadoStock === "critico"
+      producto.estadoStock === "bajo"
 
   ).length;
 
@@ -482,7 +314,6 @@ function InventarioPage() {
 
     if (estado === "bajo") return "Stock bajo";
 
-    if (estado === "critico") return "Crítico";
 
     if (estado === "agotado") return "Agotado";
 
@@ -505,16 +336,8 @@ function InventarioPage() {
     setErrorFormularioProducto("");
 
     setFormProducto({
-      nombre: "",
-      codigo: "",
-      precio_venta: "",
-      costo_promedio: "",
-      cantidad: "",
-      stock_minimo: "",
-      categorias_id: "1",
-      proveedores_id: "prov-001",
-      historial_costos_id: "hist-001",
-      estado: "activo",
+      nombre: "", codigo: "", precio_venta: "", costo_promedio: 0, cantidad: 0,
+      stock_minimo: 0, categorias_id: "", proveedores_id: "", estado: "activo",
     });
 
     setMostrarFormularioProducto(true);
@@ -533,14 +356,12 @@ function InventarioPage() {
     setFormProducto({
       nombre: producto.nombre || "",
       codigo: producto.codigo || "",
-      precio_venta: producto.precio ?? "",
+      precio_venta: formatCOPInput(producto.precio),
       costo_promedio: producto.costo ?? "",
       cantidad: producto.stock ?? "",
       stock_minimo: producto.minimo ?? "",
-      categorias_id: String(producto.categorias_id || "1"),
-      proveedores_id: producto.proveedores_id || "prov-001",
-      historial_costos_id:
-        producto.historial_costos_id || "hist-001",
+      categorias_id: String(producto.categorias_id),
+      proveedores_id: producto.proveedores_id,
       estado: producto.activo ? "activo" : "inactivo",
     });
 
@@ -580,76 +401,37 @@ function InventarioPage() {
    */
   async function guardarProducto(event) {
     event.preventDefault();
-
+    const esEdicion = Boolean(productoEditandoId);
+    if (operacionEnCurso.current || !can(user, esEdicion ? "productos.editar" : "productos.crear")) return;
+    if (cargandoCategorias || errorCategorias || cargandoProveedores || errorProveedores) return;
+    if (!categorias.some(c => c.id === formProducto.categorias_id) || !proveedores.some(p => p.id === formProducto.proveedores_id)) {
+      setErrorFormularioProducto("Selecciona relaciones existentes en los cat\u00e1logos actuales."); return;
+    }
+    operacionEnCurso.current = true;
+    setGuardandoProducto(true);
+    setErrorFormularioProducto("");
+    setMensajeProducto("");
     try {
-      setGuardandoProducto(true);
-      setErrorFormularioProducto("");
-      setMensajeProducto("");
-
-      const esEdicion = Boolean(productoEditandoId);
-
-      const url = esEdicion
-        ? `http://localhost:5000/api/productos/${productoEditandoId}`
-        : "http://localhost:5000/api/productos";
-
-      const metodo = esEdicion ? "PUT" : "POST";
-
-      const cuerpo = {
-        nombre: formProducto.nombre.trim(),
-        codigo: formProducto.codigo.trim(),
-        precio_venta: Number(formProducto.precio_venta),
-        costo_promedio: Number(formProducto.costo_promedio),
-        cantidad: Number(formProducto.cantidad),
-        stock_minimo: Number(formProducto.stock_minimo),
+      // Solo los campos editables del contrato participan en validación y envío.
+      const datos = {
+        nombre: formProducto.nombre,
+        codigo: formProducto.codigo,
+        precio_venta: parseCOPInput(formProducto.precio_venta),
+        stock_minimo: formProducto.stock_minimo,
         categorias_id: formProducto.categorias_id,
         proveedores_id: formProducto.proveedores_id,
-        historial_costos_id: formProducto.historial_costos_id,
+        ...(esEdicion ? { estado: formProducto.estado } : { cantidad: formProducto.cantidad }),
       };
-
-      if (esEdicion) {
-        cuerpo.estado = formProducto.estado;
-      }
-
-      const respuesta = await fetch(url, {
-        method: metodo,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(cuerpo),
-      });
-
-      const datos = await respuesta.json();
-
-      if (!respuesta.ok) {
-        throw new Error(
-          datos.error ||
-            datos.mensaje ||
-            (esEdicion
-              ? "No se pudo actualizar el producto."
-              : "No se pudo crear el producto.")
-        );
-      }
-
-      setMensajeProducto(
-        esEdicion
-          ? "Producto actualizado correctamente."
-          : "Producto creado correctamente."
-      );
-
+      if (esEdicion) await actualizarProducto(productoEditandoId, datos);
+      else await crearProducto(datos);
+      setMensajeProducto(esEdicion ? "Producto actualizado correctamente." : "Producto creado correctamente.");
       setMostrarFormularioProducto(false);
       setProductoEditandoId(null);
-
       await cargarProductos();
     } catch (error) {
-      console.error(
-        productoEditandoId
-          ? "Error al actualizar producto:"
-          : "Error al crear producto:",
-        error
-      );
-
-      setErrorFormularioProducto(error.message);
+      setErrorFormularioProducto(error.status === 403 ? "No tienes permiso para guardar productos." : error.message);
     } finally {
+      operacionEnCurso.current = false;
       setGuardandoProducto(false);
     }
   }
@@ -660,46 +442,20 @@ function InventarioPage() {
    * y, si la operación finaliza correctamente, actualiza el listado.
    */
   async function eliminarProducto(producto) {
-    const confirmado = window.confirm(
-      `¿Seguro que deseas eliminar "${producto.nombre}"? Esta acción no se puede deshacer.`
-    );
-
-    if (!confirmado) return;
-
+    if (operacionEnCurso.current || !can(user, "productos.eliminar")) return;
+    if (!window.confirm(`\u00bfSeguro que deseas eliminar "${producto.nombre}"? Esta acci\u00f3n no se puede deshacer.`)) return;
+    operacionEnCurso.current = true;
+    setEliminandoProducto(true);
+    setMensajeProducto("");
     try {
-      setEliminandoProducto(true);
-      setMensajeProducto("");
-      setErrorProductos("");
-
-      const respuesta = await fetch(
-        `http://localhost:5000/api/productos/${producto.id}`,
-        {
-          method: "DELETE",
-        }
-      );
-
-      const datos = await respuesta.json();
-
-      if (!respuesta.ok) {
-        throw new Error(
-          datos.error ||
-            datos.mensaje ||
-            "No se pudo eliminar el producto."
-        );
-      }
-
+      await eliminarProductoAPI(producto.id);
       setProductoSeleccionado(null);
       setMensajeProducto("Producto eliminado correctamente.");
-
       await cargarProductos();
     } catch (error) {
-      console.error("Error al eliminar producto:", error);
-
-      alert(
-        error.message ||
-          "No se pudo eliminar el producto."
-      );
+      setErrorProductos(error.status === 403 ? "No tienes permiso para eliminar productos." : error.message);
     } finally {
+      operacionEnCurso.current = false;
       setEliminandoProducto(false);
     }
   }
@@ -732,49 +488,6 @@ function InventarioPage() {
    * Cambia localmente el estado activo o inactivo de una categoría
    * y mantiene sincronizado el detalle actualmente seleccionado.
    */
-  function cambiarEstadoCategoria(id) {
-
-    setCategorias((categoriasActuales) =>
-
-      categoriasActuales.map((categoria) =>
-
-        categoria.id === id
-
-          ? {
-
-              ...categoria,
-
-              activo: !categoria.activo,
-
-            }
-
-          : categoria
-
-      )
-
-    );
-
-
-
-    setCategoriaSeleccionada((categoriaActual) =>
-
-      categoriaActual
-
-        ? {
-
-            ...categoriaActual,
-
-            activo: !categoriaActual.activo,
-
-          }
-
-        : null
-
-    );
-
-  }
-
-
 
   /**
    * Devuelve la descripción correspondiente a la sección activa
@@ -915,23 +628,7 @@ function InventarioPage() {
 
 
 
-        {seccionActiva === "categorias" && (
 
-          <Can permission="categorias.crear"><button
-
-            type="button"
-
-            className="primary-button inventario-primary-action"
-
-          >
-
-            <Plus size={18} strokeWidth={1.9} />
-
-            Nueva categoría
-
-          </button></Can>
-
-        )}
 
       </header>
 
@@ -956,12 +653,29 @@ function InventarioPage() {
           setBusqueda("");
 
           setFiltroEstado("todos");
+          setFiltroCategoria("");
 
         }}
 
       />
 
 
+
+      {(seccionActiva === "resumen" || seccionActiva === "productos" || seccionActiva === "categorias") && (
+        <>
+          {cargandoCategorias && <p role="status">Cargando categorías...</p>}
+          {errorCategorias && <div role="alert"><p>{errorCategorias}</p><button className="text-button" onClick={() => cargarCategorias()}>Reintentar categorías</button></div>}
+          {!cargandoCategorias && !errorCategorias && categorias.length === 0 && <p>No hay categorías registradas.</p>}
+          {seccionActiva !== "categorias" && (
+            <label>Categoría
+              <select value={filtroCategoria} onChange={event => setFiltroCategoria(event.target.value)} disabled={cargandoCategorias || Boolean(errorCategorias)}>
+                <option value="">Todas las categorías</option>
+                {categorias.map(categoria => <option key={categoria.id} value={categoria.id}>{categoria.nombre}</option>)}
+              </select>
+            </label>
+          )}
+        </>
+      )}
 
       {/* =========================
 
@@ -1191,27 +905,7 @@ function InventarioPage() {
 
 
 
-              <button
 
-                type="button"
-
-                className={`filter-button ${
-
-                  filtroEstado === "critico"
-
-                    ? "active"
-
-                    : ""
-
-                }`}
-
-                onClick={() => setFiltroEstado("critico")}
-
-              >
-
-                Crítico
-
-              </button>
 
 
 
@@ -1494,6 +1188,7 @@ function InventarioPage() {
             <h2>No se pudieron cargar los productos</h2>
 
             <p>{errorProductos}</p>
+            <button className="text-button" onClick={() => cargarProductos()}>Reintentar productos</button>
 
           </section>
 
@@ -1591,7 +1286,7 @@ function InventarioPage() {
 
                         producto.estadoStock === "agotado" ||
 
-                        producto.estadoStock === "critico"
+                        producto.estadoStock === "bajo"
 
                           ? "inventario-row attention"
 
@@ -1773,7 +1468,7 @@ function InventarioPage() {
 
 
 
-      {seccionActiva === "categorias" && (
+      {seccionActiva === "categorias" && !cargandoCategorias && !errorCategorias && (
 
         <>
 
@@ -1856,6 +1551,7 @@ function InventarioPage() {
 
 
           <section className="categorias-grid">
+            {categoriasFiltradas.length === 0 && <p>No hay categorías para mostrar.</p>}
 
             {categoriasFiltradas.map((categoria) => (
 
@@ -1953,59 +1649,7 @@ function InventarioPage() {
 
 
 
-                  <Can permission="categorias.editar"><button
 
-                    type="button"
-
-                    className={
-
-                      categoria.activo
-
-                        ? "categoria-toggle-button deactivate"
-
-                        : "categoria-toggle-button activate"
-
-                    }
-
-                    onClick={() =>
-
-                      cambiarEstadoCategoria(categoria.id)
-
-                    }
-
-                  >
-
-                    {categoria.activo ? (
-
-                      <PowerOff
-
-                        size={14}
-
-                        strokeWidth={1.9}
-
-                      />
-
-                    ) : (
-
-                      <Power
-
-                        size={14}
-
-                        strokeWidth={1.9}
-
-                      />
-
-                    )}
-
-
-
-                    {categoria.activo
-
-                      ? "Desactivar"
-
-                      : "Activar"}
-
-                  </button></Can>
 
                 </div>
 
@@ -2065,7 +1709,7 @@ function InventarioPage() {
           FORMULARIO NUEVO PRODUCTO
       ========================= */}
 
-      {mostrarFormularioProducto && (
+      {mostrarFormularioProducto && puedeEscribir && (
         <>
           <div
             className="inventario-overlay"
@@ -2089,8 +1733,8 @@ function InventarioPage() {
 
                 <span>
                   {productoEditandoId
-                    ? "Los cambios se guardarán directamente en la base de datos."
-                    : "Se guardará directamente en la base de datos."}
+                    ? "Actualiza la información del producto."
+                    : "Completa la información del producto para agregarlo al inventario."}
                 </span>
               </div>
 
@@ -2104,6 +1748,11 @@ function InventarioPage() {
               </button>
             </div>
 
+            {errorCategorias && <p role="alert">{errorCategorias}</p>}
+            {cargandoProveedores && <p role="status">Cargando proveedores...</p>}
+            {errorProveedores && <div role="alert"><p>{errorProveedores}</p><button className="text-button" onClick={() => cargarProveedores()}>Reintentar proveedores</button></div>}
+            {!cargandoProveedores && !errorProveedores && proveedores.length === 0 && <p>No hay proveedores disponibles.</p>}
+
             <form
               onSubmit={guardarProducto}
               style={{
@@ -2112,6 +1761,7 @@ function InventarioPage() {
                 marginTop: "22px",
               }}
             >
+              <fieldset disabled={guardandoProducto} style={{ display: "contents", border: 0, padding: 0, margin: 0 }}>
               <label style={{ display: "grid", gap: "6px" }}>
                 <span style={{ fontSize: "12px", fontWeight: 700 }}>
                   Nombre
@@ -2169,9 +1819,10 @@ function InventarioPage() {
                   </span>
 
                   <input
-                    type="number"
+                    type="text"
                     name="precio_venta"
-                    min="0"
+                    inputMode="decimal"
+                    aria-describedby="precio-venta-ayuda"
                     value={formProducto.precio_venta}
                     onChange={cambiarCampoProducto}
                     required
@@ -2183,6 +1834,7 @@ function InventarioPage() {
                       font: "inherit",
                     }}
                   />
+                  <small id="precio-venta-ayuda">Usa puntos para miles y coma para decimales. Ejemplo: 2.844,44.</small>
                 </label>
 
                 <label style={{ display: "grid", gap: "6px" }}>
@@ -2193,10 +1845,10 @@ function InventarioPage() {
                   <input
                     type="number"
                     name="costo_promedio"
+                    readOnly
+                    step="0.01"
                     min="0"
                     value={formProducto.costo_promedio}
-                    onChange={cambiarCampoProducto}
-                    required
                     style={{
                       width: "100%",
                       padding: "11px 12px",
@@ -2205,6 +1857,7 @@ function InventarioPage() {
                       font: "inherit",
                     }}
                   />
+                  <small>Se calcula automáticamente según las compras y recepciones.</small>
                 </label>
               </div>
 
@@ -2217,12 +1870,13 @@ function InventarioPage() {
               >
                 <label style={{ display: "grid", gap: "6px" }}>
                   <span style={{ fontSize: "12px", fontWeight: 700 }}>
-                    Cantidad inicial
+                    {productoEditandoId ? "Stock actual" : "Cantidad inicial"}
                   </span>
 
                   <input
                     type="number"
                     name="cantidad"
+                    readOnly={Boolean(productoEditandoId)}
                     min="0"
                     value={formProducto.cantidad}
                     onChange={cambiarCampoProducto}
@@ -2235,6 +1889,7 @@ function InventarioPage() {
                       font: "inherit",
                     }}
                   />
+                  {productoEditandoId && <small>Para cambiar las unidades disponibles, utiliza el ajuste de inventario.</small>}
                 </label>
 
                 <label style={{ display: "grid", gap: "6px" }}>
@@ -2267,6 +1922,7 @@ function InventarioPage() {
 
                 <select
                   name="categorias_id"
+                  disabled={cargandoCategorias || Boolean(errorCategorias)}
                   value={formProducto.categorias_id}
                   onChange={cambiarCampoProducto}
                   required
@@ -2279,11 +1935,16 @@ function InventarioPage() {
                     font: "inherit",
                   }}
                 >
-                  <option value="1">Cervezas</option>
-                  <option value="2">Licores</option>
-                  <option value="3">Bebidas sin alcohol</option>
-                  <option value="4">Snacks de Tienda</option>
-                  <option value="5">Artículos Varios</option>
+                  <option value="">Selecciona una categor&#237;a</option>
+                  {categorias.map(categoria => <option key={categoria.id} value={categoria.id}>{categoria.nombre}</option>)}
+                </select>
+              </label>
+
+              <label style={{ display: "grid", gap: "6px" }}>
+                Proveedor
+                <select name="proveedores_id" value={formProducto.proveedores_id} onChange={cambiarCampoProducto} required disabled={cargandoProveedores || Boolean(errorProveedores)} style={{ width: "100%", padding: "11px 12px", border: "1px solid var(--color-border)", borderRadius: "10px", background: "white", font: "inherit" }}>
+                  <option value="">Selecciona un proveedor</option>
+                  {proveedores.map(proveedor => <option key={proveedor.id} value={proveedor.id}>{proveedor.nombre}{proveedor.estado === "inactivo" ? " (inactivo)" : ""}</option>)}
                 </select>
               </label>
 
@@ -2332,7 +1993,7 @@ function InventarioPage() {
                 <button
                   type="submit"
                   className="drawer-primary-button"
-                  disabled={guardandoProducto}
+                  disabled={guardandoProducto || cargandoCategorias || Boolean(errorCategorias) || cargandoProveedores || Boolean(errorProveedores)}
                 >
                   <Plus size={17} strokeWidth={1.9} />
 
@@ -2352,6 +2013,7 @@ function InventarioPage() {
                   Cancelar
                 </button>
               </div>
+              </fieldset>
             </form>
           </aside>
         </>
@@ -2568,6 +2230,8 @@ function InventarioPage() {
             </div>
 
 
+
+            {errorProductos && <p role="alert">{errorProductos}</p>}
 
             <div className="inventario-drawer-actions">
 
@@ -2799,9 +2463,7 @@ function InventarioPage() {
 
                     (producto) =>
 
-                      producto.categoria ===
-
-                      categoriaSeleccionada.nombre
+                      producto.categorias_id === categoriaSeleccionada.id
 
                   ).length
 
@@ -2815,79 +2477,11 @@ function InventarioPage() {
 
             <div className="inventario-drawer-actions">
 
-              <Can permission="categorias.editar"><button
-
-                type="button"
-
-                className="drawer-primary-button"
-
-              >
-
-                <Pencil
-
-                  size={17}
-
-                  strokeWidth={1.9}
-
-                />
 
 
 
-                Editar categoría
-
-              </button></Can>
 
 
-
-              <Can permission="categorias.editar"><button
-
-                type="button"
-
-                className="drawer-secondary-button"
-
-                onClick={() =>
-
-                  cambiarEstadoCategoria(
-
-                    categoriaSeleccionada.id
-
-                  )
-
-                }
-
-              >
-
-                {categoriaSeleccionada.activo ? (
-
-                  <PowerOff
-
-                    size={17}
-
-                    strokeWidth={1.9}
-
-                  />
-
-                ) : (
-
-                  <Power
-
-                    size={17}
-
-                    strokeWidth={1.9}
-
-                  />
-
-                )}
-
-
-
-                {categoriaSeleccionada.activo
-
-                  ? "Desactivar categoría"
-
-                  : "Activar categoría"}
-
-              </button></Can>
 
             </div>
 

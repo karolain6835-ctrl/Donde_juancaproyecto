@@ -1,12 +1,13 @@
 ﻿import test from 'node:test';
 import assert from 'node:assert/strict';
+import { fileURLToPath } from 'node:url';
 import { createServer } from 'vite';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
 
 test('Permisos visuales: rutas y sidebar con componentes reales', async t => {
-  const server = await createServer({ server: { middlewareMode: true }, appType: 'custom' });
+  const server = await createServer({ root: fileURLToPath(new URL('..', import.meta.url)), server: { middlewareMode: true }, appType: 'custom' });
   try {
     const { AuthContext } = await server.ssrLoadModule('/src/context/useAuth.js');
     const { default: App } = await server.ssrLoadModule('/src/App.jsx');
