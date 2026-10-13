@@ -1,0 +1,10 @@
+$kind: http-request
+name: "Clientes - listado autenticado"
+description: "Bearer conservado. Token autenticado; rol no demostrado por esta variable. Acceso sujeto al rol actual en MySQL."
+url: http://localhost:5000/api/clientes
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{json_web_token_0nv5}}"
+order: 4503596146285635

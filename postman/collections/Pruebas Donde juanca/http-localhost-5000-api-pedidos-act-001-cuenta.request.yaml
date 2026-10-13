@@ -1,6 +1,10 @@
 $kind: http-request
-name: http://localhost:5000/api/pedidos/act-001/cuenta
-description: ""
+name: "Cuenta por mesa - alias pedidos - act-001 pendiente de corregir"
+description: "Finalidad original restaurada desde HEAD. Este alias interpreta :id como mesa_id, no pedido_id. act-001 existe como activo de juego, no como mesa ni pedido; pendiente de proporcionar un ID de mesa valido. Token autenticado; rol no documentado."
 url: http://localhost:5000/api/pedidos/act-001/cuenta
 method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{json_web_token_0wtn}}"
 order: 1784662414074
