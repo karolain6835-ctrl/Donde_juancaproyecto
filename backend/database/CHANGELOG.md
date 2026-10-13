@@ -3,6 +3,12 @@
 Todas las modificaciones estructurales y de datos importantes de la base de datos se documentarán en este archivo, siguiendo un orden cronológico inverso (lo más nuevo arriba).
 
 ---
+## [v2.35] - 2026-10-13
+### Preparada; pendiente de aplicar a la base persistente
+- Episodios persistentes de alertas, snapshots, actores e historial.
+- UNIQUE de episodio abierto; sincronizacion central por triggers de productos.
+- Observacion inicial con fecha actual; alertas historicas permanecen legado.
+
 ## [v2.34 / v2.33 / v2.32 / v2.31] - 2026-10-12
 ### Preparadas; pendientes de aplicar a la base persistente
 - v2.31: estados, modelo legado/v2, cantidades canceladas e indice de compras.

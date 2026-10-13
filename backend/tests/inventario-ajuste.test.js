@@ -43,7 +43,7 @@ test('ajuste de inventario contra MySQL con tablas temporales', {
           query: (sql, params, cb) => real.query(sql, params).then(([r]) => cb(null, r), e => cb(e))
         };
         if (nombre === 'mysql2') return { createConnection: () => ({ promise: () => conexion }) };
-        return (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(nombre));
+        return (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : (nombre === './alertasInventarioController' ? {listar(){throw new Error('Fuera del alcance de este arnes');}} : require(nombre)));
       },
       console: { error() {} }
     });

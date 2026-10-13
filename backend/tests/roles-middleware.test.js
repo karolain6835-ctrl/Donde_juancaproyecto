@@ -25,7 +25,7 @@ const cases = [
  ['M','POST','pedidos'],['M','POST','pedidos/x/items'],['MC','GET','pedidos/x'],['MC','GET','pedidos/x/cuenta'],['C','PUT','pedidos/items/x/cancelar'],
  ['MC','POST','pagos'],['C','GET','pagos/x'],['C','PATCH','pagos/x/verificar'],
  ['MC','GET','juegos/activos'],['MC','GET','juegos/sesiones'],['M','POST','juegos/iniciar'],['M','PUT','juegos/x/terminar'],
- ['A','PUT','inventario/actualizar-stock'],['A','GET','inventario/movimientos'],['MB','GET','inventario/alertas'],
+ ['A','PUT','inventario/actualizar-stock'],['A','GET','inventario/movimientos'],['MB','GET','inventario/alertas'],['MB','GET','inventario/alertas/x'],['MB','PATCH','inventario/alertas/x/vista'],['MB','PATCH','inventario/alertas/x/silenciar'],['MB','PATCH','inventario/alertas/x/reactivar'],['MB','PATCH','inventario/alertas/x/resolver'],
  ['A','POST','mermas'],['B','GET','mermas'],['B','GET','mermas/motivos'],
  ['A','GET','proveedores'],['A','POST','proveedores'],['A','PUT','proveedores/x'],
  ['A','GET','compras'],['A','GET','compras/x'],['A','POST','compras'],['A','PATCH','compras/x/recibir'],['A','PATCH','compras/x/cancelar'],['A','PATCH','compras/x/cancelar-pendiente'],['A','GET','compras/x/recepciones'],['A','GET','compras/x/recepciones/y'],['A','PATCH','compras/x/recepciones/y/reversar'],
@@ -54,7 +54,7 @@ test('matriz HTTP completa con identidad y cambios de rol en MySQL temporal', {s
     await connection.query("INSERT INTO usuarios (id,nombre,email,password_hash,estado,roles_id) VALUES ('u1','Prueba','roles@example.invalid','no-login','activo',1)");
     const auth=load('../src/middleware/authMiddleware.js',{'../config/db':{promise:()=>({query:(sql,params)=>connection.query(sql,params)})}});
     let hits=0;
-    const controllers=new Proxy({}, {get:()=> (req,res)=>{hits++;res.json({usuario:req.usuario??null});}});
+    const controllers=new Proxy({}, {get:(_,prop)=> prop==='accion'?()=>((req,res)=>{hits++;res.json({usuario:req.usuario??null});}):(req,res)=>{hits++;res.json({usuario:req.usuario??null});}});
     const app=express(), listen=app.listen.bind(app);app.listen=()=>{};
     const deps={express:Object.assign(()=>app,{json:express.json}),cors:()=>((req,res,next)=>next()),dotenv:{config(){}},'./config/db':{},'./middleware/authMiddleware':auth};
     const index=fs.readFileSync(path.join(__dirname,'../src/index.js'),'utf8');

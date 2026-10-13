@@ -28,7 +28,7 @@ const cargar = (nombre, db) => {
     module: modulo, exports: modulo.exports, console,
     require: n => n === '../services/identidadService' ? identidad
       : n === '../config/db' ? (db || prohibido)
-      : n.startsWith('../services/') || n === 'mysql2' ? prohibido : (n === '../services/auditoriaService' ? require('../src/services/auditoriaService') : require(n))
+      : n.startsWith('../services/') || n === 'mysql2' ? prohibido : (n === '../services/auditoriaService' ? require('../src/services/auditoriaService') : (n === './alertasInventarioController' ? {listar(){throw new Error('Fuera del alcance de este arnes');}} : require(n)))
   });
   return modulo.exports;
 };

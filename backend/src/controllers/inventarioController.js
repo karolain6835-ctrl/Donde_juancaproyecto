@@ -151,25 +151,5 @@ exports.obtenerMovimientos = async (req, res) => {
   }
 };
 
-// Condiciones actuales, sin persistencia ni filtro por estado del producto.
-// stock_minimo es INT NOT NULL; si otro esquema admite NULL, no satisface <=.
-exports.obtenerAlertas = async (req, res) => {
-  try {
-    const [alertas] = await db.promise().query(`
-      SELECT id AS productos_id, nombre AS producto,
-             cantidad_disponible AS stock_actual, stock_minimo,
-             CASE WHEN cantidad_disponible <= 0 THEN 'agotado' ELSE 'bajo' END AS tipo
-      FROM productos
-      WHERE cantidad_disponible <= stock_minimo
-      ORDER BY (cantidad_disponible <= 0) DESC, cantidad_disponible ASC, id ASC
-    `);
-    return res.status(200).json({
-      mensaje: 'Alertas de inventario consultadas correctamente.',
-      total_alertas: alertas.length,
-      alertas
-    });
-  } catch (error) {
-    console.error('Error al consultar alertas de inventario:', error.message);
-    return res.status(500).json({ error: 'No se pudieron consultar las alertas de inventario.' });
-  }
-};
+// Consulta persistente, manteniendo el punto de entrada del controlador existente.
+exports.obtenerAlertas = require('./alertasInventarioController').listar;
