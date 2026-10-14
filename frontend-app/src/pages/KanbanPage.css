@@ -1,6 +1,6 @@
 .kanban-board.operacion-kanban-board { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .kanban-order-lines { list-style: none; padding: 0; display: grid; gap: 12px; margin-top: 16px; }
-.kanban-order-lines li { padding-bottom: 10px; border-bottom: 1px solid var(--color-border); min-width: 0; }
+.kanban-order-lines li { padding: 14px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-background); min-width: 0; }
 .kanban-order-lines li > div { display: grid; gap: 4px; overflow-wrap: anywhere; }
 .kanban-order-lines span { font-size: 12px; color: var(--color-text-secondary); }
 .kanban-column.parcialmente_servido { border-top: 3px solid var(--color-accent); }
@@ -8,6 +8,10 @@
 .kanban-card-body h3, .kanban-meta { overflow-wrap: anywhere; }
 .kanban-card-top { flex-wrap: wrap; gap: 8px; }
 .kanban-card-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.kanban-card-actions > .kanban-action { flex-basis: 100%; }
+.kanban-secondary-actions { display: flex; flex-wrap: wrap; gap: 10px; width: 100%; padding-top: 14px; margin-top: 4px; border-top: 1px solid var(--color-border); }
+.kanban-secondary-actions > * { flex: 1 1 110px; }
+.kanban-order-lines strong { color: var(--color-text); font-size: 15px; line-height: 1.4; }
 @media (max-width: 900px) { .kanban-board.operacion-kanban-board { grid-template-columns: 1fr; } }
 
 .kanban-page {

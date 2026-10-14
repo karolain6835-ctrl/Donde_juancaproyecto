@@ -44,15 +44,15 @@ export default function PedidoDetalle({ id, summary, mesas, productos, onClose, 
       <div className="pedido-drawer-header"><h2>Detalle de pedido</h2><button className="drawer-close" disabled={mutation.busy} onClick={onClose} aria-label="Cerrar detalle">×</button></div>
       <OperacionRemoteState resource={detail}>
         {pedido && <>
-          <p className="operacion-id">{pedido.id}</p>
+          <div className="pedido-visual-header pedido-visual-header-detail"><strong>Mesa {mesas.data?.find(m => m.id === pedido.mesas_id)?.numero ?? summary?.mesa_numero ?? pedido.mesas_id}</strong><span className={`pedido-state-badge ${pedido.estado}`}>{pedido.estado}</span></div>
+          <p className="pedido-visual-id">Pedido: {pedido.id}</p>
           <dl className="operacion-info">
-            <div><dt>Mesa</dt><dd>{mesas.data?.find(m => m.id === pedido.mesas_id)?.numero ?? summary?.mesa_numero ?? pedido.mesas_id}</dd></div>
             <div><dt>Cliente</dt><dd>{summary?.clientes_id === pedido.clientes_id ? summary.cliente_nombre || pedido.clientes_id : pedido.clientes_id}</dd></div>
             <div><dt>Responsable del pedido</dt><dd>{summary?.usuarios_id === pedido.usuarios_id ? summary.responsable_nombre || pedido.usuarios_id : pedido.usuarios_id}</dd></div>
-            <div><dt>Estado</dt><dd>{pedido.estado}</dd></div><div><dt>Creado</dt><dd>{formatDateTime(pedido.creado_en)}</dd></div>
+            <div><dt>Creado</dt><dd>{formatDateTime(pedido.creado_en)}</dd></div>
           </dl>
           <section className="pedido-products"><h3>Productos del pedido</h3>
-            {pedido.items.map(item => <article className="operacion-item" key={item.id}>
+            {pedido.items.map(item => <article className="operacion-item pedido-detail-line" key={item.id}>
               <strong>{item.nombre}</strong><p>Cantidad: {item.cantidad_pedida}</p><p>Precio unitario: {formatCurrency(item.precio_unitario)}</p><p>Estado: {item.estado}</p>
               {can(user, 'pedidos.cancelarItem') && pedido.estado === 'abierto' && ['enviado', 'preparando'].includes(item.estado) && <button className="drawer-secondary-button" disabled={mutation.busy} onClick={() => { mutation.reset(); setCancelId(item.id); }}>Cancelar ítem</button>}
             </article>)}
@@ -70,7 +70,7 @@ export default function PedidoDetalle({ id, summary, mesas, productos, onClose, 
         </>}
       </OperacionRemoteState>
       {cancelId && <section className="operacion-drawer-section"><p>¿Cancelar este ítem y reintegrar sus unidades al inventario?</p><div className="operacion-actions"><button className="drawer-primary-button" disabled={mutation.busy} onClick={cancel}>{mutation.busy ? 'Procesando...' : 'Confirmar cancelación'}</button><button className="drawer-secondary-button" disabled={mutation.busy} onClick={() => setCancelId(null)}>Volver</button></div></section>}
-      {mutation.error && <p role="alert">{mutation.error}</p>}{mutation.success && <p role="status">{mutation.success}</p>}
+      {mutation.error && <p className="pedido-feedback" role="alert">{mutation.error}</p>}{mutation.success && <p className="pedido-feedback" role="status">{mutation.success}</p>}
       {syncError && <div role="alert"><p>La operación fue confirmada. No se pudo actualizar una consulta: {syncError}</p><button onClick={refresh}>Reintentar consultas</button></div>}
     </aside>
   </>;
