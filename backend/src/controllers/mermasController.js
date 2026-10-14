@@ -152,3 +152,9 @@ exports.obtenerMotivos = async (req, res) => conConexion(res, async conexion => 
   const [datos] = await conexion.query('SELECT id,nombre FROM merma_motivos ORDER BY nombre ASC,id ASC');
   return { status: 200, body: { mensaje: 'Motivos consultados correctamente.', datos } };
 }, true);
+
+// Catálogo mínimo para registrar mermas; no expone CRUD de refrigeradores.
+exports.obtenerRefrigeradores = async (req, res) => conConexion(res, async conexion => {
+  const [datos] = await conexion.query('SELECT id,nombre,estado FROM refrigeradores WHERE deleted_at IS NULL ORDER BY nombre ASC,id ASC');
+  return { status: 200, body: { mensaje: 'Refrigeradores consultados correctamente.', datos, total: datos.length } };
+}, true);

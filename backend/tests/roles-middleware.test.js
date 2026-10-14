@@ -26,7 +26,7 @@ const cases = [
  ['MC','POST','pagos'],['C','GET','pagos/x'],['C','PATCH','pagos/x/verificar'],
  ['MC','GET','juegos/activos'],['MC','GET','juegos/sesiones'],['M','POST','juegos/iniciar'],['M','PUT','juegos/x/terminar'],
  ['A','PUT','inventario/actualizar-stock'],['A','GET','inventario/movimientos'],['MB','GET','inventario/alertas'],['MB','GET','inventario/alertas/x'],['MB','PATCH','inventario/alertas/x/vista'],['MB','PATCH','inventario/alertas/x/silenciar'],['MB','PATCH','inventario/alertas/x/reactivar'],['MB','PATCH','inventario/alertas/x/resolver'],
- ['A','POST','mermas'],['B','GET','mermas'],['B','GET','mermas/motivos'],
+ ['A','POST','mermas'],['B','GET','mermas'],['B','GET','mermas/motivos'],['A','GET','mermas/refrigeradores'],
  ['A','GET','proveedores'],['A','POST','proveedores'],['A','PUT','proveedores/x'],
  ['A','GET','compras'],['A','GET','compras/x'],['A','POST','compras'],['A','PATCH','compras/x/recibir'],['A','PATCH','compras/x/cancelar'],['A','PATCH','compras/x/cancelar-pendiente'],['A','GET','compras/x/recepciones'],['A','GET','compras/x/recepciones/y'],['A','PATCH','compras/x/recepciones/y/reversar'],
  ['MC','GET','clientes'],['MC','GET','clientes/x'],['MC','POST','clientes/registrar'],['A','PUT','clientes/x'],
