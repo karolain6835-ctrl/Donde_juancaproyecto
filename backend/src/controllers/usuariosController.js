@@ -2,6 +2,14 @@ const db = require('../config/db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+exports.listarResponsables = (req, res) => {
+  if (Object.keys(req.query || {}).length) return res.status(400).json({ error: 'Esta consulta no admite filtros.' });
+  db.query("SELECT id,nombre,estado FROM usuarios WHERE estado='activo' ORDER BY nombre,id", (error, datos) => {
+    if (error) return res.status(500).json({ error: 'No se pudieron consultar los responsables.' });
+    return res.json({ datos });
+  });
+};
+
 // 1. Registro de nuevo usuario/empleado (Simulado)
 exports.registrarUsuario = async (req, res) => {
   const { nombre, correo, contrasena, roles_id } = req.body;

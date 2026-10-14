@@ -3,6 +3,8 @@ const express = require('express');
 const router = express.Router();
 const pedidosController = require('../controllers/pedidosController');
 
+router.get('/', autorizarRoles('Administrador', 'SuperAdmin', 'Mesero', 'Mesera', 'Cajero'), pedidosController.listarPedidos);
+
 // 1. Crear un nuevo pedido (Abrir la cuenta de la mesa)
 router.post('/', autorizarRoles('Administrador', 'SuperAdmin', 'Mesero', 'Mesera'), pedidosController.crearPedido);
 

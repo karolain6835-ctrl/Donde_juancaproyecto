@@ -113,7 +113,7 @@ test('trazabilidad y lectura contra MySQL con tablas temporales', {
         assert.equal((await cancelar(r.data.id_item)).status, 500);
         assert.equal(await cantidad(), 24); assert.equal((await movimientos()).length, 1);
         const [[i]] = await real.query('SELECT estado FROM pedido_items WHERE id=?', [r.data.id_item]);
-        assert.equal(i.estado, 'preparando');
+        assert.equal(i.estado, 'enviado');
       });
     }
     const fixtures = async () => {

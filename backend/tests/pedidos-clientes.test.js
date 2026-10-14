@@ -45,10 +45,10 @@ test('Pedidos: validacion previa y errores sin insertar', async t => {
   await t.test('fallo del INSERT mantiene 500', async () => {
     let consultas = 0;
     assert.equal((await invocar(cargar({ query(sql, params, cb) {
-      if (++consultas === 1) cb(null, [{ estado: 'activo' }]);
+      if (++consultas <= 2) cb(null, [{ estado: 'activo' }]);
       else cb(new Error('insert fallido'));
     } }))).status, 500);
-    assert.equal(consultas, 2);
+    assert.equal(consultas, 3);
   });
 });
 

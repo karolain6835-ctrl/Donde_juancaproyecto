@@ -3,16 +3,50 @@ const db = require('../config/db');
 const mysql = require('mysql2');
 const crypto = require('crypto'); // Generador de UUIDs
 
+// Lectura paginada: permite consultar también pedidos sin ítems, ausentes de Kanban.
+const listarPedidos = (req, res) => {
+  const q = req.query || {};
+  const estados = ['abierto', 'cerrado', 'cancelado'];
+  const entero = (value, fallback) => value === undefined ? fallback : typeof value === 'string' && /^[1-9]\d*$/.test(value) ? Number(value) : NaN;
+  const pagina = entero(q.pagina, 1), limite = entero(q.limite, 20), offset = (pagina - 1) * limite;
+  if (Object.keys(q).some(k => !['pagina', 'limite', 'estado', 'mesas_id'].includes(k)) ||
+      !Number.isSafeInteger(pagina) || !Number.isSafeInteger(limite) || limite > 100 || !Number.isSafeInteger(offset) ||
+      (q.estado !== undefined && !estados.includes(q.estado)) ||
+      (q.mesas_id !== undefined && (typeof q.mesas_id !== 'string' || !q.mesas_id.trim() || q.mesas_id.length > 36 || q.mesas_id !== q.mesas_id.trim()))) {
+    return res.status(400).json({ error: 'Filtros o paginación de pedidos inválidos.' });
+  }
+  const filters = [], params = [];
+  for (const key of ['estado', 'mesas_id']) if (q[key] !== undefined) { filters.push(`ped.${key}=?`); params.push(q[key]); }
+  const where = filters.length ? ` WHERE ${filters.join(' AND ')}` : '';
+  db.query(`SELECT COUNT(*) AS total FROM pedidos ped${where}`, params, (error, counts) => {
+    if (error) return res.status(500).json({ error: 'No se pudieron consultar los pedidos.' });
+    db.query(`SELECT ped.id,ped.estado,ped.creado_en,ped.mesas_id,ped.usuarios_id,ped.clientes_id,
+      m.numero AS mesa_numero,c.nombre AS cliente_nombre,u.nombre AS responsable_nombre
+      FROM pedidos ped LEFT JOIN mesas m ON m.id=ped.mesas_id
+      LEFT JOIN clientes c ON c.id=ped.clientes_id LEFT JOIN usuarios u ON u.id=ped.usuarios_id
+      ${where} ORDER BY ped.creado_en DESC,ped.id DESC LIMIT ? OFFSET ?`, [...params, limite, offset], (error, datos) => {
+      if (error) return res.status(500).json({ error: 'No se pudieron consultar los pedidos.' });
+      const total = Number(counts[0].total);
+      return res.json({ datos, paginacion: { pagina, limite, total, total_paginas: Math.ceil(total / limite) } });
+    });
+  });
+};
+
 // ==========================================
 // 1. CREAR UN NUEVO PEDIDO
 // ==========================================
 const crearPedido = (req, res) => {
-  const { mesas_id, usuarios_id, clientes_id } = req.body;
+  const actor = ejecutor(req, res, []);
+  if (!actor) return;
+  const { mesas_id, usuarios_id, clientes_id } = req.body || {};
 
   if (!mesas_id || !usuarios_id || !clientes_id) {
     return res.status(400).json({ 
       error: "Faltan datos. Se requiere la mesa, el usuario que atiende y el cliente." 
     });
+  }
+  if (['Mesero', 'Mesera'].includes(req.usuario.rol) && usuarios_id !== actor) {
+    return res.status(403).json({ error: 'Solo puedes crear pedidos con tu propio usuario como responsable.' });
   }
 
   const id = crypto.randomUUID(); 
@@ -41,7 +75,11 @@ const crearPedido = (req, res) => {
       return res.status(409).json({ error: 'No puede asociarse un pedido a un cliente inactivo.' });
     }
 
-    db.query(query, [id, estado, sincronizado, creado_en, mesas_id, usuarios_id, clientes_id], (err, resultados) => {
+    db.query('SELECT id,estado FROM usuarios WHERE id = ?', [usuarios_id], (errorResponsable, responsables) => {
+      if (errorResponsable) return res.status(500).json({ error: 'No se pudo validar el responsable del pedido.' });
+      if (!responsables.length) return res.status(404).json({ error: 'Responsable no encontrado.' });
+      if (responsables[0].estado !== 'activo') return res.status(409).json({ error: 'El responsable del pedido debe estar activo.' });
+      db.query(query, [id, estado, sincronizado, creado_en, mesas_id, usuarios_id, clientes_id], (err, resultados) => {
       if (err) {
         console.error('❌ Error al crear el pedido:', err.message);
         return res.status(500).json({ error: 'Hubo un error en el servidor al abrir el pedido.' });
@@ -51,6 +89,7 @@ const crearPedido = (req, res) => {
         mensaje: '¡Cuenta abierta con éxito para la mesa! 🍻',
         id_pedido: id
       });
+    });
     });
   });
 };
@@ -132,7 +171,7 @@ const agregarItemPedido = async (req, res) => {
       `INSERT INTO pedido_items
        (id, precio_unitario, pedido_id, producto_id, cantidad_pedida, cantidad_pagada, estado, pedidos_id, productos_id)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [idItem, precio_unitario, id_pedido, productos_id, cantidad_pedida, 0, 'preparando', id_pedido, productos_id]
+      [idItem, precio_unitario, id_pedido, productos_id, cantidad_pedida, 0, 'enviado', id_pedido, productos_id]
     );
     if (insercion.affectedRows !== 1) throw new Error('No se insert? el ?tem.');
 
@@ -285,6 +324,7 @@ const cancelarItemPedido = async (req, res) => {
     if (item.pedido_id !== pedidos[0].id || item.pedidos_id !== pedidos[0].id || item.producto_id !== item.productos_id) {
       throw errorPedido(409, 'Referencias del ítem inconsistentes.');
     }
+    if (item.estado === 'servido') throw errorPedido(409, 'No se puede cancelar una línea ya servida. Se requiere un flujo de devolución.');
     if (item.estado === 'cancelado') throw errorPedido(400, 'El ?tem ya se encuentra cancelado.');
     if (!Number.isSafeInteger(item.cantidad_pedida) || item.cantidad_pedida <= 0) {
       throw errorPedido(400, 'El ?tem tiene una cantidad inv?lida para reintegrar.');
@@ -326,6 +366,7 @@ const cancelarItemPedido = async (req, res) => {
 };
 
 module.exports = {
+  listarPedidos,
   crearPedido,
   agregarItemPedido,
   obtenerPedidoConDetalles,
