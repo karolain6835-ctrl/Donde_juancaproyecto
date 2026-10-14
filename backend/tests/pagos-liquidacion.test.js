@@ -81,6 +81,7 @@ test('pagos y liquidación con MySQL y tablas temporales', {
       await real.query(`CREATE TEMPORARY TABLE copia_${tabla} LIKE ${tabla}`);
       await real.query(`CREATE TEMPORARY TABLE ${tabla} LIKE copia_${tabla}`);
     }
+    await require('./helpers/participantesTemporales')(real, { pedidos: true });
     await t.test('pendiente, parcial, final, cantidades e idempotencia', async () => {
       await preparar();
       let r = await registrar('test-p1', 400);

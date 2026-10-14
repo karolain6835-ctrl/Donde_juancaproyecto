@@ -45,6 +45,7 @@ test('API juegos: MySQL real con tablas temporales, sin escrituras persistentes'
       await real.query(`CREATE TEMPORARY TABLE copia_juegos_${tabla} LIKE ${tabla}`);
       await real.query(`CREATE TEMPORARY TABLE ${tabla} LIKE copia_juegos_${tabla}`);
     }
+    await require('./helpers/participantesTemporales')(real, { pedidos: true });
     const [columnas] = await real.query('SHOW COLUMNS FROM sesiones_juego');
     for (const nombre of ['fecha_inicio','fecha_fin','tarifa_hora_aplicada']) assert.ok(columnas.some(c => c.Field === nombre), 'Requiere v2.23');
     for (const n of ['1','2']) {
@@ -60,7 +61,7 @@ test('API juegos: MySQL real con tablas temporales, sin escrituras persistentes'
       module: modulo, exports: modulo.exports,
       require: nombre => nombre === '../config/db' ? { dbConfig: {} }
         : nombre === 'mysql2' ? { createConnection: () => {conexionesAbiertas++;return { promise: () => conexion };} }
-        : nombre === '../services/juegosService' ? { calcularCosto } : (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(nombre)),
+        : nombre === '../services/juegosService' ? { calcularCosto } : (nombre.startsWith('../services/') ? require(path.join(__dirname, '../src/controllers', nombre)) : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(nombre)),
       console: { error() {} }
     });
     const rutas = { exports: {} };

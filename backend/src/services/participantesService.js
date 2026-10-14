@@ -9,7 +9,7 @@ function validarParticipante(body) {
   if (typeof body.nombre !== 'string' || !body.nombre.trim() || [...body.nombre.trim()].length > 100) throw fallo(400, 'Nombre o alias obligatorio, máximo 100 caracteres.');
   return { tipo_participante: 'temporal', nombre: body.nombre.trim(), clientes_id: null };
 }
-async function insertarParticipante(c, pedido, input) {
+async function insertarParticipante(c, pedido, input, reutilizar = false) {
   const data = validarParticipante(input);
   if (data.clientes_id) {
     const [[cliente]] = await c.query('SELECT nombre,estado FROM clientes WHERE id=? LOCK IN SHARE MODE', [data.clientes_id]);
@@ -18,12 +18,21 @@ async function insertarParticipante(c, pedido, input) {
     data.nombre = cliente.nombre;
   }
   if (data.clientes_id) {
-    const [[existing]] = await c.query('SELECT id FROM jugadores WHERE pedido_id=? AND clientes_id=? FOR UPDATE', [pedido.id, data.clientes_id]);
-    if (existing) throw fallo(409, 'Este cliente ya está asociado al pedido.');
+    const columna = pedido.sesion_mesa_id ? 'sesion_mesa_id' : 'pedido_id';
+    const [[existing]] = await c.query(`SELECT id,nombre,tipo_participante,clientes_id,pedido_id,sesion_mesa_id FROM jugadores WHERE ${columna}=? AND clientes_id=? FOR UPDATE`, [pedido.sesion_mesa_id || pedido.id, data.clientes_id]);
+    if (existing) {
+      if (reutilizar) return existing;
+      throw fallo(409, 'Este cliente ya está asociado a la visita o pedido.');
+    }
   }
-  const participante = { id: crypto.randomUUID(), pedido_id: pedido.id, ...data };
-  await c.query('INSERT INTO jugadores(id,nombre,creado_en,mesas_id,pedido_id,clientes_id,tipo_participante) VALUES (?,?,UTC_TIMESTAMP(),?,?,?,?)',
-    [participante.id, data.nombre, pedido.mesas_id, pedido.id, data.clientes_id, data.tipo_participante]);
+  const participante = { id: crypto.randomUUID(), pedido_id: pedido.sesion_mesa_id ? null : pedido.id, sesion_mesa_id: pedido.sesion_mesa_id || null, ...data };
+  await c.query('INSERT INTO jugadores(id,nombre,creado_en,mesas_id,pedido_id,clientes_id,tipo_participante,sesion_mesa_id) VALUES (?,?,UTC_TIMESTAMP(),?,?,?,?,?)',
+    [participante.id, data.nombre, pedido.mesas_id, participante.pedido_id, data.clientes_id, data.tipo_participante, participante.sesion_mesa_id]);
   return participante;
 }
-module.exports = { validarParticipante, insertarParticipante, fallo };
+async function listarParticipantes(c, ambito) {
+  const columna = ambito.sesion_mesa_id ? 'sesion_mesa_id' : 'pedido_id';
+  const [rows] = await c.query(`SELECT id,nombre,tipo_participante,clientes_id,pedido_id,sesion_mesa_id FROM jugadores WHERE ${columna}=? ORDER BY creado_en,id`, [ambito.sesion_mesa_id || ambito.id]);
+  return rows;
+}
+module.exports = { validarParticipante, insertarParticipante, listarParticipantes, fallo };

@@ -78,6 +78,7 @@ exports.iniciarJuego = (req, res) => {
     if (item.mesas_id !== b.mesas_id) throw fallo(400, 'El ítem pertenece a otra mesa.');
     calcularCosto(activo.precio_hora, 0);
     const id = randomUUID();
+    await asegurarSesion(c, b.mesas_id);
     const [insert] = await c.query(`INSERT INTO sesiones_juego
       (id,tipo_juego,estado,costo_total,activos_juego_id,mesas_id,iniciada_por,cerrada_por,pedido_items_id,fecha_inicio,fecha_fin,tarifa_hora_aplicada)
       VALUES (?,?,'activa',NULL,?,?,?,NULL,?,UTC_TIMESTAMP(),NULL,?)`,
@@ -117,3 +118,4 @@ exports.terminarJuego = (req, res) => {
     return { body: { mensaje: 'Sesión de juego finalizada correctamente.', id_sesion: sesion.id, total_cobrado: costo, datos } };
   }, true);
 };
+const { asegurarSesion } = require('../services/sesionesMesaService');

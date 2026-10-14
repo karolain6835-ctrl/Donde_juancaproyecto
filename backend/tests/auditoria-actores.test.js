@@ -30,7 +30,7 @@ test('Fase 3B: actores y atomicidad con MySQL temporal',{skip:process.env.RUN_MY
   for(const u of ['u1','u2'])await real.query("INSERT INTO usuarios(id,nombre,email,password_hash,estado,roles_id) VALUES (?,?,?,'fixture','activo',1)",[u,u,u+'@example.invalid']);
   await real.query("INSERT INTO clientes(id,nombre,estado,usuarios_id) VALUES ('cl','Cliente','activo','u1')");
   const reset=async()=>{
-   fallo=null;auditorias=0;for(const table of ['auditoria','pagos','pedido_items','pedidos','compras','division_items_detalle','division_participantes','sesiones_division_cuentas','mesas'])await real.query('DELETE FROM '+table);
+   fallo=null;auditorias=0;await real.query('DELETE FROM sesiones_mesa');for(const table of ['auditoria','pagos','pedido_items','pedidos','compras','division_items_detalle','division_participantes','sesiones_division_cuentas','mesas'])await real.query('DELETE FROM '+table);
    await real.query("UPDATE clientes SET nombre='Cliente',estado='activo'");
    await real.query("INSERT INTO mesas(id,numero,estado) VALUES ('m1',1,'ocupada'),('m2',2,'disponible')");
    await real.query("INSERT INTO pedidos(id,estado,creado_en,mesas_id,usuarios_id,clientes_id) VALUES ('p','abierto',UTC_TIMESTAMP(),'m1','u1','cl')");

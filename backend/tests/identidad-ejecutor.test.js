@@ -28,6 +28,7 @@ const cargar = (nombre, db, real) => {
     module: modulo, exports: modulo.exports, console,
     require: n => n === '../services/identidadService' ? identidad
       : n === '../services/participantesService' && real ? require('../src/services/participantesService')
+      : n === '../services/sesionesMesaService' && real ? require('../src/services/sesionesMesaService')
       : n === 'mysql2' && real ? { createConnection: () => ({ promise: () => ({ query: (s,p) => real.query(s,p), beginTransaction: () => real.beginTransaction(), commit: () => real.commit(), rollback: () => real.rollback(), end: async () => {} }) }) }
       : n === '../config/db' ? (db || prohibido)
       : n.startsWith('../services/') || n === 'mysql2' ? prohibido : (n === '../services/auditoriaService' ? require('../src/services/auditoriaService') : (n === './alertasInventarioController' ? {listar(){throw new Error('Fuera del alcance de este arnes');}} : require(n)))

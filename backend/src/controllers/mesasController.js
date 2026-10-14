@@ -3,6 +3,7 @@ const { registrarAuditoria } = require('../services/auditoriaService');
 const db = require('../config/db');
 const mysql = require('mysql2');
 const { evaluarLiberacionMesa } = require('../services/liquidacionService');
+const { asegurarSesion, cerrarSesion, sesionActiva } = require('../services/sesionesMesaService');
 
 // Obtener mesas filtradas por su estado
 const obtenerMesasPorEstado = (req, res) => {
@@ -47,7 +48,9 @@ const actualizarEstadoMesa = async (req,res) => {
     if (estado === 'disponible') {
       const disponibilidad = await evaluarLiberacionMesa(conexion, mesa.id);
       if (!disponibilidad.puede_liberarse) throw Object.assign(new Error(disponibilidad.motivo), { status: 409 });
+      await cerrarSesion(conexion, mesa.id);
     }
+    if (estado !== 'disponible') await asegurarSesion(conexion, mesa.id);
     const [r]=await conexion.query('UPDATE mesas SET estado=? WHERE id=?',[estado,mesa.id]);
     if(r.affectedRows!==1)throw new Error('No se actualizó la mesa.');
     if(mesa.estado!==estado)await registrarAuditoria(conexion,actor,'mesas','mesa_estado_cambiado','mesas',mesa.id,{antes:{estado:mesa.estado},despues:{estado}});
@@ -126,6 +129,8 @@ const trasladarMesa = async (req, res) => {
     }
     const liberacionDestino = await evaluarLiberacionMesa(conexion, destino.id);
     if (!liberacionDestino.puede_liberarse) rechazar(409, liberacionDestino.motivo);
+    if (await sesionActiva(conexion, destino.id)) rechazar(409, 'La mesa de destino tiene una visita activa.');
+    const visitaOrigen = await sesionActiva(conexion, origen.id);
 
     // También mover juegos cerrados cuyo consumo pertenece a pedidos aún abiertos.
     const juegosDeCuenta = `
@@ -174,6 +179,10 @@ const trasladarMesa = async (req, res) => {
     const liberacionOrigen = await evaluarLiberacionMesa(conexion, origen.id);
     if (!liberacionOrigen.puede_liberarse) rechazar(409, liberacionOrigen.motivo);
     const estadoDestino = origen.estado === 'en_cobro' ? 'en_cobro' : 'ocupada';
+    if (visitaOrigen) {
+      await conexion.query('UPDATE sesiones_mesa SET mesas_id=? WHERE id=?', [destino.id, visitaOrigen.id]);
+      await conexion.query('UPDATE jugadores SET mesas_id=? WHERE sesion_mesa_id=?', [destino.id, visitaOrigen.id]);
+    } else await asegurarSesion(conexion, destino.id);
     const [resEstadoOrigen] = await conexion.query(
       "UPDATE mesas SET estado = 'disponible' WHERE id = ?", [origen.id]
     );

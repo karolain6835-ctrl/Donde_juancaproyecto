@@ -1,4 +1,5 @@
 // Los importes se operan en centavos enteros, sin redondeos de coma flotante.
+const { cerrarSesion, asegurarSesion } = require('./sesionesMesaService');
 const errorLiquidacion = (status, mensaje) => Object.assign(new Error(mensaje), { status });
 const centavos = (valor) => {
   const texto = String(valor);
@@ -113,6 +114,9 @@ const actualizarLiquidacion = async (conexion, pedido, cuenta) => {
   const estadoMesa = liberable ? 'disponible' : 'en_cobro';
   const [mesa] = await conexion.query('UPDATE mesas SET estado = ? WHERE id = ?', [estadoMesa, pedido.mesas_id]);
   if (mesa.affectedRows !== 1) throw new Error('No se actualizó la mesa.');
+  // Sin cambiar pagos ni importes: sincronizar el ámbito cuando esta operación cambia la mesa.
+  if (liberable) await cerrarSesion(conexion, pedido.mesas_id);
+  else await asegurarSesion(conexion, pedido.mesas_id);
   return {
     pedido_id: pedido.id,
     total_cuenta: dinero(cuenta.total),

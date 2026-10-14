@@ -29,7 +29,7 @@ test('Participantes y consumos reales, migración repetible y datos históricos'
   const invoke = (fn, body = {}, params = {}) => new Promise((resolve, reject) => Promise.resolve(fn({ body, params, usuario: { id: 'u', rol: 'Administrador' } }, { status(s) { this.s = s; return this; }, json(data) { resolve({ status: this.s || 200, data }); } })).catch(reject));
   try {
     await c.query("INSERT INTO usuarios(id,nombre,email,password_hash,estado,roles_id) VALUES ('u','Actor','u@example.invalid','fixture','activo',1)");
-    await c.query("INSERT INTO mesas(id,numero,estado) VALUES ('m',1,'disponible'),('dest',2,'disponible')");
+    await c.query("INSERT INTO mesas(id,numero,estado) VALUES ('m',1,'disponible'),('dest',2,'disponible'),('otra',3,'disponible')");
     await c.query("INSERT INTO clientes(id,nombre,estado,usuarios_id) VALUES ('c','Carlos','activo','u'),('c2','Laura','activo','u'),('inactive','Inactivo','inactivo','u')");
     await c.query("INSERT INTO productos(id,nombre,codigo,precio_venta,costo_promedio_ponderado,cantidad_disponible,stock_minimo,estado,categorias_id,proveedores_id,historial_costos_id) VALUES ('pr','Producto','COD',100,50,20,1,'activo',1,'prov','hist')");
     await c.query("INSERT INTO jugadores(id,nombre,mesas_id) VALUES ('legado','Jugador histórico','m')");
@@ -57,7 +57,7 @@ test('Participantes y consumos reales, migración repetible y datos históricos'
       const list = await invoke(participants.listar, {}, { id });
       assert.equal(list.data.datos.filter(p => p.tipo_participante === 'registrado').length, 2);
       assert.equal(list.data.datos.filter(p => p.tipo_participante === 'temporal').length, 2);
-      assert.ok(list.data.datos.every(p => p.pedido_id === id));
+      assert.ok(list.data.datos.every(p => p.pedido_id === null && p.sesion_mesa_id));
       await c.query("UPDATE pedidos SET estado='cerrado' WHERE id=?", [id]);
       assert.equal((await invoke(participants.agregar, { tipo_participante: 'temporal', nombre: 'Otro' }, { id })).status, 409);
       await c.query("UPDATE pedidos SET estado='abierto' WHERE id=?", [id]);
@@ -72,7 +72,7 @@ test('Participantes y consumos reales, migración repetible y datos históricos'
     });
     let temporalOrder;
     await t.test('pedido temporal con cliente NULL; alta inválida no persiste', async () => {
-      const r = await invoke(orders.crearPedido, { mesas_id: 'm', usuarios_id: 'u', clientes_id: null, participante_temporal: { nombre: 'Invitado' } });
+      const r = await invoke(orders.crearPedido, { mesas_id: 'otra', usuarios_id: 'u', clientes_id: null, participante_temporal: { nombre: 'Invitado' } });
       assert.equal(r.status, 201); temporalOrder = r.data.id_pedido;
       const [[row]] = await c.query('SELECT clientes_id FROM pedidos WHERE id=?', [temporalOrder]); assert.equal(row.clientes_id, null);
       const [[before]] = await c.query('SELECT COUNT(*) AS n FROM pedidos');

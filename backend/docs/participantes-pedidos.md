@@ -1,5 +1,8 @@
 # Identidad de participantes (fase 7A)
 
+Desde la fase 7B, el ámbito por pedido descrito aquí se conserva para históricos.
+Las altas nuevas usan la visita compartida; ver [sesiones-mesa.md](sesiones-mesa.md).
+
 Se evoluciona `jugadores`, sin renombrarla ni duplicar identidades. Sus IDs siguen
 siendo los referenciados por `ronda_jugadores.jugadores_id`. No hay actualmente un
 CRUD de jugadores que obligue a crear partidas para crear personas.

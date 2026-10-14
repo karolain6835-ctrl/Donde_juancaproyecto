@@ -3,6 +3,7 @@ const db = require('../config/db');
 const mysql = require('mysql2');
 const crypto = require('crypto'); // Generador de UUIDs
 const { insertarParticipante, validarParticipante } = require('../services/participantesService');
+const { asegurarSesion, bloquearAmbitoPedido, validarSesionPedido } = require('../services/sesionesMesaService');
 
 // Lectura paginada: permite consultar también pedidos sin ítems, ausentes de Kanban.
 const listarPedidos = (req, res) => {
@@ -39,9 +40,9 @@ const listarPedidos = (req, res) => {
 const crearPedido = async (req, res) => {
   const actor = ejecutor(req, res, []);
   if (!actor) return;
-  const { mesas_id, usuarios_id, clientes_id = null } = req.body || {};
+  const { mesas_id, usuarios_id, clientes_id = null, participante_id } = req.body || {};
 
-  if (!mesas_id || !usuarios_id || clientes_id === '' || (clientes_id === null && !req.body?.participante_temporal)) {
+  if (!mesas_id || !usuarios_id || clientes_id === '' || (clientes_id === null && !req.body?.participante_temporal && !participante_id)) {
     return res.status(400).json({ 
       error: "Faltan datos. Se requiere la mesa, el usuario que atiende y el cliente." 
     });
@@ -61,18 +62,26 @@ const crearPedido = async (req, res) => {
       const [clientes] = await conexion.query('SELECT estado FROM clientes WHERE id = ? LOCK IN SHARE MODE', [clientes_id]);
       if (!clientes.length) rechazar(404, 'El cliente especificado no existe.');
       if (clientes[0].estado !== 'activo') rechazar(409, 'No puede asociarse un pedido a un cliente inactivo.');
-    } else validarParticipante({ tipo_participante: 'temporal', nombre: req.body.participante_temporal?.nombre });
+    } else if (!participante_id) validarParticipante({ tipo_participante: 'temporal', nombre: req.body.participante_temporal?.nombre });
     const [responsables] = await conexion.query('SELECT id,estado FROM usuarios WHERE id = ? LOCK IN SHARE MODE', [usuarios_id]);
     if (!responsables.length) rechazar(404, 'Responsable no encontrado.');
     if (responsables[0].estado !== 'activo') rechazar(409, 'El responsable del pedido debe estar activo.');
+    const sesion = await asegurarSesion(conexion, mesa.id);
+    if (participante_id) {
+      if (typeof participante_id !== 'string' || participante_id.length > 36 || req.body.participante_temporal) rechazar(400, 'Participante existente inválido.');
+      const [[person]] = await conexion.query('SELECT id,clientes_id FROM jugadores WHERE id=? AND sesion_mesa_id=? FOR UPDATE', [participante_id, sesion.id]);
+      if (!person) rechazar(409, 'El participante no pertenece a la visita activa de esta mesa.');
+      if (clientes_id !== null && person.clientes_id !== clientes_id) rechazar(400, 'El cliente no corresponde al participante seleccionado.');
+      if (person.clientes_id) await insertarParticipante(conexion, { mesas_id: mesa.id, sesion_mesa_id: sesion.id }, { tipo_participante: 'registrado', clientes_id: person.clientes_id }, true);
+    }
     const id = crypto.randomUUID();
     const fechaActual = new Date(); fechaActual.setHours(fechaActual.getHours() - 5);
     const creado_en = fechaActual.toISOString().slice(0, 19).replace('T', ' ');
-    const [insert] = await conexion.query('INSERT INTO pedidos (id,estado,sincronizado,creado_en,mesas_id,usuarios_id,clientes_id) VALUES (?,?,?,?,?,?,?)', [id,'abierto',0,creado_en,mesa.id,usuarios_id,clientes_id]);
+    const [insert] = await conexion.query('INSERT INTO pedidos (id,estado,sincronizado,creado_en,mesas_id,usuarios_id,clientes_id,sesion_mesa_id) VALUES (?,?,?,?,?,?,?,?)', [id,'abierto',0,creado_en,mesa.id,usuarios_id,clientes_id,sesion.id]);
     if (insert.affectedRows !== 1) throw new Error('No se insertó el pedido.');
-    await insertarParticipante(conexion, { id, mesas_id: mesa.id }, clientes_id === null
+    if (!participante_id) await insertarParticipante(conexion, { id, mesas_id: mesa.id, sesion_mesa_id: sesion.id }, clientes_id === null
       ? { tipo_participante: 'temporal', nombre: req.body.participante_temporal.nombre }
-      : { tipo_participante: 'registrado', clientes_id });
+      : { tipo_participante: 'registrado', clientes_id }, true);
     if (mesa.estado === 'disponible') {
       const [update] = await conexion.query("UPDATE mesas SET estado='ocupada' WHERE id=?", [mesa.id]);
       if (update.affectedRows !== 1) throw new Error('No se ocupó la mesa.');
@@ -147,12 +156,13 @@ const agregarItemPedido = async (req, res) => {
     await conexion.beginTransaction();
     transaccionIniciada = true;
 
-    const [pedidos] = await conexion.query('SELECT id, usuarios_id FROM pedidos WHERE id = ? FOR UPDATE', [id_pedido]);
-    if (!pedidos.length) throw errorPedido(404, 'Pedido no encontrado.');
+    const pedidos = [await bloquearAmbitoPedido(conexion, id_pedido)];
+    await validarSesionPedido(conexion, pedidos[0]);
     if (participante_id !== null) {
       if (typeof participante_id !== 'string' || !participante_id.trim() || participante_id.length > 36) throw errorPedido(400, 'Participante inválido.');
-      const [[participante]] = await conexion.query('SELECT id FROM jugadores WHERE id=? AND pedido_id=? FOR UPDATE', [participante_id, id_pedido]);
-      if (!participante) throw errorPedido(409, 'El participante no pertenece a este pedido.');
+      const columna = pedidos[0].sesion_mesa_id ? 'sesion_mesa_id' : 'pedido_id';
+      const [[participante]] = await conexion.query(`SELECT id FROM jugadores WHERE id=? AND ${columna}=? FOR UPDATE`, [participante_id, pedidos[0].sesion_mesa_id || id_pedido]);
+      if (!participante) throw errorPedido(409, 'El participante no pertenece a la visita o pedido.');
     }
     // El bloqueo del padre serializa también dos altas concurrentes sin línea previa.
     const [compatibles] = await conexion.query(`SELECT id,cantidad_pedida,pedido_id,producto_id

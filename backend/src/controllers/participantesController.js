@@ -1,20 +1,21 @@
 const db = require('../config/db');
 const mysql = require('mysql2');
-const { insertarParticipante, validarParticipante, fallo } = require('../services/participantesService');
+const { insertarParticipante, validarParticipante, listarParticipantes, fallo } = require('../services/participantesService');
+const { bloquearAmbitoPedido, validarSesionPedido } = require('../services/sesionesMesaService');
 async function operar(req, res, agregar) {
   let c, abierta = false;
   try {
     if (agregar) validarParticipante(req.body);
     c = mysql.createConnection(db.dbConfig).promise();
     await c.beginTransaction(); abierta = true;
-    const [[pedido]] = await c.query('SELECT id,mesas_id,estado FROM pedidos WHERE id=? FOR UPDATE', [req.params.id]);
-    if (!pedido) throw fallo(404, 'Pedido no encontrado.');
+    const pedido = await bloquearAmbitoPedido(c, req.params.id);
     let datos;
     if (agregar) {
       if (pedido.estado !== 'abierto') throw fallo(409, 'Solo se pueden agregar participantes a un pedido abierto.');
+      await validarSesionPedido(c, pedido);
       datos = await insertarParticipante(c, pedido, req.body);
     } else {
-      [datos] = await c.query('SELECT id,nombre,tipo_participante,clientes_id,pedido_id FROM jugadores WHERE pedido_id=? ORDER BY creado_en,id', [pedido.id]);
+      datos = await listarParticipantes(c, pedido);
     }
     await c.commit(); abierta = false;
     return res.status(agregar ? 201 : 200).json({ datos });
