@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/useAuth';
 import { can } from '../utils/permissions';
-import { formatCurrency } from '../utils/formatCurrency';
+import MesaCuentaResumen from './MesaCuentaResumen';
 import { useRemoteCatalog, useCatalogMutation } from '../hooks/useRemoteCatalog';
 import { cuentaMesa, estadosMesa, trasladarMesa, cambiarEstadoMesa, consultarLiberacionMesa } from '../services/mesasService';
 import { listarPedidos } from '../services/pedidosService';
@@ -49,11 +49,7 @@ export default function MesaDetalle({ id, mesas, onClose, onCreate, onEdit }) {
       {mesa && <div className={`drawer-status ${mesa.estado}`}><span>Estado</span><strong>{estadosMesa[mesa.estado]}</strong></div>}
       {onEdit && can(user, 'mesas.editarNumero') && <button className="drawer-secondary-button" disabled={mutation.busy} onClick={onEdit}>Cambiar número</button>}
       <section className="operacion-drawer-section"><h3>Cuenta de la mesa</h3>
-        <OperacionRemoteState resource={account}>{account.data && <>
-          <dl className="operacion-info"><div><dt>Subtotal productos</dt><dd>{formatCurrency(account.data.resumen.subtotal_productos)}</dd></div><div><dt>Total cuenta</dt><dd>{formatCurrency(account.data.resumen.total_general)}</dd></div></dl>
-          {account.data.detalle_productos.map((item, index) => <div className="operacion-item" key={`${item.producto_id}-${index}`}><strong>{item.nombre}</strong><p>{item.cantidad_pedida} × {formatCurrency(item.precio_unitario)}</p><p>Subtotal: {formatCurrency(item.subtotal)}</p></div>)}
-          {!account.data.detalle_productos.length && <p>No hay productos pendientes en la cuenta.</p>}
-        </>}</OperacionRemoteState>
+        <OperacionRemoteState resource={account}>{account.data && <MesaCuentaResumen cuenta={account.data} />}</OperacionRemoteState>
       </section>
       <section className="operacion-drawer-section"><h3>Pedidos abiertos</h3><OperacionRemoteState resource={orders} empty="No hay pedidos abiertos en esta mesa.">
         {orders.data?.datos.map(p => <div className="operacion-item" key={p.id}><span className="operacion-id">{p.id}</span><p>{p.cliente_nombre || p.clientes_id}</p><p>Responsable: {p.responsable_nombre || p.usuarios_id}</p><button className="drawer-secondary-button" disabled={mutation.busy} onClick={() => navigate(`/operacion/pedidos?pedido=${encodeURIComponent(p.id)}&mesa=${encodeURIComponent(id)}`)}>Ver pedido</button></div>)}

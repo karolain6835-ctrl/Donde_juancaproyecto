@@ -40,3 +40,9 @@
 .pedido-participantes li { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; padding: 10px; border: 1px solid var(--border-color, #e5e7eb); border-radius: 8px; }
 .pedido-participantes small { color: var(--text-secondary, #64748b); }
 .pedido-line-person { font-weight: 600; color: var(--text-secondary, #64748b); }
+.mesa-consumo-resumen > strong { display: block; margin-bottom: 8px; overflow-wrap: anywhere; }
+.mesa-consumo-resumen .operacion-info { margin-bottom: 0; }
+.mesa-cuenta-total { padding-top: 12px; border-top: 1px solid var(--border-color, #e5e7eb); font-weight: 600; }
+.mesa-cuenta-detalle { margin-top: 16px; }
+.mesa-cuenta-detalle summary { cursor: pointer; margin-bottom: 12px; }
+.mesa-cuenta-juegos { margin-top: 16px; }
