@@ -19,6 +19,11 @@ export async function cuentaMesa(id, options) {
   if (!row?.resumen || !Array.isArray(row.detalle_productos) || !Array.isArray(row.detalle_juegos)) throw invalidResponse('cuenta de mesa');
   return row;
 }
+export async function consultarLiberacionMesa(id, options) {
+  const row = (await apiClient(`/mesas/${operationPath(id)}/liberacion`, options))?.datos;
+  if (row?.mesa_id !== id || typeof row.puede_liberarse !== 'boolean' || !(row.motivo === null || typeof row.motivo === 'string')) throw invalidResponse('liberación de mesa');
+  return row;
+}
 export function trasladoBody(form) {
   const body = { mesa_origen_id: operationId(form.mesa_origen_id), mesa_destino_id: operationId(form.mesa_destino_id) };
   if (body.mesa_origen_id.toLowerCase() === body.mesa_destino_id.toLowerCase()) operationFail('Selecciona una mesa de destino diferente.');

@@ -59,7 +59,7 @@ test('Kanban: tarjeta única, múltiples líneas, parcial y acciones válidas en
     await t.test('Mesero/Mesera sin selector editable ni dependencia del catálogo de responsables', () => {
       for (const rol of ['Mesero', 'Mesera']) {
         globalThis.__groupResources = [{ data: { datos: [], total: 0, limite: 20 } }, { loading: true, error: 'No cargar responsables' }];
-        const html = render(Form, rol, { mesas: { data: [] } }); assert.match(html, /Lina Marcela/); assert.match(html, /Asignado automáticamente a tu sesión/); assert.doesNotMatch(html, /Selecciona un responsable|No cargar responsables/); assert.equal(can({ rol }, 'pedidos.asignarResponsable'), false);
+        const html = render(Form, rol, { mesas: { data: [] } }); assert.match(html, /Lina Marcela/); assert.match(html, /Asignado automáticamente/); assert.doesNotMatch(html, /Selecciona un responsable|No cargar responsables/); assert.equal(can({ rol }, 'pedidos.asignarResponsable'), false);
       }
     });
     await t.test('Administrador/SuperAdmin conservan selector de responsables activos', () => {

@@ -207,7 +207,7 @@ test('Componentes reales de operación: recursos, formularios y controles por pe
     });
     await t.test('cuenta de mesa usa total del servidor y permisos de traslado/estado', () => {
       const props = { id: mesa.id, mesas: { data: [mesa, { id: 'destino-real', numero: 8, estado: 'disponible' }] } };
-      const resources = () => [{ data: cuenta }, { data: { datos: [pedido], paginacion } }];
+      const resources = () => [{ data: cuenta }, { data: { datos: [pedido], paginacion } }, { data: { puede_liberarse: false, motivo: 'Tiene pedidos abiertos.' } }];
       const service = render(MesaDetail, resources(), props, 'Mesero'); assert.match(service, /7\.000/); assert.match(service, /Trasladar cuenta/); assert.doesNotMatch(service, /Guardar estado/);
       const cash = render(MesaDetail, resources(), props, 'Cajero'); assert.doesNotMatch(cash, /Trasladar cuenta/); assert.match(cash, /Guardar estado/);
     });
