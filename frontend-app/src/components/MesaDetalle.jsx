@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/useAuth';
 import { can } from '../utils/permissions';
 import MesaCuentaResumen from './MesaCuentaResumen';
+import PedidoParticipantes from './PedidoParticipantes';
+import { listarParticipantesMesa, agregarParticipanteMesa } from '../services/participantesService';
 import { useRemoteCatalog, useCatalogMutation } from '../hooks/useRemoteCatalog';
 import { cuentaMesa, estadosMesa, trasladarMesa, cambiarEstadoMesa, consultarLiberacionMesa } from '../services/mesasService';
 import { listarPedidos } from '../services/pedidosService';
@@ -24,13 +26,14 @@ export default function MesaDetalle({ id, mesas, onClose, onCreate, onEdit }) {
   const orders = useRemoteCatalog(orderLoader);
   const releaseLoader = useCallback(options => can(user, 'mesas.cambiarEstado') ? consultarLiberacionMesa(id, options) : Promise.resolve(null), [id, user]);
   const release = useRemoteCatalog(releaseLoader);
+  const visit = useRemoteCatalog(useCallback(options => listarParticipantesMesa(id, options), [id]));
   const mutation = useCatalogMutation();
   const [destino, setDestino] = useState('');
   const [estado, setEstado] = useState('');
   const [syncError, setSyncError] = useState('');
   const refresh = async () => {
     setSyncError('');
-    await Promise.all([mesas.refresh(), account.refresh(), orders.refresh(), release.refresh(), ...(can(user, 'kanban.ver') ? [listarKanban().catch(error => setSyncError(error.message))] : [])]);
+    await Promise.all([mesas.refresh(), account.refresh(), orders.refresh(), release.refresh(), visit.refresh(), ...(can(user, 'kanban.ver') ? [listarKanban().catch(error => setSyncError(error.message))] : [])]);
   };
   function transfer(event) {
     event.preventDefault();
@@ -48,6 +51,7 @@ export default function MesaDetalle({ id, mesas, onClose, onCreate, onEdit }) {
       <div className="mesa-drawer-header"><h2>Mesa {mesa?.numero ?? id}</h2><button className="drawer-close" disabled={mutation.busy} onClick={onClose} aria-label="Cerrar detalle">×</button></div>
       {mesa && <div className={`drawer-status ${mesa.estado}`}><span>Estado</span><strong>{estadosMesa[mesa.estado]}</strong></div>}
       {onEdit && can(user, 'mesas.editarNumero') && <button className="drawer-secondary-button" disabled={mutation.busy} onClick={onEdit}>Cambiar número</button>}
+      <PedidoParticipantes id={id} resource={{ ...visit, data: visit.data?.datos }} agregar={person => agregarParticipanteMesa(id, person)} editable={can(user, 'pedidos.agregarItems') && visit.data?.sesion?.estado === 'activa'} />
       <section className="operacion-drawer-section"><h3>Cuenta de la mesa</h3>
         <OperacionRemoteState resource={account}>{account.data && <MesaCuentaResumen cuenta={account.data} />}</OperacionRemoteState>
       </section>

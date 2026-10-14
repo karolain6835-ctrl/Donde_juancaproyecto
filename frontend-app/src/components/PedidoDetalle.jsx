@@ -54,7 +54,7 @@ export default function PedidoDetalle({ id, summary, mesas, productos, onClose, 
             <div><dt>Responsable del pedido</dt><dd>{summary?.usuarios_id === pedido.usuarios_id ? summary.responsable_nombre || pedido.usuarios_id : pedido.usuarios_id}</dd></div>
             <div><dt>Creado</dt><dd>{formatDateTime(pedido.creado_en)}</dd></div>
           </dl>
-          <PedidoParticipantes id={id} resource={participants} editable={can(user, 'pedidos.agregarItems') && pedido.estado === 'abierto'} />
+          <PedidoParticipantes id={id} resource={participants} titulo={pedido.sesion_mesa_id ? 'Participantes de la visita' : 'Participantes del pedido'} editable={can(user, 'pedidos.agregarItems') && pedido.estado === 'abierto'} />
           <section className="pedido-products"><h3>Productos del pedido</h3>
             {pedido.items.map(item => <article className="operacion-item pedido-detail-line" key={item.id}>
               {item.participante_nombre && <p className="pedido-line-person">{item.participante_nombre}</p>}

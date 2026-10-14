@@ -4,6 +4,7 @@ import { useAuth } from '../context/useAuth';
 import { can } from '../utils/permissions';
 import { useRemoteCatalog, useCatalogMutation } from '../hooks/useRemoteCatalog';
 import ClientePedidoFields from './ClientePedidoFields';
+import ParticipanteVisitaSelector from './ParticipanteVisitaSelector';
 import { listarResponsables } from '../services/usuariosService';
 import { crearPedido } from '../services/pedidosService';
 import OperacionRemoteState from './OperacionRemoteState';
@@ -29,7 +30,7 @@ export default function PedidoForm({ mesas, initialMesa = '', onClose, onCreated
       setValidation('Selecciona una mesa, un participante y un responsable reales.'); return;
     }
     let result;
-    return mutation.run(async () => { result = await crearPedido({ ...form, usuarios_id: responsableId, clientes_id: participant.tipo_participante === 'registrado' ? participant.clientes_id : null, ...(participant.tipo_participante === 'temporal' ? { participante_temporal: { nombre: participant.nombre } } : {}) }); }, async () => { await onCreated(result.id_pedido); }, 'Pedido creado correctamente.');
+    return mutation.run(async () => { result = await crearPedido({ ...form, usuarios_id: responsableId, clientes_id: participant.tipo_participante === 'registrado' ? participant.clientes_id : null, ...(participant.participante_id ? { participante_id: participant.participante_id } : participant.tipo_participante === 'temporal' ? { participante_temporal: { nombre: participant.nombre } } : {}) }); }, async () => { await onCreated(result.id_pedido); }, 'Pedido creado correctamente.');
   }
   return <>
     <div className="pedido-overlay" onClick={() => { if (!mutation.busy) onClose(); }} />
@@ -37,8 +38,9 @@ export default function PedidoForm({ mesas, initialMesa = '', onClose, onCreated
       <div className="pedido-drawer-header"><h2>Nuevo pedido</h2><button className="drawer-close" disabled={mutation.busy} onClick={onClose} aria-label="Cerrar formulario">×</button></div>
       {[mesas, ...(assignable ? [responsible] : [])].map((resource, index) => <OperacionRemoteState key={index} resource={resource} />)}
       <form className="catalogo-form operacion-form" onSubmit={submit}><fieldset disabled={mutation.busy}>
-        <label>Mesa<select value={form.mesas_id} onChange={event => setForm({ ...form, mesas_id: event.target.value })} disabled={mesas.loading || Boolean(mesas.error)} required><option value="">Selecciona una mesa</option>{(mesas.data || []).map(m => <option key={m.id} value={m.id}>Mesa {m.numero} — {m.estado}</option>)}</select></label>
-        <ClientePedidoFields value={participant} onChange={setParticipant} disabled={mutation.busy} />
+        <label>Mesa<select value={form.mesas_id} onChange={event => { setForm({ ...form, mesas_id: event.target.value }); setParticipant(null); }} disabled={mesas.loading || Boolean(mesas.error)} required><option value="">Selecciona una mesa</option>{(mesas.data || []).map(m => <option key={m.id} value={m.id}>Mesa {m.numero} — {m.estado}</option>)}</select></label>
+        <ParticipanteVisitaSelector mesaId={form.mesas_id} onSelect={setParticipant} />
+        {participant?.participante_id ? <div className="pedido-responsable-card"><strong>{participant.nombre}</strong><button type="button" onClick={() => setParticipant(null)}>Cambiar participante</button></div> : <ClientePedidoFields value={participant} onChange={setParticipant} disabled={mutation.busy} />}
         {assignable ? <label>Responsable del pedido<select value={form.usuarios_id} onChange={event => setForm({ ...form, usuarios_id: event.target.value })} disabled={responsible.loading || Boolean(responsible.error)} required><option value="">Selecciona un responsable</option>{(responsible.data || []).map(u => <option key={u.id} value={u.id}>{u.nombre || u.id}</option>)}</select></label> : <div className="pedido-responsable-block"><p className="pedido-responsable-label">Responsable del pedido</p><div className="pedido-responsable-card"><span className="pedido-responsable-avatar" aria-hidden="true"><UserRound size={20} /></span><div className="pedido-responsable-identity"><strong>{user?.nombre || user?.id}</strong><span>Asignado automáticamente</span></div></div></div>}
         {assignable && !responsible.loading && !responsible.error && !responsible.data?.length && <p>No hay responsables activos disponibles.</p>}
         {(validation || mutation.error) && <p role="alert">{validation || mutation.error}</p>}

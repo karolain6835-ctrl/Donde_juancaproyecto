@@ -163,7 +163,7 @@ test('HTTP de operación usa apiClient, JWT y contratos auditados', async t => {
 test('Componentes reales de operación: recursos, formularios y controles por permiso', async t => {
   const server = await createServer({ root: fileURLToPath(new URL('..', import.meta.url)), server: { middlewareMode: true }, appType: 'custom', plugins: [{
     name: 'operacion-test-resources', enforce: 'pre', transform(source, filename) {
-      if (filename.replaceAll('\\', '/').endsWith('/hooks/useRemoteCatalog.js')) return source.replace('export function useRemoteCatalog(loader) {', 'export function useRemoteCatalog(loader) { if (globalThis.__operacionResources) return globalThis.__operacionResources.shift();');
+      if (filename.replaceAll('\\', '/').endsWith('/hooks/useRemoteCatalog.js')) return source.replace('export function useRemoteCatalog(loader) {', 'export function useRemoteCatalog(loader) { if (globalThis.__operacionResources) return globalThis.__operacionResources.shift() || { data: { sesion: null, datos: [] } };');
     },
   }] });
   try {

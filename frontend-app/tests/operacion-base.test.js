@@ -67,11 +67,11 @@ test('UI real de participantes y administración de mesas: permisos, confirmaci�
     await t.test('lista mixta, homónimos, vacío, loading y error con reintento', () => {
       const people = [{ id: 'c', nombre: 'Carlos', tipo_participante: 'registrado' }, { id: 'l', nombre: 'Laura', tipo_participante: 'registrado' }, { id: 't1', nombre: 'Felipe', tipo_participante: 'temporal' }, { id: 't2', nombre: 'Felipe', tipo_participante: 'temporal' }];
       const html = render(Participants, { id: 'p', resource: { data: people } });
-      assert.match(html, /Participantes del pedido/); assert.match(html, /Carlos/); assert.match(html, /Laura/); assert.equal(html.split('<strong>Felipe</strong>').length - 1, 2);
+      assert.match(html, /Participantes de la visita/); assert.match(html, /Carlos/); assert.match(html, /Laura/); assert.equal(html.split('<strong>Felipe</strong>').length - 1, 2);
       assert.match(render(Participants, { resource: { loading: true } }), /Cargando/);
       assert.match(render(Participants, { resource: { error: 'Error real' } }), /Error real/);
       assert.match(render(Participants, { resource: { error: 'Error real' } }), /Reintentar/);
-      assert.match(render(Participants, { resource: { data: [] } }), /aún no tiene participantes/);
+      assert.match(render(Participants, { resource: { data: [] } }), /no hay participantes/);
     });
     await t.test('alta de participante usa ID real y reconsulta el recurso compartido por selector', async () => {
       delete globalThis.__baseResource; globalThis.__basePerson = { tipo_participante: 'registrado', clientes_id: 'cliente-real', nombre: 'Carlos' };

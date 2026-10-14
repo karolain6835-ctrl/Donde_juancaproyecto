@@ -5,7 +5,8 @@ export const estadosPedido = Object.freeze({ abierto: 'Abierto', cerrado: 'Cerra
 export function pedidoBody(form) {
   // usuarios_id es el responsable asignado; nunca sustituirlo por el ejecutor JWT.
   const body = { mesas_id: operationId(form.mesas_id), usuarios_id: operationId(form.usuarios_id), clientes_id: form.clientes_id === null ? null : operationId(form.clientes_id) };
-  if (body.clientes_id === null) {
+  if (form.participante_id) body.participante_id = operationId(form.participante_id);
+  if (body.clientes_id === null && !body.participante_id) {
     if (typeof form.participante_temporal?.nombre !== 'string' || !form.participante_temporal.nombre.trim() || [...form.participante_temporal.nombre.trim()].length > 100) operationFail('Indica el nombre o alias del participante.');
     body.participante_temporal = { nombre: form.participante_temporal.nombre.trim() };
   }

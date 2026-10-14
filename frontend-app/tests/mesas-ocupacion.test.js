@@ -40,7 +40,7 @@ test('Liberación consulta fuente backend, conserva 409 y no cambia estado optim
 test('MesaDetalle ofrece ocupar/liberar según estado real y consulta protegida', async t => {
   const server = await createServer({ root: fileURLToPath(new URL('..', import.meta.url)), server: { middlewareMode: true }, appType: 'custom', plugins: [{
     name: 'mesa-occupation-resources', enforce: 'pre', transform(source, filename) {
-      if (filename.replaceAll('\\', '/').endsWith('/hooks/useRemoteCatalog.js')) return source.replace('export function useRemoteCatalog(loader) {', 'export function useRemoteCatalog(loader) { return globalThis.__mesaResources.shift();').replace('export function useCatalogMutation() {', 'export function useCatalogMutation() { if (globalThis.__mesaError) return { busy: false, error: globalThis.__mesaError, success: "" };');
+      if (filename.replaceAll('\\', '/').endsWith('/hooks/useRemoteCatalog.js')) return source.replace('export function useRemoteCatalog(loader) {', 'export function useRemoteCatalog(loader) { return globalThis.__mesaResources.shift() || { data: { sesion: null, datos: [] } };').replace('export function useCatalogMutation() {', 'export function useCatalogMutation() { if (globalThis.__mesaError) return { busy: false, error: globalThis.__mesaError, success: "" };');
     },
   }] });
   try {

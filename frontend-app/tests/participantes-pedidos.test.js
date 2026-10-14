@@ -82,6 +82,15 @@ test('Mini formulario real: temporal y alta inline selecciona cliente confirmado
       assert.deepEqual(JSON.parse(request.body), { mesas_id: 'mesa', usuarios_id: 'mesero-real', clientes_id: null, participante_temporal: { nombre: 'Invitado' } });
       assert.equal(confirmed, 'pedido-creado');
     });
+    await t.test('otro pedido reutiliza temporal por ID sin crear otra identidad por alias', async () => {
+      globalThis.__pedidoParticipant = { tipo_participante: 'temporal', nombre: 'Laura', participante_id: 'temporal-de-visita' };
+      let request;
+      globalThis.fetch = async (url, options) => { request = { url, ...options }; return new Response(JSON.stringify({ id_pedido: 'segundo-pedido' }), { status: 201 }); };
+      const html = renderToString(React.createElement(AuthContext.Provider, { value: { user: { id: 'mesero-real', rol: 'Mesero' } } }, React.createElement(Form, { mesas: { data: [{ id: 'mesa', numero: 1 }] }, initialMesa: 'mesa', onCreated() {} })));
+      assert.match(html, /Laura/); assert.match(html, /Usar participante de la visita/);
+      await globalThis.__pedidoSubmit({ preventDefault() {} });
+      assert.deepEqual(JSON.parse(request.body), { mesas_id: 'mesa', usuarios_id: 'mesero-real', clientes_id: null, participante_id: 'temporal-de-visita' });
+    });
   } finally {
     globalThis.fetch = previousFetch; delete globalThis.__personaMode; delete globalThis.__personaNew; delete globalThis.__personaRegister; delete globalThis.__pedidoParticipant; delete globalThis.__pedidoSubmit; await server.close();
   }

@@ -30,7 +30,7 @@ test('Centavos exactos, cancelados excluidos y agrupación por ID, nunca por nom
 });
 test('MesaDetalle muestra resumen predeterminado, juegos separados y detalle/pedidos originales', async () => {
   const server = await createServer({ root: fileURLToPath(new URL('..', import.meta.url)), server: { middlewareMode: true }, appType: 'custom', plugins: [{ name: 'cuenta-resumen-test', enforce: 'pre', transform(source, filename) {
-    if (filename.replaceAll('\\', '/').endsWith('/hooks/useRemoteCatalog.js')) return source.replace('export function useRemoteCatalog(loader) {', 'export function useRemoteCatalog(loader) { return globalThis.__cuentaResources.shift();');
+    if (filename.replaceAll('\\', '/').endsWith('/hooks/useRemoteCatalog.js')) return source.replace('export function useRemoteCatalog(loader) {', 'export function useRemoteCatalog(loader) { return globalThis.__cuentaResources.shift() || { data: { sesion: null, datos: [] } };');
   } }] });
   try {
     const { default: Detail } = await server.ssrLoadModule('/src/components/MesaDetalle.jsx');
