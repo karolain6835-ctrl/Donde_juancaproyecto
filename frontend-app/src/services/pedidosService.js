@@ -4,7 +4,12 @@ import { operationFail, operationId, operationPath } from './operacionContract.j
 export const estadosPedido = Object.freeze({ abierto: 'Abierto', cerrado: 'Cerrado', cancelado: 'Cancelado' });
 export function pedidoBody(form) {
   // usuarios_id es el responsable asignado; nunca sustituirlo por el ejecutor JWT.
-  return { mesas_id: operationId(form.mesas_id), usuarios_id: operationId(form.usuarios_id), clientes_id: operationId(form.clientes_id) };
+  const body = { mesas_id: operationId(form.mesas_id), usuarios_id: operationId(form.usuarios_id), clientes_id: form.clientes_id === null ? null : operationId(form.clientes_id) };
+  if (body.clientes_id === null) {
+    if (typeof form.participante_temporal?.nombre !== 'string' || !form.participante_temporal.nombre.trim() || [...form.participante_temporal.nombre.trim()].length > 100) operationFail('Indica el nombre o alias del participante.');
+    body.participante_temporal = { nombre: form.participante_temporal.nombre.trim() };
+  }
+  return body;
 }
 export function itemPedidoBody(form, productos) {
   const product = productos.find(p => p.id === form.productos_id);
@@ -13,10 +18,11 @@ export function itemPedidoBody(form, productos) {
   if (!['string', 'number'].includes(typeof form.cantidad_pedida) || !Number.isInteger(cantidad_pedida) || cantidad_pedida <= 0 || cantidad_pedida > 2147483647) operationFail('La cantidad debe ser un entero mayor que cero.');
   if (cantidad_pedida > product.stock) operationFail('La cantidad supera el stock disponible.');
   if (!Number.isFinite(product.precio) || product.precio <= 0) operationFail('El producto no tiene un precio de venta válido.');
-  return { productos_id: operationId(product.id), cantidad_pedida, precio_unitario: product.precio };
+  return { productos_id: operationId(product.id), cantidad_pedida, precio_unitario: product.precio,
+    ...(form.participante_id ? { participante_id: operationId(form.participante_id) } : {}) };
 }
 function adaptPedido(row) {
-  if (!row || typeof row.id !== 'string' || !Object.hasOwn(estadosPedido, row.estado) || !['mesas_id', 'clientes_id', 'usuarios_id'].every(key => typeof row[key] === 'string')) throw invalidResponse('pedidos');
+  if (!row || typeof row.id !== 'string' || !Object.hasOwn(estadosPedido, row.estado) || !['mesas_id', 'usuarios_id'].every(key => typeof row[key] === 'string') || !(row.clientes_id === null || typeof row.clientes_id === 'string')) throw invalidResponse('pedidos');
   return row;
 }
 export async function listarPedidos({ pagina = 1, limite = 20, estado, mesas_id } = {}, options) {

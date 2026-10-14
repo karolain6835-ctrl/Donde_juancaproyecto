@@ -14,6 +14,8 @@ test('Todos los permisos operativos coinciden con los roles de las rutas reales'
     ['productos', 'put', '/:id', ['productos.editar']],
     ['productos', 'delete', '/:id', ['productos.eliminar']],
     ['mesas', 'get', '/estado/:estado', ['mesas.ver']],
+    ['mesas', 'post', '/', ['mesas.crear']],
+    ['mesas', 'patch', '/:id/numero', ['mesas.editarNumero']],
     ['mesas', 'get', '/:mesa_id/cuenta', ['mesas.cuenta']],
     ['mesas', 'post', '/traslado', ['mesas.trasladar']],
     ['mesas', 'patch', '/:id/estado', ['mesas.cambiarEstado']],

@@ -173,7 +173,7 @@ test('Componentes reales de operación: recursos, formularios y controles por pe
     const { default: MesaDetail } = await server.ssrLoadModule('/src/components/MesaDetalle.jsx');
     const { AuthContext } = await server.ssrLoadModule('/src/context/useAuth.js');
     const render = (Component, resources, props = {}, rol = 'Administrador') => {
-      globalThis.__operacionResources = resources;
+      globalThis.__operacionResources = Component === Form ? [...resources].reverse() : Component === Detail ? [resources[0], resources[1] || { data: [] }, { data: { datos: [], total: 0, limite: 20 } }] : resources;
       return renderToString(React.createElement(MemoryRouter, null, React.createElement(AuthContext.Provider, { value: { user: { id: 'ejecutor-real', rol } } }, React.createElement(Component, props))));
     };
     for (const [index, name] of ['Mesas', 'Pedidos', 'Kanban'].entries()) {
@@ -210,6 +210,15 @@ test('Componentes reales de operación: recursos, formularios y controles por pe
       const html = render(Detail, [{ data: accumulated }], { id: pedido.id, summary: pedido, mesas: { data: [mesa] }, productos: { data: [product] } });
       assert.equal(html.split('class="operacion-item pedido-detail-line"').length - 1, 1);
       assert.match(html, /Cantidad: <!-- -->4/);
+    });
+    await t.test('detalle distingue personas por línea y ofrece participantes reales al agregar', () => {
+      const persons = [{ id: 'persona-carlos', nombre: 'Carlos', tipo_participante: 'registrado' }, { id: 'persona-laura', nombre: 'Laura', tipo_participante: 'temporal' }];
+      const identified = { ...pedido, clientes_id: null, items: persons.map((p, i) => ({ ...pedido.items[0], id: `linea-${i}`, participante_id: p.id, participante_nombre: p.nombre })) };
+      const html = render(Detail, [{ data: identified }, { data: persons }], { id: pedido.id, summary: { ...pedido, clientes_id: null, cliente_nombre: null }, mesas: { data: [mesa] }, productos: { data: [product] } });
+      assert.match(html, /Sin cliente registrado/);
+      assert.match(html, /value="persona-carlos"/); assert.match(html, /value="persona-laura"/);
+      assert.match(html, /class="pedido-line-person">Carlos/); assert.match(html, /class="pedido-line-person">Laura/);
+      assert.equal(html.split('class="operacion-item pedido-detail-line"').length - 1, 2);
     });
     await t.test('cuenta de mesa usa total del servidor y permisos de traslado/estado', () => {
       const props = { id: mesa.id, mesas: { data: [mesa, { id: 'destino-real', numero: 8, estado: 'disponible' }] } };

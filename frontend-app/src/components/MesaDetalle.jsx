@@ -13,7 +13,7 @@ import OperacionRemoteState from './OperacionRemoteState';
 import './CatalogoForm.css';
 import './OperacionForms.css';
 
-export default function MesaDetalle({ id, mesas, onClose, onCreate }) {
+export default function MesaDetalle({ id, mesas, onClose, onCreate, onEdit }) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const mesa = mesas.data?.find(row => row.id === id);
@@ -47,6 +47,7 @@ export default function MesaDetalle({ id, mesas, onClose, onCreate }) {
     <aside className="mesa-drawer" role="dialog" aria-modal="true" aria-label="Detalle de mesa">
       <div className="mesa-drawer-header"><h2>Mesa {mesa?.numero ?? id}</h2><button className="drawer-close" disabled={mutation.busy} onClick={onClose} aria-label="Cerrar detalle">×</button></div>
       {mesa && <div className={`drawer-status ${mesa.estado}`}><span>Estado</span><strong>{estadosMesa[mesa.estado]}</strong></div>}
+      {onEdit && can(user, 'mesas.editarNumero') && <button className="drawer-secondary-button" disabled={mutation.busy} onClick={onEdit}>Cambiar número</button>}
       <section className="operacion-drawer-section"><h3>Cuenta de la mesa</h3>
         <OperacionRemoteState resource={account}>{account.data && <>
           <dl className="operacion-info"><div><dt>Subtotal productos</dt><dd>{formatCurrency(account.data.resumen.subtotal_productos)}</dd></div><div><dt>Total cuenta</dt><dd>{formatCurrency(account.data.resumen.total_general)}</dd></div></dl>

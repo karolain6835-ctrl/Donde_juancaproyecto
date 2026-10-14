@@ -9,7 +9,7 @@ const ALL = [...SERVICE_CASH, 'Bartender'];
 // Permisos operativos: reflejan autorizarRoles en backend/src/routes.
 export const permissions = Object.freeze(Object.fromEntries([
   [ALL, ['categorias.ver', 'productos.ver']],
-  [ADMIN, ['productos.crear', 'productos.editar', 'productos.eliminar',
+  [ADMIN, ['mesas.crear', 'mesas.editarNumero', 'productos.crear', 'productos.editar', 'productos.eliminar',
     'inventario.movimientos', 'inventario.ajustar', 'mermas.registrar',
     'proveedores.ver', 'proveedores.crear', 'proveedores.editar',
     'compras.ver', 'compras.crear', 'compras.recibir', 'compras.cancelar', 'compras.reversar',

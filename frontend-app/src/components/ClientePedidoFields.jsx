@@ -1,0 +1,45 @@
+import { useCallback, useState } from 'react';
+import { crearCliente, listarClientes } from '../services/clientesService';
+import { useRemoteCatalog, useCatalogMutation } from '../hooks/useRemoteCatalog';
+
+// Campos compartidos por alta de pedido y por incorporación de participantes.
+// Sin form anidado: el alta de cliente se confirma con un botón independiente.
+export default function ClientePedidoFields({ value, onChange, disabled, participante = false }) {
+  const [mode, setMode] = useState('registrado');
+  const [query, setQuery] = useState({ pagina: 1, buscar: '', estado: 'activo' });
+  const clients = useRemoteCatalog(useCallback(options => listarClientes(query, options), [query]));
+  const mutation = useCatalogMutation();
+  const [newClient, setNewClient] = useState({ nombre: '', telefono: '', email: '' });
+  const [created, setCreated] = useState(null);
+  function chooseMode(next) { setMode(next); onChange(null); mutation.reset(); }
+  function register() {
+    let cliente;
+    return mutation.run(async () => { cliente = await crearCliente(newClient); }, async () => {
+      setCreated(cliente); setMode('registrado'); onChange({ tipo_participante: 'registrado', clientes_id: cliente.id, nombre: cliente.nombre });
+    }, 'Cliente registrado.');
+  }
+  return <fieldset disabled={disabled || mutation.busy} className="pedido-person-fields">
+    <label>Identidad<select value={mode} onChange={e => chooseMode(e.target.value)}>
+      <option value="registrado">{participante ? 'Cliente registrado' : 'Cliente recurrente'}</option><option value="nuevo">+ Registrar nuevo cliente</option><option value="temporal">{participante ? 'Participante temporal' : 'Cliente temporal'}</option>
+    </select></label>
+    {mode === 'temporal' && <label>Nombre o alias<input maxLength={100} value={value?.nombre || ''} onChange={e => onChange({ tipo_participante: 'temporal', nombre: e.target.value })} required /></label>}
+    {mode === 'registrado' && <>
+      <label>Buscar cliente<input type="search" placeholder="Nombre, email o teléfono" value={query.buscar} onChange={e => { setQuery({ ...query, pagina: 1, buscar: e.target.value }); onChange(null); }} /></label>
+      {clients.loading && <p role="status">Cargando información...</p>}
+      {clients.error && <div role="alert"><p>{clients.error}</p><button type="button" className="drawer-secondary-button" onClick={clients.refresh}>Reintentar</button></div>}
+      <label>Cliente<select value={value?.clientes_id || ''} disabled={clients.loading || Boolean(clients.error)} onChange={e => { const c = [created, ...(clients.data?.datos || [])].find(c => c?.id === e.target.value); onChange(c ? { tipo_participante: 'registrado', clientes_id: c.id, nombre: c.nombre } : null); }} required>
+        <option value="">Selecciona un cliente activo</option>
+        {[...(created && !clients.data?.datos.some(c => c.id === created.id) ? [created] : []), ...(clients.data?.datos || [])].filter(c => c.estado === 'activo').map(c => <option key={c.id} value={c.id}>{c.nombre}{c.telefono ? ` — ${c.telefono}` : ''}</option>)}
+      </select></label>
+      {!clients.loading && !clients.error && !created && !clients.data?.datos.length && <p>No hay clientes activos para esta búsqueda.</p>}
+      <div className="catalogo-actions"><button type="button" disabled={clients.loading || query.pagina <= 1} onClick={() => { setQuery({ ...query, pagina: query.pagina - 1 }); onChange(null); }}>Anterior</button><span>Página {query.pagina}</span><button type="button" disabled={clients.loading || !clients.data || query.pagina * clients.data.limite >= clients.data.total} onClick={() => { setQuery({ ...query, pagina: query.pagina + 1 }); onChange(null); }}>Siguiente</button></div>
+    </>}
+    {mode === 'nuevo' && <>
+      <label>Nombre<input maxLength={100} value={newClient.nombre} onChange={e => setNewClient({ ...newClient, nombre: e.target.value })} /></label>
+      <label>Teléfono (opcional)<input maxLength={20} value={newClient.telefono} onChange={e => setNewClient({ ...newClient, telefono: e.target.value })} /></label>
+      <label>Email (opcional)<input type="email" maxLength={150} value={newClient.email} onChange={e => setNewClient({ ...newClient, email: e.target.value })} /></label>
+      <button type="button" className="drawer-secondary-button" disabled={!newClient.nombre.trim()} onClick={register}>{mutation.busy ? 'Registrando...' : 'Registrar cliente'}</button>
+    </>}
+    {mutation.error && <p role="alert">{mutation.error}</p>}{mutation.success && <p role="status">{mutation.success}</p>}
+  </fieldset>;
+}

@@ -2,6 +2,15 @@ import { apiClient } from './apiClient.js';
 import { invalidResponse } from './catalogoContract.js';
 import { operationFail, operationId, operationPath } from './operacionContract.js';
 export const estadosMesa = Object.freeze({ disponible: 'Disponible', ocupada: 'Ocupada', en_cobro: 'En cobro' });
+export function mesaNumeroBody(form) {
+  const value = form.numero;
+  if (!['string', 'number'].includes(typeof value) || (typeof value === 'string' && !/^\d+$/.test(value.trim())) || !Number.isInteger(Number(value)) || Number(value) < 1 || Number(value) > 2147483647) operationFail('El número de mesa debe ser un entero mayor que cero.');
+  return { numero: Number(value) };
+}
+export async function guardarNumeroMesa(form, id) {
+  const response = await apiClient(id ? `/mesas/${operationPath(id)}/numero` : '/mesas', { method: id ? 'PATCH' : 'POST', body: mesaNumeroBody(form) });
+  return adaptMesas({ datos: [response?.datos] })[0];
+}
 export function adaptMesas(response) {
   if (!Array.isArray(response?.datos)) throw invalidResponse('mesas');
   return response.datos.map(row => {

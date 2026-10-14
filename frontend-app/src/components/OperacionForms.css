@@ -35,3 +35,8 @@
 .pedido-detail-line > p { color: var(--color-text-secondary); font-size: 14px; line-height: 1.5; }
 .pedido-feedback { margin: 18px 0; padding: 14px 16px; border: 1px solid var(--color-border); border-left: 4px solid var(--color-success); border-radius: var(--radius-sm); background: var(--color-success-bg); color: var(--color-success); font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; }
 .pedido-feedback[role="alert"] { border-left-color: var(--color-danger); background: var(--color-danger-bg); color: var(--color-danger); }
+.pedido-person-fields { display: grid; gap: 12px; min-width: 0; padding: 0; border: 0; }
+.pedido-participantes { display: grid; gap: 8px; list-style: none; padding: 0; }
+.pedido-participantes li { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; padding: 10px; border: 1px solid var(--border-color, #e5e7eb); border-radius: 8px; }
+.pedido-participantes small { color: var(--text-secondary, #64748b); }
+.pedido-line-person { font-weight: 600; color: var(--text-secondary, #64748b); }
