@@ -24,8 +24,8 @@
 }
 
 .user-profile-avatar {
-  width: 38px;
-  height: 38px;
+  width: 32px;
+  height: 32px;
   flex-shrink: 0;
   display: grid;
   place-items: center;
@@ -45,7 +45,7 @@
 
 .user-profile-info strong {
   color: white;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .user-profile-info span {

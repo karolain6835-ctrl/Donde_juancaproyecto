@@ -34,8 +34,7 @@ function UserProfileMenu() {
           </div>
 
           <div className="user-profile-info">
-            <strong>{nombre}</strong>
-            <span>{rol}</span>
+            <strong>Mi sesión</strong>
           </div>
 
           <span
