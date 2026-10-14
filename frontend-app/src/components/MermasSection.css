@@ -1,3 +1,25 @@
+.merma-product-selection {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-background-secondary);
+}
+
+.merma-product-selection dt {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.merma-product-selection dd {
+  margin: 3px 0 0;
+  color: var(--color-text);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
 .mermas-section {
   width: 100%;
 }

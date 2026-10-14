@@ -157,6 +157,7 @@
 
 .alertas-toolbar {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
 
@@ -184,7 +185,8 @@
   display: flex;
   align-items: center;
 
-  flex-shrink: 0;
+  flex: 1 1 240px;
+  min-width: 0;
 }
 
 .alertas-search-icon {
@@ -288,31 +290,35 @@
    FILAS
 ========================= */
 
+.alertas-list { display: grid; gap: 16px; padding: 20px; }
 .alerta-row {
-  display: grid;
-
-  grid-template-columns:
-    42px
-    minmax(250px, 1.5fr)
-    auto
-    auto
-    auto
-    auto;
-
-  align-items: center;
-
-  gap: 16px;
-
-  padding: 17px 20px;
-
-  border-bottom: 1px solid var(--color-border);
-
-  transition: background 0.15s ease;
+  display: grid; min-width: 0; gap: 20px; padding: 22px;
+  border: 1px solid var(--color-border); border-radius: var(--radius-md);
+  background: var(--color-surface); transition: background 0.15s ease;
 }
-
-.alerta-row:last-child {
-  border-bottom: none;
+.alerta-card-header { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 12px 20px; }
+.alerta-card-header h3 {
+  flex: 1 1 220px; min-width: 0; color: var(--color-text);
+  font-family: var(--font-brand); font-size: 21px; font-weight: 600;
+  line-height: 1.35; overflow-wrap: anywhere;
 }
+.alerta-card-header .alerta-status { flex: 0 0 auto; font-size: 12px; text-transform: capitalize; }
+.alerta-metrics, .alerta-dates {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
+  gap: 16px 24px; margin: 0;
+}
+.alerta-metrics > div, .alerta-dates > div { min-width: 0; }
+.alerta-metrics dt, .alerta-dates dt { margin-bottom: 5px; color: var(--color-text-secondary); font-size: 13px; line-height: 1.4; }
+.alerta-metrics dd, .alerta-dates dd { margin: 0; color: var(--color-text); line-height: 1.5; }
+.alerta-metrics dd { font-size: 20px; font-weight: 600; }
+.alerta-dates dd { font-size: 14px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.alerta-card-footer { display: flex; flex-wrap: wrap; gap: 12px; padding-top: 14px; border-top: 1px solid var(--color-border); }
+.alerta-card-footer .alerta-detail-button {
+  min-height: 40px; padding: 8px 14px; border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm); background: var(--color-surface);
+}
+.alertas-pagination { margin-top: 28px; }
+.alertas-pagination .catalogo-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
 
 .alerta-row:hover {
   background: #fcfbf8;
@@ -750,72 +756,16 @@
    RESPONSIVE
 ========================= */
 
+.alertas-toolbar > select { min-width: 0; max-width: 100%; flex: 1 1 180px; }
+
 @media (max-width: 1000px) {
-  .alertas-kpis {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .alerta-row {
-    grid-template-columns:
-      42px
-      1fr
-      auto;
-  }
-
-  .alerta-type,
-  .alerta-status,
-  .alerta-date {
-    grid-column: 2;
-  }
-
-  .alerta-detail-button {
-    grid-column: 3;
-    grid-row: 1;
-  }
+  .alertas-kpis { grid-template-columns: repeat(2, 1fr); }
 }
-
 @media (max-width: 700px) {
-  .alertas-toolbar {
-    flex-direction: column;
-  }
-
-  .alertas-search {
-    width: 100%;
-  }
-
-  .alertas-kpis,
-  .alerta-drawer-status,
-  .alerta-detail-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .alerta-row {
-    grid-template-columns: 36px 1fr;
-
-    align-items: start;
-  }
-
-  .alerta-main {
-    flex-direction: column;
-    align-items: flex-start;
-
-    gap: 10px;
-  }
-
-  .alerta-stock {
-    flex-wrap: wrap;
-  }
-
-  .alerta-type,
-  .alerta-status,
-  .alerta-date,
-  .alerta-detail-button {
-    grid-column: 2;
-  }
-
-  .alerta-detail-button {
-    grid-row: auto;
-
-    justify-self: flex-start;
-  }
+  .alertas-toolbar { align-items: stretch; flex-direction: column; }
+  .alertas-search { width: 100%; flex-basis: auto; }
+  .alertas-toolbar > select { flex-basis: auto; }
+  .alertas-kpis, .alerta-drawer-status, .alerta-detail-grid { grid-template-columns: 1fr; }
+  .alertas-list { padding: 14px; gap: 14px; }
+  .alerta-row { padding: 16px; }
 }

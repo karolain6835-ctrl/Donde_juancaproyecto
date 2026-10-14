@@ -1,3 +1,5 @@
+import { useInventoryResources } from "../hooks/useInventoryResources";
+import AjusteStockForm from "../components/AjusteStockForm";
 import { listarProductos, crearProducto, actualizarProducto, eliminarProducto as eliminarProductoAPI } from "../services/productosService";
 import { listarCategorias } from "../services/categoriasService";
 import { listarProveedores } from "../services/proveedoresService";
@@ -81,6 +83,8 @@ import "./InventarioPage.css";
  */
 function InventarioPage() {
   const { user } = useAuth();
+  const inventory = useInventoryResources(user);
+  const [ajusteId, setAjusteId] = useState(null);
 
   const [seccionActiva, setSeccionActiva] = useState("resumen");
 
@@ -139,6 +143,10 @@ function InventarioPage() {
       if (!signal?.aborted) setCargandoProductos(false);
     }
   }, []);
+
+  const refreshStock = async () => {
+    await Promise.all([cargarProductos(), inventory.movements.refresh(), inventory.alerts.refresh(), inventory.mermas.refresh()]);
+  };
 
   const cargarCategorias = useCallback(async (signal) => {
     try {
@@ -1683,7 +1691,7 @@ function InventarioPage() {
 
       {seccionActiva === "movimientos" && can(user, "inventario.movimientos") && (
 
-        <MovimientosSection />
+        <MovimientosSection resource={inventory.movements} productos={productos} />
 
       )}
 
@@ -1691,7 +1699,7 @@ function InventarioPage() {
 
       {seccionActiva === "alertas" && can(user, "alertas.ver") && (
 
-        <AlertasSection />
+        <AlertasSection resource={inventory.alerts} productos={productos} />
 
       )}
 
@@ -1699,7 +1707,7 @@ function InventarioPage() {
 
       {seccionActiva === "mermas" && can(user, "mermas.ver") && (
 
-        <MermasSection />
+        <MermasSection resource={inventory.mermas} motivos={inventory.motives} refrigeradores={inventory.fridges} productos={productos} productosLoading={cargandoProductos} productosError={errorProductos} onReloadProducts={() => cargarProductos()} onStockChanged={refreshStock} />
 
       )}
 
@@ -2235,7 +2243,7 @@ function InventarioPage() {
 
             <div className="inventario-drawer-actions">
 
-              <Can permission="inventario.ajustar"><button
+              <Can permission="inventario.ajustar"><button onClick={() => { setAjusteId(productoSeleccionado.id); setProductoSeleccionado(null); }}
 
                 type="button"
 
@@ -2297,7 +2305,7 @@ function InventarioPage() {
 
 
 
-              <Can permission="inventario.movimientos"><button
+              <Can permission="inventario.movimientos"><button onClick={() => { inventory.movements.setQuery({ pagina: 1, producto_id: productoSeleccionado.id }); setSeccionActiva("movimientos"); setProductoSeleccionado(null); }}
 
                 type="button"
 
@@ -2490,6 +2498,8 @@ function InventarioPage() {
         </>
 
       )}
+
+      {ajusteId && can(user, "inventario.ajustar") && <AjusteStockForm productos={productos} initialId={ajusteId} onRefresh={refreshStock} onClose={() => setAjusteId(null)} onSaved={response => { setMensajeProducto(response.mensaje); setAjusteId(null); }} />}
 
     </div>
 
