@@ -1,3 +1,16 @@
+.compra-form { margin-top: 24px; }
+.compra-form-item { display: grid; gap: 10px; padding: 16px; margin-top: 14px; border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+.compra-form-item p, .compra-form-item strong { overflow-wrap: anywhere; }
+.compra-quantity { display: grid; gap: 6px; }
+.compra-quantity input { width: 100%; padding: 10px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font: inherit; }
+.compra-real-id { overflow-wrap: anywhere; font-size: 12px; }
+.compra-receptions { margin-top: 28px; }
+.compras-pagination { margin-top: 24px; }
+.compras-filters { flex-wrap: wrap; }
+.compra-detail-grid strong { overflow-wrap: anywhere; }
+.compra-status.parcialmente_recibida, .compra-drawer-status.parcialmente_recibida { color: var(--color-warning); background: var(--color-warning-bg); }
+.compra-status.cerrada_parcial, .compra-drawer-status.cerrada_parcial { color: var(--color-text-secondary); background: var(--color-background-secondary); }
+
 .compras-page {
   width: 100%;
 }
