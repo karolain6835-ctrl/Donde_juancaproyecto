@@ -2,6 +2,7 @@ const { ejecutor } = require('../services/identidadService');
 const { registrarAuditoria } = require('../services/auditoriaService');
 const db = require('../config/db');
 const mysql = require('mysql2');
+const { evaluarLiberacionMesa } = require('../services/liquidacionService');
 
 // Obtener mesas filtradas por su estado
 const obtenerMesasPorEstado = (req, res) => {
@@ -43,6 +44,10 @@ const actualizarEstadoMesa = async (req,res) => {
     conexion=mysql.createConnection(db.dbConfig).promise();await conexion.beginTransaction();abierta=true;
     const [[mesa]]=await conexion.query('SELECT id,estado FROM mesas WHERE id=? FOR UPDATE',[id]);
     if(!mesa)throw Object.assign(new Error('Mesa no encontrada.'),{status:404});
+    if (estado === 'disponible') {
+      const disponibilidad = await evaluarLiberacionMesa(conexion, mesa.id);
+      if (!disponibilidad.puede_liberarse) throw Object.assign(new Error(disponibilidad.motivo), { status: 409 });
+    }
     const [r]=await conexion.query('UPDATE mesas SET estado=? WHERE id=?',[estado,mesa.id]);
     if(r.affectedRows!==1)throw new Error('No se actualizó la mesa.');
     if(mesa.estado!==estado)await registrarAuditoria(conexion,actor,'mesas','mesa_estado_cambiado','mesas',mesa.id,{antes:{estado:mesa.estado},despues:{estado}});
@@ -52,6 +57,23 @@ const actualizarEstadoMesa = async (req,res) => {
     if(abierta)await conexion.rollback();
     return res.status(e.status||500).json({error:e.status?e.message:'Hubo un error al actualizar el estado de la mesa.'});
   } finally {if(conexion)await conexion.end();}
+};
+
+const consultarLiberacionMesa = async (req, res) => {
+  let conexion, abierta = false;
+  try {
+    conexion = mysql.createConnection(db.dbConfig).promise(); await conexion.beginTransaction(); abierta = true;
+    const [[mesa]] = await conexion.query('SELECT id,estado FROM mesas WHERE id=? FOR UPDATE', [req.params.id]);
+    if (!mesa) throw Object.assign(new Error('Mesa no encontrada.'), { status: 404 });
+    let disponibilidad;
+    try { disponibilidad = await evaluarLiberacionMesa(conexion, mesa.id); }
+    catch (error) { if (error.status !== 409) throw error; disponibilidad = { puede_liberarse: false, motivo: error.message }; }
+    await conexion.commit(); abierta = false;
+    return res.json({ datos: { ...disponibilidad, mesa_id: mesa.id, estado: mesa.estado } });
+  } catch (error) {
+    if (abierta) await conexion.rollback();
+    return res.status(error.status || 500).json({ error: error.status ? error.message : 'No se pudo consultar la disponibilidad de la mesa.' });
+  } finally { if (conexion) await conexion.end(); }
 };
 
 // ==========================================
@@ -102,6 +124,8 @@ const trasladarMesa = async (req, res) => {
     if (destino.estado !== 'disponible' || ocupacion.length) {
       rechazar(400, 'La mesa de destino ya se encuentra ocupada con una cuenta activa.');
     }
+    const liberacionDestino = await evaluarLiberacionMesa(conexion, destino.id);
+    if (!liberacionDestino.puede_liberarse) rechazar(409, liberacionDestino.motivo);
 
     // También mover juegos cerrados cuyo consumo pertenece a pedidos aún abiertos.
     const juegosDeCuenta = `
@@ -145,6 +169,8 @@ const trasladarMesa = async (req, res) => {
     }
 
     mensajeError = 'Error al actualizar los estados de las mesas.';
+    const liberacionOrigen = await evaluarLiberacionMesa(conexion, origen.id);
+    if (!liberacionOrigen.puede_liberarse) rechazar(409, liberacionOrigen.motivo);
     const estadoDestino = origen.estado === 'en_cobro' ? 'en_cobro' : 'ocupada';
     const [resEstadoOrigen] = await conexion.query(
       "UPDATE mesas SET estado = 'disponible' WHERE id = ?", [origen.id]
@@ -195,6 +221,7 @@ const trasladarMesa = async (req, res) => {
 };
 
 module.exports = {
+  consultarLiberacionMesa,
   obtenerMesasPorEstado,
   actualizarEstadoMesa,
   trasladarMesa

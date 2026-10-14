@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const mesasController = require('../controllers/mesasController');
 const pedidosController = require('../controllers/pedidosController');
+router.get('/:id/liberacion', autorizarRoles('Administrador', 'SuperAdmin', 'Mesero', 'Mesera', 'Cajero'), mesasController.consultarLiberacionMesa);
 
 // Ruta canónica para la cuenta consolidada de una mesa (productos + juegos).
 router.get('/:mesa_id/cuenta', autorizarRoles('Administrador', 'SuperAdmin', 'Mesero', 'Mesera', 'Cajero'), pedidosController.obtenerCuentaConsolidada);

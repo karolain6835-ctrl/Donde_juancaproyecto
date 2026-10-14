@@ -19,6 +19,7 @@ test('autorizaci?n exige identidad y compara exclusivamente el rol exacto actual
 // Matriz independiente de las declaraciones de los routers. Controladores inertes:
 // prueba autorizaci?n HTTP real sin ejecutar operaciones de negocio ni escrituras persistentes.
 const cases = [
+ ['MC','GET','mesas/x/liberacion'],
  ['MB','GET','kanban/pedidos'],['MB','PATCH','kanban/pedidos/x/despachar-todo'],
  ['MB','PATCH','kanban/pedidos/x/aceptar'],
  ['M','GET','usuarios/responsables'],['MC','GET','pedidos'],

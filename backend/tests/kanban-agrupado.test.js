@@ -1,6 +1,7 @@
 const test = require('node:test'), assert = require('node:assert/strict');
 const fs = require('node:fs'), path = require('node:path'), vm = require('node:vm');
 function load(name, db, connection) {
+  connection ||= { query: (sql, params) => new Promise((resolve, reject) => db.query(sql, params, (error, rows) => error ? reject(error) : resolve([rows]))), beginTransaction: async () => {}, commit: async () => {}, rollback: async () => {}, end: async () => {} };
   const module = { exports: {} };
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/controllers', name), 'utf8'), { module, console: { error() {} }, require: name => {
     if (name === '../config/db') return db;
@@ -33,7 +34,7 @@ test('Responsable: Mesero/Mesera ajeno 403; propio permitido; Admin puede asigna
     let responsable;
     const controller = load('pedidosController.js', { query(sql, params, cb) {
       if (sql.includes('INSERT INTO pedidos')) { responsable = params[5]; cb(null, { affectedRows: 1 }); }
-      else cb(null, [{ id: params[0], estado: 'activo' }]);
+      else cb(null, [{ id: params[0], estado: sql.includes('FROM mesas') ? 'ocupada' : 'activo' }]);
     } });
     const usuarios_id = ['Mesero', 'Mesera'].includes(rol) ? 'actor' : 'otro';
     assert.equal((await invoke(controller.crearPedido, { ...body, usuarios_id }, {}, { id: 'actor', rol })).status, 201);
@@ -43,7 +44,7 @@ test('Responsable: Mesero/Mesera ajeno 403; propio permitido; Admin puede asigna
 test('Responsable inexistente/inactivo se rechaza antes de insertar', async () => {
   for (const [rows, status] of [[[], 404], [[{ estado: 'inactivo' }], 409]]) {
     const controller = load('pedidosController.js', { query(sql, params, cb) {
-      assert.ok(!sql.startsWith('INSERT')); cb(null, sql.includes('FROM clientes') ? [{ estado: 'activo' }] : rows);
+      assert.ok(!sql.startsWith('INSERT')); cb(null, sql.includes('FROM mesas') ? [{ id: 'm', estado: 'ocupada' }] : sql.includes('FROM clientes') ? [{ estado: 'activo' }] : rows);
     } });
     assert.equal((await invoke(controller.crearPedido, { mesas_id: 'm', usuarios_id: 'otro', clientes_id: 'c' })).status, status);
   }

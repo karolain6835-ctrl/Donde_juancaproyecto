@@ -69,6 +69,21 @@ const validarImporte = (cuenta, importe) => {
   }
 };
 
+// El llamador bloquea primero la mesa. Reutiliza el cálculo real, no los totales cacheados.
+const evaluarLiberacionMesa = async (conexion, mesaId) => {
+  const [pedidos] = await conexion.query("SELECT id,estado FROM pedidos WHERE mesas_id=? AND estado!='cancelado' ORDER BY id FOR UPDATE", [mesaId]);
+  if (pedidos.some(p => p.estado === 'abierto')) return { puede_liberarse: false, motivo: 'No se puede liberar la mesa: tiene pedidos abiertos.' };
+  const [juegos] = await conexion.query("SELECT id FROM sesiones_juego WHERE mesas_id=? AND estado='activa' FOR UPDATE", [mesaId]);
+  if (juegos.length) return { puede_liberarse: false, motivo: 'No se puede liberar la mesa: tiene una sesión de juego activa.' };
+  for (const pedido of pedidos) {
+    const cuenta = await calcularCuenta(conexion, pedido);
+    if (cuenta.saldo > 0n) return { puede_liberarse: false, motivo: 'No se puede liberar la mesa: tiene saldo pendiente.' };
+    if (cuenta.pendienteVerificacion > 0n) return { puede_liberarse: false, motivo: 'No se puede liberar la mesa: tiene pagos pendientes de verificación.' };
+    if (!cuenta.totalDefinitivo) return { puede_liberarse: false, motivo: 'No se puede liberar la mesa: la cuenta de juegos aún no tiene un total definitivo.' };
+  }
+  return { puede_liberarse: true, motivo: null };
+};
+
 const actualizarLiquidacion = async (conexion, pedido, cuenta) => {
   const liquidada = cuenta.saldo === 0n && cuenta.totalDefinitivo;
   const estadoPedido = liquidada ? 'cerrado' : pedido.estado;
@@ -90,7 +105,12 @@ const actualizarLiquidacion = async (conexion, pedido, cuenta) => {
   const [juegosActivos] = await conexion.query(
     "SELECT id FROM sesiones_juego WHERE mesas_id = ? AND estado = 'activa' FOR UPDATE", [pedido.mesas_id]
   );
-  const estadoMesa = !abiertos.length && !juegosActivos.length ? 'disponible' : 'en_cobro';
+  let liberable = false;
+  if (!abiertos.length && !juegosActivos.length) {
+    try { liberable = (await evaluarLiberacionMesa(conexion, pedido.mesas_id)).puede_liberarse; }
+    catch (error) { if (error.status !== 409) throw error; } // Una cuenta inconsistente conserva la mesa protegida.
+  }
+  const estadoMesa = liberable ? 'disponible' : 'en_cobro';
   const [mesa] = await conexion.query('UPDATE mesas SET estado = ? WHERE id = ?', [estadoMesa, pedido.mesas_id]);
   if (mesa.affectedRows !== 1) throw new Error('No se actualizó la mesa.');
   return {
@@ -123,4 +143,4 @@ const validarParticipante = async (conexion, participanteId, importe = 0n) => {
 };
 
 module.exports = { bloquearPedido, calcularCuenta, validarImporte, actualizarLiquidacion,
-  validarParticipante, errorLiquidacion, centavos };
+  evaluarLiberacionMesa, validarParticipante, errorLiquidacion, centavos };

@@ -21,12 +21,13 @@ const operaciones = [
   ['juegos', 'iniciarJuego', 'iniciada_por'],
   ['juegos', 'terminarJuego', 'cerrada_por']
 ];
-const cargar = (nombre, db) => {
+const cargar = (nombre, db, real) => {
   const modulo = { exports: {} };
   const prohibido = new Proxy({}, { get: () => () => assert.fail('No debe iniciar operaciones de negocio') });
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/controllers', nombre + 'Controller.js'), 'utf8'), {
     module: modulo, exports: modulo.exports, console,
     require: n => n === '../services/identidadService' ? identidad
+      : n === 'mysql2' && real ? { createConnection: () => ({ promise: () => ({ query: (s,p) => real.query(s,p), beginTransaction: () => real.beginTransaction(), commit: () => real.commit(), rollback: () => real.rollback(), end: async () => {} }) }) }
       : n === '../config/db' ? (db || prohibido)
       : n.startsWith('../services/') || n === 'mysql2' ? prohibido : (n === '../services/auditoriaService' ? require('../src/services/auditoriaService') : (n === './alertasInventarioController' ? {listar(){throw new Error('Fuera del alcance de este arnes');}} : require(n)))
   });
@@ -73,7 +74,7 @@ test('Divisiones y responsable de pedido: MySQL real temporal', {
     await c.query("INSERT INTO mesas (id,numero,estado) VALUES ('mesa',1,'disponible')");
     await c.query("INSERT INTO clientes (id,nombre,estado,usuarios_id) VALUES ('cliente','Cliente','activo','ejecutor')");
     const db = { query: (sql, params, cb) => c.query(sql, params).then(([r]) => cb(null, r), cb) };
-    const pedido = await invocar(cargar('pedidos', db).crearPedido, {
+    const pedido = await invocar(cargar('pedidos', db, c).crearPedido, {
       usuario: { id: 'ejecutor' }, body: { mesas_id: 'mesa', clientes_id: 'cliente', usuarios_id: 'asignado' }
     });
     assert.equal(pedido.status, 201);

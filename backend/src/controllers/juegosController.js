@@ -63,13 +63,13 @@ exports.iniciarJuego = (req, res) => {
   return ejecutar(res, async c => {
     campos(req.body, ['activos_juego_id', 'mesas_id', 'pedido_items_id']);
     const b = req.body;
+    const [[mesa]] = await c.query('SELECT id,estado FROM mesas WHERE id=? FOR UPDATE', [b.mesas_id]);
+    if (!mesa) throw fallo(404, 'Mesa inexistente.');
     const [[activo]] = await c.query('SELECT id,estado,tipo,CAST(precio_hora AS CHAR) AS precio_hora FROM activos_juego WHERE id=? FOR UPDATE', [b.activos_juego_id]);
     if (!activo) throw fallo(404, 'Activo inexistente.');
     if (activo.estado !== 'disponible') throw fallo(409, 'El activo no está disponible.');
     const [activas] = await c.query("SELECT id FROM sesiones_juego WHERE activos_juego_id=? AND estado='activa' FOR UPDATE", [activo.id]);
     if (activas.length) throw fallo(409, 'El activo ya tiene una sesión activa.');
-    const [[mesa]] = await c.query('SELECT id FROM mesas WHERE id=? LOCK IN SHARE MODE', [b.mesas_id]);
-    if (!mesa) throw fallo(404, 'Mesa inexistente.');
     const [[usuario]] = await c.query('SELECT id FROM usuarios WHERE id=? LOCK IN SHARE MODE', [actor]);
     if (!usuario) throw fallo(404, 'Usuario inexistente.');
     const [[item]] = await c.query(`SELECT pi.id,p.mesas_id FROM pedido_items pi
@@ -85,6 +85,7 @@ exports.iniciarJuego = (req, res) => {
     escrito(insert);
     const [update] = await c.query("UPDATE activos_juego SET estado='ocupado' WHERE id=? AND estado='disponible'", [activo.id]);
     escrito(update);
+    if (mesa.estado === 'disponible') escrito((await c.query("UPDATE mesas SET estado='ocupada' WHERE id=?", [mesa.id]))[0]);
     const [[datos]] = await c.query(`${consultaSesion} WHERE s.id=?`, [id]);
     return { status: 201, body: { mensaje: 'Sesión de juego iniciada correctamente.', id_sesion: id, datos } };
   }, true);

@@ -35,7 +35,7 @@ const listarPedidos = (req, res) => {
 // ==========================================
 // 1. CREAR UN NUEVO PEDIDO
 // ==========================================
-const crearPedido = (req, res) => {
+const crearPedido = async (req, res) => {
   const actor = ejecutor(req, res, []);
   if (!actor) return;
   const { mesas_id, usuarios_id, clientes_id } = req.body || {};
@@ -49,49 +49,35 @@ const crearPedido = (req, res) => {
     return res.status(403).json({ error: 'Solo puedes crear pedidos con tu propio usuario como responsable.' });
   }
 
-  const id = crypto.randomUUID(); 
-  const estado = 'abierto';       
-  const sincronizado = 0;         
-  
-  const fechaActual = new Date();
-  fechaActual.setHours(fechaActual.getHours() - 5); 
-  const creado_en = fechaActual.toISOString().slice(0, 19).replace('T', ' ');
-
-  const query = `
-    INSERT INTO pedidos 
-    (id, estado, sincronizado, creado_en, mesas_id, usuarios_id, clientes_id) 
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-  `;
-
-  db.query('SELECT estado FROM clientes WHERE id = ?', [clientes_id], (errorCliente, clientes) => {
-    if (errorCliente) {
-      console.error('Error al consultar el cliente del pedido:', errorCliente.message);
-      return res.status(500).json({ error: 'Hubo un error en el servidor al abrir el pedido.' });
+  let conexion, abierta = false;
+  const rechazar = (status, message) => { throw Object.assign(new Error(message), { status }); };
+  try {
+    conexion = mysql.createConnection(db.dbConfig).promise();
+    await conexion.beginTransaction(); abierta = true;
+    const [[mesa]] = await conexion.query('SELECT id,estado FROM mesas WHERE id=? FOR UPDATE', [mesas_id]);
+    if (!mesa) rechazar(404, 'Mesa no encontrada.');
+    const [clientes] = await conexion.query('SELECT estado FROM clientes WHERE id = ? LOCK IN SHARE MODE', [clientes_id]);
+    if (!clientes.length) rechazar(404, 'El cliente especificado no existe.');
+    if (clientes[0].estado !== 'activo') rechazar(409, 'No puede asociarse un pedido a un cliente inactivo.');
+    const [responsables] = await conexion.query('SELECT id,estado FROM usuarios WHERE id = ? LOCK IN SHARE MODE', [usuarios_id]);
+    if (!responsables.length) rechazar(404, 'Responsable no encontrado.');
+    if (responsables[0].estado !== 'activo') rechazar(409, 'El responsable del pedido debe estar activo.');
+    const id = crypto.randomUUID();
+    const fechaActual = new Date(); fechaActual.setHours(fechaActual.getHours() - 5);
+    const creado_en = fechaActual.toISOString().slice(0, 19).replace('T', ' ');
+    const [insert] = await conexion.query('INSERT INTO pedidos (id,estado,sincronizado,creado_en,mesas_id,usuarios_id,clientes_id) VALUES (?,?,?,?,?,?,?)', [id,'abierto',0,creado_en,mesa.id,usuarios_id,clientes_id]);
+    if (insert.affectedRows !== 1) throw new Error('No se insertó el pedido.');
+    if (mesa.estado === 'disponible') {
+      const [update] = await conexion.query("UPDATE mesas SET estado='ocupada' WHERE id=?", [mesa.id]);
+      if (update.affectedRows !== 1) throw new Error('No se ocupó la mesa.');
     }
-    if (!clientes.length) {
-      return res.status(404).json({ error: 'El cliente especificado no existe.' });
-    }
-    if (clientes[0].estado !== 'activo') {
-      return res.status(409).json({ error: 'No puede asociarse un pedido a un cliente inactivo.' });
-    }
-
-    db.query('SELECT id,estado FROM usuarios WHERE id = ?', [usuarios_id], (errorResponsable, responsables) => {
-      if (errorResponsable) return res.status(500).json({ error: 'No se pudo validar el responsable del pedido.' });
-      if (!responsables.length) return res.status(404).json({ error: 'Responsable no encontrado.' });
-      if (responsables[0].estado !== 'activo') return res.status(409).json({ error: 'El responsable del pedido debe estar activo.' });
-      db.query(query, [id, estado, sincronizado, creado_en, mesas_id, usuarios_id, clientes_id], (err, resultados) => {
-      if (err) {
-        console.error('❌ Error al crear el pedido:', err.message);
-        return res.status(500).json({ error: 'Hubo un error en el servidor al abrir el pedido.' });
-      }
-
-      res.status(201).json({
-        mensaje: '¡Cuenta abierta con éxito para la mesa! 🍻',
-        id_pedido: id
-      });
-    });
-    });
-  });
+    await conexion.commit(); abierta = false;
+    return res.status(201).json({ mensaje: '¡Cuenta abierta con éxito para la mesa! 🍻', id_pedido: id });
+  } catch (error) {
+    if (abierta) { try { await conexion.rollback(); } catch (rollback) { console.error('Rollback pedido:', rollback.message); } }
+    const concurrent = ['ER_LOCK_DEADLOCK','ER_LOCK_WAIT_TIMEOUT'].includes(error.code);
+    return res.status(error.status || (concurrent ? 409 : 500)).json({ error: error.status ? error.message : concurrent ? 'Conflicto concurrente al ocupar la mesa. Reintenta.' : 'Hubo un error en el servidor al abrir el pedido.' });
+  } finally { if (conexion) { try { await conexion.end(); } catch (error) { console.error('Cierre pedido:', error.message); } } }
 };
 
 // ==========================================
