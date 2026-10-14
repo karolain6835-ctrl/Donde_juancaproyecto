@@ -114,7 +114,7 @@ test('Lecturas reales con tablas MySQL temporales y pedido sin ítems', { skip: 
       const [[movement]] = await c.query('SELECT usuarios_id,cantidad FROM movimientos_inventario WHERE referencia_id=?', [created.data.id_pedido]); assert.equal(movement.usuarios_id, 'u1'); assert.equal(movement.cantidad, -2);
       let board = await invoke(kanban.obtenerTableroKanban);
       assert.equal(board.data.data.enviado[0].id_item, added.data.id_item);
-      const second = await invoke(actual.agregarItemPedido, { productos_id: 'producto-real', cantidad_pedida: 1, precio_unitario: 3500 }, { id_pedido: created.data.id_pedido });
+      const second = await invoke(actual.agregarItemPedido, { productos_id: 'producto-real', cantidad_pedida: 1, precio_unitario: 3600 }, { id_pedido: created.data.id_pedido });
       assert.equal(second.status, 201);
       assert.equal((await invoke(kanban.actualizarEstadoPedido, { nuevo_estado: 'servido' }, { id: added.data.id_item })).status, 400);
       const stockSnapshot = async () => (await c.query("SELECT cantidad_disponible,costo_promedio_ponderado FROM productos WHERE id='producto-real'"))[0][0];

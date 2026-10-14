@@ -143,6 +143,18 @@ const agregarItemPedido = async (req, res) => {
 
     const [pedidos] = await conexion.query('SELECT id, usuarios_id FROM pedidos WHERE id = ? FOR UPDATE', [id_pedido]);
     if (!pedidos.length) throw errorPedido(404, 'Pedido no encontrado.');
+    // El bloqueo del padre serializa también dos altas concurrentes sin línea previa.
+    const [compatibles] = await conexion.query(`SELECT id,cantidad_pedida,pedido_id,producto_id
+      FROM pedido_items WHERE pedidos_id=? AND productos_id=? AND precio_unitario=?
+      AND estado IN ('enviado','preparando') ORDER BY id LIMIT 1 FOR UPDATE`,
+    [id_pedido, productos_id, precio_unitario]);
+    const compatible = compatibles[0];
+    if (compatible && (compatible.pedido_id !== pedidos[0].id || compatible.producto_id !== productos_id)) {
+      throw errorPedido(409, 'Referencias del ítem inconsistentes.');
+    }
+    if (compatible && (!Number.isInteger(compatible.cantidad_pedida) || compatible.cantidad_pedida <= 0 || compatible.cantidad_pedida + cantidad_pedida > 2147483647)) {
+      throw errorPedido(409, 'La cantidad acumulada excede el rango permitido o es inconsistente.');
+    }
     const [productos] = await conexion.query(
       'SELECT cantidad_disponible, nombre FROM productos WHERE id = ? FOR UPDATE', [productos_id]
     );
@@ -152,14 +164,19 @@ const agregarItemPedido = async (req, res) => {
       `Stock insuficiente para "${producto.nombre}". Disponible: ${producto.cantidad_disponible}, solicitado: ${cantidad_pedida}.`);
     if (producto.cantidad_disponible < cantidad_pedida) throw insuficiente();
 
-    const idItem = crypto.randomUUID();
-    const [insercion] = await conexion.query(
+    const idItem = compatible ? compatible.id : crypto.randomUUID();
+    if (compatible) {
+      const [actualizacion] = await conexion.query('UPDATE pedido_items SET cantidad_pedida=cantidad_pedida+? WHERE id=?', [cantidad_pedida, idItem]);
+      if (actualizacion.affectedRows !== 1) throw new Error('No se actualizó la cantidad del ítem.');
+    } else {
+      const [insercion] = await conexion.query(
       `INSERT INTO pedido_items
        (id, precio_unitario, pedido_id, producto_id, cantidad_pedida, cantidad_pagada, estado, pedidos_id, productos_id)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [idItem, precio_unitario, id_pedido, productos_id, cantidad_pedida, 0, 'enviado', id_pedido, productos_id]
     );
     if (insercion.affectedRows !== 1) throw new Error('No se insert? el ?tem.');
+    }
 
     const [descuento] = await conexion.query(
       `UPDATE productos SET cantidad_disponible = cantidad_disponible - ?

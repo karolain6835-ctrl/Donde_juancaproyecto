@@ -205,6 +205,12 @@ test('Componentes reales de operación: recursos, formularios y controles por pe
       const service = render(Detail, [{ data: pedido }], props, 'Mesero'); assert.match(service, /Agregar producto/); assert.doesNotMatch(service, /Cancelar ítem/);
       const cash = render(Detail, [{ data: pedido }], props, 'Cajero'); assert.doesNotMatch(cash, /Agregar producto/); assert.match(cash, /Cancelar ítem/);
     });
+    await t.test('detalle reconsultado muestra una sola línea con cantidad acumulada devuelta por backend', () => {
+      const accumulated = { ...pedido, items: [{ ...pedido.items[0], cantidad_pedida: 4 }] };
+      const html = render(Detail, [{ data: accumulated }], { id: pedido.id, summary: pedido, mesas: { data: [mesa] }, productos: { data: [product] } });
+      assert.equal(html.split('class="operacion-item pedido-detail-line"').length - 1, 1);
+      assert.match(html, /Cantidad: <!-- -->4/);
+    });
     await t.test('cuenta de mesa usa total del servidor y permisos de traslado/estado', () => {
       const props = { id: mesa.id, mesas: { data: [mesa, { id: 'destino-real', numero: 8, estado: 'disponible' }] } };
       const resources = () => [{ data: cuenta }, { data: { datos: [pedido], paginacion } }, { data: { puede_liberarse: false, motivo: 'Tiene pedidos abiertos.' } }];
