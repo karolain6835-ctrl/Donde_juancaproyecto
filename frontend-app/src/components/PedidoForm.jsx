@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { UserRound } from 'lucide-react';
 import { useAuth } from '../context/useAuth';
 import { can } from '../utils/permissions';
 import { useRemoteCatalog, useCatalogMutation } from '../hooks/useRemoteCatalog';
@@ -44,11 +45,11 @@ export default function PedidoForm({ mesas, initialMesa = '', onClose, onCreated
         <label>Cliente<select value={form.clientes_id} onChange={event => setForm({ ...form, clientes_id: event.target.value })} disabled={clients.loading || Boolean(clients.error)} required><option value="">Selecciona un cliente activo</option>{(clients.data?.datos || []).filter(c => c.estado === 'activo').map(c => <option key={c.id} value={c.id}>{c.nombre}{c.telefono ? ` — ${c.telefono}` : ''}</option>)}</select></label>
         {!clients.loading && !clients.error && !clients.data?.datos.length && <p>No hay clientes activos para esta búsqueda.</p>}
         <div className="catalogo-actions"><button type="button" disabled={clients.loading || query.pagina <= 1} onClick={() => changeQuery({ ...query, pagina: query.pagina - 1 })}>Anterior</button><span>Página {query.pagina}</span><button type="button" disabled={clients.loading || !clients.data || query.pagina * clients.data.limite >= clients.data.total} onClick={() => changeQuery({ ...query, pagina: query.pagina + 1 })}>Siguiente</button></div>
-        {assignable ? <label>Responsable del pedido<select value={form.usuarios_id} onChange={event => setForm({ ...form, usuarios_id: event.target.value })} disabled={responsible.loading || Boolean(responsible.error)} required><option value="">Selecciona un responsable</option>{(responsible.data || []).map(u => <option key={u.id} value={u.id}>{u.nombre || u.id}</option>)}</select></label> : <div><p>Responsable del pedido</p><strong>{user?.nombre || user?.id}</strong><p>Asignado automáticamente a tu sesión</p></div>}
+        {assignable ? <label>Responsable del pedido<select value={form.usuarios_id} onChange={event => setForm({ ...form, usuarios_id: event.target.value })} disabled={responsible.loading || Boolean(responsible.error)} required><option value="">Selecciona un responsable</option>{(responsible.data || []).map(u => <option key={u.id} value={u.id}>{u.nombre || u.id}</option>)}</select></label> : <div className="pedido-responsable-block"><p className="pedido-responsable-label">Responsable del pedido</p><div className="pedido-responsable-card"><span className="pedido-responsable-avatar" aria-hidden="true"><UserRound size={20} /></span><div className="pedido-responsable-identity"><strong>{user?.nombre || user?.id}</strong><span>Asignado automáticamente</span></div></div></div>}
         {assignable && !responsible.loading && !responsible.error && !responsible.data?.length && <p>No hay responsables activos disponibles.</p>}
-        <small>El responsable es quien atiende el pedido. La acción se registra con tu sesión actual.</small>
         {(validation || mutation.error) && <p role="alert">{validation || mutation.error}</p>}
         <button className="drawer-primary-button" type="submit" disabled={!ready || !form.mesas_id || !form.clientes_id || !responsableId}>{mutation.busy ? 'Guardando...' : 'Crear pedido'}</button>
+        <small className="pedido-session-note">El pedido quedará registrado con tu sesión.</small>
       </fieldset></form>
     </aside>
   </>;
