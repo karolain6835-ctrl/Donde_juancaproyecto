@@ -1,0 +1,11 @@
+.operacion-form { margin-top: 24px; }
+.operacion-info { display: grid; gap: 10px; margin: 20px 0; padding: 16px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-background-secondary); }
+.operacion-info > div { min-width: 0; }
+.operacion-info dt { color: var(--color-text-secondary); font-size: 13px; }
+.operacion-info dd { margin: 4px 0 0; overflow-wrap: anywhere; font-weight: 600; }
+.operacion-item { display: grid; gap: 8px; margin-top: 14px; padding: 16px; border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+.operacion-item strong, .operacion-id { overflow-wrap: anywhere; }
+.operacion-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+.operacion-pagination { margin-top: 24px; }
+.operacion-search { width: 100%; padding: 10px 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font: inherit; }
+.operacion-drawer-section { margin-top: 24px; }

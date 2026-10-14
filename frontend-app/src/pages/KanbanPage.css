@@ -1,3 +1,15 @@
+.kanban-board.operacion-kanban-board { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.kanban-order-lines { list-style: none; padding: 0; display: grid; gap: 12px; margin-top: 16px; }
+.kanban-order-lines li { padding-bottom: 10px; border-bottom: 1px solid var(--color-border); min-width: 0; }
+.kanban-order-lines li > div { display: grid; gap: 4px; overflow-wrap: anywhere; }
+.kanban-order-lines span { font-size: 12px; color: var(--color-text-secondary); }
+.kanban-column.parcialmente_servido { border-top: 3px solid var(--color-accent); }
+.operacion-kanban-board .kanban-column { min-width: 0; }
+.kanban-card-body h3, .kanban-meta { overflow-wrap: anywhere; }
+.kanban-card-top { flex-wrap: wrap; gap: 8px; }
+.kanban-card-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+@media (max-width: 900px) { .kanban-board.operacion-kanban-board { grid-template-columns: 1fr; } }
+
 .kanban-page {
   width: 100%;
 }

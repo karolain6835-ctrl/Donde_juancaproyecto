@@ -1,3 +1,9 @@
+.operacion-mesa-filter { display: grid; gap: 6px; max-width: 320px; margin-bottom: 20px; }
+.operacion-mesa-filter select { padding: 10px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font: inherit; }
+.pedido-filters { flex-wrap: wrap; }
+.pedido-status.cerrado { color: var(--color-success); background: var(--color-success-bg); }
+.pedido-status.cancelado { color: var(--color-danger); background: var(--color-danger-bg); }
+
 .pedidos-page {
   width: 100%;
 }

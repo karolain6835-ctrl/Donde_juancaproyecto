@@ -36,6 +36,8 @@ const pages = {
 
 export function can(user, permission) {
   if (!user || typeof user.rol !== 'string') return false;
+  // Regla de asignación dentro de crear pedido; no es un permiso de ruta adicional.
+  if (permission === 'pedidos.asignarResponsable') return ADMIN.includes(user.rol);
   if (Object.hasOwn(permissions, permission)) return permissions[permission].includes(user.rol);
   if (Object.hasOwn(pages, permission)) return pages[permission].some(action => can(user, action));
   return false;

@@ -1,3 +1,8 @@
+.operacion-mesas-grid { padding: 24px; }
+.mesa-filters { flex-wrap: wrap; }
+.mesa-card.en_cobro { background: var(--color-warning-bg); border-color: var(--color-warning); }
+.drawer-status.en_cobro { background: var(--color-warning-bg); color: var(--color-warning); }
+
 .mesas-page {
   width: 100%;
 }
