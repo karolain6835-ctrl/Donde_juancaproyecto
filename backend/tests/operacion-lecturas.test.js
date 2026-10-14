@@ -94,6 +94,7 @@ test('Lecturas reales con tablas MySQL temporales y pedido sin ítems', { skip: 
         await c.query(`CREATE TEMPORARY TABLE copia_flujo_${table} LIKE ${table}`);
         await c.query(`CREATE TEMPORARY TABLE ${table} LIKE copia_flujo_${table}`);
       }
+      await require('./helpers/participantesTemporales')(c, { pedidos: true, items: true });
       await c.query("INSERT INTO productos(id,nombre,codigo,precio_venta,costo_promedio_ponderado,cantidad_disponible,stock_minimo,estado,categorias_id,proveedores_id,historial_costos_id) VALUES ('producto-real','Poker prueba 330ml','CERV-005',3500,2844.44,6,1,'activo',1,'prov','hist')");
       let failAcceptance = false, historyWrites = 0;
       const conexion = { query: (sql, params) => {

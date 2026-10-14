@@ -27,6 +27,7 @@ const cargar = (nombre, db, real) => {
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/controllers', nombre + 'Controller.js'), 'utf8'), {
     module: modulo, exports: modulo.exports, console,
     require: n => n === '../services/identidadService' ? identidad
+      : n === '../services/participantesService' && real ? require('../src/services/participantesService')
       : n === 'mysql2' && real ? { createConnection: () => ({ promise: () => ({ query: (s,p) => real.query(s,p), beginTransaction: () => real.beginTransaction(), commit: () => real.commit(), rollback: () => real.rollback(), end: async () => {} }) }) }
       : n === '../config/db' ? (db || prohibido)
       : n.startsWith('../services/') || n === 'mysql2' ? prohibido : (n === '../services/auditoriaService' ? require('../src/services/auditoriaService') : (n === './alertasInventarioController' ? {listar(){throw new Error('Fuera del alcance de este arnes');}} : require(n)))
@@ -68,6 +69,7 @@ test('Divisiones y responsable de pedido: MySQL real temporal', {
       await c.query(`CREATE TEMPORARY TABLE copia_identidad_${tabla} LIKE ${tabla}`);
       await c.query(`CREATE TEMPORARY TABLE ${tabla} LIKE copia_identidad_${tabla}`);
     }
+    await require('./helpers/participantesTemporales')(c, { pedidos: true });
     for (const id of ['ejecutor', 'asignado']) await c.query(
       "INSERT INTO usuarios (id,nombre,email,password_hash,estado,roles_id) VALUES (?,?,?,'fixture','activo',1)",
       [id, id, id + '@example.invalid']);

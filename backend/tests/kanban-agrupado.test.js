@@ -33,8 +33,10 @@ test('Responsable: Mesero/Mesera ajeno 403; propio permitido; Admin puede asigna
   for (const rol of ['Administrador', 'SuperAdmin', 'Mesero', 'Mesera']) {
     let responsable;
     const controller = load('pedidosController.js', { query(sql, params, cb) {
+      if (sql.includes('FROM jugadores')) return cb(null, []);
+      if (sql.includes('INSERT INTO jugadores')) return cb(null, { affectedRows: 1 });
       if (sql.includes('INSERT INTO pedidos')) { responsable = params[5]; cb(null, { affectedRows: 1 }); }
-      else cb(null, [{ id: params[0], estado: sql.includes('FROM mesas') ? 'ocupada' : 'activo' }]);
+      else cb(null, [{ id: params[0], nombre: 'Cliente', estado: sql.includes('FROM mesas') ? 'ocupada' : 'activo' }]);
     } });
     const usuarios_id = ['Mesero', 'Mesera'].includes(rol) ? 'actor' : 'otro';
     assert.equal((await invoke(controller.crearPedido, { ...body, usuarios_id }, {}, { id: 'actor', rol })).status, 201);

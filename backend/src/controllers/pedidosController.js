@@ -2,6 +2,7 @@ const { ejecutor } = require('../services/identidadService');
 const db = require('../config/db');
 const mysql = require('mysql2');
 const crypto = require('crypto'); // Generador de UUIDs
+const { insertarParticipante, validarParticipante } = require('../services/participantesService');
 
 // Lectura paginada: permite consultar también pedidos sin ítems, ausentes de Kanban.
 const listarPedidos = (req, res) => {
@@ -38,9 +39,9 @@ const listarPedidos = (req, res) => {
 const crearPedido = async (req, res) => {
   const actor = ejecutor(req, res, []);
   if (!actor) return;
-  const { mesas_id, usuarios_id, clientes_id } = req.body || {};
+  const { mesas_id, usuarios_id, clientes_id = null } = req.body || {};
 
-  if (!mesas_id || !usuarios_id || !clientes_id) {
+  if (!mesas_id || !usuarios_id || clientes_id === '' || (clientes_id === null && !req.body?.participante_temporal)) {
     return res.status(400).json({ 
       error: "Faltan datos. Se requiere la mesa, el usuario que atiende y el cliente." 
     });
@@ -56,9 +57,11 @@ const crearPedido = async (req, res) => {
     await conexion.beginTransaction(); abierta = true;
     const [[mesa]] = await conexion.query('SELECT id,estado FROM mesas WHERE id=? FOR UPDATE', [mesas_id]);
     if (!mesa) rechazar(404, 'Mesa no encontrada.');
-    const [clientes] = await conexion.query('SELECT estado FROM clientes WHERE id = ? LOCK IN SHARE MODE', [clientes_id]);
-    if (!clientes.length) rechazar(404, 'El cliente especificado no existe.');
-    if (clientes[0].estado !== 'activo') rechazar(409, 'No puede asociarse un pedido a un cliente inactivo.');
+    if (clientes_id !== null) {
+      const [clientes] = await conexion.query('SELECT estado FROM clientes WHERE id = ? LOCK IN SHARE MODE', [clientes_id]);
+      if (!clientes.length) rechazar(404, 'El cliente especificado no existe.');
+      if (clientes[0].estado !== 'activo') rechazar(409, 'No puede asociarse un pedido a un cliente inactivo.');
+    } else validarParticipante({ tipo_participante: 'temporal', nombre: req.body.participante_temporal?.nombre });
     const [responsables] = await conexion.query('SELECT id,estado FROM usuarios WHERE id = ? LOCK IN SHARE MODE', [usuarios_id]);
     if (!responsables.length) rechazar(404, 'Responsable no encontrado.');
     if (responsables[0].estado !== 'activo') rechazar(409, 'El responsable del pedido debe estar activo.');
@@ -67,6 +70,9 @@ const crearPedido = async (req, res) => {
     const creado_en = fechaActual.toISOString().slice(0, 19).replace('T', ' ');
     const [insert] = await conexion.query('INSERT INTO pedidos (id,estado,sincronizado,creado_en,mesas_id,usuarios_id,clientes_id) VALUES (?,?,?,?,?,?,?)', [id,'abierto',0,creado_en,mesa.id,usuarios_id,clientes_id]);
     if (insert.affectedRows !== 1) throw new Error('No se insertó el pedido.');
+    await insertarParticipante(conexion, { id, mesas_id: mesa.id }, clientes_id === null
+      ? { tipo_participante: 'temporal', nombre: req.body.participante_temporal.nombre }
+      : { tipo_participante: 'registrado', clientes_id });
     if (mesa.estado === 'disponible') {
       const [update] = await conexion.query("UPDATE mesas SET estado='ocupada' WHERE id=?", [mesa.id]);
       if (update.affectedRows !== 1) throw new Error('No se ocupó la mesa.');
@@ -125,7 +131,7 @@ const agregarItemPedido = async (req, res) => {
   const actor = ejecutor(req, res);
   if (!actor) return;
   const { id_pedido } = req.params;
-  const { productos_id, cantidad_pedida, precio_unitario } = req.body || {};
+  const { productos_id, cantidad_pedida, precio_unitario, participante_id = null } = req.body || {};
 
   if (!productos_id || !precio_unitario) {
     return res.status(400).json({ error: 'Faltan datos. Se requiere el producto, la cantidad y el precio.' });
@@ -143,11 +149,16 @@ const agregarItemPedido = async (req, res) => {
 
     const [pedidos] = await conexion.query('SELECT id, usuarios_id FROM pedidos WHERE id = ? FOR UPDATE', [id_pedido]);
     if (!pedidos.length) throw errorPedido(404, 'Pedido no encontrado.');
+    if (participante_id !== null) {
+      if (typeof participante_id !== 'string' || !participante_id.trim() || participante_id.length > 36) throw errorPedido(400, 'Participante inválido.');
+      const [[participante]] = await conexion.query('SELECT id FROM jugadores WHERE id=? AND pedido_id=? FOR UPDATE', [participante_id, id_pedido]);
+      if (!participante) throw errorPedido(409, 'El participante no pertenece a este pedido.');
+    }
     // El bloqueo del padre serializa también dos altas concurrentes sin línea previa.
     const [compatibles] = await conexion.query(`SELECT id,cantidad_pedida,pedido_id,producto_id
       FROM pedido_items WHERE pedidos_id=? AND productos_id=? AND precio_unitario=?
-      AND estado IN ('enviado','preparando') ORDER BY id LIMIT 1 FOR UPDATE`,
-    [id_pedido, productos_id, precio_unitario]);
+      AND participante_id <=> ? AND estado IN ('enviado','preparando') ORDER BY id LIMIT 1 FOR UPDATE`,
+    [id_pedido, productos_id, precio_unitario, participante_id]);
     const compatible = compatibles[0];
     if (compatible && (compatible.pedido_id !== pedidos[0].id || compatible.producto_id !== productos_id)) {
       throw errorPedido(409, 'Referencias del ítem inconsistentes.');
@@ -171,9 +182,9 @@ const agregarItemPedido = async (req, res) => {
     } else {
       const [insercion] = await conexion.query(
       `INSERT INTO pedido_items
-       (id, precio_unitario, pedido_id, producto_id, cantidad_pedida, cantidad_pagada, estado, pedidos_id, productos_id)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [idItem, precio_unitario, id_pedido, productos_id, cantidad_pedida, 0, 'enviado', id_pedido, productos_id]
+       (id, precio_unitario, pedido_id, producto_id, cantidad_pedida, cantidad_pagada, estado, pedidos_id, productos_id, participante_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [idItem, precio_unitario, id_pedido, productos_id, cantidad_pedida, 0, 'enviado', id_pedido, productos_id, participante_id]
     );
     if (insercion.affectedRows !== 1) throw new Error('No se insert? el ?tem.');
     }
@@ -210,9 +221,10 @@ const obtenerPedidoConDetalles = (req, res) => {
   const queryPedido = 'SELECT * FROM pedidos WHERE id = ?';
   
   const queryItems = `
-    SELECT pi.id, pi.cantidad_pedida, pi.precio_unitario, pi.estado, p.nombre 
+    SELECT pi.id, pi.cantidad_pedida, pi.precio_unitario, pi.estado, p.nombre, pi.participante_id, j.nombre AS participante_nombre
     FROM pedido_items pi
     JOIN productos p ON pi.producto_id = p.id OR pi.productos_id = p.id
+    LEFT JOIN jugadores j ON j.id=pi.participante_id
     WHERE pi.pedido_id = ? OR pi.pedidos_id = ?
   `;
 

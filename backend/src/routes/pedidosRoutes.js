@@ -2,6 +2,9 @@ const { autorizarRoles } = require('../middleware/rolesMiddleware');
 const express = require('express');
 const router = express.Router();
 const pedidosController = require('../controllers/pedidosController');
+const participantes = require('../controllers/participantesController');
+router.get('/:id/participantes', autorizarRoles('Administrador', 'SuperAdmin', 'Mesero', 'Mesera', 'Cajero'), participantes.listar);
+router.post('/:id/participantes', autorizarRoles('Administrador', 'SuperAdmin', 'Mesero', 'Mesera'), participantes.agregar);
 
 router.get('/', autorizarRoles('Administrador', 'SuperAdmin', 'Mesero', 'Mesera', 'Cajero'), pedidosController.listarPedidos);
 

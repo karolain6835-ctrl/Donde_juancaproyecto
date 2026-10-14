@@ -31,7 +31,7 @@ test('trazabilidad y lectura contra MySQL con tablas temporales', {
     vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/controllers', archivo), 'utf8'), {
       module: modulo, exports: modulo.exports,
       require: nombre => nombre === '../config/db' ? { dbConfig: {} }
-        : nombre === 'mysql2' ? { createConnection: () => ({ promise: () => conexion }) } : (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : (nombre === './alertasInventarioController' ? {listar(){throw new Error('Fuera del alcance de este arnes');}} : require(nombre))),
+        : nombre === 'mysql2' ? { createConnection: () => ({ promise: () => conexion }) } : (nombre.startsWith('../services/') ? require(path.join(__dirname, '../src/controllers', nombre)) : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : (nombre === './alertasInventarioController' ? {listar(){throw new Error('Fuera del alcance de este arnes');}} : require(nombre))),
       console: { error() {} }
     });
     return modulo.exports;
@@ -47,6 +47,7 @@ test('trazabilidad y lectura contra MySQL con tablas temporales', {
       await real.query(`CREATE TEMPORARY TABLE copia_traza_${tabla} LIKE ${tabla}`);
       await real.query(`CREATE TEMPORARY TABLE ${tabla} LIKE copia_traza_${tabla}`);
     }
+    await require('./helpers/participantesTemporales')(real, { items: true });
     const [columnas] = await real.query('SHOW COLUMNS FROM movimientos_inventario');
     if (columnas.some(c => c.Field === 'creado_en')) {
       const [indices] = await real.query('SHOW INDEX FROM movimientos_inventario');

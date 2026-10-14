@@ -9,7 +9,7 @@ function cargar(db, real) {
   const module = { exports: {} };
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/controllers/pedidosController.js'), 'utf8'), {
     module, console: { error() {} }, require: name => name === 'mysql2' ? { createConnection: () => ({ promise: () => connection }) } : name === '../config/db' ? db :
-      name === '../services/identidadService' ? require('../src/services/identidadService') : require(name)
+      name.startsWith('../services/') ? require(path.join(__dirname, '../src/controllers', name)) : require(name)
   });
   return module.exports.crearPedido;
 }
@@ -68,6 +68,7 @@ test('Pedidos: persistencia MySQL temporal y responsable asignado', {
       await c.query(`CREATE TEMPORARY TABLE copia_pedidos_${tabla} LIKE ${tabla}`);
       await c.query(`CREATE TEMPORARY TABLE ${tabla} LIKE copia_pedidos_${tabla}`);
     }
+    await require('./helpers/participantesTemporales')(c, { pedidos: true });
     await c.query("INSERT INTO mesas (id,numero,estado) VALUES ('mesa',1,'disponible')");
     for (const id of ['ejecutor', 'asignado']) await c.query(
       "INSERT INTO usuarios (id,nombre,email,password_hash,estado,roles_id) VALUES (?,?,?,'fixture','activo',1)",

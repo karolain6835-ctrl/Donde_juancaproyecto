@@ -151,6 +151,8 @@ const trasladarMesa = async (req, res) => {
     `, [destino.id, origen.id, origen.id]);
 
     mensajeError = 'Error al trasladar los pedidos a la nueva mesa.';
+    await conexion.query(`UPDATE jugadores j JOIN pedidos p ON p.id=j.pedido_id
+      SET j.mesas_id=? WHERE p.mesas_id=? AND p.estado='abierto'`, [destino.id, origen.id]);
     const [resPedido] = await conexion.query(`
       UPDATE pedidos SET mesas_id = ? WHERE mesas_id = ? AND estado = 'abierto'
     `, [destino.id, origen.id]);
