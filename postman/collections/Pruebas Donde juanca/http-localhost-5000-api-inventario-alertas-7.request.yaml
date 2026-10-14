@@ -1,0 +1,10 @@
+$kind: http-request
+name: http://localhost:5000/api/inventario/alertas
+description: ""
+url: http://localhost:5000/api/inventario/alertas
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{json_web_token_0xho}}"
+order: 4503596146305635
