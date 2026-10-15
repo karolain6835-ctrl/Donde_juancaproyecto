@@ -3,6 +3,13 @@ import {operationId,operationPath,operationFail} from './operacionContract.js';
 import {invalidResponse} from './catalogoContract.js';
 import {centavosDivision,decimalDivision,montoCOP,disponiblePagador} from './divisionesService.js';
 export const metodosPago=Object.freeze({efectivo:'Efectivo',nequi:'Nequi',daviplata:'Daviplata',tarjeta:'Tarjeta'});
+export async function listarPagosGlobal(filtros={},options){
+ const query=new URLSearchParams(Object.entries(filtros).filter(([,v])=>v!==''&&v!=null));
+ const data=await apiClient(`/pagos?${query}`,options);
+ if(!Array.isArray(data?.datos)||!data.paginacion||!data.resumen)throw invalidResponse('pagos');
+ for(const p of data.datos)centavosDivision(p.total_seleccionado);
+ return data;
+}
 export function estadoPago(p){
  if(p.verificacion_estado==='rechazado'||p.estado==='cancelado')return 'Rechazado';
  if(p.verificacion_estado==='verificado'&&p.estado==='pagado')return 'Verificado';

@@ -952,3 +952,4 @@
     grid-template-columns: 1fr;
   }
 }
+.pagos-filtros{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin-bottom:20px}.pagos-filtros label{display:grid;gap:5px;min-width:140px;flex:1}.pagos-filtros input,.pagos-filtros select{max-width:100%;padding:8px;border:1px solid var(--color-border);border-radius:8px}.pagos-paginacion{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:16px;margin:24px 0}.pagos-detalle{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}.pagos-detalle dd{margin:4px 0;overflow-wrap:anywhere}.pagos-detalle dt{color:var(--color-text-muted)}
