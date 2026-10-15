@@ -479,7 +479,7 @@ function HistorialJuegosSection() {
               />
 
               <span>
-                Este registro pertenece al historial de sesiones y es de solo consulta.
+                Esta sesión pertenece al historial y solo se puede consultar.
               </span>
 
             </div>

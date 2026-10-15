@@ -43,11 +43,11 @@ test('Kanban: tarjeta única, múltiples líneas, parcial y acciones válidas en
     });
     await t.test('detalle sirve líneas completas y muestra todas las líneas', () => {
       globalThis.__groupSelected = 'p'; globalThis.__groupResources = [{ data: [pedido] }];
-      const html = render(Page, 'Bartender'); assert.match(html, /role="dialog"/); assert.equal(html.split('Marcar línea servida').length - 1, 1); assert.match(html, /Despachar todo/); delete globalThis.__groupSelected;
+      const html = render(Page, 'Bartender'); assert.match(html, /role="dialog"/); assert.equal(html.split('Marcar como servido').length - 1, 1); assert.match(html, /Despachar todo/); delete globalThis.__groupSelected;
     });
     await t.test('enviado ofrece aceptar y oculta despacho directo', () => {
       globalThis.__groupResources = [{ data: [{ ...pedido, estado_derivado: 'enviado', items: pedido.items.map(i => ({ ...i, estado: 'enviado' })) }] }];
-      const html = render(Page, 'Bartender'); assert.match(html, /Aceptar pedido/); assert.doesNotMatch(html, /Despachar todo|Marcar línea servida/);
+      const html = render(Page, 'Bartender'); assert.match(html, /Aceptar pedido/); assert.doesNotMatch(html, /Despachar todo|Marcar como servido/);
     });
     await t.test('errores de operación 403/409 se muestran como alertas', () => {
       for (const message of ['403: No tienes permiso para realizar esta acción.', '409: Primero debes aceptar el pedido.']) {

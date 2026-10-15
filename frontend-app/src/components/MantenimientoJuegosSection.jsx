@@ -336,7 +336,7 @@ function MantenimientoJuegosSection() {
               </h2>
 
               <p>
-                {mantenimientosFiltrados.length} registros encontrados
+                {mantenimientosFiltrados.length} mantenimientos encontrados
               </p>
             </div>
 
@@ -350,7 +350,7 @@ function MantenimientoJuegosSection() {
 
             <thead>
               <tr>
-                <th>Registro</th>
+                <th>Mantenimiento</th>
                 <th>Juego</th>
                 <th>Tipo</th>
                 <th>Motivo</th>
@@ -699,7 +699,7 @@ function MantenimientoJuegosSection() {
                 />
 
                 <span>
-                  Este mantenimiento fue completado y permanece disponible como registro histórico.
+                  Este mantenimiento fue completado y se conserva en el historial.
                 </span>
 
               </div>

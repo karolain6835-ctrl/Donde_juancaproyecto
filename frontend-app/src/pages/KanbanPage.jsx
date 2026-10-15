@@ -49,7 +49,7 @@ export default function KanbanPage() {
   function lines(pedido, detailed = false) {
     return <ul className="kanban-order-lines">{pedido.items.filter(item => detailed || item.estado !== 'cancelado').map(item => <li key={item.pedido_item_id}>
       <div><strong>{item.producto}</strong><span>Cantidad: {item.cantidad_pedida}</span><span>Estado: {estadosPedidoKanban[item.estado] || item.estado}</span></div>
-      {detailed && can(user, 'kanban.actualizar') && item.estado === 'preparando' && <button className="kanban-action success" disabled={mutation.busy || board.loading} onClick={() => act(pedido, () => moverTarjeta({ id_item: item.pedido_item_id, estado: item.estado }, 'servido'), 'Línea servida correctamente.')}>Marcar línea servida</button>}
+      {detailed && can(user, 'kanban.actualizar') && item.estado === 'preparando' && <button className="kanban-action success" disabled={mutation.busy || board.loading} onClick={() => act(pedido, () => moverTarjeta({ id_item: item.pedido_item_id, estado: item.estado }, 'servido'), 'Producto servido correctamente.')}>Marcar como servido</button>}
     </li>)}</ul>;
   }
   if (!allowed) return <p>No tienes permiso para consultar Kanban.</p>;
@@ -65,7 +65,7 @@ export default function KanbanPage() {
       </div></article>)}
     </section></OperacionRemoteState>
     {selectedId && <><div className="pedido-overlay" onClick={() => { if (!mutation.busy) setSelectedId(null); }} /><aside className="pedido-drawer" role="dialog" aria-modal="true" aria-label="Detalle Kanban del pedido"><div className="pedido-drawer-header"><h2>Detalle del pedido</h2><button className="drawer-close" disabled={mutation.busy} onClick={() => setSelectedId(null)} aria-label="Cerrar detalle">×</button></div>
-      {board.loading ? <p role="status">Actualizando pedido...</p> : board.error ? <OperacionRemoteState resource={board} /> : selected ? <><div className="pedido-visual-header pedido-visual-header-detail"><strong>Mesa {selected.mesa}</strong><span className={`pedido-state-badge ${selected.estado_derivado}`}>{estadosPedidoKanban[selected.estado_derivado]}</span></div><p className="pedido-visual-id">Pedido: {selected.pedido_id}</p>{lines(selected, true)}{actions(selected, true)}</> : <p>El pedido ya no tiene líneas operativas en el tablero.</p>}
+      {board.loading ? <p role="status">Actualizando pedido...</p> : board.error ? <OperacionRemoteState resource={board} /> : selected ? <><div className="pedido-visual-header pedido-visual-header-detail"><strong>Mesa {selected.mesa}</strong><span className={`pedido-state-badge ${selected.estado_derivado}`}>{estadosPedidoKanban[selected.estado_derivado]}</span></div><p className="pedido-visual-id">Pedido: {selected.pedido_id}</p>{lines(selected, true)}{actions(selected, true)}</> : <p>El pedido ya no tiene productos pendientes en el tablero.</p>}
       {mutation.error && <p className="pedido-feedback" role="alert">{mutation.error}</p>}{mutation.success && <p className="pedido-feedback" role="status">{mutation.success}</p>}
     </aside></>}
   </div>;

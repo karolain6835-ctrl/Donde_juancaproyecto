@@ -70,7 +70,7 @@ function AuditoriaSection() {
       fecha: "02/10/2026",
       hora: "15:30",
       registro: "PG-899",
-      descripcion: "Registro de pago asociado al pedido P-3845.",
+      descripcion: "Pago asociado al pedido P-3845.",
       anterior: null,
       posterior: {
         metodo: "Tarjeta",
@@ -120,7 +120,7 @@ function AuditoriaSection() {
       fecha: "01/10/2026",
       hora: "18:12",
       registro: "OC-208",
-      descripcion: "Registro de nueva orden de compra.",
+      descripcion: "Nueva orden de compra.",
       anterior: null,
       posterior: {
         proveedor: "Dislicores Medellín",
@@ -224,7 +224,7 @@ function AuditoriaSection() {
 
         <div>
           <h2>
-            Registro de auditoría
+            Historial de actividad
           </h2>
 
           <p>
@@ -242,7 +242,7 @@ function AuditoriaSection() {
 
           <input
             type="text"
-            placeholder="Buscar registro..."
+            placeholder="Buscar actividad..."
             value={busqueda}
             onChange={(event) =>
               setBusqueda(event.target.value)
@@ -492,7 +492,7 @@ function AuditoriaSection() {
               </h2>
 
               <p>
-                {registrosFiltrados.length} registros encontrados
+                {registrosFiltrados.length} actividades encontradas
               </p>
             </div>
 
@@ -521,7 +521,7 @@ function AuditoriaSection() {
                 <th>Usuario</th>
                 <th>Módulo</th>
                 <th>Acción</th>
-                <th>Registro</th>
+                <th>Referencia</th>
                 <th></th>
               </tr>
             </thead>
@@ -710,7 +710,7 @@ function AuditoriaSection() {
 
               <div>
                 <span>
-                  Registro afectado
+                  Referencia afectada
                 </span>
 
                 <strong>
@@ -787,7 +787,7 @@ function AuditoriaSection() {
               />
 
               <span>
-                Los registros de auditoría son de solo consulta. No deben modificarse ni eliminarse desde la interfaz administrativa.
+                El historial de actividad es de solo consulta. No deben modificarse ni eliminarse desde la interfaz administrativa.
               </span>
 
             </div>

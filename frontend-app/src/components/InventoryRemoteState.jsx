@@ -8,5 +8,5 @@ export default function InventoryRemoteState({ resource, empty, children }) {
 export function InventoryPagination({ resource }) {
   const p = resource.data?.paginacion;
   if (!p) return null;
-  return <div className="catalogo-actions"><button disabled={resource.loading || p.pagina <= 1} onClick={() => resource.setQuery({ ...resource.query, pagina: p.pagina - 1 })}>Anterior</button><span>Página {p.pagina} · {p.total} registros</span><button disabled={resource.loading || p.pagina >= p.total_paginas} onClick={() => resource.setQuery({ ...resource.query, pagina: p.pagina + 1 })}>Siguiente</button></div>;
+  return <div className="catalogo-actions"><button disabled={resource.loading || p.pagina <= 1} onClick={() => resource.setQuery({ ...resource.query, pagina: p.pagina - 1 })}>Anterior</button><span>Página {p.pagina} · {p.total} resultados</span><button disabled={resource.loading || p.pagina >= p.total_paginas} onClick={() => resource.setQuery({ ...resource.query, pagina: p.pagina + 1 })}>Siguiente</button></div>;
 }

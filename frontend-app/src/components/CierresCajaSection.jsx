@@ -280,7 +280,7 @@ function CierresCajaSection() {
               </h2>
 
               <p>
-                {cierresFiltrados.length} registros encontrados
+                {cierresFiltrados.length} cierres encontrados
               </p>
             </div>
 
@@ -288,7 +288,7 @@ function CierresCajaSection() {
 
           <span className="cierres-readonly">
             <LockKeyhole size={13} strokeWidth={1.9} />
-            Registro de auditoría
+            Historial de caja
           </span>
 
         </div>
@@ -568,7 +568,7 @@ function CierresCajaSection() {
               />
 
               <span>
-                Los cierres confirmados forman parte del historial de caja y deben conservarse como registros de auditoría.
+                Los cierres confirmados forman parte del historial de caja y deben conservarse para consultar lo ocurrido.
               </span>
 
             </div>
