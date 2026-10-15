@@ -108,6 +108,9 @@ async function cambiarEstado(c,d,estado,actor){
   if(pagos.some(p=>valido(p)||pendiente(p)))throw fallo(409,'No se puede cancelar con pagos verificados o pendientes. Rechaza primero los pendientes.');
  }else{
   if(d.modalidad==='items'){
+   for(const id of Object.keys(JSON.parse(d.cuentas_items_json||'{}'))){
+    if((await calcularCuenta(c,{id})).pendienteVerificacion>0n)throw fallo(409,'Hay un pago pendiente de verificación en el pedido.');
+   }
    const [items]=await c.query(`SELECT pi.estado,pi.precio_unitario,pi.cantidad_pedida,di.cantidad_asignada,di.subtotal
     FROM division_items_detalle di JOIN division_participantes dp ON dp.id=di.participante_id
     LEFT JOIN pedido_items pi ON pi.id=di.pedido_item_id WHERE dp.sesion_division_id=? FOR UPDATE`,[d.id]);
@@ -120,4 +123,17 @@ async function cambiarEstado(c,d,estado,actor){
  const [[actual]]=await c.query('SELECT * FROM sesiones_division_cuentas WHERE id=? FOR UPDATE',[d.id]);
  return {status:200,data:await resumen(c,actual)};
 }
-module.exports={bloquear,resumen,configurar,cambiarEstado};
+// Reutiliza las mismas reglas del cierre manual; los fallos de escritura abortan el pago.
+async function completarAlVerificar(c,id,actor){
+ if(!id)return null;
+ const d=await bloquear(c,id);
+ if(d.estado!=='activa')return {id:d.id,estado:d.estado,motivo:null};
+ try{
+  const result=await cambiarEstado(c,d,'completada',actor);
+  return {id:d.id,estado:result.data.estado,motivo:null};
+ }catch(e){
+  if(e.status!==409)throw e;
+  return {id:d.id,estado:d.estado,motivo:e.message};
+ }
+}
+module.exports={bloquear,resumen,configurar,cambiarEstado,completarAlVerificar};

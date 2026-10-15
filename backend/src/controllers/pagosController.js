@@ -1,6 +1,7 @@
 const { registrarAuditoria } = require('../services/auditoriaService');
 const { ejecutor } = require('../services/identidadService');
 const db = require('../config/db');
+const { completarAlVerificar } = require('../services/divisionCuotasService');
 const { validarPago } = require('../services/divisionesService');
 const mysql = require('mysql2');
 const crypto = require('crypto');
@@ -349,7 +350,10 @@ exports.verificarPago = async (req, res) => {
       if (resultado.affectedRows !== 1) throw new Error('No se actualizó el pago.');
     }
     if (pago.participante_id) await validarParticipante(conexion, pago.participante_id);
+    const division = verificacion_estado === 'verificado'
+      ? await completarAlVerificar(conexion, pago.sesion_division_id, actor) : null;
     const liquidacion = await actualizarLiquidacion(conexion, pedido, await calcularCuenta(conexion, pedido));
+    liquidacion.division = division;
     if (!repetido) {
       await registrarAuditoria(conexion, actor, 'pagos', verificacion_estado === 'verificado' ? 'pago_verificado' : 'pago_rechazado', 'pagos', pago.id, {
         antes: { estado: pago.estado, verificacion_estado: pago.verificacion_estado },

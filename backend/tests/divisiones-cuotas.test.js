@@ -133,6 +133,22 @@ test('Divisiones 8B: modalidades, ciclo de vida, saldos y traslados',{skip:proce
    await cancelar(d);r=await call(context.obtener,{}, {pedido_id:d.pedido});assert.equal(r.data.datos.items[0].cantidad_disponible,4);
    assert.equal((await call(context.obtener,{}, {pedido_id:'no-existe'})).status,404);
   });
+  await t.test('8E ultimo pago completa division, cierra pedido y conserva otra actividad; rollback integral',async()=>{
+   const d=await nueva('total','20.00'),q=await cuotas(d,{jugadores_id:'a'}),person=q.data.data.participantes[0].id;
+   const p=await pagar(d,person,'20.00');
+   fail=true;assert.equal((await verificar(p)).status,500);fail=false;
+   assert.equal((await leer(d)).data.data.estado,'activa');
+   assert.equal((await c.query('SELECT verificacion_estado FROM pagos WHERE id=?',[p.data.id_pago]))[0][0].verificacion_estado,'pendiente');
+   assert.equal((await c.query('SELECT estado FROM pedidos WHERE id=?',[d.pedido]))[0][0].estado,'abierto');
+   const result=await verificar(p);assert.equal(result.status,200,JSON.stringify(result));
+   assert.equal(result.data.liquidacion.division.estado,'completada');
+   assert.equal(result.data.liquidacion.estado_pedido,'cerrado');
+   assert.equal(result.data.liquidacion.estado_mesa,'en_cobro');
+   assert.match(result.data.liquidacion.motivo_no_liberacion,/pedido/);
+   assert.equal((await leer(d)).data.data.estado,'completada');
+   assert.equal((await completar(d)).status,200);assert.equal((await verificar(p)).status,200);
+   assert.equal((await c.query("SELECT estado FROM sesiones_mesa WHERE id='s'"))[0][0].estado,'activa');
+  });
   await t.test('8D pagos por división: cuotas reales, PK idempotente, parciales y reservas',async()=>{
    const d=await nueva('total','40.00'),r=await cuotas(d,{jugadores_id:'a'}),person=r.data.data.participantes[0].id;
    const other=await nueva('total','40.00'),q=await cuotas(other,{jugadores_id:'b'});

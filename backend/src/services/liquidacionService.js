@@ -86,7 +86,7 @@ const evaluarLiberacionMesa = async (conexion, mesaId) => {
 };
 
 const actualizarLiquidacion = async (conexion, pedido, cuenta) => {
-  const liquidada = cuenta.saldo === 0n && cuenta.totalDefinitivo;
+  const liquidada = cuenta.saldo === 0n && cuenta.pendienteVerificacion === 0n && cuenta.totalDefinitivo;
   const estadoPedido = liquidada ? 'cerrado' : pedido.estado;
   if (pedido.estado === 'cerrado' && !liquidada) {
     throw errorLiquidacion(409, 'El pedido cerrado no coincide con sus consumos y pagos. Requiere conciliación.');
@@ -107,10 +107,14 @@ const actualizarLiquidacion = async (conexion, pedido, cuenta) => {
     "SELECT id FROM sesiones_juego WHERE mesas_id = ? AND estado = 'activa' FOR UPDATE", [pedido.mesas_id]
   );
   let liberable = false;
+  let motivo = abiertos.length ? 'Hay otro pedido pendiente o este pedido sigue abierto.'
+    : juegosActivos.length ? 'Hay un juego activo.' : null;
   if (!abiertos.length && !juegosActivos.length) {
-    try { liberable = (await evaluarLiberacionMesa(conexion, pedido.mesas_id)).puede_liberarse; }
-    catch (error) { if (error.status !== 409) throw error; } // Una cuenta inconsistente conserva la mesa protegida.
+    try { const evaluacion = await evaluarLiberacionMesa(conexion, pedido.mesas_id); liberable = evaluacion.puede_liberarse; motivo = evaluacion.motivo; }
+    catch (error) { if (error.status !== 409) throw error; motivo = error.message; } // Una cuenta inconsistente conserva la mesa protegida.
   }
+  if (cuenta.pendienteVerificacion > 0n) motivo = 'Hay un pago pendiente de verificación.';
+  else if (!cuenta.totalDefinitivo) motivo = juegosActivos.length ? 'Hay un juego activo.' : 'La cuenta de juegos aún no tiene un total definitivo.';
   const estadoMesa = liberable ? 'disponible' : 'en_cobro';
   const [mesa] = await conexion.query('UPDATE mesas SET estado = ? WHERE id = ?', [estadoMesa, pedido.mesas_id]);
   if (mesa.affectedRows !== 1) throw new Error('No se actualizó la mesa.');
@@ -126,7 +130,9 @@ const actualizarLiquidacion = async (conexion, pedido, cuenta) => {
     total_definitivo: cuenta.totalDefinitivo,
     cuenta_liquidada: liquidada,
     estado_pedido: estadoPedido,
-    estado_mesa: estadoMesa
+    estado_mesa: estadoMesa,
+    estado_sesion: liberable ? 'cerrada' : 'activa',
+    motivo_no_liberacion: motivo
   };
 };
 

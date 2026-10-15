@@ -39,6 +39,7 @@ test('pagos y liquidación con MySQL y tablas temporales', {
     require: nombre => {
       if (nombre === '../config/db') return { dbConfig: {} };
       if (nombre === 'mysql2') return { createConnection: () => ({ promise: () => conexion }) };
+      if (nombre === '../services/divisionCuotasService') return require('../src/services/divisionCuotasService');
       if (nombre === '../services/divisionesService') return require('../src/services/divisionesService');
       if (nombre === '../services/liquidacionService') return require('../src/services/liquidacionService');
       return (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : (nombre === '../services/auditoriaService' ? require('../src/services/auditoriaService') : require(nombre)));
@@ -109,6 +110,17 @@ test('pagos y liquidación con MySQL y tablas temporales', {
       assert.deepEqual((await verificar('test-p2')).data, r.data);
       assert.equal((await registrar('test-p3', 1)).status, 409);
       assert.equal((await verificar('test-p2', 'rechazado')).status, 409);
+    });
+    await t.test('8E saldo cero con reserva heredada no cierra pedido ni visita',async()=>{
+      await preparar();
+      assert.equal((await registrar('8e-final',1000)).status,201);
+      await real.query("INSERT INTO pagos(id,metodo_de_pago,total_seleccionado,estado,verificacion_estado,creado_en,pedidos_id,usuarios_id) VALUES ('8e-reserva','efectivo',1,'pendiente','pendiente',NOW(),'test-pedido','test-usuario')");
+      const r=await verificar('8e-final');assert.equal(r.status,200);
+      assert.equal(r.data.liquidacion.saldo_pendiente,'0.00');
+      assert.equal(r.data.liquidacion.estado_pedido,'abierto');
+      assert.equal(r.data.liquidacion.estado_sesion,'activa');
+      assert.match(r.data.liquidacion.motivo_no_liberacion,/pendiente/);
+      assert.equal((await verificar('8e-reserva','rechazado')).data.liquidacion.estado_mesa,'disponible');
     });
     await t.test('reservas pendientes y rechazo no cuentan como dinero pagado', async () => {
       await preparar();
