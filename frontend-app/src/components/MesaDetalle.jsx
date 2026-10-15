@@ -51,7 +51,8 @@ export default function MesaDetalle({ id, mesas, onClose, onCreate, onEdit }) {
       <div className="mesa-drawer-header"><h2>Mesa {mesa?.numero ?? id}</h2><button className="drawer-close" disabled={mutation.busy} onClick={onClose} aria-label="Cerrar detalle">×</button></div>
       {mesa && <div className={`drawer-status ${mesa.estado}`}><span>Estado</span><strong>{estadosMesa[mesa.estado]}</strong></div>}
       {onEdit && can(user, 'mesas.editarNumero') && <button className="drawer-secondary-button" disabled={mutation.busy} onClick={onEdit}>Cambiar número</button>}
-      <PedidoParticipantes id={id} resource={{ ...visit, data: visit.data?.datos }} agregar={person => agregarParticipanteMesa(id, person)} editable={can(user, 'pedidos.agregarItems') && visit.data?.sesion?.estado === 'activa'} />
+      {(visit.loading || visit.error) && <OperacionRemoteState resource={visit} />}
+      {!visit.loading && !visit.error && visit.data?.sesion?.estado === 'activa' && visit.data.datos.length > 0 && <PedidoParticipantes id={id} titulo="Clientes en la mesa" etiquetaRegistrado="Registrado" resource={{ ...visit, data: visit.data.datos }} agregar={person => agregarParticipanteMesa(id, person)} editable={can(user, 'pedidos.agregarItems')} />}
       <section className="operacion-drawer-section"><h3>Cuenta de la mesa</h3>
         <OperacionRemoteState resource={account}>{account.data && <MesaCuentaResumen cuenta={account.data} />}</OperacionRemoteState>
       </section>

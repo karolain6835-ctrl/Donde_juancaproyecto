@@ -87,7 +87,7 @@ test('Mini formulario real: temporal y alta inline selecciona cliente confirmado
       let request;
       globalThis.fetch = async (url, options) => { request = { url, ...options }; return new Response(JSON.stringify({ id_pedido: 'segundo-pedido' }), { status: 201 }); };
       const html = renderToString(React.createElement(AuthContext.Provider, { value: { user: { id: 'mesero-real', rol: 'Mesero' } } }, React.createElement(Form, { mesas: { data: [{ id: 'mesa', numero: 1 }] }, initialMesa: 'mesa', onCreated() {} })));
-      assert.match(html, /Laura/); assert.match(html, /Usar participante de la visita/);
+      assert.match(html, /Laura/); assert.match(html, /Elegir cliente de la mesa/); assert.match(html, /Cambiar cliente/); assert.doesNotMatch(html, /Usar participante de la visita|Cambiar participante/);
       await globalThis.__pedidoSubmit({ preventDefault() {} });
       assert.deepEqual(JSON.parse(request.body), { mesas_id: 'mesa', usuarios_id: 'mesero-real', clientes_id: null, participante_id: 'temporal-de-visita' });
     });

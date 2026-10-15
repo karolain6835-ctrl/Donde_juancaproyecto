@@ -37,14 +37,26 @@ test('UI de visita en mesa y pedidos conserva identidades y muestra consumos acu
     await t.test('mesa muestra una lista de la visita para dos pedidos',() => {
       globalThis.__visitResources = [{ data:{ resumen:{ subtotal_productos:0,total_general:0 },detalle_productos:[],detalle_juegos:[] } },{ data:{ datos:[{ id:'p1' },{ id:'p2' }] } },{ data:{ puede_liberarse:false } },{ data:{ sesion:{ id:'visita',estado:'activa' },datos:persons } }];
       const html = render(Mesa,{ id:'m',mesas:{ data:[{ id:'m',numero:1,estado:'ocupada' }] } });
-      assert.match(html,/Participantes de la visita/); assert.equal(html.split('<strong>Carlos</strong>').length-1,1); assert.equal(html.split('<strong>Laura</strong>').length-1,1);
-      assert.match(html,/p1/); assert.match(html,/p2/); assert.equal(html.split('Ver consumos').length-1,2);
+      assert.match(html,/Clientes en la mesa/); assert.ok(html.includes('<small>Registrado</small>')); assert.ok(html.includes('<small>Temporal</small>')); assert.equal(html.split('<strong>Carlos</strong>').length-1,1); assert.equal(html.split('<strong>Laura</strong>').length-1,1);
+      assert.doesNotMatch(html,/<h3>Rondas<\/h3>/); assert.match(html,/p1/); assert.match(html,/p2/); assert.equal(html.split('Ver consumos').length-1,2);
+    });
+    await t.test('mesa sin clientes o sin sesión activa oculta la sección, conservando errores visibles',() => {
+      const renderMesa = visit => {
+        globalThis.__visitResources = [{ data:{ resumen:{ subtotal_productos:0,total_general:0 },detalle_productos:[],detalle_juegos:[] } },{ data:{ datos:[] } },{ data:{ puede_liberarse:true } },visit];
+        return render(Mesa,{ id:'m',mesas:{ data:[{ id:'m',numero:1,estado:'disponible' }] } });
+      };
+      for (const data of [{ sesion:{ id:'visita',estado:'activa' },datos:[] },{ sesion:null,datos:[] },{ sesion:{ id:'visita',estado:'cerrada' },datos:persons }]) {
+        const html=renderMesa({data});
+        assert.doesNotMatch(html,/Clientes en la mesa|Aún no hay participantes asociados|Agregar cliente/);
+      }
+      assert.match(renderMesa({error:'Error real de clientes',refresh(){}}),/Error real de clientes/);
+      assert.match(renderMesa({error:'Error real de clientes',refresh(){}}),/Reintentar/);
     });
     await t.test('abrir otro pedido reutiliza los mismos participantes, no nombres inventados',() => {
       for (const id of ['p1','p2']) {
-        globalThis.__visitResources = [{ data:{ id,mesas_id:'m',usuarios_id:'u',clientes_id:null,sesion_mesa_id:'visita',estado:'abierto',items:[] } },{ data:persons }];
+        globalThis.__visitResources = [{ data:{ id,mesas_id:'m',usuarios_id:'u',clientes_id:null,sesion_mesa_id:'visita',estado:'abierto',items:[] } },{ data:persons },{ data:[] }];
         const html = render(Pedido,{ id,mesas:{ data:[{ id:'m',numero:1 }] },productos:{ data:[] } });
-        assert.match(html,/Participantes de la visita/); assert.match(html,/Carlos/); assert.match(html,/Laura/);
+        assert.match(html,/Clientes en la mesa/); assert.match(html,/Carlos/); assert.match(html,/Laura/);
       }
     });
     await t.test('lectura personal muestra total de varios pedidos separado del saldo',() => {

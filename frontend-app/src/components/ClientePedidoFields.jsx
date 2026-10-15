@@ -16,11 +16,11 @@ export default function ClientePedidoFields({ value, onChange, disabled, partici
     let cliente;
     return mutation.run(async () => { cliente = await crearCliente(newClient); }, async () => {
       setCreated(cliente); setMode('registrado'); onChange({ tipo_participante: 'registrado', clientes_id: cliente.id, nombre: cliente.nombre });
-    }, 'Cliente registrado.');
+    }, 'Registrado.');
   }
   return <fieldset disabled={disabled || mutation.busy} className="pedido-person-fields">
     <label>Identidad<select value={mode} onChange={e => chooseMode(e.target.value)}>
-      <option value="registrado">{participante ? 'Cliente registrado' : 'Cliente recurrente'}</option><option value="nuevo">+ Registrar nuevo cliente</option><option value="temporal">{participante ? 'Participante temporal' : 'Cliente temporal'}</option>
+      <option value="registrado">{participante ? 'Registrado' : 'Cliente recurrente'}</option><option value="nuevo">+ Registrar nuevo cliente</option><option value="temporal">{participante ? 'Cliente temporal' : 'Cliente temporal'}</option>
     </select></label>
     {mode === 'temporal' && <label>Nombre o alias<input maxLength={100} value={value?.nombre || ''} onChange={e => onChange({ tipo_participante: 'temporal', nombre: e.target.value })} required /></label>}
     {mode === 'registrado' && <>

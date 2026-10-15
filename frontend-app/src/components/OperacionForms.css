@@ -46,3 +46,6 @@
 .mesa-cuenta-detalle { margin-top: 16px; }
 .mesa-cuenta-detalle summary { cursor: pointer; margin-bottom: 12px; }
 .mesa-cuenta-juegos { margin-top: 16px; }
+.ronda-borrador { margin-top: 16px; padding: 12px; border: 1px solid var(--border-color, #e5e7eb); border-radius: 10px; }
+.ronda-draft-line { display: grid; gap: 10px; min-width: 0; }
+.ronda-draft-line label, .ronda-draft-line select { min-width: 0; max-width: 100%; }

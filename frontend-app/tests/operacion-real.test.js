@@ -163,7 +163,7 @@ test('HTTP de operación usa apiClient, JWT y contratos auditados', async t => {
 test('Componentes reales de operación: recursos, formularios y controles por permiso', async t => {
   const server = await createServer({ root: fileURLToPath(new URL('..', import.meta.url)), server: { middlewareMode: true }, appType: 'custom', plugins: [{
     name: 'operacion-test-resources', enforce: 'pre', transform(source, filename) {
-      if (filename.replaceAll('\\', '/').endsWith('/hooks/useRemoteCatalog.js')) return source.replace('export function useRemoteCatalog(loader) {', 'export function useRemoteCatalog(loader) { if (globalThis.__operacionResources) return globalThis.__operacionResources.shift() || { data: { sesion: null, datos: [] } };');
+      if (filename.replaceAll('\\', '/').endsWith('/hooks/useRemoteCatalog.js')) return source.replace('export function useRemoteCatalog(loader) {', 'export function useRemoteCatalog(loader) { if (loader.toString().includes("listarClientes") && globalThis.__detalleRondasTest) return {data:{datos:[],total:0,limite:20}}; if (globalThis.__operacionResources) return globalThis.__operacionResources.shift() || { data: { sesion: null, datos: [] } };');
     },
   }] });
   try {
@@ -173,7 +173,8 @@ test('Componentes reales de operación: recursos, formularios y controles por pe
     const { default: MesaDetail } = await server.ssrLoadModule('/src/components/MesaDetalle.jsx');
     const { AuthContext } = await server.ssrLoadModule('/src/context/useAuth.js');
     const render = (Component, resources, props = {}, rol = 'Administrador') => {
-      globalThis.__operacionResources = Component === Form ? [...resources].reverse() : Component === Detail ? [resources[0], resources[1] || { data: [] }, { data: { datos: [], total: 0, limite: 20 } }] : resources;
+      globalThis.__detalleRondasTest = Component === Detail;
+      globalThis.__operacionResources = Component === Form ? [...resources].reverse() : Component === Detail ? [resources[0], resources[1] || { data: [] }, { data: [] }] : resources;
       return renderToString(React.createElement(MemoryRouter, null, React.createElement(AuthContext.Provider, { value: { user: { id: 'ejecutor-real', rol } } }, React.createElement(Component, props))));
     };
     for (const [index, name] of ['Mesas', 'Pedidos', 'Kanban'].entries()) {
@@ -201,9 +202,9 @@ test('Componentes reales de operación: recursos, formularios y controles por pe
     await t.test('detalle muestra ítems reales y cancelación exclusivamente a roles autorizados', () => {
       const props = { id: pedido.id, summary: pedido, mesas: { data: [mesa] }, productos: { data: [product] } };
       const admin = render(Detail, [{ data: pedido }], props);
-      assert.match(admin, /Poker prueba 330ml/); assert.match(admin, /3\.500/); assert.match(admin, /Agregar producto/); assert.match(admin, /Cancelar ítem/);
-      const service = render(Detail, [{ data: pedido }], props, 'Mesero'); assert.match(service, /Agregar producto/); assert.doesNotMatch(service, /Cancelar ítem/);
-      const cash = render(Detail, [{ data: pedido }], props, 'Cajero'); assert.doesNotMatch(cash, /Agregar producto/); assert.match(cash, /Cancelar ítem/);
+      assert.match(admin, /Poker prueba 330ml/); assert.match(admin, /3\.500/); assert.match(admin, /Agregar producto/); assert.match(admin, /Cancelar producto/);
+      const service = render(Detail, [{ data: pedido }], props, 'Mesero'); assert.match(service, /Agregar producto/); assert.doesNotMatch(service, /Cancelar producto/);
+      const cash = render(Detail, [{ data: pedido }], props, 'Cajero'); assert.doesNotMatch(cash, /Agregar producto/); assert.match(cash, /Cancelar producto/);
     });
     await t.test('detalle reconsultado muestra una sola línea con cantidad acumulada devuelta por backend', () => {
       const accumulated = { ...pedido, items: [{ ...pedido.items[0], cantidad_pedida: 4 }] };
@@ -239,7 +240,7 @@ test('Componentes reales de operación: recursos, formularios y controles por pe
       assert.match(render(modules[1].default, [{ data: null }, { data: null }, { data: null }], {}, 'Bartender'), /No tienes permiso/);
       assert.match(render(modules[0].default, [{ data: null }], {}, 'Bartender'), /No tienes permiso/);
     });
-  } finally { delete globalThis.__operacionResources; await server.close(); }
+  } finally { delete globalThis.__operacionResources; delete globalThis.__detalleRondasTest; await server.close(); }
 });
 test('Guardado compartido impide doble clic antes de completar la petición', async () => {
   const server = await createServer({ root: fileURLToPath(new URL('..', import.meta.url)), server: { middlewareMode: true }, appType: 'custom' });
