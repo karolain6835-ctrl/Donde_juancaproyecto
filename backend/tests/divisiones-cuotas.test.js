@@ -133,5 +133,30 @@ test('Divisiones 8B: modalidades, ciclo de vida, saldos y traslados',{skip:proce
    await cancelar(d);r=await call(context.obtener,{}, {pedido_id:d.pedido});assert.equal(r.data.datos.items[0].cantidad_disponible,4);
    assert.equal((await call(context.obtener,{}, {pedido_id:'no-existe'})).status,404);
   });
+  await t.test('8D pagos por división: cuotas reales, PK idempotente, parciales y reservas',async()=>{
+   const d=await nueva('total','40.00'),r=await cuotas(d,{jugadores_id:'a'}),person=r.data.data.participantes[0].id;
+   const other=await nueva('total','40.00'),q=await cuotas(other,{jugadores_id:'b'});
+   const body={id:'8d-pago-1',metodo_de_pago:'nequi',total_seleccionado:'10.00',pedidos_id:d.pedido,sesion_division_id:d.id,participante_id:person};
+   assert.equal((await call(pagos.registrarPago,{...body,participante_id:q.data.data.participantes[0].id})).status,400);
+   assert.equal((await call(pagos.registrarPago,{...body,pedidos_id:other.pedido})).status,409);
+   const race=await Promise.all([call(pagos.registrarPago,body),call(pagos.registrarPago,body)]);assert.deepEqual(race.map(x=>x.status).sort(),[201,409]);
+   assert.equal((await c.query('SELECT COUNT(*) AS n FROM pagos WHERE id=?',[body.id]))[0][0].n,1);
+   assert.equal((await call(pagos.registrarPago,{...body,total_seleccionado:'1.00'})).status,409);
+   assert.equal((await pagar(d,person,'31.00')).status,409);
+   const segundo=await pagar(d,person,'15.00'),tercero=await pagar(d,person,'15.00');assert.equal(segundo.status,201);assert.equal(tercero.status,201);
+   const reader=load('divisionPagosController.js');let list=await call(reader.listar,{}, {id:d.id});assert.equal(list.status,200,JSON.stringify(list));assert.equal(list.data.datos.length,3);assert.ok(list.data.datos.every(p=>p.sesion_division_id===d.id&&p.participante_id===person));
+   assert.equal((await call(reader.listar,{}, {id:other.id})).data.datos.length,0);
+   assert.equal((await call(reader.listar,{}, {id:'no-existe'})).status,404);
+   let s=(await leer(d)).data.data;assert.equal(s.total_pagado,'0.00');assert.equal(s.pendiente_verificacion,'40.00');
+   assert.equal((await call(pagos.verificarPago,{verificacion_estado:'verificado'},{id:body.id})).status,200);
+   assert.equal((await call(pagos.verificarPago,{verificacion_estado:'rechazado'},{id:segundo.data.id_pago})).status,200);
+   s=(await leer(d)).data.data;assert.equal(s.total_pagado,'10.00');assert.equal(s.pendiente_verificacion,'15.00');assert.equal(s.total_pendiente,'30.00');
+   const replacement=await pagar(d,person,'15.00');assert.equal(replacement.status,201);
+   assert.equal((await verificar(tercero)).status,200);assert.equal((await verificar(replacement)).status,200);
+   list=await call(reader.listar,{}, {id:d.id});assert.equal(list.data.datos.find(p=>p.id===segundo.data.id_pago).verificacion_estado,'rechazado');
+   assert.equal((await leer(d)).data.data.total_pagado,'40.00');
+   assert.equal((await c.query('SELECT COUNT(*) AS n FROM movimientos_inventario'))[0][0].n,0);
+   assert.equal((await c.query("SELECT cantidad_disponible FROM productos WHERE id='pr'"))[0][0].cantidad_disponible,100);
+  });
  }finally{await sandbox.close();}
 });

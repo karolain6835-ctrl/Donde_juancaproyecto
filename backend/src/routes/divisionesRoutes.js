@@ -2,6 +2,7 @@ const { autorizarRoles } = require('../middleware/rolesMiddleware');
 const express = require('express');
 const router = express.Router();
 const divisionesController = require('../controllers/divisionesController');
+router.get('/:id/pagos', autorizarRoles('Administrador','SuperAdmin','Mesero','Mesera','Cajero'), require('../controllers/divisionPagosController').listar);
 
 // POST /api/sesiones-division
 router.post('/', autorizarRoles('Administrador', 'SuperAdmin', 'Mesero', 'Mesera', 'Cajero'), divisionesController.iniciarSesionDivision);
