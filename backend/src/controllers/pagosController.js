@@ -1,6 +1,7 @@
 const { registrarAuditoria } = require('../services/auditoriaService');
 const { ejecutor } = require('../services/identidadService');
 const db = require('../config/db');
+const { validarPago } = require('../services/divisionesService');
 const mysql = require('mysql2');
 const crypto = require('crypto');
 const { bloquearPedido, calcularCuenta, validarImporte, actualizarLiquidacion,
@@ -190,6 +191,7 @@ exports.registrarPago = async (req, res) => {
     // INSERTAR PAGO
     // ==========================================
 
+    await validarPago(conexion,pedido,sesion_division_id,participante_id);
     const queryPago = `
       INSERT INTO pagos (
         id,
@@ -332,6 +334,7 @@ exports.verificarPago = async (req, res) => {
         throw errorLiquidacion(409, 'El pago ya fue procesado; no se puede cambiar su decisión.');
       }
       if (pedido.estado !== 'abierto') throw errorLiquidacion(409, 'El pedido no está abierto.');
+      if (verificacion_estado === 'verificado') await validarPago(conexion,pedido,pago.sesion_division_id,pago.participante_id);
       const cuenta = await calcularCuenta(conexion, pedido);
       cuentaAnterior = cuenta;
       if (verificacion_estado === 'verificado' && centavos(pago.total_seleccionado) > cuenta.saldo) {

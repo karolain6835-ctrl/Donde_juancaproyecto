@@ -1,102 +1,32 @@
 const mysql = require('mysql2');
 const { randomUUID } = require('node:crypto');
-const { registrarAuditoria } = require('../services/auditoriaService');
 const { ejecutor } = require('../services/identidadService');
+const { sesionActiva } = require('../services/sesionesMesaService');
+const { validar, asignar, fallo } = require('../services/divisionesService');
 const db = require('../config/db');
-
-// ==========================================
-// 1. INICIAR SESIÓN DE DIVISIÓN DE CUENTA
-// ==========================================
-const iniciarSesionDivision = (req, res) => {
-  const usuarios_id = ejecutor(req, res);
-  if (!usuarios_id) return;
-  const { mesas_id, modalidad } = req.body || {};
-
-  // Validación de campos obligatorios
-  if (!mesas_id || !usuarios_id || !modalidad) {
-    return res.status(400).json({ 
-      error: 'Faltan parámetros obligatorios: mesas_id o modalidad.'
-    });
-  }
-
-  // 1. Verificar si la mesa existe
-  const queryMesa = `SELECT id, estado FROM mesas WHERE id = ?`;
-
-  db.query(queryMesa, [mesas_id], (err, resultadosMesa) => {
-    if (err) {
-      console.error('❌ Error al consultar la mesa:', err.message);
-      return res.status(500).json({ error: 'Error interno al verificar la mesa.' });
-    }
-
-    if (resultadosMesa.length === 0) {
-      return res.status(404).json({ error: 'La mesa especificada no existe.' });
-    }
-
-    // Generar ID único para la sesión de división
-    const idDivision = `div-${Date.now()}`;
-
-    // 2. Registrar la sesión en la tabla `sesiones_division_cuentas`
-    const queryInsert = `
-      INSERT INTO sesiones_division_cuentas (id, modalidad, usuarios_id, mesas_id)
-      VALUES (?, ?, ?, ?)
-    `;
-
-    db.query(queryInsert, [idDivision, modalidad, usuarios_id, mesas_id], (errInsert) => {
-      if (errInsert) {
-        console.error('❌ Error al registrar la sesión de división:', errInsert.message);
-        return res.status(500).json({ error: 'Error al guardar la sesión de división en la base de datos.' });
-      }
-
-      return res.status(201).json({
-        exito: true,
-        mensaje: 'Sesión de división iniciada con éxito 🍕',
-        data: {
-          id: idDivision,
-          modalidad,
-          usuarios_id,
-          mesas_id
-        }
-      });
-    });
-  });
+const { centavos } = require('../services/liquidacionService');
+async function transaccion(req,res,operation){
+ const actor=ejecutor(req,res);if(!actor)return;
+ let c;
+ try{c=mysql.createConnection(db.dbConfig).promise();await c.beginTransaction();const r=await operation(c,actor);await c.commit();return res.status(r.status).json({exito:true,data:r.data});}
+ catch(e){if(c)await c.rollback();console.error('Division:',e.message);return res.status(e.status||(['ER_DUP_ENTRY','ER_LOCK_DEADLOCK','ER_LOCK_WAIT_TIMEOUT'].includes(e.code)?409:500)).json({error:e.status?e.message:'No se pudo procesar la division. Reintenta con la misma clave.'});}
+ finally{if(c)await c.end();}
+}
+const iniciarSesionDivision=(req,res)=>transaccion(req,res,async(c,actor)=>{
+ const {mesas_id,modalidad}=req.body||{};
+ if(typeof mesas_id!=='string'||!mesas_id.trim()||modalidad!=='items')throw fallo(400,'Indica mesa y modalidad items; otras modalidades aun no estan disponibles.');
+ const [[mesa]]=await c.query('SELECT id FROM mesas WHERE id=? FOR UPDATE',[mesas_id]);
+ if(!mesa)throw fallo(404,'La mesa no existe.');
+ const visita=await sesionActiva(c,mesas_id);if(!visita)throw fallo(409,'La mesa no tiene una visita activa.');
+ const id=randomUUID();await c.query('INSERT INTO sesiones_division_cuentas(id,modalidad,usuarios_id,mesas_id,sesion_mesa_id) VALUES (?,?,?,?,?)',[id,modalidad,actor,mesas_id,visita.id]);
+ return {status:201,data:{id,modalidad,usuarios_id:actor,mesas_id,sesion_mesa_id:visita.id}};
+});
+const asignarItemsACliente=(req,res)=>{
+ const actor=ejecutor(req,res);if(!actor)return;
+ let body,key=req.get?.('Idempotency-Key');try{body=validar(req.body,key);}catch(e){return res.status(e.status||400).json({error:e.message});}
+ return transaccion(req,res,c=>asignar(c,req.params.id,body,key,actor));
 };
 
-// ==========================================
-// 2. ASIGNAR ÍTEMS A UN CLIENTE EN LA DIVISIÓN
-// ==========================================
-const asignarItemsACliente = async (req,res) => {
-  const actor=ejecutor(req,res);if(!actor)return;
-  const {id:sesion_division_id}=req.params;
-  const {nombre_cliente,items}=req.body || {};
-  if(!nombre_cliente||!Array.isArray(items)||!items.length)return res.status(400).json({error:'Parámetros incompletos. Se requiere nombre_cliente y un arreglo de items con { pedido_item_id, cantidad, precio_unitario }.'});
-  let conexion,abierta=false;
-  try {
-    conexion=mysql.createConnection(db.dbConfig).promise();await conexion.beginTransaction();abierta=true;
-    const [[sesion]]=await conexion.query('SELECT id,usuarios_id FROM sesiones_division_cuentas WHERE id=? FOR UPDATE',[sesion_division_id]);
-    if(!sesion)throw Object.assign(new Error('La sesión de división no existe.'),{status:404});
-    const participanteId=randomUUID();let totalAsignado=0;
-    // Conservar el cálculo y las coerciones del contrato existente en esta fase.
-    const procesados=items.map(item=>{const cantidad=parseInt(item.cantidad,10)||1,precio=parseFloat(item.precio_unitario)||0;
-      const subtotal=cantidad*precio;totalAsignado+=subtotal;
-      return [randomUUID(),participanteId,item.pedido_item_id,cantidad,subtotal];});
-    const [p]=await conexion.query('INSERT INTO division_participantes (id,sesion_division_id,nombre_cliente,total_asignado) VALUES (?,?,?,?)',[participanteId,sesion_division_id,nombre_cliente,totalAsignado]);
-    if(p.affectedRows!==1)throw new Error('No se registró el participante.');
-    const [d]=await conexion.query('INSERT INTO division_items_detalle (id,participante_id,pedido_item_id,cantidad_asignada,subtotal) VALUES ?',[procesados]);
-    if(d.affectedRows!==items.length)throw new Error('No se registraron todos los detalles.');
-    await registrarAuditoria(conexion,actor,'divisiones','division_items_asignados','sesiones_division_cuentas',sesion.id,{
-      iniciador_original:sesion.usuarios_id,participante_id:participanteId,nombre_cliente,total_asignado:totalAsignado,
-      items:procesados.map(r=>({id:r[0],pedido_item_id:r[2],cantidad:r[3],subtotal:r[4]}))
-    });
-    await conexion.commit();abierta=false;
-    return res.status(201).json({exito:true,mensaje:`Ítems asignados exitosamente a ${nombre_cliente} 🍕`,data:{participante_id:participanteId,sesion_division_id,nombre_cliente,total_asignado:totalAsignado,items_asignados:items.length}});
-  }catch(e){if(abierta)await conexion.rollback();return res.status(e.status||500).json({error:e.status?e.message:'Error al asignar los Ítems.'});}
-  finally{if(conexion)await conexion.end();}
-};
-
-module.exports = {
-  iniciarSesionDivision,
-  asignarItemsACliente
-};
 
 // ==========================================
 // 3. CONSULTAR RESUMEN DE LA SESIÓN DE DIVISIÓN
@@ -106,7 +36,7 @@ const obtenerResumenDivision = (req, res) => {
 
   // 1. Obtener la información básica de la sesión
   const querySesion = `
-    SELECT s.id, s.modalidad, s.mesas_id, s.usuarios_id, s.creado_en, m.numero AS numero_mesa
+    SELECT s.id, s.sesion_mesa_id, s.modalidad, s.mesas_id, s.usuarios_id, s.creado_en, m.numero AS numero_mesa
     FROM sesiones_division_cuentas s
     LEFT JOIN mesas m ON s.mesas_id = m.id
     WHERE s.id = ?
@@ -128,6 +58,7 @@ const obtenerResumenDivision = (req, res) => {
     const queryDetalle = `
       SELECT 
         p.id AS participante_id,
+        p.jugadores_id,
         p.nombre_cliente,
         p.total_asignado,
         p.estado,
@@ -149,18 +80,19 @@ const obtenerResumenDivision = (req, res) => {
 
       // Agrupar los ítems bajo cada participante
       const participantesMap = {};
-      let granTotal = 0;
+      let granTotal = 0n;
 
       resDetalle.forEach(fila => {
         if (!participantesMap[fila.participante_id]) {
           participantesMap[fila.participante_id] = {
             id: fila.participante_id,
+            jugadores_id: fila.jugadores_id,
             nombre_cliente: fila.nombre_cliente,
-            total_asignado: parseFloat(fila.total_asignado) || 0,
+            total_asignado: Number(fila.total_asignado || 0),
             estado: fila.estado,
             items: []
           };
-          granTotal += parseFloat(fila.total_asignado) || 0;
+          granTotal += centavos(fila.total_asignado || 0);
         }
 
         if (fila.detalle_id) {
@@ -168,7 +100,7 @@ const obtenerResumenDivision = (req, res) => {
             detalle_id: fila.detalle_id,
             pedido_item_id: fila.pedido_item_id,
             cantidad: fila.cantidad_asignada,
-            subtotal: parseFloat(fila.subtotal) || 0
+            subtotal: Number(fila.subtotal || 0)
           });
         }
       });
@@ -179,13 +111,14 @@ const obtenerResumenDivision = (req, res) => {
         data: {
           sesion: {
             id: sesion.id,
+            sesion_mesa_id: sesion.sesion_mesa_id,
             modalidad: sesion.modalidad,
             mesas_id: sesion.mesas_id,
             numero_mesa: sesion.numero_mesa,
             usuarios_id: sesion.usuarios_id,
             creado_en: sesion.creado_en
           },
-          total_acumulado: granTotal,
+          total_acumulado: Number(`${granTotal/100n}.${String(granTotal%100n).padStart(2,'0')}`),
           participantes: Object.values(participantesMap)
         }
       });

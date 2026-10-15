@@ -71,6 +71,7 @@ test('Divisiones y responsable de pedido: MySQL real temporal', {
       await c.query(`CREATE TEMPORARY TABLE ${tabla} LIKE copia_identidad_${tabla}`);
     }
     await require('./helpers/participantesTemporales')(c, { pedidos: true });
+    await require('./helpers/divisionesTemporales')(c);
     for (const id of ['ejecutor', 'asignado']) await c.query(
       "INSERT INTO usuarios (id,nombre,email,password_hash,estado,roles_id) VALUES (?,?,?,'fixture','activo',1)",
       [id, id, id + '@example.invalid']);
@@ -83,8 +84,8 @@ test('Divisiones y responsable de pedido: MySQL real temporal', {
     assert.equal(pedido.status, 201);
     const [[p]] = await c.query('SELECT usuarios_id FROM pedidos WHERE id=?', [pedido.data.id_pedido]);
     assert.equal(p.usuarios_id, 'asignado');
-    const division = await invocar(cargar('divisiones', db).iniciarSesionDivision, {
-      usuario: { id: 'ejecutor' }, body: { mesas_id: 'mesa', modalidad: 'total' }
+    const division = await invocar(cargar('divisiones', db,c).iniciarSesionDivision, {
+      usuario: { id: 'ejecutor' }, body: { mesas_id: 'mesa', modalidad: 'items' }
     });
     assert.equal(division.status, 201);
     const [[d]] = await c.query('SELECT usuarios_id FROM sesiones_division_cuentas WHERE id=?', [division.data.data.id]);

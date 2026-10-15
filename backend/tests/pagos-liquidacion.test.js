@@ -39,6 +39,7 @@ test('pagos y liquidación con MySQL y tablas temporales', {
     require: nombre => {
       if (nombre === '../config/db') return { dbConfig: {} };
       if (nombre === 'mysql2') return { createConnection: () => ({ promise: () => conexion }) };
+      if (nombre === '../services/divisionesService') return require('../src/services/divisionesService');
       if (nombre === '../services/liquidacionService') return require('../src/services/liquidacionService');
       return (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : (nombre === '../services/auditoriaService' ? require('../src/services/auditoriaService') : require(nombre)));
     },
@@ -82,6 +83,7 @@ test('pagos y liquidación con MySQL y tablas temporales', {
       await real.query(`CREATE TEMPORARY TABLE ${tabla} LIKE copia_${tabla}`);
     }
     await require('./helpers/participantesTemporales')(real, { pedidos: true });
+    await require('./helpers/divisionesTemporales')(real,{participantes:true});
     await t.test('pendiente, parcial, final, cantidades e idempotencia', async () => {
       await preparar();
       let r = await registrar('test-p1', 400);
