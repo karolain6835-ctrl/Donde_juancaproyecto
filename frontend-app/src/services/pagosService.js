@@ -26,9 +26,14 @@ export async function listarPagosDivision(id,options){
  return rows;
 }
 export function nuevoIdPago(){return `p-${crypto.randomUUID().replaceAll('-','').slice(0,18)}`;}
+export function tieneDivisionActivaPedido(contexto){
+ if(typeof contexto?.tiene_division_activa==='boolean')return contexto.tiene_division_activa;
+ // Compatibilidad: solo una referencia explícita al pedido, nunca la visita compartida.
+ return Boolean(contexto?.divisiones?.some(d=>d.estado==='activa'&&d.pedido_id===contexto.pedido.id));
+}
 export function pagoDirectoBody(form,contexto,id){
  if(contexto.pedido.estado!=='abierto')operationFail('El pedido no está abierto.');
- if(contexto.divisiones.some(d=>d.estado==='activa'))operationFail('Usa los pagos por cliente de la división activa.');
+ if(tieneDivisionActivaPedido(contexto))operationFail('Usa los pagos por cliente de la división activa.');
  if(!Object.hasOwn(metodosPago,form.metodo))operationFail('Selecciona un método de pago válido.');
  const importe=montoCOP(form.valor),disponible=centavosDivision(contexto.saldo)-centavosDivision(contexto.pendiente_verificacion);
  if(importe<=0n)operationFail('El valor debe ser mayor que cero.');

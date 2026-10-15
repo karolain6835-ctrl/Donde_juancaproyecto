@@ -3,7 +3,7 @@ import {useAuth} from '../context/useAuth';
 import {can} from '../utils/permissions';
 import {useRemoteCatalog} from '../hooks/useRemoteCatalog';
 import {contextoDivision,centavosDivision,decimalDivision} from '../services/divisionesService';
-import {metodosPago,nuevoIdPago,pagoDirectoBody,registrarPagoDirecto} from '../services/pagosService';
+import {metodosPago,nuevoIdPago,pagoDirectoBody,registrarPagoDirecto,tieneDivisionActivaPedido} from '../services/pagosService';
 import {formatCurrency} from '../utils/formatCurrency';
 import OperacionRemoteState from './OperacionRemoteState';
 export default function PagoDirectoPedido({pedidoId,version,onDivision,onChanged}){
@@ -14,7 +14,7 @@ export default function PagoDirectoPedido({pedidoId,version,onDivision,onChanged
  const [pending,setPending]=useState(false);
  const lock=useRef(false),attempt=useRef(null);
  const data=resource.data;
- const activa=data?.divisiones.some(d=>d.estado==='activa');
+ const activa=tieneDivisionActivaPedido(data);
  const disponible=data?centavosDivision(data.saldo)-centavosDivision(data.pendiente_verificacion):0n;
  const editable=can(user,'pagos.crear')&&data?.pedido.estado==='abierto'&&disponible>0n&&!activa;
  let validation='';if(data&&form.valor){try{pagoDirectoBody(form,data,'validacion');}catch(e){validation=e.message;}}

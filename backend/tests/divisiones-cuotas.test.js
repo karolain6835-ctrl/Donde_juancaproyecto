@@ -133,6 +133,27 @@ test('Divisiones 8B: modalidades, ciclo de vida, saldos y traslados',{skip:proce
    await cancelar(d);r=await call(context.obtener,{}, {pedido_id:d.pedido});assert.equal(r.data.datos.items[0].cantidad_disponible,4);
    assert.equal((await call(context.obtener,{}, {pedido_id:'no-existe'})).status,404);
   });
+  await t.test('V1-1 contexto y pagos directos comparten alcance por pedido, no por visita',async()=>{
+   const a=await nueva('items','50.00'),itemA='item-'+sequence;
+   const b=await nueva('total','20.00');await cuotas(b,{jugadores_id:'a'});
+   const vaciaAjena=await nueva('items','10.00');
+   const context=load('divisionContextoController.js');
+   const estado=async()=>{const r=await call(context.obtener,{}, {pedido_id:a.pedido});assert.equal(r.status,200,JSON.stringify(r));return r.data.datos;};
+   const directo=id=>call(pagos.registrarPago,{id,pedidos_id:a.pedido,total_seleccionado:'5.00',metodo_de_pago:'efectivo'});
+   let r=await estado();assert.equal(r.tiene_division_activa,false);assert.ok(r.divisiones.some(d=>d.id===a.id));assert.ok(r.divisiones.some(d=>d.id===vaciaAjena.id));
+   assert.equal((await directo('scope-vacio')).status,201);
+   assert.equal((await post({jugadores_id:'a',items:[{pedido_item_id:itemA,cantidad:1}]},'scope-asignacion',a.id)).status,201);
+   assert.equal((await estado()).tiene_division_activa,true);
+   assert.equal((await directo('scope-bloqueado')).status,409);
+   for(const state of ['completada','cancelada']){
+    await c.query("UPDATE sesiones_division_cuentas SET estado=?,completada_en=?,cancelada_en=? WHERE id=?",[state,state==='completada'?new Date():null,state==='cancelada'?new Date():null,a.id]);
+    assert.equal((await estado()).tiene_division_activa,false);
+    assert.equal((await directo('scope-'+state)).status,201);
+   }
+   // La cuota monetaria del otro pedido sigue protegida.
+   const foreign=await call(context.obtener,{}, {pedido_id:b.pedido});assert.equal(foreign.data.datos.tiene_division_activa,true);
+   assert.equal((await call(pagos.registrarPago,{id:'scope-cuota',pedidos_id:b.pedido,total_seleccionado:'5.00',metodo_de_pago:'efectivo'})).status,409);
+  });
   await t.test('8E ultimo pago completa division, cierra pedido y conserva otra actividad; rollback integral',async()=>{
    const d=await nueva('total','20.00'),q=await cuotas(d,{jugadores_id:'a'}),person=q.data.data.participantes[0].id;
    const p=await pagar(d,person,'20.00');

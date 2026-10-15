@@ -71,13 +71,17 @@ async function asignar(c,divisionId,body,key,actor){
  await registrarAuditoria(c,actor,'divisiones','division_items_asignados','sesiones_division_cuentas',divisionId,{iniciador_original:division.usuarios_id,participante_id:participanteId,jugadores_id:pagador.id,total_asignado:dinero(total),items:procesados.map(r=>({id:r[0],pedido_item_id:r[2],cantidad:r[3],subtotal:r[4]}))});
  return {status:201,data:{participante_id:participanteId,sesion_division_id:divisionId,jugadores_id:pagador.id,nombre_cliente:pagador.nombre,total_asignado:dinero(total),items_asignados:procesados.length}};
 }
-async function validarPago(c,pedido,divisionId,participanteId){
- if(!divisionId){
+async function divisionesActivasPedido(c,pedidoId){
   const [activas]=await c.query(`SELECT sd.id FROM sesiones_division_cuentas sd
    WHERE sd.estado='activa' AND (sd.pedido_id=? OR EXISTS (
     SELECT 1 FROM division_participantes dp JOIN division_items_detalle di ON di.participante_id=dp.id
     JOIN pedido_items pi ON pi.id=di.pedido_item_id
-    WHERE dp.sesion_division_id=sd.id AND pi.pedidos_id=?)) FOR UPDATE`,[pedido.id,pedido.id]);
+    WHERE dp.sesion_division_id=sd.id AND pi.pedidos_id=?)) FOR UPDATE`,[pedidoId,pedidoId]);
+  return activas;
+}
+async function validarPago(c,pedido,divisionId,participanteId){
+ if(!divisionId){
+  const activas=await divisionesActivasPedido(c,pedido.id);
   if(activas.length)throw fallo(409,'Este pedido tiene una división activa. Registra el pago por cliente desde la división.');
   return;
  }
@@ -102,4 +106,4 @@ async function validarPago(c,pedido,divisionId,participanteId){
   FROM division_items_detalle d LEFT JOIN pedido_items pi ON pi.id=d.pedido_item_id WHERE d.participante_id=? FOR UPDATE`,[participanteId]);
  if(!items.length||items.some(i=>i.pedidos_id!==pedido.id||i.pedido_id!==pedido.id||i.estado==='cancelado'||!Number.isInteger(i.cantidad_asignada)||i.cantidad_asignada<=0||centavos(i.subtotal)!==centavos(i.precio_unitario)*BigInt(i.cantidad_asignada)))throw fallo(409,'Las asignaciones no corresponden a los productos vigentes de este pedido.');
 }
-module.exports={validar,asignar,fallo,validarPago};
+module.exports={validar,asignar,fallo,validarPago,divisionesActivasPedido};
