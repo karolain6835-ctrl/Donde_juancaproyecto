@@ -1,6 +1,7 @@
 const { autorizarRoles } = require('../middleware/rolesMiddleware');
 const express = require('express');
 const router = express.Router();
+router.get('/:pedido_id/division-contexto', autorizarRoles('Administrador','SuperAdmin','Mesero','Mesera','Cajero'), require('../controllers/divisionContextoController').obtener);
 const pedidosController = require('../controllers/pedidosController');
 const rondas = require('../controllers/rondasConsumoController');
 router.get('/:pedido_id/rondas', autorizarRoles('Administrador', 'SuperAdmin', 'Mesero', 'Mesera', 'Cajero'), rondas.listar);

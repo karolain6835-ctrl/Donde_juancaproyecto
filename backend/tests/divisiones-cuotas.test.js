@@ -123,5 +123,15 @@ test('Divisiones 8B: modalidades, ciclo de vida, saldos y traslados',{skip:proce
    assert.equal((await c.query("SELECT cantidad_disponible FROM productos WHERE id='pr'"))[0][0].cantidad_disponible,100);
    assert.equal((await c.query('SELECT COUNT(*) AS n FROM movimientos_inventario'))[0][0].n,0);
   });
+  await t.test('contexto frontend lee saldo real, divisiones y cantidades sin escrituras',async()=>{
+   const d=await nueva('items','12.50'),item='item-'+sequence,context=load('divisionContextoController.js');
+   await c.query('UPDATE pedido_items SET cantidad_pedida=4 WHERE id=?',[item]);
+   const before=await snapshot();
+   let r=await call(context.obtener,{}, {pedido_id:d.pedido});assert.equal(r.status,200,JSON.stringify(r));assert.equal(r.data.datos.saldo,'50.00');assert.equal(r.data.datos.items[0].cantidad_disponible,4);assert.ok(r.data.datos.divisiones.some(x=>x.id===d.id));assert.equal(await snapshot(),before);
+   assert.equal((await post({jugadores_id:'a',items:[{pedido_item_id:item,cantidad:2}]},'contexto-asignar',d.id)).status,201);
+   r=await call(context.obtener,{}, {pedido_id:d.pedido});assert.equal(r.data.datos.items[0].cantidad_disponible,2);
+   await cancelar(d);r=await call(context.obtener,{}, {pedido_id:d.pedido});assert.equal(r.data.datos.items[0].cantidad_disponible,4);
+   assert.equal((await call(context.obtener,{}, {pedido_id:'no-existe'})).status,404);
+  });
  }finally{await sandbox.close();}
 });

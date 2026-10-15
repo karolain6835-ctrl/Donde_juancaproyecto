@@ -31,7 +31,7 @@ const cases = [
  ['ALL','GET','categorias'],['ALL','GET','productos'],['ALL','GET','productos/x'],
  ['A','POST','productos'],['A','PUT','productos/x'],['A','DELETE','productos/x'],
  ['MC','GET','mesas/x/cuenta'],['MC','GET','mesas/estado/disponible'],['C','PATCH','mesas/x/estado'],['M','POST','mesas/traslado'],
- ['M','POST','pedidos'],['M','POST','pedidos/x/items'],['MC','GET','pedidos/x'],['MC','GET','pedidos/x/cuenta'],['C','PUT','pedidos/items/x/cancelar'],
+ ['M','POST','pedidos'],['M','POST','pedidos/x/items'],['MC','GET','pedidos/x/division-contexto'],['MC','GET','pedidos/x'],['MC','GET','pedidos/x/cuenta'],['C','PUT','pedidos/items/x/cancelar'],
  ['MC','POST','pagos'],['C','GET','pagos/x'],['C','PATCH','pagos/x/verificar'],
  ['MC','GET','juegos/activos'],['MC','GET','juegos/sesiones'],['M','POST','juegos/iniciar'],['M','PUT','juegos/x/terminar'],
  ['A','PUT','inventario/actualizar-stock'],['A','GET','inventario/movimientos'],['MB','GET','inventario/alertas'],['MB','GET','inventario/alertas/x'],['MB','PATCH','inventario/alertas/x/vista'],['MB','PATCH','inventario/alertas/x/silenciar'],['MB','PATCH','inventario/alertas/x/reactivar'],['MB','PATCH','inventario/alertas/x/resolver'],
