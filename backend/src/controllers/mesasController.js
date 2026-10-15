@@ -120,10 +120,9 @@ const trasladarMesa = async (req, res) => {
       UNION ALL
       SELECT id FROM sesiones_juego WHERE mesas_id = ? AND estado = 'activa'
       UNION ALL
-      SELECT id FROM sesiones_division_cuentas WHERE mesas_id = ?
-      UNION ALL
-      SELECT id FROM sesiones_division WHERE mesas_id = ?
-    `, [destino.id, destino.id, destino.id, destino.id]);
+      SELECT id FROM sesiones_division_cuentas WHERE mesas_id = ? AND estado = 'activa'
+
+    `, [destino.id, destino.id, destino.id]);
     if (destino.estado !== 'disponible' || ocupacion.length) {
       rechazar(400, 'La mesa de destino ya se encuentra ocupada con una cuenta activa.');
     }
@@ -162,14 +161,12 @@ const trasladarMesa = async (req, res) => {
       UPDATE pedidos SET mesas_id = ? WHERE mesas_id = ? AND estado = 'abierto'
     `, [destino.id, origen.id]);
 
-    // No hay estado ni pedido asociado en ninguna de las tablas de división.
+    // Mover solo divisiones operativas; las finalizadas conservan su mesa histórica.
     mensajeError = 'Error al trasladar las sesiones de división.';
     const [resDivision] = await conexion.query(
-      'UPDATE sesiones_division_cuentas SET mesas_id = ? WHERE mesas_id = ?', [destino.id, origen.id]
+      "UPDATE sesiones_division_cuentas SET mesas_id = ? WHERE mesas_id = ? AND estado='activa'", [destino.id, origen.id]
     );
-    const [resDivisionOriginal] = await conexion.query(
-      'UPDATE sesiones_division SET mesas_id = ? WHERE mesas_id = ?', [destino.id, origen.id]
-    );
+    const resDivisionOriginal = { affectedRows: 0 }; // Tabla original: historial sin ciclo operativo.
     if (!resPedido.affectedRows && !resJuegos.affectedRows &&
         !resDivision.affectedRows && !resDivisionOriginal.affectedRows) {
       rechazar(404, 'La mesa de origen no tiene ningún pedido ni juego activo para trasladar.');

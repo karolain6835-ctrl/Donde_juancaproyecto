@@ -12,4 +12,7 @@ router.post('/:id/asignar-items', autorizarRoles('Administrador', 'SuperAdmin', 
 // 3. GET /api/sesiones-division/:id (AQUÍ VA LA NUEVA RUTA)
 router.get('/:id', autorizarRoles('Administrador', 'SuperAdmin', 'Mesero', 'Mesera', 'Cajero'), divisionesController.obtenerResumenDivision);
 
+router.post('/:id/cuotas', autorizarRoles('Administrador','SuperAdmin','Mesero','Mesera','Cajero'), divisionesController.definirCuotas);
+router.patch('/:id/cancelar', autorizarRoles('Administrador','SuperAdmin','Cajero'), divisionesController.cancelarDivision);
+router.patch('/:id/completar', autorizarRoles('Administrador','SuperAdmin','Cajero'), divisionesController.completarDivision);
 module.exports = router;

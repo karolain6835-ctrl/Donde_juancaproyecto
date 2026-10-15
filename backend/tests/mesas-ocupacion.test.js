@@ -35,6 +35,7 @@ test('Ocupación y liberación con MySQL temporal, transacciones y stock intacto
       await c.query(`CREATE TEMPORARY TABLE copia_ocupacion_${table} LIKE ${table}`); await c.query(`CREATE TEMPORARY TABLE ${table} LIKE copia_ocupacion_${table}`);
     }
     await require('./helpers/participantesTemporales')(c, { pedidos: true, items: true });
+    await require('./helpers/divisionesTemporales')(c);
     await c.query("INSERT INTO usuarios(id,nombre,email,password_hash,estado,roles_id) VALUES ('actor','Actor','a@example.invalid','test','activo',1)");
     await c.query("INSERT INTO clientes(id,nombre,estado,usuarios_id) VALUES ('c','Cliente','activo','actor')");
     await c.query("INSERT INTO mesas(id,numero,estado,creado_en) VALUES ('m',1,'disponible',NOW())");

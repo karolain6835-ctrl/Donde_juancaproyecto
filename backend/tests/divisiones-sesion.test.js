@@ -29,7 +29,7 @@ test('Divisiones 8A: identidad, cantidades, dinero, concurrencia y pagos',{skip:
    await c.query("UPDATE sesiones_division_cuentas SET id='d' WHERE id=?",[first.id]);
    await c.query("INSERT INTO mesas(id,numero,estado,creado_en) VALUES ('sinvisita',3,'disponible',NOW())");
    assert.equal((await call(api.iniciarSesionDivision,{mesas_id:'sinvisita',modalidad:'items'})).status,409);
-   assert.equal((await call(api.iniciarSesionDivision,{mesas_id:'m',modalidad:'equitativa'})).status,400);
+   assert.equal((await call(api.iniciarSesionDivision,{mesas_id:'m',modalidad:'equitativa'})).status,201);
   });
   const value={jugadores_id:'a',items:[{pedido_item_id:'i',cantidad:2}]};let assigned;
   const assignments=async()=>JSON.stringify(await Promise.all(['division_participantes','division_items_detalle','auditoria'].map(async table=>(await c.query('SELECT * FROM '+table+' ORDER BY id'))[0])));

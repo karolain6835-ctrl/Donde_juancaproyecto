@@ -42,7 +42,7 @@ const cases = [
  ['A','POST','ventas/pedido'],['C','POST','ventas/facturar'],['C','GET','ventas/comprobantes'],['C','GET','ventas/comprobantes/x'],
  ['C','GET','cierres-caja/resumen'],['C','POST','cierres-caja'],['C','GET','cierres-caja'],['C','GET','cierres-caja/x'],
  ['MB','GET','kanban/simulado'],['MB','GET','kanban/tablero'],['MB','PUT','kanban/x/estado'],
- ['MC','POST','sesiones-division'],['MC','GET','sesiones-division/x'],['MC','POST','sesiones-division/x/asignar-items'],
+ ['MC','POST','sesiones-division'],['MC','GET','sesiones-division/x'],['MC','POST','sesiones-division/x/asignar-items'],['MC','POST','sesiones-division/x/cuotas'],['C','PATCH','sesiones-division/x/cancelar'],['C','PATCH','sesiones-division/x/completar'],
  ['A','POST','usuarios/registrar'],['A','PUT','usuarios/x/estado']
 ];
 const groups={A:['Administrador','SuperAdmin'],M:['Administrador','SuperAdmin','Mesero','Mesera'],C:['Administrador','SuperAdmin','Cajero'],MC:['Administrador','SuperAdmin','Mesero','Mesera','Cajero'],ALL:['Administrador','SuperAdmin','Mesero','Mesera','Bartender','Cajero'],B:['Administrador','SuperAdmin','Bartender'],MB:['Administrador','SuperAdmin','Mesero','Mesera','Bartender']};

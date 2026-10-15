@@ -1,5 +1,5 @@
 const { randomUUID, createHash } = require('node:crypto');
-const { centavos } = require('./liquidacionService');
+const { centavos, calcularCuenta } = require('./liquidacionService');
 const { registrarAuditoria } = require('./auditoriaService');
 const fallo=(status,message)=>Object.assign(new Error(message),{status});
 const dinero=n=>`${n/100n}.${String(n%100n).padStart(2,'0')}`;
@@ -30,6 +30,7 @@ async function asignar(c,divisionId,body,key,actor){
   const [[cantidad]]=await c.query('SELECT COUNT(*) AS n FROM division_items_detalle WHERE participante_id=? FOR UPDATE',[previa.id]);
   return {status:200,data:{participante_id:previa.id,sesion_division_id:divisionId,jugadores_id:previa.jugadores_id,nombre_cliente:previa.nombre_cliente,total_asignado:previa.total_asignado,items_asignados:cantidad.n}};
  }
+ if(division.estado!=='activa')throw fallo(409,'La división ya no está activa.');
  if(!division.sesion_mesa_id)throw fallo(409,'La división histórica es de solo consulta para nuevas asignaciones.');
  if(division.modalidad!=='items')throw fallo(409,'Esta fase permite únicamente asignar productos.');
  const [[visita]]=await c.query('SELECT id,estado,mesas_id FROM sesiones_mesa WHERE id=? FOR UPDATE',[division.sesion_mesa_id]);
@@ -45,13 +46,26 @@ async function asignar(c,divisionId,body,key,actor){
   if(!item||item.pedido_id!==item.pedidos_id||item.visita!==visita.id||item.mesa!==division.mesas_id||item.estado==='cancelado'||item.estado_pedido!=='abierto')throw fallo(409,'El producto no está disponible en un pedido abierto de esta visita.');
   if(pedidoId&&pedidoId!==item.pedidos_id)throw fallo(409,'Asigna productos de un solo pedido por operación.');
   pedidoId=item.pedidos_id;
-  const [previas]=await c.query('SELECT cantidad_asignada FROM division_items_detalle WHERE pedido_item_id=? FOR UPDATE',[itemId]);
+  const [monetarias]=await c.query("SELECT id FROM sesiones_division_cuentas WHERE pedido_id=? AND estado='activa' AND modalidad<>'items' FOR UPDATE",[pedidoId]);
+  if(monetarias.length)throw fallo(409,'El pedido tiene una división monetaria activa.');
+  const [previas]=await c.query(`SELECT di.cantidad_asignada FROM division_items_detalle di
+   LEFT JOIN division_participantes dp ON dp.id=di.participante_id
+   LEFT JOIN sesiones_division_cuentas sd ON sd.id=dp.sesion_division_id
+   WHERE di.pedido_item_id=? AND (sd.estado IS NULL OR sd.estado<>'cancelada') FOR UPDATE`,[itemId]);
   if(previas.some(r=>!Number.isInteger(r.cantidad_asignada)||r.cantidad_asignada<=0))throw fallo(409,'Las asignaciones históricas del producto requieren conciliación.');
   if(previas.reduce((n,r)=>n+BigInt(r.cantidad_asignada),0n)+BigInt(cantidad)>BigInt(item.cantidad_pedida))throw fallo(409,'La cantidad supera las unidades disponibles para asignar.');
   const subtotal=centavos(item.precio_unitario)*BigInt(cantidad);total+=subtotal;
   if(total>9999999999n)throw fallo(409,'El total supera el rango monetario de la división.');
   procesados.push([randomUUID(),participanteId,itemId,cantidad,dinero(subtotal)]);
  }
+ const bases=division.cuentas_items_json?JSON.parse(division.cuentas_items_json):{};
+ const cuenta=await calcularCuenta(c,{id:pedidoId});
+ if(bases[pedidoId]&&bases[pedidoId]!==dinero(cuenta.total)){
+  const [pagos]=await c.query("SELECT id FROM pagos WHERE sesion_division_id=? AND (estado='pagado' OR estado='pendiente') FOR UPDATE",[divisionId]);
+  if(pagos.length)throw fallo(409,'El consumo cambió y la división tiene pagos: requiere conciliación.');
+ }
+ bases[pedidoId]=dinero(cuenta.total);
+ await c.query('UPDATE sesiones_division_cuentas SET cuentas_items_json=? WHERE id=?',[JSON.stringify(bases),divisionId]);
  await c.query('INSERT INTO division_participantes(id,sesion_division_id,jugadores_id,nombre_cliente,total_asignado,idempotencia_clave,solicitud_hash) VALUES (?,?,?,?,?,?,?)',[participanteId,divisionId,pagador.id,pagador.nombre,dinero(total),key,hash]);
  await c.query('INSERT INTO division_items_detalle(id,participante_id,pedido_item_id,cantidad_asignada,subtotal) VALUES ?',[procesados]);
  await registrarAuditoria(c,actor,'divisiones','division_items_asignados','sesiones_division_cuentas',divisionId,{iniciador_original:division.usuarios_id,participante_id:participanteId,jugadores_id:pagador.id,total_asignado:dinero(total),items:procesados.map(r=>({id:r[0],pedido_item_id:r[2],cantidad:r[3],subtotal:r[4]}))});
@@ -59,8 +73,9 @@ async function asignar(c,divisionId,body,key,actor){
 }
 async function validarPago(c,pedido,divisionId,participanteId){
  if(!divisionId)return;
- const [[division]]=await c.query('SELECT sesion_mesa_id FROM sesiones_division_cuentas WHERE id=? FOR UPDATE',[divisionId]);
+ const [[division]]=await c.query('SELECT * FROM sesiones_division_cuentas WHERE id=? FOR UPDATE',[divisionId]);
  if(!division)throw fallo(404,'La división no existe.');
+ if(division.estado!=='activa')throw fallo(409,'La división ya no acepta pagos.');
  if(!division.sesion_mesa_id)return; // Compatibilidad con pagos históricos.
  const [[p]]=await c.query('SELECT sesion_mesa_id FROM pedidos WHERE id=? FOR UPDATE',[pedido.id]);
  const [[visita]]=await c.query('SELECT estado,mesas_id FROM sesiones_mesa WHERE id=? FOR UPDATE',[division.sesion_mesa_id]);
@@ -69,6 +84,12 @@ async function validarPago(c,pedido,divisionId,participanteId){
  const [[pagador]]=await c.query(`SELECT dp.jugadores_id,j.sesion_mesa_id FROM division_participantes dp
   LEFT JOIN jugadores j ON j.id=dp.jugadores_id WHERE dp.id=? AND dp.sesion_division_id=? FOR UPDATE`,[participanteId,divisionId]);
  if(!pagador||pagador.sesion_mesa_id!==division.sesion_mesa_id)throw fallo(409,'El pagador no pertenece a la división y visita indicadas.');
+ const {resumen}=require('./divisionCuotasService');
+ if((await resumen(c,division)).desactualizada)throw fallo(409,'El consumo o los pagos cambiaron; la división está desactualizada.');
+ if(division.modalidad!=='items'){
+  if(division.pedido_id!==pedido.id)throw fallo(409,'La cuota no pertenece a este pedido.');
+  return;
+ }
  const [items]=await c.query(`SELECT pi.pedidos_id,pi.pedido_id,pi.estado,d.cantidad_asignada,d.subtotal,pi.precio_unitario
   FROM division_items_detalle d LEFT JOIN pedido_items pi ON pi.id=d.pedido_item_id WHERE d.participante_id=? FOR UPDATE`,[participanteId]);
  if(!items.length||items.some(i=>i.pedidos_id!==pedido.id||i.pedido_id!==pedido.id||i.estado==='cancelado'||!Number.isInteger(i.cantidad_asignada)||i.cantidad_asignada<=0||centavos(i.subtotal)!==centavos(i.precio_unitario)*BigInt(i.cantidad_asignada)))throw fallo(409,'Las asignaciones no corresponden a los productos vigentes de este pedido.');
