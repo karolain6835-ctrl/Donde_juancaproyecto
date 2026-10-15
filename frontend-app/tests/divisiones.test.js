@@ -78,7 +78,7 @@ test('UI real: entrada, modalidades, resumen, estados, confirmaciones y errores'
   const {default:Main,DivisionEditor:Editor,DivisionResumen:Resumen}=await server.ssrLoadModule('/src/components/DivisionCuenta.jsx');
   const {default:Cuentas}=await server.ssrLoadModule('/src/components/CuentasPendientesSection.jsx');const {AuthContext}=await server.ssrLoadModule('/src/context/useAuth.js');
   const render=(Component,props={},rol='Administrador')=>renderToString(React.createElement(AuthContext.Provider,{value:{user:{rol}}},React.createElement(Component,props)));
-  const main=(data=null,rol='Administrador',catalog={data:{contexto,clientes}})=>{globalThis.__divisionModeButtons={};globalThis.__divisionResources=[{refresh:async()=>{},...catalog},{data,refresh:async()=>{}}];return render(Main,{pedidoId:'p',onClose(){},onChanged:async()=>{}},rol);};
+  const main=(data=null,rol='Administrador',catalog={data:{contexto,clientes}})=>{globalThis.__divisionModeButtons={};globalThis.__divisionResources=[{refresh:async()=>{},...catalog},{data,refresh:async()=>{}},{data:[],refresh:async()=>{}}];return render(Main,{pedidoId:'p',onClose(){},onChanged:async()=>{}},rol);};
   await t.test('cuenta real muestra botón y cuatro modalidades sin datos simulados',()=>{
    globalThis.__divisionResources=[{data:{datos:[{id:'p',mesas_id:'m',mesa_numero:5,estado:'abierto'}],paginacion:{pagina:1,total:1,total_paginas:1}}}];
    const html=render(Cuentas);assert.match(html,/Dividir cuenta/);assert.doesNotMatch(html,/P-3839|112000|Laura/);assert.equal(typeof globalThis.__abrirDivision,'function');

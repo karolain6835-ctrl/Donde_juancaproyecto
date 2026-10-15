@@ -15,7 +15,7 @@ export const permissions = Object.freeze(Object.fromEntries([
     'compras.ver', 'compras.crear', 'compras.recibir', 'compras.cancelar', 'compras.reversar',
     'clientes.actualizar', 'usuarios.registrar', 'usuarios.cambiarEstado', 'ventas.crearPedido']],
   [SERVICE, ['mesas.trasladar', 'pedidos.crear', 'pedidos.agregarItems', 'juegos.iniciar', 'juegos.finalizar']],
-  [SERVICE_CASH, ['mesas.ver', 'mesas.cuenta', 'pedidos.ver', 'pagos.crear', 'juegos.ver',
+  [SERVICE_CASH, ['mesas.ver', 'mesas.cuenta', 'pedidos.ver', 'pagos.crear', 'pagos.division.ver', 'juegos.ver',
     'clientes.ver', 'clientes.crear', 'divisiones.ver', 'divisiones.crear', 'divisiones.asignarItems', 'divisiones.cuotas']],
   [CASH, ['mesas.cambiarEstado', 'pedidos.cancelarItem', 'pagos.ver', 'pagos.verificar', 'divisiones.cancelar', 'divisiones.completar',
     'ventas.facturar', 'comprobantes.ver', 'cierres.ver', 'cierres.crear']],

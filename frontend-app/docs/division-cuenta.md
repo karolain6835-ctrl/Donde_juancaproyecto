@@ -59,3 +59,9 @@ indican que tiene sentido; las respuestas 409 del servidor se muestran igualment
 
 No se implementan recepción/verificación de pagos, reparto multi-pedido ni juegos
 divididos en esta fase. El resumen refleja los pagos reales del backend al actualizar.
+
+## Continuacion 8D
+
+Los pagos por cliente ya se integran mediante PagosDivision y pagosService.
+Ver backend/docs/pagos-division-fase8d.md para contratos, roles, recuperacion de
+reintentos y el alcance pendiente del listado global de Caja.

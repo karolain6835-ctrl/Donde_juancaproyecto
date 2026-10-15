@@ -59,6 +59,7 @@ test('Todos los permisos operativos coinciden con los roles de las rutas reales'
     ['kanban', 'put', '/:id/estado', ['kanban.actualizar']],
     ['pedidos', 'get', '/:pedido_id/division-contexto', ['divisiones.ver']],
     ['divisiones', 'get', '/:id', ['divisiones.ver']],
+    ['divisiones', 'get', '/:id/pagos', ['pagos.division.ver']],
     ['divisiones', 'post', '/', ['divisiones.crear']],
     ['divisiones', 'post', '/:id/asignar-items', ['divisiones.asignarItems']],
     ['divisiones', 'post', '/:id/cuotas', ['divisiones.cuotas']],

@@ -4,8 +4,9 @@ import {can} from '../utils/permissions';
 import {formatCurrency} from '../utils/formatCurrency';
 import {useRemoteCatalog} from '../hooks/useRemoteCatalog';
 import {listarParticipantesMesa} from '../services/participantesService';
-import {contextoDivision,obtenerDivision,finalizarDivision,modalidadesDivision,estadosDivision,centavosDivision,decimalDivision,montoCOP,disponiblePagador,estimarIguales,planDivision,ejecutarDivision} from '../services/divisionesService';
+import {contextoDivision,obtenerDivision,finalizarDivision,modalidadesDivision,estadosDivision,centavosDivision,decimalDivision,montoCOP,estimarIguales,planDivision,ejecutarDivision} from '../services/divisionesService';
 import OperacionRemoteState from './OperacionRemoteState';
+import PagosDivision from './PagosDivision';
 import './DivisionCuenta.css';
 import './OperacionForms.css';
 import './CatalogoForm.css';
@@ -15,19 +16,7 @@ const storageKey=id=>`dondejuanca_division_intento_${id}`;
 function leerIntento(id){try{return JSON.parse(sessionStorage.getItem(storageKey(id)))||null;}catch{return null;}}
 function guardarIntento(id,value){try{if(value)sessionStorage.setItem(storageKey(id),JSON.stringify(value));else sessionStorage.removeItem(storageKey(id));}catch{/* Mantener el intento en memoria si el navegador no permite guardar. */}}
 
-export function DivisionResumen({data}){
- return <section className="division-resumen" aria-label="Resumen de división">
-  <div className="division-heading"><h3>División de cuenta</h3><span className={`division-estado ${data.estado}`}>{estadosDivision[data.estado]}</span></div>
-  <p>{modalidadesDivision[data.modalidad]}</p>
-  {data.desactualizada&&<p className="division-aviso" role="alert">La cuenta cambió después de crear esta división. Revisa los nuevos consumos antes de continuar.</p>}
-  {data.estado!=='activa'&&<p>Esta división está {estadosDivision[data.estado].toLowerCase()} y no permite cambios.</p>}
-  <dl className="division-totales"><div><dt>Total asignado</dt><dd>{formatCurrency(data.total_asignado)}</dd></div><div><dt>Pagado</dt><dd>{formatCurrency(data.total_pagado)}</dd></div><div><dt>Pendiente de verificación</dt><dd>{formatCurrency(data.pendiente_verificacion)}</dd></div><div><dt>Saldo por pagar</dt><dd>{formatCurrency(disponiblePagador({saldo:data.total_pendiente,pendiente_verificacion:data.pendiente_verificacion}))}</dd></div></dl>
-  {!data.participantes.length&&<p>Aún no hay clientes con productos o montos asignados.</p>}
-  <div className="division-personas">{data.participantes.map(p=><article key={p.id} className="division-persona"><strong>{p.nombre_cliente}</strong><dl className="division-totales">
-   <div><dt>Asignado</dt><dd>{formatCurrency(p.asignado)}</dd></div><div><dt>Pagado</dt><dd>{formatCurrency(p.pagado)}</dd></div><div><dt>Pendiente de verificación</dt><dd>{formatCurrency(p.pendiente_verificacion)}</dd></div><div><dt>Saldo por pagar</dt><dd>{formatCurrency(disponiblePagador(p))}</dd></div>
-  </dl></article>)}</div><small>Los pagos pendientes aún requieren verificación. El saldo por pagar descuenta esos pagos pendientes.</small>
- </section>;
-}
+export {default as DivisionResumen} from './DivisionResumen';
 
 export function DivisionEditor({modalidad,form,setForm,contexto,clientes,disabled,onSubmit,error}){
  const choose=e=>setForm({...form,cliente:e.target.value});
@@ -125,7 +114,7 @@ export default function DivisionCuenta({pedidoId,onClose,onChanged=async()=>{}})
   {contexto&&<><p>Mesa {contexto.pedido.mesa_numero}</p><p className="division-saldo">Total pendiente: <strong>{formatCurrency(contexto.saldo)}</strong></p>
    {!!contexto.divisiones.length&&<label className="division-existing">Divisiones de la cuenta<select value={selected} disabled={busy||frozen&&!attemptUi?.creacionIncierta} onChange={e=>open(e.target.value)}><option value="">Crear otra división</option>{contexto.divisiones.map(d=><option key={d.id} value={d.id}>{modalidadesDivision[d.modalidad]} · {estadosDivision[d.estado]} · {d.id.slice(0,8)}</option>)}</select></label>}
    {selected&&<OperacionRemoteState resource={division}/>}
-   {selected&&data&&<DivisionResumen data={data}/>}
+   {selected&&data&&<PagosDivision data={data} pedidoId={pedidoId} pedidoAbierto={contexto.pedido.estado==='abierto'} bloqueado={catalog.loading||Boolean(catalog.error)||division.loading||Boolean(division.error)} productosIds={contexto.items.map(i=>i.id)} onChanged={refresh}/>}
    {otraMonetaria&&<p>Este pedido ya tiene una divisi?n activa. ?brela en la lista para continuar.</p>}
    {!compatible&&!selected&&<p>No hay una cuenta abierta con clientes y saldo disponible para dividir.</p>}
    {editable&&!frozen&&<>
