@@ -39,7 +39,19 @@ export function PagoCliente({persona,data,pedidoId,productosIds=[],pedidoAbierto
  }
  async function decide(){
   if(lock.current||!can(user,'pagos.verificar')||!decision)return;lock.current=true;setBusy(true);setError('');setSuccess('');
-  try{await verificarPago(decision.pago.id,decision.estado);setSuccess(decision.estado==='verificado'?'Pago verificado.':'Pago rechazado.');setDecision(null);await onChanged();}
+  try{
+   const result=await verificarPago(decision.pago.id,decision.estado);
+   setDecision(null);await onChanged();
+   const l=result.liquidacion;
+   const mensajes=[decision.estado==='verificado'?'Pago verificado.':'Pago rechazado.'];
+   if(l?.cuenta_liquidada)mensajes.push('Cuenta pagada.');
+   if(l?.division?.estado==='completada')mensajes.push('División completada.');
+   if(l?.estado_pedido==='cerrado')mensajes.push('Pedido cerrado.');
+   if(l?.estado_mesa==='disponible')mensajes.push('Mesa disponible.');
+   else if(l?.motivo_no_liberacion)mensajes.push(l.motivo_no_liberacion);
+   if(l?.division?.motivo)mensajes.push(l.division.motivo);
+   setSuccess(mensajes.join(' '));
+  }
   catch(e){setError(e.message);await onChanged();}finally{setBusy(false);lock.current=false;}
  }
  return <div className="pagos-cliente">

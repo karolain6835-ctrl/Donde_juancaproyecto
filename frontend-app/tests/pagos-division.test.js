@@ -105,6 +105,18 @@ test('UI real de pagos: formulario, historial, permisos, acciones y reconsulta',
    }
    delete globalThis.__pagoDecision;
   });
+  await t.test('8E cierre confirmado se muestra despues de reconsultar y bloqueos reales se conservan',async()=>{
+   for(const liquidacion of [{cuenta_liquidada:true,division:{estado:'completada'},estado_pedido:'cerrado',estado_mesa:'disponible'},{estado_mesa:'en_cobro',motivo_no_liberacion:'Hay un juego activo.'}]){
+    globalThis.__pagoDecision={pago,estado:'verificado'};
+    globalThis.fetch=async()=>new Response(JSON.stringify({id_pago:pago.id,verificacion_estado:'verificado',liquidacion}));
+    let refreshed=false;
+    render(Cliente,{...props,onChanged:async()=>{assert.equal(globalThis.__pagoSuccess,'');refreshed=true;}});
+    await globalThis.__pagoDecide();assert.equal(refreshed,true);
+    const html=render(Cliente,props);
+    for(const text of liquidacion.cuenta_liquidada?['Cuenta pagada','División completada','Pedido cerrado','Mesa disponible']:['Hay un juego activo'])assert.ok(html.includes(text));
+   }
+   delete globalThis.__pagoDecision;delete globalThis.__pagoSuccess;
+  });
   await t.test('error backend visible y lectura con loading/reintento; pagos sin cliente no se ocultan',async()=>{
    globalThis.__pagoDecision={pago,estado:'verificado'};globalThis.fetch=async()=>new Response(JSON.stringify({error:'La cuenta cambió.'}),{status:409});render(Cliente,props);await globalThis.__pagoDecide();assert.match(render(Cliente,props),/La cuenta cambió/);delete globalThis.__pagoError;delete globalThis.__pagoDecision;
    globalThis.__pagoResource={loading:true};assert.match(render(Main,{data,pedidoId:'p',productosIds:[],onChanged:async()=>{}}),/Cargando/);
