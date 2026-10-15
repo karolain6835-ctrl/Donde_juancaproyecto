@@ -1,0 +1,33 @@
+.division-overlay { position:fixed; inset:0; z-index:110; background:rgba(18,30,25,.34); backdrop-filter:blur(1px); }
+.pedido-drawer.division-drawer { position:fixed; top:0; right:0; width:min(720px,100vw); height:100dvh; padding:24px; overflow-y:auto; z-index:120; background:var(--color-surface,#fff); box-shadow:-12px 0 32px rgba(30,43,34,.14); }
+.division-drawer .pedido-drawer-header { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; padding-bottom:18px; border-bottom:1px solid var(--color-border,#dfe8e2); }
+.division-drawer .pedido-drawer-header h2 { font-family:var(--font-brand); font-size:26px; }
+.division-drawer .drawer-close { border:0; background:transparent; font-size:26px; padding:0 6px; cursor:pointer; }
+.division-drawer .drawer-secondary-button,.division-drawer .drawer-primary-button { border:1px solid var(--color-border,#dfe8e2); border-radius:10px; padding:9px 12px; font:inherit; font-size:13px; cursor:pointer; }
+.division-drawer .drawer-secondary-button { background:var(--color-surface,#fff); color:var(--color-text,#20372a); }
+.division-drawer .drawer-primary-button { background:var(--color-primary,#177553); color:white; border-color:var(--color-primary,#177553); }
+.division-drawer button:disabled { opacity:.55; cursor:not-allowed; }
+.division-heading,.division-existing,.division-saldo { margin: 16px 0; }
+.division-heading { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; }
+.division-modalidades { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin:20px 0; }
+.division-modalidades button { white-space:normal; min-width:0; }
+.division-modalidades [aria-pressed=true] { border-color:var(--color-primary,#177553); background:var(--color-primary-soft,#edf6f0); }
+.division-editor fieldset { border:0; padding:0; min-width:0; display:grid; gap:12px; }
+.division-editor legend { font-weight:600; margin:12px 0; }
+.division-producto,.division-persona { padding:14px; border:1px solid var(--color-border,#dfe8e2); border-radius:12px; margin:10px 0; min-width:0; }
+.division-producto strong { overflow-wrap:anywhere; }
+.division-clientes-input,.division-totales { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px 16px; }
+.division-clientes-input label,.division-monto label,.division-existing { display:grid; gap:6px; }
+.division-totales dt,.division-resumen small { font-size:12px; color:var(--color-text-secondary,#63756b); }
+.division-totales dd { margin:4px 0; font-weight:600; }
+.division-monto { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto; gap:8px; align-items:end; }
+.division-monto input,.division-monto select,.division-existing select,.division-clientes-input input { width:100%; min-width:0; padding:9px; border:1px solid var(--color-border,#dfe8e2); border-radius:8px; background:var(--color-surface,#fff); }
+.division-seleccion-clientes { display:flex; flex-wrap:wrap; gap:12px; }
+.division-seleccion-clientes label { display:flex; align-items:center; gap:6px; }
+.division-seleccion-clientes input { width:auto; }
+.division-aviso { padding:12px; margin:16px 0; border:1px solid #e1c788; border-radius:10px; background:#fff9eb; color:#6b501d; }
+.division-error { color:#a83232; }
+.division-estado { padding:4px 10px; border-radius:999px; background:#edf4ef; font-size:12px; }
+.division-estado.cancelada { background:#f5e8e8; }.division-estado.completada { background:#dff1e6; }
+.division-estimacion { padding:10px; background:var(--color-primary-soft,#edf6f0); border-radius:10px; }
+@media(max-width:520px){.pedido-drawer.division-drawer {padding:16px;}.division-monto { grid-template-columns:minmax(0,1fr); }.division-clientes-input,.division-totales { grid-template-columns:minmax(0,1fr); }}

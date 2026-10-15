@@ -1,6 +1,11 @@
 .cuentas-pendientes-section {
   width: 100%;
 }
+.cuentas-pendientes-section .cuentas-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr)); gap:16px; margin:18px 0; }
+.cuentas-pendientes-section .cuenta-card { padding:18px; border:1px solid var(--color-border,#dfe8e2); background:var(--color-surface,#fff); border-radius:14px; min-width:0; }
+.cuentas-pendientes-section .cuenta-card p { margin:8px 0; overflow-wrap:anywhere; }
+.cuentas-pendientes-toolbar label { display:grid; gap:6px; font-size:13px; }
+.cuentas-pendientes-toolbar input { border:1px solid var(--color-border,#dfe8e2); border-radius:8px; padding:9px; max-width:100%; }
 
 /* =========================
    TOOLBAR

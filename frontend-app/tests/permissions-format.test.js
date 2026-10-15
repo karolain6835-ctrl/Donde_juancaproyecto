@@ -57,9 +57,13 @@ test('Todos los permisos operativos coinciden con los roles de las rutas reales'
     ['cierresCaja', 'post', '/', ['cierres.crear']],
     ['kanban', 'get', '/tablero', ['kanban.ver']],
     ['kanban', 'put', '/:id/estado', ['kanban.actualizar']],
+    ['pedidos', 'get', '/:pedido_id/division-contexto', ['divisiones.ver']],
     ['divisiones', 'get', '/:id', ['divisiones.ver']],
     ['divisiones', 'post', '/', ['divisiones.crear']],
     ['divisiones', 'post', '/:id/asignar-items', ['divisiones.asignarItems']],
+    ['divisiones', 'post', '/:id/cuotas', ['divisiones.cuotas']],
+    ['divisiones', 'patch', '/:id/cancelar', ['divisiones.cancelar']],
+    ['divisiones', 'patch', '/:id/completar', ['divisiones.completar']],
     ['usuarios', 'post', '/registrar', ['usuarios.registrar']],
     ['usuarios', 'put', '/:id/estado', ['usuarios.cambiarEstado']],
   ];
@@ -74,7 +78,7 @@ test('Todos los permisos operativos coinciden con los roles de las rutas reales'
       assert.deepEqual([...permissions[action]].sort(), roles.sort(), action);
     }
   }
-  assert.deepEqual(covered.sort(), Object.keys(permissions).sort());
+  assert.deepEqual([...new Set(covered)].sort(), Object.keys(permissions).sort());
 });
 test('Administrador tiene permisos administrativos', () => {
   for (const action of ['productos.editar', 'compras.crear', 'usuarios.registrar', 'inventario.ajustar']) assert.equal(can(user('Administrador'), action), true);
