@@ -57,7 +57,7 @@ test('Comprobantes: HTTP y MySQL real con tablas temporales', {skip:process.env.
     };
     const servicio={exports:{}};
     vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../src/services/comprobantesService.js'),'utf8'),{
-      module:servicio,console:{error(){}},require:n=>n==='../config/db'?{dbConfig:{}}:n==='mysql2'?{createConnection:()=>({promise:crearConexion})}:n==='./liquidacionService'?liquidacion:(n === '../services/identidadService' ? require('../src/services/identidadService') : n === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(n))
+      module:servicio,console:{error(){}},require:n=>n==='./juegosPedidoService'?require('../src/services/juegosPedidoService'):n==='../config/db'?{dbConfig:{}}:n==='mysql2'?{createConnection:()=>({promise:crearConexion})}:n==='./liquidacionService'?liquidacion:(n === '../services/identidadService' ? require('../src/services/identidadService') : n === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(n))
     });
     const controlador={exports:{}};
     vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../src/controllers/ventasController.js'),'utf8'),{

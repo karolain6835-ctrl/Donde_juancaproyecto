@@ -147,3 +147,8 @@ Implementación de Controladores y Rutas para Mesas: Se desarrolló la lógica p
 ### Inicializado
 - Se estableció el diseño y la estructura fundacional de la base de datos relacional para el sistema (Script: `v1.0_estructura.sql`).
 
+
+## v2.43 ? 2026-10-15
+- `v2.43_sesiones_juego_pedido_directo.sql`: agrega FK nullable de sesiones_juego.pedidos_id a pedidos, conserva FK/index historicos y permite pedido_items_id NULL.
+- Backfill por referencias inequ?vocas del item; no infiere por mesa o fechas. Los cargos de historicos con item cancelado siguen excluidos.
+- Aplicada y verificada en la base local: 1 sesion conservada y 1 referencia directa completada.

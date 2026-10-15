@@ -76,7 +76,7 @@ test('API juegos: MySQL real con tablas temporales, sin escrituras persistentes'
       const r = await fetch(base + ruta, { method: metodo, headers: { 'Content-Type': 'application/json' }, body: body === undefined ? undefined : JSON.stringify(body) });
       return { status: r.status, data: await r.json() };
     };
-    const body = { activos_juego_id:'a1', mesas_id:'m1', pedido_items_id:'i1' };
+    const body = { activos_juego_id:'a1', mesas_id:'m1', pedidos_id:'p1' };
     const preparar = async () => {
       actor='u1'; fallo = null; await real.query('DELETE FROM sesiones_juego');
       await real.query("UPDATE activos_juego SET estado='disponible',precio_hora=3600.00");
@@ -115,7 +115,7 @@ test('API juegos: MySQL real con tablas temporales, sin escrituras persistentes'
       assert.equal((await estado()).sesiones.length,0);
     });
     await t.test('item de otra mesa, body incompleto o campos calculados', async () => {
-      await preparar(); assert.equal((await request('/iniciar','POST',{...body,pedido_items_id:'i2'})).status,400);
+      await preparar(); assert.equal((await request('/iniciar','POST',{...body,pedidos_id:'p2'})).status,409);
       for (const extra of [{costo_total:1},{tipo_juego:'tejo'},{tarifa_hora_aplicada:1},{fecha_inicio:'2026-01-01'}]) assert.equal((await request('/iniciar','POST',{...body,...extra})).status,400);
       assert.equal((await request('/iniciar','POST',{})).status,400);
     });

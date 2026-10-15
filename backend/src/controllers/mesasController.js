@@ -1,3 +1,4 @@
+const {pedidoJuegoSQL}=require('../services/juegosPedidoService');
 const { ejecutor } = require('../services/identidadService');
 const { registrarAuditoria } = require('../services/auditoriaService');
 const db = require('../config/db');
@@ -133,12 +134,11 @@ const trasladarMesa = async (req, res) => {
 
     // También mover juegos cerrados cuyo consumo pertenece a pedidos aún abiertos.
     const juegosDeCuenta = `
-      sj.mesas_id = ? AND (sj.estado = 'activa' OR
-        (sj.estado = 'cerrada' AND EXISTS (
-          SELECT 1 FROM pedido_items pi
-          JOIN pedidos ped ON (pi.pedido_id = ped.id OR pi.pedidos_id = ped.id)
-          WHERE pi.id = sj.pedido_items_id AND ped.mesas_id = ? AND ped.estado = 'abierto'
-        )))
+      sj.mesas_id = ? AND sj.estado IN ('activa','cerrada') AND EXISTS (
+          SELECT 1 FROM pedidos ped
+          WHERE ped.id = ${pedidoJuegoSQL('sj',true)} AND ped.mesas_id = ? AND ped.estado = 'abierto'
+          AND (sj.estado='activa' OR ${pedidoJuegoSQL()}=ped.id)
+        )
     `;
     mensajeError = 'Error al trasladar las sesiones de juego.';
     // Jugadores tienen referencia propia a mesa; rondas e ítems mantienen sus IDs.

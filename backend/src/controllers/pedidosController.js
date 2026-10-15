@@ -1,3 +1,5 @@
+const {pedidoJuegoSQL}=require('../services/juegosPedidoService');
+const {centavos}=require('../services/liquidacionService');
 const { agregarLineaPedido, registrarMovimientoPedido } = require('../services/pedidoItemsService');
 const { ejecutor } = require('../services/identidadService');
 const db = require('../config/db');
@@ -202,20 +204,19 @@ const obtenerCuentaConsolidada = (req, res) => {
            p.nombre, pi.cantidad_pedida, pi.precio_unitario, 
            (pi.cantidad_pedida * pi.precio_unitario) AS subtotal
     FROM pedido_items pi
-    JOIN productos p ON (pi.producto_id = p.id OR pi.productos_id = p.id)
-    JOIN pedidos ped ON (pi.pedido_id = ped.id OR pi.pedidos_id = ped.id)
+    JOIN productos p ON pi.productos_id = p.id AND pi.producto_id=p.id
+    JOIN pedidos ped ON pi.pedidos_id = ped.id AND pi.pedido_id=ped.id
     WHERE ped.mesas_id = ? AND ped.estado = 'abierto' AND pi.estado != 'cancelado'
   `;
 
-  // El esquema no registra inicio/fin: conservar las claves sin inventar tiempos.
-  // costo_tiempo mantiene el contrato y representa el costo_total registrado,
-  // no un importe calculado en vivo. NULL indica que aún no hay importe registrado.
   const queryJuegos = `
-    SELECT sj.id, sj.activos_juego_id, NULL AS fecha_inicio, NULL AS fecha_fin,
-           aj.precio_hora, sj.costo_total AS costo_tiempo
-    FROM sesiones_juego sj
-    JOIN activos_juego aj ON aj.id = sj.activos_juego_id
-    WHERE sj.mesas_id = ? AND sj.estado = 'activa'
+    SELECT sj.id,sj.activos_juego_id,aj.nombre AS activo_nombre,sj.estado,${pedidoJuegoSQL()} AS pedidos_id,
+      DATE_FORMAT(sj.fecha_inicio,'%Y-%m-%dT%H:%i:%sZ') AS fecha_inicio,
+      DATE_FORMAT(sj.fecha_fin,'%Y-%m-%dT%H:%i:%sZ') AS fecha_fin,
+      sj.tarifa_hora_aplicada AS precio_hora,sj.costo_total AS costo_tiempo
+    FROM sesiones_juego sj LEFT JOIN activos_juego aj ON aj.id=sj.activos_juego_id
+    JOIN pedidos ped ON ped.id=${pedidoJuegoSQL()}
+    WHERE ped.mesas_id=? AND ped.estado='abierto' AND sj.estado<>'cancelada'
   `;
 
   db.query(queryProductos, [mesa_id], (err, productos) => {
@@ -230,8 +231,8 @@ const obtenerCuentaConsolidada = (req, res) => {
         return res.status(500).json({ error: 'Error al consultar consumos de juegos.' });
       }
 
-      const totalProductos = (productos || []).reduce((acc, item) => acc + parseFloat(item.subtotal || 0), 0);
-      const totalJuegos = (juegos || []).reduce((acc, item) => acc + parseFloat(item.costo_tiempo || 0), 0);
+      const totalProductos = (productos || []).reduce((acc, item) => acc + centavos(String(item.subtotal ?? 0)), 0n);
+      const totalJuegos = (juegos || []).reduce((acc, item) => acc + centavos(String(item.costo_tiempo ?? 0)), 0n);
       const totalGeneral = totalProductos + totalJuegos;
 
       return res.status(200).json({
@@ -240,9 +241,10 @@ const obtenerCuentaConsolidada = (req, res) => {
         data: {
           mesa_id,
           resumen: {
-            subtotal_productos: totalProductos.toFixed(2),
-            subtotal_juegos: totalJuegos.toFixed(2),
-            total_general: totalGeneral.toFixed(2)
+            subtotal_productos: `${totalProductos/100n}.${String(totalProductos%100n).padStart(2,'0')}`,
+            subtotal_juegos: `${totalJuegos/100n}.${String(totalJuegos%100n).padStart(2,'0')}`,
+            total_general: `${totalGeneral/100n}.${String(totalGeneral%100n).padStart(2,'0')}`,
+            total_definitivo: (juegos || []).every(j=>j.estado==='cerrada'&&j.costo_tiempo!==null)
           },
           detalle_productos: productos || [],
           detalle_juegos: juegos || []

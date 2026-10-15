@@ -2,6 +2,7 @@ const mysql = require('mysql2');
 const db = require('../config/db');
 const { randomUUID } = require('node:crypto');
 const { bloquearPedido, calcularCuenta, centavos, errorLiquidacion } = require('./liquidacionService');
+const {pedidoJuegoSQL}=require('./juegosPedidoService');
 
 const error = errorLiquidacion;
 const id = valor => {
@@ -68,8 +69,7 @@ const emitir = async (c, body, actor) => {
     WHERE pi.pedidos_id=? AND pi.estado!='cancelado' ORDER BY pi.id LOCK IN SHARE MODE`,[pedidoId]);
   const [juegos] = await c.query(`SELECT sj.id,a.nombre AS descripcion,CAST(sj.costo_total AS CHAR) AS costo_total
     FROM sesiones_juego sj LEFT JOIN activos_juego a ON a.id=sj.activos_juego_id
-    WHERE sj.estado!='cancelada' AND EXISTS (SELECT 1 FROM pedido_items pi
-      WHERE pi.id=sj.pedido_items_id AND pi.pedidos_id=? AND pi.estado!='cancelado')
+    WHERE sj.estado!='cancelada' AND ${pedidoJuegoSQL()}=?
     ORDER BY sj.id LOCK IN SHARE MODE`,[pedidoId]);
   const lineas = productos.map(p=>{
     if (!Number.isInteger(p.cantidad) || p.cantidad <= 0 || !p.descripcion) throw error(409,'Detalle de producto inconsistente.');

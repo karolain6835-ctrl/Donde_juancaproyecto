@@ -70,14 +70,16 @@ test('Ocupación y liberación con MySQL temporal, transacciones y stock intacto
     });
     await t.test('inicio de juego ocupa mesa disponible y no modifica inventario', async () => {
       await c.query("UPDATE mesas SET estado='disponible' WHERE id='m'");
+      await c.query("UPDATE pedidos SET estado='abierto' WHERE id=?",[pedidoId]);
       fail = true;
-      assert.equal((await invoke(juegos.iniciarJuego, { activos_juego_id: 'a', mesas_id: 'm', pedido_items_id: 'i' })).status, 500);
+      assert.equal((await invoke(juegos.iniciarJuego, { activos_juego_id: 'a', mesas_id: 'm', pedidos_id: pedidoId })).status, 500);
       fail = false;
       assert.equal((await c.query('SELECT COUNT(*) AS n FROM sesiones_juego'))[0][0].n, 0);
       assert.equal((await c.query("SELECT estado FROM activos_juego WHERE id='a'"))[0][0].estado, 'disponible');
       assert.equal(await state(), 'disponible');
-      const result = await invoke(juegos.iniciarJuego, { activos_juego_id: 'a', mesas_id: 'm', pedido_items_id: 'i' });
+      const result = await invoke(juegos.iniciarJuego, { activos_juego_id: 'a', mesas_id: 'm', pedidos_id: pedidoId });
       assert.equal(result.status, 201); assert.equal(await state(), 'ocupada'); assert.equal(await stock(), 5);
+      await c.query("UPDATE pedidos SET estado='cerrado' WHERE id=?",[pedidoId]);
     });
     await t.test('liberar con juego activo devuelve motivo 409', async () => {
       const result = await change('disponible'); assert.equal(result.status, 409); assert.match(result.data.error, /juego activa/);

@@ -1,5 +1,6 @@
 // Los importes se operan en centavos enteros, sin redondeos de coma flotante.
 const { cerrarSesion, asegurarSesion } = require('./sesionesMesaService');
+const {pedidoJuegoSQL}=require('./juegosPedidoService');
 const errorLiquidacion = (status, mensaje) => Object.assign(new Error(mensaje), { status });
 const centavos = (valor) => {
   const texto = String(valor);
@@ -40,10 +41,7 @@ const calcularCuenta = async (conexion, pedido) => {
   const [juegos] = await conexion.query(`
     SELECT sj.id, sj.estado, sj.costo_total
     FROM sesiones_juego sj
-    WHERE sj.estado != 'cancelada' AND EXISTS (
-      SELECT 1 FROM pedido_items pi WHERE pi.id = sj.pedido_items_id
-      AND pi.pedidos_id = ? AND pi.estado != 'cancelado'
-    ) FOR UPDATE
+    WHERE sj.estado != 'cancelada' AND ${pedidoJuegoSQL()} = ? FOR UPDATE
   `, [pedido.id]);
   const [pagos] = await conexion.query(`
     SELECT id, total_seleccionado, estado, verificacion_estado
