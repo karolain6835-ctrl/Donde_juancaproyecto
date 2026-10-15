@@ -7,7 +7,7 @@ export function pedidoBody(form) {
   const body = { mesas_id: operationId(form.mesas_id), usuarios_id: operationId(form.usuarios_id), clientes_id: form.clientes_id === null ? null : operationId(form.clientes_id) };
   if (form.participante_id) body.participante_id = operationId(form.participante_id);
   if (body.clientes_id === null && !body.participante_id) {
-    if (typeof form.participante_temporal?.nombre !== 'string' || !form.participante_temporal.nombre.trim() || [...form.participante_temporal.nombre.trim()].length > 100) operationFail('Indica el nombre o alias del participante.');
+    if (typeof form.participante_temporal?.nombre !== 'string' || !form.participante_temporal.nombre.trim() || [...form.participante_temporal.nombre.trim()].length > 100) operationFail('Indica el nombre o alias del cliente.');
     body.participante_temporal = { nombre: form.participante_temporal.nombre.trim() };
   }
   return body;
@@ -44,11 +44,11 @@ export async function detallePedido(id, options) {
 }
 export async function agregarItemPedido(id, form, productos) {
   const response = await apiClient(`/pedidos/${operationPath(id)}/items`, { method: 'POST', body: itemPedidoBody(form, productos) });
-  if (typeof response?.id_item !== 'string' || !Number.isInteger(response.stock_restante)) throw invalidResponse('ítem de pedido');
+  if (typeof response?.id_item !== 'string' || !Number.isInteger(response.stock_restante)) throw invalidResponse('producto del pedido');
   return response;
 }
 export async function cancelarItemPedido(id) {
   const response = await apiClient(`/pedidos/items/${operationPath(id)}/cancelar`, { method: 'PUT' });
-  if (response?.exito !== true || typeof response.id_item !== 'string') throw invalidResponse('cancelación de ítem');
+  if (response?.exito !== true || typeof response.id_item !== 'string') throw invalidResponse('cancelación de producto');
   return response;
 }
