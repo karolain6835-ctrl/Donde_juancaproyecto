@@ -149,6 +149,32 @@ test('Divisiones 8B: modalidades, ciclo de vida, saldos y traslados',{skip:proce
    assert.equal((await completar(d)).status,200);assert.equal((await verificar(p)).status,200);
    assert.equal((await c.query("SELECT estado FROM sesiones_mesa WHERE id='s'"))[0][0].estado,'activa');
   });
+  await t.test('HTTP montaje real: division activa sin pagos devuelve 200 vacio, inexistente 404 JSON',async()=>{
+   const express=require('express'),app=express();
+   const moduleRoute={exports:{}};
+   vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../src/routes/divisionesRoutes.js'),'utf8'),{module:moduleRoute,require:n=>{
+    if(n==='../controllers/divisionesController')return api;
+    if(n==='../controllers/divisionPagosController')return load('divisionPagosController.js');
+    return require(n.startsWith('.')?path.join(__dirname,'../src/routes',n):n);
+   }});
+   app.use('/api/sesiones-division',(req,res,next)=>{req.usuario={id:'u',rol:'Administrador'};next();},moduleRoute.exports);
+   const server=app.listen(0,'127.0.0.1');await new Promise(r=>server.once('listening',r));
+   try{
+    const d=await nueva('total','50000.00');await cuotas(d,{jugadores_id:'a'});
+    const url='http://127.0.0.1:'+server.address().port+'/api/sesiones-division/';
+    let r=await fetch(url+d.id+'/pagos');assert.equal(r.status,200);assert.deepEqual(await r.json(),{datos:[]});
+    r=await fetch(url+'inexistente/pagos');assert.equal(r.status,404);assert.deepEqual(await r.json(),{error:'La división no existe.'});
+    const summary=await fetch(url+d.id);assert.equal(summary.status,200);
+    r=await fetch(url+d.id+'/ruta-inexistente');assert.equal(r.status,404);assert.match(await r.text(),/Cannot GET/);
+   }finally{await new Promise(r=>server.close(r));}
+  });
+  await t.test('pago directo no puede eludir cuotas activas; cancelada permite pago directo',async()=>{
+   const d=await nueva('total','50.00');await cuotas(d,{jugadores_id:'a'});
+   const body={id:'directo-cuotas',pedidos_id:d.pedido,total_seleccionado:'50.00',metodo_de_pago:'efectivo'};
+   const r=await call(pagos.registrarPago,body);assert.equal(r.status,409);assert.match(r.data.error,/división activa/);
+   assert.equal((await c.query('SELECT COUNT(*) n FROM pagos WHERE id=?',[body.id]))[0][0].n,0);
+   assert.equal((await cancelar(d)).status,200);assert.equal((await call(pagos.registrarPago,body)).status,201);
+  });
   await t.test('8D pagos por división: cuotas reales, PK idempotente, parciales y reservas',async()=>{
    const d=await nueva('total','40.00'),r=await cuotas(d,{jugadores_id:'a'}),person=r.data.data.participantes[0].id;
    const other=await nueva('total','40.00'),q=await cuotas(other,{jugadores_id:'b'});

@@ -62,7 +62,7 @@ test('pagos y liquidación con MySQL y tablas temporales', {
   const verificar = (id, decision = 'verificado') => invocar(api.verificarPago,
     { verificacion_estado: decision }, { id });
   const tablas = ['auditoria', 'mesas', 'pedidos', 'pedido_items', 'pagos', 'sesiones_juego',
-    'sesiones_division_cuentas', 'division_participantes'];
+    'sesiones_division_cuentas', 'division_participantes', 'division_items_detalle'];
   const preparar = async () => {
     fallar = null;
     falloCommit = false;

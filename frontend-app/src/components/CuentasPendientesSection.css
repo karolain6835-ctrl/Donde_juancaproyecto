@@ -773,3 +773,5 @@
     flex-direction: column;
   }
 }
+
+.pago-directo .operacion-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.pago-directo .operacion-actions button{width:auto;flex:0 1 auto;max-width:100%}

@@ -26,6 +26,21 @@ export async function listarPagosDivision(id,options){
  return rows;
 }
 export function nuevoIdPago(){return `p-${crypto.randomUUID().replaceAll('-','').slice(0,18)}`;}
+export function pagoDirectoBody(form,contexto,id){
+ if(contexto.pedido.estado!=='abierto')operationFail('El pedido no está abierto.');
+ if(contexto.divisiones.some(d=>d.estado==='activa'))operationFail('Usa los pagos por cliente de la división activa.');
+ if(!Object.hasOwn(metodosPago,form.metodo))operationFail('Selecciona un método de pago válido.');
+ const importe=montoCOP(form.valor),disponible=centavosDivision(contexto.saldo)-centavosDivision(contexto.pendiente_verificacion);
+ if(importe<=0n)operationFail('El valor debe ser mayor que cero.');
+ if(importe>disponible)operationFail('El valor supera el saldo disponible considerando los pagos pendientes de verificación.');
+ return {id,pedidos_id:operationId(contexto.pedido.id),total_seleccionado:decimalDivision(importe),metodo_de_pago:form.metodo};
+}
+export async function registrarPagoDirecto(body){
+ if(body.sesion_division_id||body.participante_id)operationFail('El pago directo no debe incluir una división.');
+ const result=await apiClient('/pagos',{method:'POST',body});
+ if(result?.id_pago!==body.id)throw invalidResponse('pago');
+ return result;
+}
 export function pagoDivisionBody(form,pagador,division,pedidoId,id){
  if(typeof id!=='string'||!id.length||id.length>20)operationFail('No se pudo identificar el intento de pago.');
  if(division.estado!=='activa'||division.desactualizada)operationFail('Esta división no permite nuevos pagos.');

@@ -62,7 +62,7 @@ test('UI real: entrada, modalidades, resumen, estados, confirmaciones y errores'
  const server=await createServer({root:fileURLToPath(new URL('..',import.meta.url)),server:{middlewareMode:true,hmr:false},appType:'custom',plugins:[{name:'division-ui',enforce:'pre',transform(source,filename){
   const f=filename.replaceAll('\\','/');
   if(f.endsWith('/hooks/useRemoteCatalog.js'))return source.replace('export function useRemoteCatalog(loader) {','export function useRemoteCatalog(loader) { return globalThis.__divisionResources.shift();');
-  if(f.endsWith('/components/CuentasPendientesSection.jsx'))return source.replace('onClick={()=>setSelected(p.id)}','onClick={globalThis.__abrirDivision=()=>{globalThis.__openedPedido=p.id;setSelected(p.id);}}');
+  if(f.endsWith('/components/CuentasPendientesSection.jsx'))return source.replace('onDivision={()=>setSelected(p.id)}','onDivision={globalThis.__abrirDivision=()=>{globalThis.__openedPedido=p.id;setSelected(p.id);}}');
   if(f.endsWith('/components/DivisionCuenta.jsx'))return source
    .replace("useState(()=>restored?.id||'')","useState(()=>globalThis.__selectedDivision || attempt.current?.id || '')")
    .replace("useState(()=>restored?.modalidad||'items')","useState(()=>globalThis.__divisionMode || restored?.modalidad || 'items')")
@@ -80,7 +80,7 @@ test('UI real: entrada, modalidades, resumen, estados, confirmaciones y errores'
   const render=(Component,props={},rol='Administrador')=>renderToString(React.createElement(AuthContext.Provider,{value:{user:{rol}}},React.createElement(Component,props)));
   const main=(data=null,rol='Administrador',catalog={data:{contexto,clientes}})=>{globalThis.__divisionModeButtons={};globalThis.__divisionResources=[{refresh:async()=>{},...catalog},{data,refresh:async()=>{}},{data:[],refresh:async()=>{}}];return render(Main,{pedidoId:'p',onClose(){},onChanged:async()=>{}},rol);};
   await t.test('cuenta real muestra botón y cuatro modalidades sin datos simulados',()=>{
-   globalThis.__divisionResources=[{data:{datos:[{id:'p',mesas_id:'m',mesa_numero:5,estado:'abierto'}],paginacion:{pagina:1,total:1,total_paginas:1}}}];
+   globalThis.__divisionResources=[{data:{datos:[{id:'p',mesas_id:'m',mesa_numero:5,estado:'abierto'}],paginacion:{pagina:1,total:1,total_paginas:1}}},{data:contexto}];
    const html=render(Cuentas);assert.match(html,/Dividir cuenta/);assert.doesNotMatch(html,/P-3839|112000|Laura/);assert.equal(typeof globalThis.__abrirDivision,'function');
    globalThis.__abrirDivision();assert.equal(globalThis.__openedPedido,'p');
    const drawer=main();for(const text of ['Por productos','Partes iguales','Una persona paga todo','Montos personalizados'])assert.ok(drawer.includes(text));

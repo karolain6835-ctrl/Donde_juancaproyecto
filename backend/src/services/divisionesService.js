@@ -72,7 +72,15 @@ async function asignar(c,divisionId,body,key,actor){
  return {status:201,data:{participante_id:participanteId,sesion_division_id:divisionId,jugadores_id:pagador.id,nombre_cliente:pagador.nombre,total_asignado:dinero(total),items_asignados:procesados.length}};
 }
 async function validarPago(c,pedido,divisionId,participanteId){
- if(!divisionId)return;
+ if(!divisionId){
+  const [activas]=await c.query(`SELECT sd.id FROM sesiones_division_cuentas sd
+   WHERE sd.estado='activa' AND (sd.pedido_id=? OR EXISTS (
+    SELECT 1 FROM division_participantes dp JOIN division_items_detalle di ON di.participante_id=dp.id
+    JOIN pedido_items pi ON pi.id=di.pedido_item_id
+    WHERE dp.sesion_division_id=sd.id AND pi.pedidos_id=?)) FOR UPDATE`,[pedido.id,pedido.id]);
+  if(activas.length)throw fallo(409,'Este pedido tiene una división activa. Registra el pago por cliente desde la división.');
+  return;
+ }
  const [[division]]=await c.query('SELECT * FROM sesiones_division_cuentas WHERE id=? FOR UPDATE',[divisionId]);
  if(!division)throw fallo(404,'La división no existe.');
  if(division.estado!=='activa')throw fallo(409,'La división ya no acepta pagos.');

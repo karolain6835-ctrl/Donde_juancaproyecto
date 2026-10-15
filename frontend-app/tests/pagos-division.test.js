@@ -117,6 +117,14 @@ test('UI real de pagos: formulario, historial, permisos, acciones y reconsulta',
    }
    delete globalThis.__pagoDecision;delete globalThis.__pagoSuccess;
   });
+  await t.test('division activa Marcela 50000 sin pagos conserva Registrar pago',()=>{
+   const marcela={...persona,nombre_cliente:'Marcela',asignado:'50000.00',pagado:'0.00',pendiente_verificacion:'0.00',saldo:'50000.00'};
+   const division={...data,total_asignado:'50000.00',total_pagado:'0.00',pendiente_verificacion:'0.00',participantes:[marcela]};
+   globalThis.__pagoResource={data:[],loading:false,error:'',refresh(){}};
+   const html=render(Main,{data:division,pedidoId:'p',pedidoAbierto:true,productosIds:[],onChanged:async()=>{}},'Mesera');
+   for(const text of ['Marcela','Aún no hay pagos','Registrar pago'])assert.ok(html.includes(text));
+   assert.doesNotMatch(html,/Error HTTP|Reintentar/);
+  });
   await t.test('error backend visible y lectura con loading/reintento; pagos sin cliente no se ocultan',async()=>{
    globalThis.__pagoDecision={pago,estado:'verificado'};globalThis.fetch=async()=>new Response(JSON.stringify({error:'La cuenta cambió.'}),{status:409});render(Cliente,props);await globalThis.__pagoDecide();assert.match(render(Cliente,props),/La cuenta cambió/);delete globalThis.__pagoError;delete globalThis.__pagoDecision;
    globalThis.__pagoResource={loading:true};assert.match(render(Main,{data,pedidoId:'p',productosIds:[],onChanged:async()=>{}}),/Cargando/);
