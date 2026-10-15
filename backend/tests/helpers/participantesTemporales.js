@@ -14,7 +14,7 @@ module.exports = async function preparar(c, { items = false, pedidos = false } =
     ADD COLUMN IF NOT EXISTS sesion_mesa_id VARCHAR(36) NULL,
     ADD COLUMN IF NOT EXISTS alias_temporal VARCHAR(100) GENERATED ALWAYS AS
       (CASE WHEN tipo_participante='temporal' THEN LOWER(TRIM(nombre)) ELSE NULL END) PERSISTENT`);
-  if (items) await c.query('ALTER TABLE pedido_items ADD COLUMN IF NOT EXISTS participante_id VARCHAR(36) NULL');
+  if (items) await c.query('ALTER TABLE pedido_items ADD COLUMN IF NOT EXISTS participante_id VARCHAR(36) NULL, ADD COLUMN IF NOT EXISTS ronda_consumo_id VARCHAR(36) NULL');
   if (pedidos) await c.query('ALTER TABLE pedidos MODIFY COLUMN clientes_id VARCHAR(36) NULL');
   await c.query('ALTER TABLE pedidos ADD COLUMN IF NOT EXISTS sesion_mesa_id VARCHAR(36) NULL');
 };

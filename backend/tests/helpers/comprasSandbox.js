@@ -19,7 +19,7 @@ const crear=async(opciones={})=>{
   const [tablas]=await admin.query("SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA=? AND TABLE_TYPE='BASE TABLE'",[process.env.DB_NAME]);
   await admin.query('CREATE DATABASE '+db+' CHARACTER SET utf8 COLLATE utf8_general_ci');
   const quote=s=>'`'+s.replaceAll('`','``')+'`';
-  for(const t of tablas.filter(t=>!['recepciones_compra','recepcion_compra_items','historial_costos_recepciones','alertas_inventario_historial','sesiones_mesa'].includes(t.TABLE_NAME)))await admin.query('CREATE TABLE '+db+'.'+quote(t.TABLE_NAME)+' LIKE '+quote(process.env.DB_NAME)+'.'+quote(t.TABLE_NAME));
+  for(const t of tablas.filter(t=>!['recepciones_compra','recepcion_compra_items','historial_costos_recepciones','alertas_inventario_historial','sesiones_mesa','rondas_consumo'].includes(t.TABLE_NAME)))await admin.query('CREATE TABLE '+db+'.'+quote(t.TABLE_NAME)+' LIKE '+quote(process.env.DB_NAME)+'.'+quote(t.TABLE_NAME));
   c=await mysql.createConnection({...config,database:db});
   // Normalizar solo las COPIAS desechables: la BD instalada puede estar migrada.
   for(const [tabla,columnas,indices] of [
@@ -34,7 +34,7 @@ const crear=async(opciones={})=>{
     const [cols]=await c.query('SHOW COLUMNS FROM '+tabla);for(const columna of columnas)if(cols.some(x=>x.Field===columna))await c.query('ALTER TABLE '+tabla+' DROP COLUMN '+columna);
   }
   await aplicar(c);
-  if(opciones.participantes !== false){await ejecutarSQL(c,'v2.37_participantes_pedidos.sql');await ejecutarSQL(c,'v2.38_participantes_temporales_homonimos.sql');await ejecutarSQL(c,'v2.39_sesiones_mesa.sql');}
+  if(opciones.participantes !== false){await ejecutarSQL(c,'v2.37_participantes_pedidos.sql');await ejecutarSQL(c,'v2.38_participantes_temporales_homonimos.sql');await ejecutarSQL(c,'v2.39_sesiones_mesa.sql');await ejecutarSQL(c,'v2.40_rondas_consumo.sql');}
   if(opciones.alertas)await ejecutarSQL(c,'v2.35_alertas_inventario_episodios.sql');
   return {connection:c,config:{...config,database:db},close:async()=>{await c.end();await admin.query('DROP DATABASE '+db);await admin.end();}};
  }catch(e){if(c)await c.end();if(/^dj_test_compras_[a-f0-9]{32}$/.test(db))await admin.query('DROP DATABASE IF EXISTS '+db);await admin.end();throw e;}
