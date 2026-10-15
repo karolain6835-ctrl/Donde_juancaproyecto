@@ -68,7 +68,8 @@ const resumen=(pagos,inicio,fin)=>{
 const cabecera=`SELECT id,DATE_FORMAT(fecha,'%Y-%m-%dT%H:%i:%sZ') AS fecha,
   CAST(total_efectivo_esperado AS CHAR) AS total_efectivo_esperado,CAST(total_efectivo_real AS CHAR) AS total_efectivo_real,
   CAST(diferencia_efectivo AS CHAR) AS diferencia_efectivo,CAST(total_general AS CHAR) AS total_general,
-  usuarios_id,reportes_generados_id,DATE_FORMAT(fecha_inicio,'%Y-%m-%dT%H:%i:%sZ') AS fecha_inicio,
+  usuarios_id,(SELECT u.nombre FROM usuarios u WHERE u.id=cierres_caja.usuarios_id) AS responsable_nombre,
+  reportes_generados_id,DATE_FORMAT(fecha_inicio,'%Y-%m-%dT%H:%i:%sZ') AS fecha_inicio,
   DATE_FORMAT(fecha_fin,'%Y-%m-%dT%H:%i:%sZ') AS fecha_fin FROM cierres_caja`;
 const detalle=async(c,cierreId)=>{
   const [[cierre]]=await c.query(`${cabecera} WHERE id=?`,[id(cierreId)]);
@@ -120,6 +121,7 @@ const listar=async(c,q)=>{
   const where=filtros.length?` WHERE ${filtros.join(' AND ')}`:'';
   const [[r]]=await c.query(`SELECT COUNT(*) AS total FROM cierres_caja${where}`,valores);
   const [datos]=await c.query(`${cabecera}${where} ORDER BY fecha DESC,id DESC LIMIT ? OFFSET ?`,[...valores,limite,offset]);
-  return {body:{mensaje:'Cierres consultados correctamente.',pagina,limite,total:r.total,datos}};
+  const [responsables]=await c.query('SELECT DISTINCT u.id,u.nombre FROM cierres_caja cc JOIN usuarios u ON u.id=cc.usuarios_id ORDER BY u.nombre,u.id');
+  return {body:{mensaje:'Cierres consultados correctamente.',pagina,limite,total:r.total,datos,responsables}};
 };
 module.exports={ejecutar,crear,listar,detalle,elegibles,resumen,periodo};
