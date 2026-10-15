@@ -117,6 +117,13 @@ test('Comprobantes: HTTP y MySQL real con tablas temporales', {skip:process.env.
       assert.equal((await req(`/comprobantes/${r.data.comprobante.id}`)).status,200);assert.equal((await req('/comprobantes/no-existe')).status,404);
       for(const q of ['limite=101','pagina=0','limite=1.5','pedido_id='])assert.equal((await req(`/comprobantes?${q}`)).status,400);
     });
+    await t.test('9B consulta por pedido, elegibilidad real, temporal, abierto y documento existente',async()=>{
+      await reset();let r=await req('/comprobantes/pedido/p1');assert.equal(r.status,200,JSON.stringify(r));assert.equal(r.data.puede_generar,true);assert.equal(r.data.comprobante,null);assert.equal(r.data.mesa_numero,991);
+      await real.query("UPDATE pedidos SET clientes_id=NULL");r=await req('/comprobantes/pedido/p1');assert.equal(r.data.puede_generar,false);assert.match(r.data.motivo,/cliente registrado/);assert.equal((await emitir()).status,409);assert.deepEqual(await conteo(),[0,0]);
+      await real.query("UPDATE pedidos SET clientes_id='c1',estado='abierto'");r=await req('/comprobantes/pedido/p1');assert.equal(r.data.puede_generar,false);assert.match(r.data.motivo,/cerrado/);
+      await real.query("UPDATE pedidos SET estado='cerrado'");await real.query('UPDATE pagos SET total_seleccionado=20');assert.equal((await req('/comprobantes/pedido/p1')).data.puede_generar,false);
+      await reset();const emitted=await emitir();r=await req('/comprobantes/pedido/p1');assert.equal(r.data.comprobante.id,emitted.data.comprobante.id);assert.equal(r.data.puede_generar,false);assert.equal((await req('/comprobantes/pedido/inexistente')).status,404);
+    });
     await t.test('body restringido y campos obligatorios',async()=>{
       await reset();for(const b of [{},{...body,usuarios_id:'u2'},{...body,metodo_pago:'efectivo'},{...body,total:21.01},{...body,numero:1},{...body,cliente:'c1'}])assert.equal((await req('/facturar','POST',b)).status,400);
     });

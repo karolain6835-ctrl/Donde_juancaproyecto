@@ -114,4 +114,23 @@ const listar = async (c, query) => {
   const [datos]=await c.query(`${cabecera}${where} ORDER BY emitido_en DESC,id DESC LIMIT ? OFFSET ?`,[...valores,limite,offset]);
   return {body:{mensaje:'Comprobantes consultados correctamente.',pagina,limite,total:conteo.total,datos}};
 };
-module.exports={ejecutar,emitir,listar,detalle,id};
+// Lectura sin crear comprobantes ni alterar la liquidación.
+const porPedido=async(c,pedidoId)=>{
+  id(pedidoId);
+  const pedido=await bloquearPedido(c,pedidoId);
+  const [[mesa]]=await c.query('SELECT numero FROM mesas WHERE id=?',[pedido.mesas_id]);
+  const [[existente]]=await c.query('SELECT id FROM comprobantes WHERE pedidos_id=?',[pedidoId]);
+  if(existente)return {body:{comprobante:await detalle(c,existente.id),mesa_numero:mesa?.numero??null,puede_generar:false,motivo:null}};
+  let motivo=null;
+  if(pedido.estado!=='cerrado')motivo='El pedido aún no está cerrado.';
+  else{
+    const cuenta=await calcularCuenta(c,pedido);
+    if(cuenta.saldo!==0n||!cuenta.totalDefinitivo)motivo='El pedido no está completamente liquidado o su total no es definitivo.';
+    else{
+      const [[cliente]]=await c.query('SELECT cl.id FROM pedidos p JOIN clientes cl ON cl.id=p.clientes_id WHERE p.id=?',[pedidoId]);
+      if(!cliente)motivo='Este pedido no tiene un cliente registrado asociado.';
+    }
+  }
+  return {body:{comprobante:null,mesa_numero:mesa?.numero??null,puede_generar:!motivo,motivo}};
+};
+module.exports={ejecutar,emitir,listar,detalle,id,porPedido};

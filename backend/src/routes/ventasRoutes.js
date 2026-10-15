@@ -9,6 +9,7 @@ router.post('/pedido', autorizarRoles('Administrador', 'SuperAdmin'), ventasCont
 // Emitir constancia de un pedido ya liquidado; no registra pagos.
 router.post('/facturar', autorizarRoles('Administrador', 'SuperAdmin', 'Cajero'), ventasController.generarFactura);
 router.get('/comprobantes', autorizarRoles('Administrador', 'SuperAdmin', 'Cajero'), ventasController.listarComprobantes);
+router.get('/comprobantes/pedido/:pedido_id', autorizarRoles('Administrador', 'SuperAdmin', 'Cajero'), ventasController.comprobantePorPedido);
 router.get('/comprobantes/:id', autorizarRoles('Administrador', 'SuperAdmin', 'Cajero'), ventasController.obtenerComprobante);
 
 module.exports = router;

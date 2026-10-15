@@ -1,3 +1,4 @@
+import ComprobantePedido from './ComprobantePedido';
 import { useCallback, useState } from 'react';
 import { useAuth } from '../context/useAuth';
 import { can } from '../utils/permissions';
@@ -55,6 +56,7 @@ export default function PedidoDetalle({ id, summary, mesas, productos, onClose, 
             <div><dt>Responsable del pedido</dt><dd>{summary?.usuarios_id === pedido.usuarios_id ? summary.responsable_nombre || pedido.usuarios_id : pedido.usuarios_id}</dd></div>
             <div><dt>Creado</dt><dd>{formatDateTime(pedido.creado_en)}</dd></div>
           </dl>
+          {pedido.estado==='cerrado'&&<ComprobantePedido pedidoId={id} estado={pedido.estado} mesaNumero={summary?.mesa_numero}/>}
           <PedidoParticipantes id={id} resource={participants} titulo={pedido.sesion_mesa_id ? 'Clientes en la mesa' : 'Clientes del pedido'} editable={can(user, 'pedidos.agregarItems') && pedido.estado === 'abierto'} />
           {<RondasConsumo key={id} sesionId={pedido.sesion_mesa_id} mesaId={pedido.mesas_id} pedidoId={id} editable={pedido.estado==='abierto'} version={pedido} onChanged={refresh} />}
           <section className="pedido-products"><h3>Productos del pedido</h3>

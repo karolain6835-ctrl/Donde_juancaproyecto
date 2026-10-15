@@ -17,6 +17,7 @@ exports.crearPedido = async (req, res) => {
 };
 
 const comprobantes = require('../services/comprobantesService');
+exports.comprobantePorPedido = (req,res) => comprobantes.ejecutar(res,c=>comprobantes.porPedido(c,req.params.pedido_id));
 exports.generarFactura = (req,res) => {
   const actor = ejecutor(req, res);
   if (!actor) return;
