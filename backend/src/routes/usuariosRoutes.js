@@ -4,6 +4,9 @@ const router = express.Router();
 const usuariosController = require('../controllers/usuariosController');
 const autenticar = require('../middleware/authMiddleware');
 
+router.get('/', autenticar, autorizarRoles('Administrador', 'SuperAdmin'), usuariosController.listarUsuarios);
+router.get('/roles', autenticar, autorizarRoles('Administrador', 'SuperAdmin'), usuariosController.listarRoles);
+
 // Catálogo mínimo para asignar responsables; no expone credenciales ni contactos.
 router.get('/responsables', autenticar, autorizarRoles('Administrador', 'SuperAdmin', 'Mesero', 'Mesera'), usuariosController.listarResponsables);
 

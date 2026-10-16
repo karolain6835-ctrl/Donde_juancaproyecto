@@ -10,24 +10,41 @@ exports.listarResponsables = (req, res) => {
   });
 };
 
-// 1. Registro de nuevo usuario/empleado (Simulado)
-exports.registrarUsuario = async (req, res) => {
-  const { nombre, correo, contrasena, roles_id } = req.body;
-
-  if (!nombre || !correo || !contrasena || !roles_id) {
-    return res.status(400).json({ 
-      error: 'Todos los campos (nombre, correo, contrasena, roles_id) son obligatorios.' 
-    });
+const { randomUUID } = require('node:crypto');
+const rolesPermitidos = ['Administrador','SuperAdmin','Mesero','Mesera','Bartender','Cajero'];
+const columnasSeguras = 'u.id,u.nombre,u.email AS correo,r.nombre AS rol,u.estado';
+exports.listarUsuarios = async (req,res) => {
+  try {
+    const [datos] = await db.promise().query(`SELECT ${columnasSeguras} FROM usuarios u JOIN roles r ON r.id=u.roles_id ORDER BY u.nombre,u.id`);
+    return res.json({datos});
+  } catch { return res.status(500).json({error:'No fue posible consultar los usuarios.'}); }
+};
+exports.listarRoles = async (req,res) => {
+  try {
+    const [datos] = await db.promise().query('SELECT id,nombre FROM roles WHERE nombre IN (?) ORDER BY nombre,id',[rolesPermitidos]);
+    return res.json({datos});
+  } catch { return res.status(500).json({error:'No fue posible consultar los roles.'}); }
+};
+// Mantener los campos del contrato existente; el rol siempre se resuelve en BD.
+exports.registrarUsuario = async (req,res) => {
+  const {nombre,correo,contrasena,roles_id}=req.body||{};
+  if(typeof nombre!=='string'||!nombre.trim()||[...nombre.trim()].length>100||
+     typeof correo!=='string'||correo.trim().length>150||! /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo.trim())||
+     typeof contrasena!=='string'||!contrasena.trim()||Buffer.byteLength(contrasena,'utf8')>72||
+     !Number.isSafeInteger(roles_id)||roles_id<=0) {
+    return res.status(400).json({error:'Indica nombre, correo v\u00e1lido, rol y contrase\u00f1a (m\u00e1ximo 72 bytes).'});
   }
-
-  res.status(201).json({
-    mensaje: `¡Usuario ${nombre} registrado con éxito en el sistema! 🔑👤`,
-    usuario: {
-      correo,
-      rol_asignado: roles_id === 1 ? "Administrador" : "Mesero/Staff",
-      creado_en: new Date()
-    }
-  });
+  try {
+    const [[rol]]=await db.promise().query('SELECT id,nombre FROM roles WHERE id=?',[roles_id]);
+    if(!rol||!rolesPermitidos.includes(rol.nombre))return res.status(400).json({error:'El rol seleccionado no es v\u00e1lido.'});
+    const hash=await bcrypt.hash(contrasena,12),id=randomUUID();
+    await db.promise().query(`INSERT INTO usuarios (id,nombre,email,password_hash,estado,intentos_fallidos,roles_id) VALUES (?,?,?,?,'activo',0,?)`,[id,nombre.trim(),correo.trim(),hash,rol.id]);
+    return res.status(201).json({mensaje:'Usuario creado correctamente.',usuario:{id,nombre:nombre.trim(),correo:correo.trim(),rol:rol.nombre,estado:'activo'}});
+  } catch(error) {
+    if(error.code==='ER_DUP_ENTRY')return res.status(409).json({error:'Ya existe un usuario con ese correo.'});
+    if(error.code==='ER_NO_REFERENCED_ROW_2')return res.status(400).json({error:'El rol seleccionado ya no existe.'});
+    return res.status(500).json({error:'No fue posible crear el usuario.'});
+  }
 };
 
 // 2. Inicio de sesión real (usuarios y rol de MySQL)
@@ -145,12 +162,12 @@ exports.solicitarOTP = (req, res) => {
 // 4. Cambiar estado de usuario (Desactivación / Bloqueo)
 exports.cambiarEstadoUsuario = (req, res) => {
   const { id } = req.params;
-  const { estado } = req.body;
+  const { estado } = req.body || {};
 
   // Validar que envíen un estado válido
   const estadosPermitidos = ['activo', 'inactivo', 'bloqueado'];
 
-  if (!estado || !estadosPermitidos.includes(estado.toLowerCase())) {
+  if (typeof estado !== 'string' || !estadosPermitidos.includes(estado.toLowerCase())) {
     return res.status(400).json({
       ok: false,
       msg: 'Debe proporcionar un estado válido: "activo", "inactivo" o "bloqueado".'
