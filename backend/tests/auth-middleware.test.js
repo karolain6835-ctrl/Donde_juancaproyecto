@@ -17,7 +17,7 @@ test('JWT y montaje: MySQL real con tablas temporales', {skip:process.env.RUN_MY
     await real.query("INSERT INTO clientes (id,nombre,estado,usuarios_id) VALUES ('c1','Cliente','activo','u1')");
     const auth=load('../src/middleware/authMiddleware.js',{'../config/db':db});
     const usuarios=load('../src/controllers/usuariosController.js',{'../config/db':db});
-    const usuariosRouter=load('../src/routes/usuariosRoutes.js',{'../controllers/usuariosController':usuarios,'../middleware/authMiddleware':auth});
+    const usuariosRouter=load('../src/routes/usuariosRoutes.js',{'../controllers/perfilController':{consultar(){},actualizar(){},password(){}},'../controllers/usuariosController':usuarios,'../middleware/authMiddleware':auth});
     const clientes=load('../src/controllers/clientesController.js',{'../config/db':db,'mysql2':{createConnection:()=>({promise:()=>({query:(s,p)=>real.query(s,p),beginTransaction:()=>real.beginTransaction(),commit:()=>real.commit(),rollback:()=>real.rollback(),end:async()=>{}})})}});
     const clientesRouter=load('../src/routes/clientesRoutes.js',{'../controllers/clientesController':clientes});
     // Ejecutar el montaje real de index; los módulos ajenos se sustituyen por routers

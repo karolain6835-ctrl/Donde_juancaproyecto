@@ -50,7 +50,7 @@ test('login HTTP, bcrypt, JWT e inicialización contra MySQL temporal', {
     const rutas = { exports: {} };
     vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/routes/usuariosRoutes.js'), 'utf8'), {
       module: rutas,
-      require: nombre => nombre === '../controllers/usuariosController' ? modulo.exports : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : nombre === '../middleware/authMiddleware' ? (()=>assert.fail('Login no debe requerir autenticacion')) : require(nombre)
+      require: nombre => nombre === '../controllers/perfilController' ? {consultar(){},actualizar(){},password(){}} : nombre === '../controllers/usuariosController' ? modulo.exports : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : nombre === '../middleware/authMiddleware' ? (()=>assert.fail('Login no debe requerir autenticacion')) : require(nombre)
     });
     const app = express();
     app.use(express.json());

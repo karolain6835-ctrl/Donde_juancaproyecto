@@ -20,6 +20,7 @@ test('autorizaci?n exige identidad y compara exclusivamente el rol exacto actual
 // prueba autorizaci?n HTTP real sin ejecutar operaciones de negocio ni escrituras persistentes.
 const cases = [
  ['A','GET','refrigeradores'],['A','POST','refrigeradores'],['A','PUT','refrigeradores/x'],
+ ['AUTH','GET','usuarios/me'],['AUTH','PUT','usuarios/me'],['AUTH','PUT','usuarios/me/password'],
  ['A','GET','configuracion'],['A','PUT','configuracion'],
  ['A','GET','auditoria'],
  ['MC','GET','pedidos/x/rondas'],['MC','GET','pedidos/x/rondas/y'],['M','POST','pedidos/x/rondas'],
@@ -48,7 +49,8 @@ const cases = [
  ['MC','POST','sesiones-division'],['MC','GET','sesiones-division/x'],['MC','GET','sesiones-division/x/pagos'],['MC','POST','sesiones-division/x/asignar-items'],['MC','POST','sesiones-division/x/cuotas'],['C','PATCH','sesiones-division/x/cancelar'],['C','PATCH','sesiones-division/x/completar'],
  ['A','GET','usuarios'],['A','GET','usuarios/roles'],['A','POST','usuarios/registrar'],['A','PUT','usuarios/x/estado']
 ];
-const groups={A:['Administrador','SuperAdmin'],M:['Administrador','SuperAdmin','Mesero','Mesera'],C:['Administrador','SuperAdmin','Cajero'],MC:['Administrador','SuperAdmin','Mesero','Mesera','Cajero'],ALL:['Administrador','SuperAdmin','Mesero','Mesera','Bartender','Cajero'],B:['Administrador','SuperAdmin','Bartender'],MB:['Administrador','SuperAdmin','Mesero','Mesera','Bartender']};
+// Perfil propio requiere identidad autenticada, no un rol operativo concreto.
+const groups={AUTH:['Administrador','SuperAdmin','Mesero','Mesera','Bartender','Cajero','Desconocido'],A:['Administrador','SuperAdmin'],M:['Administrador','SuperAdmin','Mesero','Mesera'],C:['Administrador','SuperAdmin','Cajero'],MC:['Administrador','SuperAdmin','Mesero','Mesera','Cajero'],ALL:['Administrador','SuperAdmin','Mesero','Mesera','Bartender','Cajero'],B:['Administrador','SuperAdmin','Bartender'],MB:['Administrador','SuperAdmin','Mesero','Mesera','Bartender']};
 
 test('matriz HTTP completa con identidad y cambios de rol en MySQL temporal', {skip:process.env.RUN_MYSQL_ROLES_TESTS!=='1'},async t=>{
   require('dotenv').config({path:path.join(__dirname,'../.env'),quiet:true});

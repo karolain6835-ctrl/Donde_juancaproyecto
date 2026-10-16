@@ -14,7 +14,7 @@ test('Administración de usuarios: HTTP/JWT y persistencia MySQL temporal',{skip
   await c.query("INSERT INTO usuarios(id,nombre,email,password_hash,estado,roles_id) VALUES ('admin','Admin','admin@example.invalid',?,'activo',11)",[await bcrypt.hash('Admin123!',4)]);
   const auth=load('../src/middleware/authMiddleware.js',{'../config/db':db});
   const controller=load('../src/controllers/usuariosController.js',{'../config/db':db});
-  const router=load('../src/routes/usuariosRoutes.js',{'../controllers/usuariosController':controller,'../middleware/authMiddleware':auth,'../middleware/rolesMiddleware':require('../src/middleware/rolesMiddleware')});
+  const router=load('../src/routes/usuariosRoutes.js',{'../controllers/perfilController':{consultar(){},actualizar(){},password(){}},'../controllers/usuariosController':controller,'../middleware/authMiddleware':auth,'../middleware/rolesMiddleware':require('../src/middleware/rolesMiddleware')});
   const app=express();app.use(express.json());app.use('/api/usuarios',router);server=await new Promise(resolve=>{const s=app.listen(0,'127.0.0.1',()=>resolve(s));});
   const token=jwt.sign({rol:'incorrecto'},process.env.JWT_SECRET,{issuer:'dondejuanca',subject:'admin',expiresIn:3600});
   const req=async(method,route,body,authenticated=true)=>{const r=await fetch(`http://127.0.0.1:${server.address().port}/api/usuarios${route}`,{method,headers:{'Content-Type':'application/json',...(authenticated?{Authorization:'Bearer '+token}:{})},body:body===undefined?undefined:JSON.stringify(body)});return {status:r.status,data:await r.json()};};
