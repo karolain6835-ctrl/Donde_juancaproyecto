@@ -1,5 +1,8 @@
+import {porcentajeReporte} from '../services/reportesService';
+import ReporteRemote, {ReporteControles} from './ReporteRemote';
+import {useReporteReal} from '../hooks/useReporteReal';
 import { formatCurrency as formatearDinero } from "../utils/formatCurrency";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 import {
   Trophy,
@@ -21,75 +24,12 @@ function ReporteProductosSection() {
   const [periodo, setPeriodo] = useState("hoy");
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
 
-  const productos = [
-    {
-      id: 1,
-      posicion: 1,
-      producto: "Poker 330ml",
-      categoria: "Cervezas",
-      unidades: 84,
-      ingresos: 588000,
-    },
-    {
-      id: 2,
-      posicion: 2,
-      producto: "Aguardiente Antioqueño",
-      categoria: "Licores",
-      unidades: 31,
-      ingresos: 511500,
-    },
-    {
-      id: 3,
-      posicion: 3,
-      producto: "Club Colombia",
-      categoria: "Cervezas",
-      unidades: 46,
-      ingresos: 414000,
-    },
-    {
-      id: 4,
-      posicion: 4,
-      producto: "Coca-Cola 400ml",
-      categoria: "Gaseosas",
-      unidades: 52,
-      ingresos: 364000,
-    },
-    {
-      id: 5,
-      posicion: 5,
-      producto: "Ron Medellín 750ml",
-      categoria: "Licores",
-      unidades: 8,
-      ingresos: 336000,
-    },
-    {
-      id: 6,
-      posicion: 6,
-      producto: "Papas",
-      categoria: "Comidas",
-      unidades: 25,
-      ingresos: 225000,
-    },
-  ];
-
-  const ingresosTotales = useMemo(() => {
-    return productos.reduce(
-      (total, producto) => total + producto.ingresos,
-      0
-    );
-  }, [productos]);
-
-  const unidadesTotales = useMemo(() => {
-    return productos.reduce(
-      (total, producto) => total + producto.unidades,
-      0
-    );
-  }, [productos]);
-
-
+  const [desde,setDesde]=useState(''),[hasta,setHasta]=useState(''),[pagina,setPagina]=useState(1);
+  const resource=useReporteReal('productos',periodo,desde,hasta,pagina);
+  const {productos,ingresosTotales,unidadesTotales,categoriaLider}=resource.data||{productos:[],ingresosTotales:null,unidadesTotales:0,categoriaLider:'Sin datos'};
 
   function calcularParticipacion(ingresos) {
-    return ((ingresos / ingresosTotales) * 100).toFixed(1);
+    return porcentajeReporte(ingresos,ingresosTotales);
   }
 
   return (
@@ -98,10 +38,10 @@ function ReporteProductosSection() {
       <section className="reporte-productos-toolbar">
 
         <div>
-          <h2>Productos más vendidos</h2>
+          <h2>{resource.data?.rankingDisponible===false?'Catálogo de productos':'Productos consumidos'}</h2>
 
           <p>
-            Identifica los productos con mayor movimiento e ingresos.
+            Consumos históricos de pedidos cerrados; no representa cobros.
           </p>
         </div>
 
@@ -115,7 +55,7 @@ function ReporteProductosSection() {
           <select
             value={periodo}
             onChange={(event) =>
-              setPeriodo(event.target.value)
+              (setPeriodo(event.target.value),setPagina(1))
             }
           >
             <option value="hoy">Hoy</option>
@@ -128,6 +68,10 @@ function ReporteProductosSection() {
 
       </section>
 
+      <ReporteControles resource={resource} periodo={periodo} desde={desde} hasta={hasta} setDesde={setDesde} setHasta={setHasta} pagina={pagina} setPagina={setPagina} nota="Consumos no cancelados de pedidos cerrados creados en el período UTC. Precios históricos; no equivale a cobros."/>
+      <ReporteRemote resource={resource}>
+      {!productos.length&&<p>No hay consumos en este período.</p>}
+      {resource.data?.rankingDisponible===false&&<p role="status">El historial supera 200 pedidos cerrados. No se calcula un ranking parcial; se muestra el catálogo real. Un reporte global requiere una fuente agregada.</p>}
       <section className="reporte-productos-kpis">
 
         <article className="reporte-producto-kpi">
@@ -163,7 +107,7 @@ function ReporteProductosSection() {
           </div>
 
           <span>
-            Ingresos generados
+            Valor histórico generados
           </span>
 
           <strong>
@@ -190,11 +134,11 @@ function ReporteProductosSection() {
           </span>
 
           <strong>
-            {productos[0].producto}
+            {resource.data?.rankingDisponible===false?'No calculado':productos[0]?.producto||'Sin datos'}
           </strong>
 
           <small>
-            {productos[0].unidades} unidades
+            {resource.data?.rankingDisponible===false?'—':productos[0]?.unidades||0} unidades
           </small>
 
         </article>
@@ -213,7 +157,7 @@ function ReporteProductosSection() {
           </span>
 
           <strong>
-            Cervezas
+            {categoriaLider}
           </strong>
 
           <small>
@@ -255,8 +199,8 @@ function ReporteProductosSection() {
 
           <div className="productos-ranking">
 
-            {productos.slice(0, 5).map((producto) => {
-              const maximo = productos[0].unidades;
+            {productos.filter(p=>p.posicion!=null).slice(0, 5).map((producto) => {
+              const maximo = productos[0]?.unidades||0;
 
               const porcentaje =
                 (producto.unidades / maximo) * 100;
@@ -288,7 +232,7 @@ function ReporteProductosSection() {
                       </div>
 
                       <strong>
-                        {producto.unidades} und.
+                        {producto.unidades??'—'} und.
                       </strong>
 
                     </div>
@@ -343,7 +287,7 @@ function ReporteProductosSection() {
 
           <div className="productos-share-list">
 
-            {productos.slice(0, 5).map((producto) => (
+            {productos.filter(p=>p.posicion!=null).slice(0, 5).map((producto) => (
 
               <div
                 key={producto.id}
@@ -405,7 +349,7 @@ function ReporteProductosSection() {
               </h3>
 
               <p>
-                Ranking según unidades e ingresos generados
+                Consumos completos del período y valor histórico
               </p>
             </div>
 
@@ -432,7 +376,7 @@ function ReporteProductosSection() {
                 <th>Producto</th>
                 <th>Categoría</th>
                 <th>Unidades</th>
-                <th>Ingresos</th>
+                <th>Valor histórico</th>
                 <th>Participación</th>
                 <th></th>
               </tr>
@@ -446,7 +390,7 @@ function ReporteProductosSection() {
 
                   <td>
                     <span className="producto-position-chip">
-                      #{producto.posicion}
+                      {producto.posicion==null?'—':'#'+producto.posicion}
                     </span>
                   </td>
 
@@ -462,7 +406,7 @@ function ReporteProductosSection() {
 
                   <td>
                     <strong>
-                      {producto.unidades}
+                      {producto.unidades??'—'}
                     </strong>
                   </td>
 
@@ -591,7 +535,7 @@ function ReporteProductosSection() {
 
               <div>
                 <span>
-                  Ingresos
+                  Valor histórico
                 </span>
 
                 <strong>
@@ -625,7 +569,7 @@ function ReporteProductosSection() {
 
               <div>
                 <span>
-                  Ingreso promedio por unidad
+                  Valor histórico promedio por unidad
                 </span>
 
                 <strong>
@@ -635,8 +579,7 @@ function ReporteProductosSection() {
                   />
 
                   {formatearDinero(
-                    productoSeleccionado.ingresos /
-                      productoSeleccionado.unidades
+                    productoSeleccionado.promedio
                   )}
                 </strong>
               </div>
@@ -661,6 +604,7 @@ function ReporteProductosSection() {
         </>
       )}
 
+      </ReporteRemote>
     </div>
   );
 }

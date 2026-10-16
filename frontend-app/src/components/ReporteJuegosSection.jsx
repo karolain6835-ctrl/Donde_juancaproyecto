@@ -1,5 +1,7 @@
+import ReporteRemote, {ReporteControles} from './ReporteRemote';
+import {useReporteReal} from '../hooks/useReporteReal';
 import { formatCurrency as formatearDinero } from "../utils/formatCurrency";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 import {
   Gamepad2,
@@ -24,110 +26,13 @@ function ReporteJuegosSection() {
   const [periodo, setPeriodo] = useState("hoy");
   const [sesionSeleccionada, setSesionSeleccionada] = useState(null);
 
-  const sesiones = [
-    {
-      id: "SES-090",
-      juego: "Billar 1",
-      tipo: "Billar",
-      mesa: "Mesa 4",
-      fecha: "02/10/2026",
-      duracionMin: 72,
-      ingresos: 21600,
-      responsable: "Carlos",
-    },
-    {
-      id: "SES-089",
-      juego: "Tejo 1",
-      tipo: "Tejo",
-      mesa: "Mesa 7",
-      fecha: "02/10/2026",
-      duracionMin: 48,
-      ingresos: 12000,
-      responsable: "Laura",
-    },
-    {
-      id: "SES-088",
-      juego: "Billar 2",
-      tipo: "Billar",
-      mesa: "Mesa 2",
-      fecha: "01/10/2026",
-      duracionMin: 125,
-      ingresos: 37500,
-      responsable: "Daniela",
-    },
-    {
-      id: "SES-087",
-      juego: "Bolirana",
-      tipo: "Bolirana",
-      mesa: "Mesa 9",
-      fecha: "01/10/2026",
-      duracionMin: 35,
-      ingresos: 7000,
-      responsable: "Carlos",
-    },
-    {
-      id: "SES-086",
-      juego: "Tejo 2",
-      tipo: "Tejo",
-      mesa: "Mesa 8",
-      fecha: "30/09/2026",
-      duracionMin: 96,
-      ingresos: 24000,
-      responsable: "Laura",
-    },
-  ];
-
-  const resumenPorTipo = useMemo(() => {
-    const resumen = {};
-
-    sesiones.forEach((sesion) => {
-      if (!resumen[sesion.tipo]) {
-        resumen[sesion.tipo] = {
-          sesiones: 0,
-          minutos: 0,
-          ingresos: 0,
-        };
-      }
-
-      resumen[sesion.tipo].sesiones += 1;
-      resumen[sesion.tipo].minutos += sesion.duracionMin;
-      resumen[sesion.tipo].ingresos += sesion.ingresos;
-    });
-
-    return resumen;
-  }, [sesiones]);
-
-  const totalSesiones = sesiones.length;
-
-  const totalMinutos = sesiones.reduce(
-    (total, sesion) => total + sesion.duracionMin,
-    0
-  );
-
-  const ingresosTotales = sesiones.reduce(
-    (total, sesion) => total + sesion.ingresos,
-    0
-  );
-
-  const duracionPromedio =
-    totalSesiones > 0
-      ? Math.round(totalMinutos / totalSesiones)
-      : 0;
-
-  const juegoMasUsado =
-    Object.entries(resumenPorTipo).sort(
-      (a, b) => b[1].sesiones - a[1].sesiones
-    )[0]?.[0] || "Sin datos";
-
-  const maxSesiones = Math.max(
-    ...Object.values(resumenPorTipo).map(
-      (registro) => registro.sesiones
-    )
-  );
-
-
+  const [desde,setDesde]=useState(''),[hasta,setHasta]=useState(''),[pagina,setPagina]=useState(1);
+  const resource=useReporteReal('juegos',periodo,desde,hasta,pagina);
+  const {sesiones,resumenPorTipo,totalSesiones,totalMinutos,ingresosTotales,duracionPromedio,juegoMasUsado}=resource.data||{sesiones:[],resumenPorTipo:{},totalSesiones:0,totalMinutos:0,ingresosTotales:null,duracionPromedio:0,juegoMasUsado:'Sin datos'};
+  const maxSesiones=Math.max(1,...Object.values(resumenPorTipo).map(v=>v.sesiones));
 
   function formatearDuracion(minutos) {
+    if(minutos==null)return '—';
     const horas = Math.floor(minutos / 60);
     const mins = minutos % 60;
 
@@ -160,7 +65,7 @@ function ReporteJuegosSection() {
           </h2>
 
           <p>
-            Analiza utilización, duración e ingresos generados por los juegos.
+            Analiza uso, duración y costos finales de los juegos.
           </p>
         </div>
 
@@ -174,7 +79,7 @@ function ReporteJuegosSection() {
           <select
             value={periodo}
             onChange={(event) =>
-              setPeriodo(event.target.value)
+              (setPeriodo(event.target.value),setPagina(1))
             }
           >
             <option value="hoy">Hoy</option>
@@ -187,6 +92,9 @@ function ReporteJuegosSection() {
 
       </section>
 
+      <ReporteControles resource={resource} periodo={periodo} desde={desde} hasta={hasta} setDesde={setDesde} setHasta={setHasta} pagina={pagina} setPagina={setPagina} nota="Sesiones iniciadas en el período UTC. Costos finales conocidos; no equivalen a ingresos cobrados."/>
+      <ReporteRemote resource={resource}>
+      {!sesiones.length&&<p>No hay sesiones en este período.</p>}
       <section className="reporte-juegos-kpis">
 
         <article className="reporte-juego-kpi">
@@ -245,7 +153,7 @@ function ReporteJuegosSection() {
           </div>
 
           <span>
-            Ingresos generados
+            Costo final generados
           </span>
 
           <strong>
@@ -276,7 +184,7 @@ function ReporteJuegosSection() {
           </strong>
 
           <small>
-            Duración promedio: {duracionPromedio} min
+            Duración promedio finalizada: {duracionPromedio} min
           </small>
 
         </article>
@@ -380,7 +288,7 @@ function ReporteJuegosSection() {
 
               <div>
                 <h3>
-                  Ingresos por tipo
+                  Costo final por tipo
                 </h3>
 
                 <p>
@@ -486,7 +394,7 @@ function ReporteJuegosSection() {
                 <th>Mesa</th>
                 <th>Fecha</th>
                 <th>Duración</th>
-                <th>Ingresos</th>
+                <th>Costo final</th>
                 <th>Responsable</th>
                 <th></th>
               </tr>
@@ -701,7 +609,7 @@ function ReporteJuegosSection() {
 
               <div>
                 <span>
-                  Ingreso generado
+                  Costo final conocido
                 </span>
 
                 <strong>
@@ -759,6 +667,7 @@ function ReporteJuegosSection() {
         </>
       )}
 
+      </ReporteRemote>
     </div>
   );
 }

@@ -36,7 +36,7 @@ function ReportesPage() {
           <h1 className="page-title">
             {seccionActiva === "ventas" && "Ventas"}
             {seccionActiva === "inventario" && "Inventario"}
-            {seccionActiva === "productos" && "Productos más vendidos"}
+            {seccionActiva === "productos" && "Consumo de productos"}
             {seccionActiva === "juegos" && "Juegos"}
             {seccionActiva === "caja" && "Caja"}
           </h1>

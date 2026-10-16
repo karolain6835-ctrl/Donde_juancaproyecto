@@ -1,5 +1,8 @@
+import {centavosReporte,decimalReporte,porcentajeReporte} from '../services/reportesService';
+import ReporteRemote, {ReporteControles} from './ReporteRemote';
+import {useReporteReal} from '../hooks/useReporteReal';
 import { formatCurrency as formatearDinero } from "../utils/formatCurrency";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 import {
   WalletCards,
@@ -23,101 +26,11 @@ function ReporteCajaSection() {
   const [periodo, setPeriodo] = useState("semana");
   const [cierreSeleccionado, setCierreSeleccionado] = useState(null);
 
-  const cierres = [
-    {
-      id: "CJ-041",
-      fecha: "01/10/2026",
-      responsable: "Karol",
-      ingresos: 2210000,
-      salidas: 160000,
-      balance: 2050000,
-      diferencia: 0,
-      estado: "cuadrado",
-    },
-    {
-      id: "CJ-040",
-      fecha: "30/09/2026",
-      responsable: "Carlos",
-      ingresos: 1980000,
-      salidas: 210000,
-      balance: 1770000,
-      diferencia: -15000,
-      estado: "diferencia",
-    },
-    {
-      id: "CJ-039",
-      fecha: "29/09/2026",
-      responsable: "Daniela",
-      ingresos: 1740000,
-      salidas: 120000,
-      balance: 1620000,
-      diferencia: 5000,
-      estado: "diferencia",
-    },
-    {
-      id: "CJ-038",
-      fecha: "28/09/2026",
-      responsable: "Karol",
-      ingresos: 2360000,
-      salidas: 180000,
-      balance: 2180000,
-      diferencia: 0,
-      estado: "cuadrado",
-    },
-  ];
-
-  const movimientoDiario = [
-    {
-      fecha: "28 Sep",
-      ingresos: 2360000,
-      salidas: 180000,
-    },
-    {
-      fecha: "29 Sep",
-      ingresos: 1740000,
-      salidas: 120000,
-    },
-    {
-      fecha: "30 Sep",
-      ingresos: 1980000,
-      salidas: 210000,
-    },
-    {
-      fecha: "01 Oct",
-      ingresos: 2210000,
-      salidas: 160000,
-    },
-  ];
-
-  const totalIngresos = useMemo(() => {
-    return cierres.reduce(
-      (total, cierre) => total + cierre.ingresos,
-      0
-    );
-  }, [cierres]);
-
-  const totalSalidas = useMemo(() => {
-    return cierres.reduce(
-      (total, cierre) => total + cierre.salidas,
-      0
-    );
-  }, [cierres]);
-
-  const balanceTotal = totalIngresos - totalSalidas;
-
-  const diferenciaTotal = cierres.reduce(
-    (total, cierre) => total + cierre.diferencia,
-    0
-  );
-
-  const maxMovimiento = Math.max(
-    ...movimientoDiario.flatMap((registro) => [
-      registro.ingresos,
-      registro.salidas,
-    ])
-  );
-
-
+  const [desde,setDesde]=useState(''),[hasta,setHasta]=useState(''),[pagina,setPagina]=useState(1);
+  const resource=useReporteReal('caja',periodo,desde,hasta,pagina);
+  const {cierres,totalIngresos,totalSalidas,balanceTotal,diferenciaTotal}=resource.data||{cierres:[],totalIngresos:null,totalSalidas:0,balanceTotal:0,diferenciaTotal:'0.00'};
+  const movimientoDiario=cierres.map(c=>({id:c.id,fecha:c.fecha,ingresos:c.balance,salidas:c.salidas}));
+  const maxMovimiento=decimalReporte(movimientoDiario.flatMap(c=>[c.ingresos,c.salidas]).reduce((m,v)=>centavosReporte(v)>m?centavosReporte(v):m,0n));
 
   function nombreEstado(estado) {
     if (estado === "cuadrado") return "Cuadrado";
@@ -137,7 +50,7 @@ function ReporteCajaSection() {
           </h2>
 
           <p>
-            Analiza ingresos, salidas, balances y diferencias de los cierres.
+            Consulta pagos verificados y el arqueo real de los cierres.
           </p>
         </div>
 
@@ -151,7 +64,7 @@ function ReporteCajaSection() {
           <select
             value={periodo}
             onChange={(event) =>
-              setPeriodo(event.target.value)
+              (setPeriodo(event.target.value),setPagina(1))
             }
           >
             <option value="hoy">
@@ -175,6 +88,9 @@ function ReporteCajaSection() {
 
       </section>
 
+      <ReporteControles resource={resource} periodo={periodo} desde={desde} hasta={hasta} setDesde={setDesde} setHasta={setHasta} pagina={pagina} setPagina={setPagina} nota="Pagos por fecha de pago UTC; cierres por fecha de generación UTC. Diferencia de esta página y gráfica de esta página."/>
+      <ReporteRemote resource={resource}>
+      {!cierres.length&&<p>No hay cierres en este período.</p>}
       <section className="reporte-caja-kpis">
 
         <article className="reporte-caja-kpi">
@@ -187,7 +103,7 @@ function ReporteCajaSection() {
           </div>
 
           <span>
-            Ingresos
+            Ingresos verificados
           </span>
 
           <strong>
@@ -195,7 +111,7 @@ function ReporteCajaSection() {
           </strong>
 
           <small>
-            Ingresos registrados
+            Pagos verificados del período
           </small>
 
         </article>
@@ -210,15 +126,15 @@ function ReporteCajaSection() {
           </div>
 
           <span>
-            Salidas
+            Pagos pendientes
           </span>
 
           <strong>
-            {formatearDinero(totalSalidas)}
+            {totalSalidas}
           </strong>
 
           <small>
-            Gastos y retiros
+            Pendientes de verificación
           </small>
 
         </article>
@@ -233,15 +149,15 @@ function ReporteCajaSection() {
           </div>
 
           <span>
-            Balance
+            Pagos verificados
           </span>
 
           <strong>
-            {formatearDinero(balanceTotal)}
+            {balanceTotal}
           </strong>
 
           <small>
-            Ingresos menos salidas
+            Pagos verificados
           </small>
 
         </article>
@@ -250,10 +166,10 @@ function ReporteCajaSection() {
 
           <div
             className={`reporte-caja-kpi-icon difference ${
-              diferenciaTotal === 0 ? "ok" : "alert"
+              diferenciaTotal === '0.00' ? "ok" : "alert"
             }`}
           >
-            {diferenciaTotal === 0 ? (
+            {diferenciaTotal === '0.00' ? (
               <CircleCheck
                 size={20}
                 strokeWidth={1.9}
@@ -267,7 +183,7 @@ function ReporteCajaSection() {
           </div>
 
           <span>
-            Diferencias
+            Diferencia de esta página
           </span>
 
           <strong>
@@ -275,8 +191,8 @@ function ReporteCajaSection() {
           </strong>
 
           <small>
-            {diferenciaTotal === 0
-              ? "Sin diferencias acumuladas"
+            {diferenciaTotal === '0.00'
+              ? "Sin diferencia en esta página"
               : "Requiere revisión"}
           </small>
 
@@ -301,11 +217,11 @@ function ReporteCajaSection() {
 
               <div>
                 <h3>
-                  Ingresos vs. salidas
+                  Efectivo esperado vs. contado
                 </h3>
 
                 <p>
-                  Comparación diaria de movimientos de caja
+                  Cierres de esta página, sin sumar nuevamente pagos
                 </p>
               </div>
 
@@ -317,14 +233,14 @@ function ReporteCajaSection() {
 
             {movimientoDiario.map((registro) => {
               const alturaIngresos =
-                (registro.ingresos / maxMovimiento) * 100;
+                porcentajeReporte(registro.ingresos,maxMovimiento);
 
               const alturaSalidas =
-                (registro.salidas / maxMovimiento) * 100;
+                porcentajeReporte(registro.salidas,maxMovimiento);
 
               return (
                 <div
-                  key={registro.fecha}
+                  key={registro.id}
                   className="reporte-caja-chart-group"
                 >
 
@@ -333,12 +249,9 @@ function ReporteCajaSection() {
                     <div
                       className="reporte-caja-bar ingreso"
                       style={{
-                        height: `${Math.max(
-                          alturaIngresos,
-                          8
-                        )}%`,
+                        height: `${alturaIngresos}%`,
                       }}
-                      title={`Ingresos ${formatearDinero(
+                      title={`Esperado ${formatearDinero(
                         registro.ingresos
                       )}`}
                     ></div>
@@ -346,12 +259,9 @@ function ReporteCajaSection() {
                     <div
                       className="reporte-caja-bar salida"
                       style={{
-                        height: `${Math.max(
-                          alturaSalidas,
-                          8
-                        )}%`,
+                        height: `${alturaSalidas}%`,
                       }}
-                      title={`Salidas ${formatearDinero(
+                      title={`Contado ${formatearDinero(
                         registro.salidas
                       )}`}
                     ></div>
@@ -372,12 +282,12 @@ function ReporteCajaSection() {
 
             <span>
               <i className="legend-income"></i>
-              Ingresos
+              Efectivo esperado
             </span>
 
             <span>
               <i className="legend-output"></i>
-              Salidas
+              Efectivo contado
             </span>
 
           </div>
@@ -493,7 +403,7 @@ function ReporteCajaSection() {
                     cierre.estado === "diferencia"
                 )
                   ? "Con incidencias"
-                  : "Periodo estable"}
+                  : "Sin diferencias en esta página"}
               </strong>
 
             </div>
@@ -549,9 +459,9 @@ function ReporteCajaSection() {
                 <th>Cierre</th>
                 <th>Fecha</th>
                 <th>Responsable</th>
-                <th>Ingresos</th>
-                <th>Salidas</th>
-                <th>Balance</th>
+                <th>Total del cierre</th>
+                <th>Efectivo contado</th>
+                <th>Efectivo esperado</th>
                 <th>Diferencia</th>
                 <th>Estado</th>
                 <th></th>
@@ -754,7 +664,7 @@ function ReporteCajaSection() {
 
               <div>
                 <span>
-                  Ingresos
+                  Total del cierre
                 </span>
 
                 <strong className="reporte-caja-income-value">
@@ -771,7 +681,7 @@ function ReporteCajaSection() {
 
               <div>
                 <span>
-                  Salidas
+                  Efectivo contado
                 </span>
 
                 <strong className="reporte-caja-output-value">
@@ -788,7 +698,7 @@ function ReporteCajaSection() {
 
               <div>
                 <span>
-                  Balance
+                  Efectivo esperado
                 </span>
 
                 <strong>
@@ -807,7 +717,7 @@ function ReporteCajaSection() {
 
             <div
               className={`reporte-caja-difference-box ${
-                cierreSeleccionado.diferencia === 0
+                cierreSeleccionado.diferencia === '0.00'
                   ? "ok"
                   : "alert"
               }`}
@@ -843,6 +753,7 @@ function ReporteCajaSection() {
         </>
       )}
 
+      </ReporteRemote>
     </div>
   );
 }

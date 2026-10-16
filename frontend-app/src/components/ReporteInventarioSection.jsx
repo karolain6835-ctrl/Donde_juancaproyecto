@@ -1,5 +1,7 @@
+import ReporteRemote, {ReporteControles} from './ReporteRemote';
+import {useReporteReal} from '../hooks/useReporteReal';
 import { formatCurrency as formatearDinero } from "../utils/formatCurrency";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 import {
   Boxes,
@@ -20,105 +22,12 @@ import {
 import "./ReporteInventarioSection.css";
 
 function ReporteInventarioSection() {
-  const [periodo, setPeriodo] = useState("hoy");
+  const periodo="actual";
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
 
-  const productosCriticos = [
-    {
-      id: 1,
-      producto: "Poker 330ml",
-      categoria: "Cervezas",
-      stock: 8,
-      minimo: 20,
-      valor: 20000,
-      estado: "bajo",
-    },
-    {
-      id: 2,
-      producto: "Ron Medellín 750ml",
-      categoria: "Licores",
-      stock: 2,
-      minimo: 6,
-      valor: 96000,
-      estado: "critico",
-    },
-    {
-      id: 3,
-      producto: "Papas",
-      categoria: "Comidas",
-      stock: 0,
-      minimo: 10,
-      valor: 0,
-      estado: "agotado",
-    },
-    {
-      id: 4,
-      producto: "Coca-Cola 400ml",
-      categoria: "Gaseosas",
-      stock: 7,
-      minimo: 12,
-      valor: 14700,
-      estado: "bajo",
-    },
-  ];
-
-  const categorias = [
-    {
-      nombre: "Cervezas",
-      valor: 860000,
-      porcentaje: 34,
-    },
-    {
-      nombre: "Licores",
-      valor: 720000,
-      porcentaje: 29,
-    },
-    {
-      nombre: "Gaseosas",
-      valor: 430000,
-      porcentaje: 17,
-    },
-    {
-      nombre: "Comidas",
-      valor: 310000,
-      porcentaje: 12,
-    },
-    {
-      nombre: "Otros",
-      valor: 200000,
-      porcentaje: 8,
-    },
-  ];
-
-  const evolucionInventario = [
-    { fecha: "26 Sep", valor: 2280000 },
-    { fecha: "27 Sep", valor: 2340000 },
-    { fecha: "28 Sep", valor: 2410000 },
-    { fecha: "29 Sep", valor: 2390000 },
-    { fecha: "30 Sep", valor: 2480000 },
-    { fecha: "01 Oct", valor: 2510000 },
-    { fecha: "02 Oct", valor: 2520000 },
-  ];
-
-  const valorInventario = 2520000;
-
-  const stockBajo = productosCriticos.filter(
-    (producto) => producto.estado === "bajo"
-  ).length;
-
-  const agotados = productosCriticos.filter(
-    (producto) => producto.estado === "agotado"
-  ).length;
-
-  const movimientos = 84;
-
-  const maxEvolucion = useMemo(() => {
-    return Math.max(
-      ...evolucionInventario.map((registro) => registro.valor)
-    );
-  }, [evolucionInventario]);
-
-
+  const [desde,setDesde]=useState(''),[hasta,setHasta]=useState(''),[pagina,setPagina]=useState(1);
+  const resource=useReporteReal('inventario',periodo,desde,hasta,pagina);
+  const {productosCriticos,categorias,valorInventario,stockBajo,agotados,movimientos,alertasActivas}=resource.data||{productosCriticos:[],categorias:[],valorInventario:null,stockBajo:0,agotados:0,movimientos:0,alertasActivas:0};
 
   function nombreEstado(estado) {
     if (estado === "bajo") return "Stock bajo";
@@ -158,33 +67,16 @@ function ReporteInventarioSection() {
             strokeWidth={1.9}
           />
 
-          <select
-            value={periodo}
-            onChange={(event) =>
-              setPeriodo(event.target.value)
-            }
-          >
-            <option value="hoy">
-              Hoy
-            </option>
-
-            <option value="semana">
-              Esta semana
-            </option>
-
-            <option value="mes">
-              Este mes
-            </option>
-
-            <option value="personalizado">
-              Personalizado
-            </option>
-          </select>
+          <span>Existencias actuales</span>
 
         </div>
 
       </section>
 
+      <ReporteControles resource={resource} periodo={'actual'} desde={desde} hasta={hasta} setDesde={setDesde} setHasta={setHasta} pagina={pagina} setPagina={setPagina} nota="Existencias actuales a costo promedio. Movimientos y alertas acumulados; no reconstruye existencias históricas."/>
+      <ReporteRemote resource={resource}>
+      {!productosCriticos.length&&<p>No hay productos con stock bajo o agotado.</p>}
+      <p>Alertas activas: {alertasActivas}</p>
       <section className="reporte-inventario-kpis">
 
         <article className="reporte-inventario-kpi">
@@ -205,7 +97,7 @@ function ReporteInventarioSection() {
           </strong>
 
           <small>
-            Costo estimado actual
+            Stock × costo promedio actual
           </small>
 
         </article>
@@ -228,7 +120,7 @@ function ReporteInventarioSection() {
           </strong>
 
           <small>
-            Productos por debajo del mínimo
+            Stock positivo igual o inferior al mínimo
           </small>
 
         </article>
@@ -274,7 +166,7 @@ function ReporteInventarioSection() {
           </strong>
 
           <small>
-            Entradas y salidas del período
+            Movimientos históricos acumulados
           </small>
 
         </article>
@@ -383,45 +275,7 @@ function ReporteInventarioSection() {
 
           </div>
 
-          <div className="inventario-evolution-chart">
-
-            {evolucionInventario.map((registro) => {
-              const porcentaje =
-                (registro.valor / maxEvolucion) * 100;
-
-              return (
-                <div
-                  key={registro.fecha}
-                  className="inventario-evolution-item"
-                >
-
-                  <div className="inventario-evolution-value">
-                    {formatearDinero(registro.valor)}
-                  </div>
-
-                  <div className="inventario-evolution-bar-area">
-
-                    <div
-                      className="inventario-evolution-bar"
-                      style={{
-                        height: `${Math.max(
-                          porcentaje,
-                          20
-                        )}%`,
-                      }}
-                    ></div>
-
-                  </div>
-
-                  <span>
-                    {registro.fecha}
-                  </span>
-
-                </div>
-              );
-            })}
-
-          </div>
+          <div className="inventario-evolution-chart"><p>No existe una serie histórica de existencias valoradas. La valoración actual se calcula con stock y costo promedio reales.</p></div>
 
         </article>
 
@@ -695,6 +549,7 @@ function ReporteInventarioSection() {
         </>
       )}
 
+      </ReporteRemote>
     </div>
   );
 }
