@@ -819,3 +819,10 @@
     grid-template-columns: 1fr;
   }
 }
+.refrigeradores-section .refrigeradores-admin-actions { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+.refrigeradores-section .refrigeradores-admin-actions button { width:auto; margin:0; }
+.refrigerador-admin-form fieldset { border:0; padding:0; margin-top:24px; min-width:0; }
+.refrigerador-admin-form label { display:grid; gap:7px; margin-bottom:16px; font-size:13px; font-weight:700; }
+.refrigerador-admin-form input,.refrigerador-admin-form select { width:100%; min-width:0; padding:11px 12px; border:1px solid var(--color-border); border-radius:9px; font:inherit; }
+.refrigeradores-section button:disabled { opacity:.6; cursor:not-allowed; }
+.refrigerador-card-body h3 { overflow-wrap:anywhere; }

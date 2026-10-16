@@ -21,6 +21,7 @@ const db = require('./config/db'); // Importa la base de datos para asegurar la 
 const divisionesRoutes = require('./routes/divisionesRoutes');
 const auditoriaRoutes = require('./routes/auditoriaRoutes');
 const configuracionRoutes = require('./routes/configuracionRoutes');
+const refrigeradoresRoutes = require('./routes/refrigeradoresRoutes');
 
 
 const app = express();
@@ -54,6 +55,7 @@ app.use('/api/kanban', autenticar, kanbanRoutes);
 app.use('/api/sesiones-division', autenticar, divisionesRoutes);
 app.use('/api/auditoria', autenticar, auditoriaRoutes);
 app.use('/api/configuracion', autenticar, configuracionRoutes);
+app.use('/api/refrigeradores', autenticar, refrigeradoresRoutes);
 
 // 4. Manejo global de errores (SIEMPRE AL FINAL, justo antes del listen)
 app.use((err, req, res, next) => {

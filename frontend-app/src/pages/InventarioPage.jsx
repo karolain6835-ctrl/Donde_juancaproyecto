@@ -1682,7 +1682,7 @@ function InventarioPage() {
 
       {seccionActiva === "refrigeradores" && can(user, "inventario.movimientos") && (
 
-        <RefrigeradoresSection />
+        <RefrigeradoresSection onChanged={inventory.fridges.refresh} />
 
       )}
 
