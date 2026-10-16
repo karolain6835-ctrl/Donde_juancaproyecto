@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   Settings2,
@@ -16,20 +16,31 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
+import {useAuth} from '../context/useAuth';
+import {can} from '../utils/permissions';
+import {configuracionVacia,consultarConfiguracion,guardarConfiguracion} from '../services/configuracionService';
 import "./ConfiguracionSection.css";
 
 function ConfiguracionSection() {
-  const [configuracion, setConfiguracion] = useState({
-    nombreNegocio: "Donde Juanca",
-    nit: "900123456-7",
-    telefono: "300 555 1234",
-    email: "contacto@dondejuanca.com",
-    direccion: "Medellín, Antioquia",
-    horaApertura: "10:00",
-    horaCierre: "02:00",
-    impuesto: "19",
-    moneda: "COP",
-  });
+  const {user}=useAuth();
+  const permitido=can(user,'configuracion.ver');
+  const editable=can(user,'configuracion.editar');
+  const [configuracion,setConfiguracion]=useState({...configuracionVacia});
+  const [persistida,setPersistida]=useState(null);
+  const [loading,setLoading]=useState(true);
+  const [saving,setSaving]=useState(false);
+  const [error,setError]=useState('');
+  const [retry,setRetry]=useState(0);
+  const lock=useRef(false);
+  const dirty=persistida!==null&&JSON.stringify(persistida)!==JSON.stringify(configuracion);
+  useEffect(()=>{
+    if(!permitido)return;
+    const controller=new AbortController();
+    consultarConfiguracion({signal:controller.signal}).then(data=>{
+      if(!controller.signal.aborted){setConfiguracion(data);setPersistida(data);setError('');setLoading(false);}
+    }).catch(e=>{if(!controller.signal.aborted){setError(e.message);setLoading(false);}});
+    return ()=>controller.abort();
+  },[permitido,retry]);
 
   const [guardado, setGuardado] = useState(false);
   const [confirmarCambios, setConfirmarCambios] = useState(false);
@@ -44,16 +55,27 @@ function ConfiguracionSection() {
   }
 
   function solicitarGuardado() {
-    setConfirmarCambios(true);
+    if(editable&&!saving&&dirty)setConfirmarCambios(true);
   }
 
-  function confirmarGuardado() {
-    setConfirmarCambios(false);
-    setGuardado(true);
+  async function confirmarGuardado() {
+    if(lock.current||!editable)return;
+    lock.current=true;setSaving(true);setError('');setGuardado(false);
+    try{
+      const data=await guardarConfiguracion(configuracion);
+      setConfiguracion(data);setPersistida(data);setGuardado(true);setConfirmarCambios(false);
+    }catch(e){setError(e.message);}
+    finally{lock.current=false;setSaving(false);}
   }
+  if(!permitido)return <p>No tienes permiso para consultar la configuración.</p>;
+  if(loading)return <p role="status">Cargando configuración...</p>;
+  if(!persistida)return <div role="alert">{error}<button onClick={()=>{setLoading(true);setRetry(v=>v+1);}}>Reintentar</button></div>;
 
   return (
     <div className="configuracion-section">
+      {error&&<p role="alert">{error}</p>}
+      {dirty&&<p role="status">Hay cambios sin guardar.</p>}
+      <fieldset className="configuracion-fields" disabled={saving||!editable}>
 
       <section className="configuracion-intro">
 
@@ -69,7 +91,7 @@ function ConfiguracionSection() {
         </div>
 
         {guardado && (
-          <span className="configuracion-saved">
+          <span className="configuracion-saved" role="status">
 
             <CircleCheck
               size={14}
@@ -125,6 +147,7 @@ function ConfiguracionSection() {
 
                 <input
                   type="text"
+                  placeholder="Nombre del negocio"
                   value={configuracion.nombreNegocio}
                   onChange={(event) =>
                     actualizarCampo(
@@ -150,6 +173,7 @@ function ConfiguracionSection() {
 
                 <input
                   type="text"
+                  placeholder="NIT"
                   value={configuracion.nit}
                   onChange={(event) =>
                     actualizarCampo(
@@ -175,6 +199,7 @@ function ConfiguracionSection() {
 
                 <input
                   type="text"
+                  placeholder="Teléfono"
                   value={configuracion.telefono}
                   onChange={(event) =>
                     actualizarCampo(
@@ -200,6 +225,7 @@ function ConfiguracionSection() {
 
                 <input
                   type="email"
+                  placeholder="Correo electrónico"
                   value={configuracion.email}
                   onChange={(event) =>
                     actualizarCampo(
@@ -225,6 +251,7 @@ function ConfiguracionSection() {
 
                 <input
                   type="text"
+                  placeholder="Dirección"
                   value={configuracion.direccion}
                   onChange={(event) =>
                     actualizarCampo(
@@ -261,7 +288,7 @@ function ConfiguracionSection() {
                 </h3>
 
                 <p>
-                  Horario general utilizado por el sistema.
+                  Horario general del establecimiento.
                 </p>
               </div>
 
@@ -348,7 +375,7 @@ function ConfiguracionSection() {
                 </h3>
 
                 <p>
-                  Parámetros básicos utilizados en operaciones comerciales.
+                  Información administrativa. No modifica los totales de los pedidos.
                 </p>
               </div>
 
@@ -370,6 +397,7 @@ function ConfiguracionSection() {
 
                 <input
                   type="number"
+                  step="0.01"
                   min="0"
                   max="100"
                   value={configuracion.impuesto}
@@ -430,7 +458,7 @@ function ConfiguracionSection() {
               </span>
 
               <strong>
-                IVA {configuracion.impuesto}% ·{" "}
+                {configuracion.impuesto === "" ? "Impuesto sin configurar" : `Impuesto ${configuracion.impuesto}%`} ·{" "}
                 {configuracion.moneda}
               </strong>
             </div>
@@ -468,6 +496,7 @@ function ConfiguracionSection() {
         <button
           type="button"
           className="primary-button configuracion-save-button"
+          disabled={!dirty||saving||!editable}
           onClick={solicitarGuardado}
         >
           <Save
@@ -486,11 +515,11 @@ function ConfiguracionSection() {
           <div
             className="configuracion-overlay"
             onClick={() =>
-              setConfirmarCambios(false)
+              !saving && setConfirmarCambios(false)
             }
           ></div>
 
-          <div className="configuracion-confirmation">
+          <div className="configuracion-confirmation" role="dialog" aria-modal="true" aria-label="Guardar configuración">
 
             <div className="configuracion-confirmation-header">
 
@@ -508,7 +537,7 @@ function ConfiguracionSection() {
                 type="button"
                 className="drawer-close"
                 onClick={() =>
-                  setConfirmarCambios(false)
+                  !saving && setConfirmarCambios(false)
                 }
                 aria-label="Cerrar confirmación"
               >
@@ -534,6 +563,7 @@ function ConfiguracionSection() {
 
             </div>
 
+            {error&&<p role="alert">{error}</p>}
             <div className="configuracion-confirmation-summary">
 
               <div>
@@ -584,6 +614,7 @@ function ConfiguracionSection() {
               <button
                 type="button"
                 className="drawer-primary-button configuracion-confirm-button"
+                disabled={saving}
                 onClick={confirmarGuardado}
               >
                 <CircleCheck
@@ -591,14 +622,14 @@ function ConfiguracionSection() {
                   strokeWidth={1.9}
                 />
 
-                Confirmar cambios
+                {saving ? "Guardando..." : error ? "Reintentar" : "Confirmar cambios"}
               </button>
 
               <button
                 type="button"
                 className="drawer-secondary-button"
                 onClick={() =>
-                  setConfirmarCambios(false)
+                  !saving && setConfirmarCambios(false)
                 }
               >
                 Cancelar
@@ -611,6 +642,7 @@ function ConfiguracionSection() {
         </>
       )}
 
+      </fieldset>
     </div>
   );
 }

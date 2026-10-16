@@ -3,6 +3,9 @@
 Todas las modificaciones estructurales y de datos importantes de la base de datos se documentarán en este archivo, siguiendo un orden cronológico inverso (lo más nuevo arriba).
 
 ---
+## [v2.44] - 2026-10-16
+- Aplicada localmente: `v2.44_configuracion_negocio.sql`. Configuración única con campos vacíos, moneda COP, FK de actor y restricciones. No modifica cálculos operativos.
+
 ## [v2.36] - 2026-10-13
 ### Preparada; pendiente de aplicar a la base persistente
 - `productos.historial_costos_id` admite NULL al crear sin historial legado previo.

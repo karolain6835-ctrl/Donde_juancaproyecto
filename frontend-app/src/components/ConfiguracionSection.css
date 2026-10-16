@@ -557,3 +557,5 @@
     width: 100%;
   }
 }
+.configuracion-fields { border: 0; padding: 0; margin: 0; min-width: 0; }
+.configuracion-section button:disabled { opacity: .6; cursor: not-allowed; }
