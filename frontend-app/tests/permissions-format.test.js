@@ -65,6 +65,7 @@ test('Todos los permisos operativos coinciden con los roles de las rutas reales'
     ['divisiones', 'post', '/:id/cuotas', ['divisiones.cuotas']],
     ['divisiones', 'patch', '/:id/cancelar', ['divisiones.cancelar']],
     ['divisiones', 'patch', '/:id/completar', ['divisiones.completar']],
+    ['auditoria', 'get', '/', ['auditoria.ver']],
     ['usuarios', 'get', '/', ['usuarios.ver']],
     ['usuarios', 'get', '/roles', ['usuarios.ver']],
     ['usuarios', 'post', '/registrar', ['usuarios.registrar']],
