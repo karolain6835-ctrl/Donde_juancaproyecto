@@ -4,6 +4,7 @@ require('dotenv').config();
 // ==========================================
 // CONFIGURACIÓN DE BASE DE DATOS
 // ==========================================
+// Lee la configuración local del entorno; las credenciales no se incluyen en el código.
 const dbConfig = {
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
@@ -17,7 +18,7 @@ const dbConfig = {
 // ==========================================
 const connection = mysql.createConnection(dbConfig);
 
-// Probar conexión con XAMPP
+// Abre la conexión MySQL e informa su disponibilidad al iniciar el proceso.
 connection.connect((err) => {
   if (err) {
     console.error(

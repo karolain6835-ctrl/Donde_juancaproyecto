@@ -2,6 +2,7 @@ const db = require('../config/db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+// Consulta usuarios activos para asignación de responsables, sin exponer contraseñas.
 exports.listarResponsables = (req, res) => {
   if (Object.keys(req.query || {}).length) return res.status(400).json({ error: 'Esta consulta no admite filtros.' });
   db.query("SELECT id,nombre,estado FROM usuarios WHERE estado='activo' ORDER BY nombre,id", (error, datos) => {
@@ -13,12 +14,14 @@ exports.listarResponsables = (req, res) => {
 const { randomUUID } = require('node:crypto');
 const rolesPermitidos = ['Administrador','SuperAdmin','Mesero','Mesera','Bartender','Cajero'];
 const columnasSeguras = 'u.id,u.nombre,u.email AS correo,r.nombre AS rol,u.estado';
+// Lista usuarios con el rol asociado y únicamente las columnas públicas del contrato.
 exports.listarUsuarios = async (req,res) => {
   try {
     const [datos] = await db.promise().query(`SELECT ${columnasSeguras} FROM usuarios u JOIN roles r ON r.id=u.roles_id ORDER BY u.nombre,u.id`);
     return res.json({datos});
   } catch { return res.status(500).json({error:'No fue posible consultar los usuarios.'}); }
 };
+// Obtiene los roles admitidos por el módulo de administración de usuarios.
 exports.listarRoles = async (req,res) => {
   try {
     const [datos] = await db.promise().query('SELECT id,nombre FROM roles WHERE nombre IN (?) ORDER BY nombre,id',[rolesPermitidos]);
@@ -47,15 +50,20 @@ exports.registrarUsuario = async (req,res) => {
   }
 };
 
-// 2. Inicio de sesión real (usuarios y rol de MySQL)
+/**
+ * Autentica las credenciales contra MySQL y bcrypt, comprueba el estado activo
+ * y emite un JWT con la identidad y el rol. Nunca devuelve el hash de contraseña.
+ */
 exports.loginUsuario = async (req, res) => {
   const { correo, contrasena } = req.body || {};
 
+  // Valida tipos, campos obligatorios y el límite de 72 bytes aceptado por bcrypt.
   if (typeof correo !== 'string' || !correo.trim() ||
       typeof contrasena !== 'string' || !contrasena || Buffer.byteLength(contrasena, 'utf8') > 72) {
     return res.status(400).json({ error: 'El correo y la contraseña son obligatorios.' });
   }
 
+  // La firma requiere un secreto configurado y una vigencia positiva en segundos.
   const secreto = process.env.JWT_SECRET;
   const vigencia = Number(process.env.JWT_EXPIRES_IN_SECONDS || 3600);
   if (!secreto || Buffer.byteLength(secreto, 'utf8') < 32 ||
@@ -64,6 +72,7 @@ exports.loginUsuario = async (req, res) => {
     return res.status(500).json({ error: 'El inicio de sesión no está configurado correctamente.' });
   }
   try {
+    // La consulta parametrizada busca el correo y resuelve el rol desde su tabla.
     const [usuarios] = await db.promise().query(`
       SELECT u.id, u.nombre, u.email, u.password_hash, u.estado, u.roles_id, r.nombre AS rol
       FROM usuarios u JOIN roles r ON r.id = u.roles_id
@@ -78,6 +87,7 @@ exports.loginUsuario = async (req, res) => {
     if (usuario.estado !== 'activo') {
       return res.status(403).json({ error: 'El usuario no está activo.' });
     }
+    // Firma HS256: subject identifica al usuario; el payload incluye su rol y caducidad.
     const token = jwt.sign({ roles_id: usuario.roles_id, rol: usuario.rol }, secreto, {
       algorithm: 'HS256', subject: usuario.id, issuer: 'dondejuanca', expiresIn: vigencia
     });

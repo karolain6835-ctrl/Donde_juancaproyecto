@@ -13,7 +13,7 @@ router.get('/responsables', autenticar, autorizarRoles('Administrador', 'SuperAd
 // Ruta para registrar un nuevo empleado
 router.post('/registrar', autenticar, autorizarRoles('Administrador', 'SuperAdmin'), usuariosController.registrarUsuario);
 
-// Ruta para el inicio de sesión
+// Endpoint público: recibe credenciales JSON y delega la autenticación al controlador.
 router.post('/login', usuariosController.loginUsuario);
 
 // Ruta para solicitar un código OTP para restablecimiento de contraseña
