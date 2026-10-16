@@ -4,10 +4,13 @@ import { formatDateTime } from '../utils/dateTime';
 import InventoryRemoteState, { InventoryPagination } from './InventoryRemoteState';
 import './MovimientosSection.css';
 
+/** Presenta movimientos paginados y su detalle desde el recurso remoto recibido. */
 export default function MovimientosSection({ resource, productos = [] }) {
   const [busqueda, setBusqueda] = useState('');
   const [selected, setSelected] = useState(null);
+/** La búsqueda local se aplica solo a los movimientos de la página cargada. */
   const rows = useMemo(() => (resource.data?.datos || []).filter(row => [row.producto_nombre, row.producto_codigo, row.usuario_nombre, row.referencia_id, row.referencia_tipo].some(value => (value || '').toLowerCase().includes(busqueda.toLowerCase()))), [resource.data, busqueda]);
+/** Los filtros remotos reinician la consulta desde la primera página. */
   const filter = (key, value) => resource.setQuery({ ...resource.query, [key]: value || undefined, pagina: 1 });
   return <div className="movimientos-section">
     <section className="movimientos-toolbar"><div className="movimientos-filters">{['','compra','venta','merma','ajuste'].map(tipo => <button key={tipo} className={(resource.query.tipo || '') === tipo ? 'filter-button active' : 'filter-button'} onClick={() => filter('tipo', tipo)}>{tipo || 'Todos'}</button>)}</div><select aria-label="Filtrar movimientos por producto" value={resource.query.producto_id || ''} onChange={event => filter('producto_id', event.target.value)}><option value="">Todos los productos</option>{productos.map(p => <option key={p.id} value={p.id}>{p.nombre}</option>)}</select><div className="movimientos-search"><Search size={17} /><input aria-label="Buscar movimientos en esta página" placeholder="Buscar en esta página..." value={busqueda} onChange={event => setBusqueda(event.target.value)} /></div></section>

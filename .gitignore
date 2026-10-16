@@ -1,2 +1,5 @@
 node_modules/
 .env
+
+# Variantes de entorno que pueden contener secretos
+.env.*

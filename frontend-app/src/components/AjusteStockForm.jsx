@@ -5,6 +5,7 @@ import { ajustarStock, stockMutation } from '../services/inventarioService';
 import { useCatalogMutation } from '../hooks/useRemoteCatalog';
 import './CatalogoForm.css';
 
+/** Gestiona el producto y la nueva cantidad; delega el ajuste al servicio de inventario. */
 export default function AjusteStockForm({ productos, initialId, onRefresh, onSaved, onClose }) {
   const { user } = useAuth();
   const [productoId, setProductoId] = useState(initialId || '');
@@ -12,7 +13,9 @@ export default function AjusteStockForm({ productos, initialId, onRefresh, onSav
   const [cantidad, setCantidad] = useState(() => String(productos.find(p => p.id === initialId)?.stock ?? ''));
   const mutation = useCatalogMutation();
   const validNumber = cantidad.trim() !== '' && Number.isInteger(Number(cantidad)) && Number(cantidad) >= 0;
+/** Evita cerrar el panel mientras se guarda el ajuste. */
   const close = () => { if (!mutation.busy) onClose(); };
+/** Comprueba el permiso, guarda y recarga los datos antes de notificar al padre. */
   const save = event => {
     event.preventDefault();
     if (!can(user, 'inventario.ajustar') || !selected) return;

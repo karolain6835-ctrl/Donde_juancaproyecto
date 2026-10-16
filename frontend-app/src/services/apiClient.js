@@ -1,6 +1,7 @@
 ﻿const API_URL = (import.meta.env?.VITE_API_URL || 'http://localhost:5000/api').replace(/\/+$/, '');
 let unauthorizedHandler = null;
 
+/** Registra el manejador de sesión no autorizada y devuelve una función para retirarlo. */
 export function configureUnauthorizedHandler(handler) {
   unauthorizedHandler = handler;
   return () => {
@@ -8,6 +9,7 @@ export function configureUnauthorizedHandler(handler) {
   };
 }
 
+/** Representa errores HTTP, de red o de validación con estado, código y datos asociados. */
 export class ApiError extends Error {
   constructor(message, { status = null, code = 'HTTP_ERROR', data = null, cause } = {}) {
     super(message, { cause });
@@ -18,6 +20,7 @@ export class ApiError extends Error {
   }
 }
 
+/** Centraliza fetch, URL base, token Bearer y cuerpos JSON; interpreta respuestas y normaliza errores. */
 export async function apiClient(path, { method = 'GET', body, headers, auth = true, ...options } = {}) {
   let token = null;
   if (auth) {

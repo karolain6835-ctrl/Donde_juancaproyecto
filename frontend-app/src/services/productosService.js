@@ -1,6 +1,7 @@
 import { apiClient, ApiError } from './apiClient.js';
 import { readList, invalidResponse, numeric } from './catalogoContract.js';
 
+/** Valida la respuesta y adapta los productos al modelo de la interfaz. */
 export function adaptProductos(response) {
   return readList(response, 'productos').map(row => {
     if (!row || !['id', 'nombre', 'codigo', 'categoria_nombre', 'proveedores_id'].every(key =>
@@ -21,6 +22,7 @@ export function adaptProductos(response) {
   });
 }
 
+/** Valida y construye los campos para crear o editar un producto. */
 export function productoBody(form, editing = false) {
   const fail = message => { throw new ApiError(message, { status: 400, code: 'VALIDATION_ERROR' }); };
   const nombre = typeof form.nombre === 'string' ? form.nombre.trim() : '';
@@ -47,19 +49,23 @@ export function productoBody(form, editing = false) {
   return body;
 }
 
+/** Consulta y adapta el catálogo; admite opciones como la señal de cancelación. */
 export async function listarProductos(options) {
   return adaptProductos(await apiClient('/productos', options));
 }
+/** Crea un producto y verifica el identificador devuelto por la API. */
 export async function crearProducto(form) {
   const response = await apiClient('/productos', { method: 'POST', body: productoBody(form) });
   if (!response || typeof response.id_producto !== 'string' || !response.id_producto) throw invalidResponse('creación de producto');
   return response;
 }
+/** Actualiza el producto y valida la confirmación del servidor. */
 export async function actualizarProducto(id, form) {
   const response = await apiClient(`/productos/${encodeURIComponent(id)}`, { method: 'PUT', body: productoBody(form, true) });
   if (!response || typeof response.mensaje !== 'string') throw invalidResponse('actualización de producto');
   return response;
 }
+/** Solicita la eliminación y valida el mensaje de respuesta. */
 export async function eliminarProducto(id) {
   const response = await apiClient(`/productos/${encodeURIComponent(id)}`, { method: 'DELETE' });
   if (!response || typeof response.mensaje !== 'string') throw invalidResponse('eliminación de producto');

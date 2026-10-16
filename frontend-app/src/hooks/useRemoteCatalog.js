@@ -1,10 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+/** Consulta un recurso remoto y expone datos, carga, error y recarga manual. */
 export function useRemoteCatalog(loader) {
+  // useState conserva los datos y los estados visibles entre renderizados.
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  // useRef conserva el controlador de la petición sin provocar renderizados.
   const active = useRef(null);
+  // useCallback estabiliza la recarga mientras loader no cambie; cancela la petición anterior.
   const refresh = useCallback(async () => {
     active.current?.abort();
     const controller = new AbortController();
@@ -19,6 +23,7 @@ export function useRemoteCatalog(loader) {
       if (!controller.signal.aborted) setLoading(false);
     }
   }, [loader]);
+  // useEffect inicia la consulta y cancela peticiones al cambiar el cargador o desmontar.
   useEffect(() => {
     let cancelled = false;
     Promise.resolve().then(() => { if (!cancelled) refresh(); });
@@ -27,7 +32,9 @@ export function useRemoteCatalog(loader) {
   return { data, loading, error, refresh };
 }
 
+/** Coordina escrituras y mensajes de resultado, evitando envíos simultáneos. */
 export function useCatalogMutation() {
+  // useRef bloquea duplicados inmediatamente; useState refleja progreso y mensajes.
   const lock = useRef(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');

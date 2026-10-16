@@ -9,8 +9,8 @@ import Can from "../components/Can";
 import { formatCurrency as formatearDinero } from "../utils/formatCurrency";
 import { parseCOPInput, formatCOPInput } from "../utils/copInput";
 /*
- * Evidencia: GA7-220501096-AA3-EV01
- * Codificación de módulos del software stand-alone, web y móvil.
+ * Evidencia: GA7-220501096-AA4-EV03
+ * Frontend React del módulo de productos e inventario de Donde Juanca.
  *
  * Framework seleccionado: React.
  *
@@ -493,8 +493,7 @@ function InventarioPage() {
 
 
   /**
-   * Cambia localmente el estado activo o inactivo de una categoría
-   * y mantiene sincronizado el detalle actualmente seleccionado.
+   * Las categorías se consultan desde la API y su detalle se presenta en un panel lateral.
    */
 
   /**
@@ -1714,7 +1713,7 @@ function InventarioPage() {
 
 
             {/* =========================
-          FORMULARIO NUEVO PRODUCTO
+          FORMULARIO DE CREACIÓN Y EDICIÓN DE PRODUCTO
       ========================= */}
 
       {mostrarFormularioProducto && puedeEscribir && (

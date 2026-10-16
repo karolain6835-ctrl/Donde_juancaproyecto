@@ -10,16 +10,20 @@ import './AlertasSection.css';
 
 const estadosVisibles={activa:'Activa',vista:'Vista',silenciada:'Silenciada',resuelta:'Resuelta'};
 const labels = { vista: 'Marcar como vista', silenciar: 'Silenciar', reactivar: 'Reactivar', resolver: 'Resolver' };
+/** Presenta alertas paginadas, su detalle y acciones según los permisos del usuario. */
 export default function AlertasSection({ resource, productos = [] }) {
   const { user } = useAuth();
   const [busqueda, setBusqueda] = useState('');
   const [selectedId, setSelectedId] = useState(null);
   const mutation = useCatalogMutation();
+/** useCallback conserva el cargador hasta seleccionar otra alerta; el hook consulta su detalle. */
   const loader = useCallback(options => selectedId ? detalleAlerta(selectedId, options) : Promise.resolve(null), [selectedId]);
   const detail = useRemoteCatalog(loader);
+/** La búsqueda local filtra únicamente las alertas de la página actual. */
   const rows = useMemo(() => (resource.data?.datos || []).filter(row => (row.producto || row.productos_id).toLowerCase().includes(busqueda.toLowerCase())), [resource.data, busqueda]);
   const filter = (key, value) => resource.setQuery({ ...resource.query, [key]: value || undefined, pagina: 1 });
   const alerta = detail.data?.id === selectedId ? detail.data : null;
+/** Tras una acción autorizada, recarga el listado y el detalle desde la API. */
   const act = action => {
     if (!alerta || !can(user, `alertas.${action}`)) return;
     mutation.run(() => actuarAlerta(alerta.id, action), async () => { await Promise.all([resource.refresh(), detail.refresh()]); }, 'Estado de alerta actualizado correctamente.');
