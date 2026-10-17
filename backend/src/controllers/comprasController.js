@@ -64,6 +64,10 @@ exports.obtenerCompras = (req,res) => conConexion(res, async conexion => {
   const entero = (v,defecto) => v === undefined ? defecto : /^[1-9]\d*$/.test(v) ? Number(v) : NaN;
   const pagina = entero(query.pagina,1), limite = entero(query.limite,20), offset = (pagina-1)*limite;
   if (!Number.isSafeInteger(pagina) || !Number.isSafeInteger(limite) || limite>100 || !Number.isSafeInteger(offset)) throw errorCompra(400,'Paginación inválida.');
+  if(query.proveedores_id!==undefined){
+    const [[proveedor]]=await conexion.query('SELECT id FROM proveedores WHERE id=?',[query.proveedores_id]);
+    if(!proveedor)throw errorCompra(404,'Proveedor no encontrado.');
+  }
   const condiciones = [], parametros = [];
   for (const k of ['estado','proveedores_id','usuarios_id']) if (query[k] !== undefined) { condiciones.push(`c.${k}=?`); parametros.push(query[k]); }
   const where = condiciones.length ? ` WHERE ${condiciones.join(' AND ')}` : '';
@@ -78,8 +82,9 @@ exports.obtenerCompra = (req,res) => conConexion(res, async conexion => {
   const [[datos]] = await conexion.query(`${consultaCompras} WHERE c.id=?`,[req.params.id]);
   if (!datos) throw errorCompra(404,'Compra no encontrada.');
   const items = await recepciones.items(conexion,datos);
-  const [nombres]=await conexion.query('SELECT ci.id,p.nombre FROM compra_items ci LEFT JOIN productos p ON p.id=ci.productos_id WHERE ci.compras_id=?',[datos.id]);
-  for(const item of items)item.producto_nombre=nombres.find(n=>n.id===item.id)?.nombre??null;
+  const [nombres]=await conexion.query('SELECT ci.id,p.nombre,CAST(ci.cantidad*ci.precio_unitario AS DECIMAL(20,2)) AS subtotal FROM compra_items ci LEFT JOIN productos p ON p.id=ci.productos_id WHERE ci.compras_id=?',[datos.id]);
+  const detalles=new Map(nombres.map(n=>[n.id,n]));
+  for(const item of items){item.producto_nombre=detalles.get(item.id)?.nombre??null;item.subtotal=detalles.get(item.id)?.subtotal??null;}
   return { body:{mensaje:'Compra consultada correctamente.',datos:{...datos,items}} };
 },true);
 
