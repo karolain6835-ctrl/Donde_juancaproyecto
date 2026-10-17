@@ -103,62 +103,6 @@ exports.loginUsuario = async (req, res) => {
     return res.status(500).json({ error: 'Error interno al iniciar sesión.' });
   }
 };
-// 3. Generar y registrar código OTP (Restablecimiento de contraseña)
-exports.solicitarOTP = (req, res) => {
-  const { email } = req.body;
-
-  if (!email) {
-    return res.status(400).json({ 
-      ok: false, 
-      msg: 'El correo electrónico es obligatorio.' 
-    });
-  }
-
-  // Buscar usuario por su email real en la BD
-  const sqlBuscarUsuario = 'SELECT id FROM usuarios WHERE email = ?';
-
-  db.query(sqlBuscarUsuario, [email], (err, resultados) => {
-    if (err) {
-      console.error('Error al buscar usuario:', err);
-      return res.status(500).json({ ok: false, msg: 'Error en el servidor al consultar usuario.' });
-    }
-
-    if (resultados.length === 0) {
-      return res.status(404).json({
-        ok: false,
-        msg: 'No existe un usuario asociado a este correo electrónico.'
-      });
-    }
-
-    const usuarioId = resultados[0].id;
-    const codigoOTP = Math.floor(100000 + Math.random() * 900000).toString();
-    const creadoEn = new Date();
-    const expiraEn = new Date(Date.now() + 15 * 60 * 1000);
-
-    const sqlInsertarOTP = `
-      INSERT INTO otp_tokens (codigo, expira_en, usado, creado_en, usuarios_id)
-      VALUES (?, ?, 0, ?, ?)
-    `;
-
-    db.query(sqlInsertarOTP, [codigoOTP, expiraEn, creadoEn, usuarioId], (errOTP, resultadoOTP) => {
-      if (errOTP) {
-        console.error('Error al guardar el OTP:', errOTP);
-        return res.status(500).json({ ok: false, msg: 'Error al generar el token OTP.' });
-      }
-
-      return res.status(201).json({
-        ok: true,
-        msg: 'Código OTP generado exitosamente.',
-        data: {
-          token_id: resultadoOTP.insertId,
-          codigo_simulado: codigoOTP,
-          expira_en: expiraEn
-        }
-      });
-    });
-  });
-};
-
 // 4. Cambiar estado de usuario (Desactivación / Bloqueo)
 exports.cambiarEstadoUsuario = (req, res) => {
   const { id } = req.params;
