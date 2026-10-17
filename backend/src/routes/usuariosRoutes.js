@@ -22,9 +22,6 @@ router.post('/registrar', autenticar, autorizarRoles('Administrador', 'SuperAdmi
 // Ruta para el inicio de sesión
 router.post('/login', usuariosController.loginUsuario);
 
-// Ruta para solicitar un código OTP para restablecimiento de contraseña
-router.post('/auth/otp/solicitar', usuariosController.solicitarOTP);
-
 // Ruta para cambiar el estado de un usuario
 router.put('/:id/estado', autenticar, autorizarRoles('Administrador', 'SuperAdmin'), usuariosController.cambiarEstadoUsuario);
 

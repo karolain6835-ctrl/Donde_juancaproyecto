@@ -58,10 +58,8 @@ test('JWT y montaje: MySQL real con tablas temporales', {skip:process.env.RUN_MY
     await t.test('error MySQL responde 500 generico',async()=>{
       fallo=true;const r=await req('/api/clientes',bearer);fallo=false;assert.equal(r.status,500);assert.deepEqual(r.data,{error:'No se pudo resolver la identidad.'});
     });
-    await t.test('login real publico y OTP publico; otras rutas de usuarios protegidas',async()=>{
+    await t.test('login real publico; otras rutas de usuarios protegidas',async()=>{
       const r=await req('/api/usuarios/login',undefined,'POST',{correo:'auth@example.invalid',contrasena:'PruebaAuth123!'});assert.equal(r.status,200);assert.ok(r.data.token);
-      // Body inválido verifica la excepción pública sin generar OTP ni escrituras.
-      assert.equal((await req('/api/usuarios/auth/otp/solicitar',undefined,'POST',{})).status,400);
       assert.equal((await req('/api/usuarios/registrar',undefined,'POST',{})).status,401);
       assert.equal((await req('/api/usuarios/u1/estado',undefined,'PUT',{estado:'inactivo'})).status,401);
     });

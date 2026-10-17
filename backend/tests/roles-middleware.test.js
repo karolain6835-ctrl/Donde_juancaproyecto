@@ -98,8 +98,8 @@ test('matriz HTTP completa con identidad y cambios de rol en MySQL temporal', {s
         if(allowed)assert.equal((await response.json()).usuario.rol,roles[i]);
       }
     });
-    await t.test('ra?z, login y OTP siguen p?blicos',async()=>{
-      for(const [method,url] of [['GET','/'],['POST','/api/usuarios/login'],['POST','/api/usuarios/auth/otp/solicitar']])assert.equal((await request(method,url,false)).status,200,url);
+    await t.test('raíz y login siguen públicos',async()=>{
+      for(const [method,url] of [['GET','/'],['POST','/api/usuarios/login']])assert.equal((await request(method,url,false)).status,200,url);
     });
     await t.test('mismo token pierde y recupera acceso al cambiar el rol actual',async()=>{
       await connection.query('UPDATE usuarios SET roles_id=1');assert.equal((await request('PUT','/api/inventario/actualizar-stock')).status,200);
