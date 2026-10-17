@@ -1,5 +1,11 @@
 const test=require('node:test'),assert=require('node:assert/strict');
 const {listar,filtros}=require('../src/services/pagosLecturaService');
+// El test de permisos carga el router real y su conexión; no dejarla abierta al terminar.
+test.after(()=>new Promise(resolve=>{
+ const db=require.cache[require.resolve('../src/config/db')]?.exports;
+ if(!db)return resolve();
+ db.end(()=>resolve());
+}));
 test('pagos global: validacion de filtros',()=>{
  for(const q of [{pagina:0},{limite:101},{estado:'otro'},{metodo_de_pago:'otro'},{desde:'2026-02-30'},{desde:'2026-10-15',hasta:'2026-10-14'}])assert.throws(()=>filtros(q),e=>e.status===400);
 });

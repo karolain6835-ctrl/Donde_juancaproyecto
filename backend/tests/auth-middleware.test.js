@@ -7,7 +7,7 @@ test('JWT y montaje: MySQL real con tablas temporales', {skip:process.env.RUN_MY
   let server,fallo=false;
   const db={promise:()=>({query:(sql,p)=>{if(fallo)throw new Error('Fallo privado SQL');return real.query(sql,p);}})};
   const load=(archivo,deps)=>{const m={exports:{}};vm.runInNewContext(fs.readFileSync(path.join(__dirname,archivo),'utf8'),{
-    module:m,exports:m.exports,process,Buffer,console:{log(){},error(){}},require:n=>Object.hasOwn(deps,n)?deps[n]:(n === '../services/identidadService' ? require('../src/services/identidadService') : n === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : (n === '../services/auditoriaService' ? require('../src/services/auditoriaService') : require(n)))
+    module:m,exports:m.exports,process,Buffer,console:{log(){},error(){}},require:n=>Object.hasOwn(deps,n)?deps[n]:(n === '../services/identidadService' ? require('../src/services/identidadService') : n === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : (n === '../services/auditoriaService' ? require('../src/services/auditoriaService') : (n === '../services/historialClientesService' ? require('../src/services/historialClientesService') : require(n))))
   });return m.exports;};
   try{
     for(const tabla of ['usuarios','roles','clientes']){await real.query(`CREATE TEMPORARY TABLE copia_auth_${tabla} LIKE ${tabla}`);await real.query(`CREATE TEMPORARY TABLE ${tabla} LIKE copia_auth_${tabla}`);}
@@ -57,7 +57,10 @@ test('JWT y montaje: MySQL real con tablas temporales', {skip:process.env.RUN_MY
       await real.query('UPDATE usuarios SET roles_id=999');assert.equal((await req('/api/clientes',bearer)).status,401);await real.query('UPDATE usuarios SET roles_id=1');
     });
     await t.test('error MySQL responde 500 generico',async()=>{
-      fallo=true;const r=await req('/api/clientes',bearer);fallo=false;assert.equal(r.status,500);assert.deepEqual(r.data,{error:'No se pudo resolver la identidad.'});
+      fallo=true;const r=await req('/api/clientes',bearer);fallo=false;assert.equal(r.status,500);
+      // El montaje real aplica el contrato global seguro de errores internos.
+      assert.deepEqual(r.data,{error:'Error interno del servidor.'});
+      assert.equal(JSON.stringify(r.data).includes('Fallo privado SQL'),false);
     });
     await t.test('login real publico; otras rutas de usuarios protegidas',async()=>{
       const r=await req('/api/usuarios/login',undefined,'POST',{correo:'auth@example.invalid',contrasena:'PruebaAuth123!'});assert.equal(r.status,200);assert.ok(r.data.token);

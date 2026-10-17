@@ -174,9 +174,11 @@ test('proveedores y compras por HTTP con MySQL temporal', {
       actor='u2';const b=await crear({...datos,proveedores_id:'prov2'});await cancelar(b.data.datos.id);actor='u1';
       await crear();
       for(const [q,total] of [['',3],['estado=pendiente',1],['proveedores_id=prov1',2],['usuarios_id=u2',1],
-        ['estado=recibida&proveedores_id=prov1&usuarios_id=u1',1],['proveedores_id=inexistente',0]]) {
+        ['estado=recibida&proveedores_id=prov1&usuarios_id=u1',1]]) {
         const r=await request('/compras?'+q);assert.equal(r.status,200);assert.equal(r.data.paginacion.total,total);assert.equal(r.data.datos.length,total);
       }
+      // El historial valida que exista el proveedor antes de listar sus compras.
+      assert.equal((await request('/compras?proveedores_id=inexistente')).status,404);
       const lista=await request('/compras');const pag=await request('/compras?pagina=2&limite=1');
       assert.deepEqual(pag.data.paginacion,{pagina:2,limite:1,total:3,total_paginas:3});assert.equal(pag.data.datos[0].id,lista.data.datos[1].id);
       for(const q of ['pagina=0','pagina=1.5','limite=101','estado=anulada','usuarios_id=','texto=x','estado=pendiente&estado=recibida']) {

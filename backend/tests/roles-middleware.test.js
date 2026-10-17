@@ -81,6 +81,7 @@ test('matriz HTTP completa con identidad y cambios de rol en MySQL temporal', {s
       for(const [,controller] of code.matchAll(/require\('(\.\.\/controllers\/[^']+)'\)/g))routerDeps[controller]=controllers;
       deps[route]=load(file,routerDeps);
     }
+    deps['./middleware/errorMiddleware']=require('../src/middleware/errorMiddleware');
     load('../src/index.js',deps);
     server=await new Promise(resolve=>{const s=listen(0,'127.0.0.1',()=>resolve(s));});
     const base='http://127.0.0.1:'+server.address().port;
