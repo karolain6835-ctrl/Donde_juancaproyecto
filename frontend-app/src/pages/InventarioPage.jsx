@@ -1,3 +1,4 @@
+import { useHeaderSection } from '../hooks/useHeaderSection';
 import { useInventoryResources } from "../hooks/useInventoryResources";
 import AjusteStockForm from "../components/AjusteStockForm";
 import { listarProductos, crearProducto, actualizarProducto, eliminarProducto as eliminarProductoAPI } from "../services/productosService";
@@ -86,7 +87,7 @@ function InventarioPage() {
   const inventory = useInventoryResources(user);
   const [ajusteId, setAjusteId] = useState(null);
 
-  const [seccionActiva, setSeccionActiva] = useState("resumen");
+  const [seccionActiva, setSeccionActiva] = useHeaderSection("resumen", ["resumen","productos","categorias","refrigeradores","movimientos","alertas","mermas"]);
 
   const [busqueda, setBusqueda] = useState("");
 

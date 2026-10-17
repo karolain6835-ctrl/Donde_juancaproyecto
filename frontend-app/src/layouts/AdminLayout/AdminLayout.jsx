@@ -1,3 +1,4 @@
+import GlobalHeaderTools from '../../components/GlobalHeaderTools';
 import Can from "../../components/Can";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
@@ -14,8 +15,6 @@ import {
   Users,
   BarChart3,
   Settings2,
-  Search,
-  Bell,
 } from "lucide-react";
 
 import UserProfileMenu from "../../components/UserProfileMenu";
@@ -279,36 +278,7 @@ function AdminLayout({ children }) {
 
             {/* BÚSQUEDA */}
 
-            <div className="global-search-wrapper">
-              <Search
-                className="global-search-icon"
-                size={18}
-                strokeWidth={1.9}
-                aria-hidden="true"
-              />
-
-              <input
-                type="text"
-                placeholder="Buscar..."
-                className="global-search"
-                aria-label="Buscar en DondeJuanca"
-              />
-            </div>
-
-            {/* NOTIFICACIONES */}
-
-            <button
-              type="button"
-              className="notification-button"
-              aria-label="Notificaciones"
-            >
-              <Bell
-                size={21}
-                strokeWidth={1.9}
-              />
-
-              <span className="notification-dot"></span>
-            </button>
+            <GlobalHeaderTools />
 
             {/* USUARIO DEL HEADER */}
 

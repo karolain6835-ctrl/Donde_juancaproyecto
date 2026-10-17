@@ -1,3 +1,4 @@
+import { useHeaderSection } from '../hooks/useHeaderSection';
 import { useCallback, useMemo, useState } from 'react';
 import { ShoppingCart, Clock3, CircleCheck, XCircle, Search, Plus, Building2 } from 'lucide-react';
 import ProveedoresSection from '../components/ProveedoresSection';
@@ -18,7 +19,7 @@ import './ComprasPage.css';
 export default function ComprasPage() {
   const { user } = useAuth();
   const allowed = can(user, 'compras.ver');
-  const [seccion, setSeccion] = useState('ordenes');
+  const [seccion, setSeccion] = useHeaderSection('ordenes', ['ordenes','proveedores']);
   const [query, setQuery] = useState({ pagina: 1 });
   const [busqueda, setBusqueda] = useState('');
   const [selectedId, setSelectedId] = useState(null);
