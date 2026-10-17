@@ -155,3 +155,10 @@ Implementación de Controladores y Rutas para Mesas: Se desarrolló la lógica p
 - `v2.43_sesiones_juego_pedido_directo.sql`: agrega FK nullable de sesiones_juego.pedidos_id a pedidos, conserva FK/index historicos y permite pedido_items_id NULL.
 - Backfill por referencias inequ?vocas del item; no infiere por mesa o fechas. Los cargos de historicos con item cancelado siguen excluidos.
 - Aplicada y verificada en la base local: 1 sesion conservada y 1 referencia directa completada.
+
+## [v2.45] — 2026-10-16 — Instalación limpia V1
+- Nueva baseline acumulativa v2.45_instalacion_limpia_v1.sql exclusivamente para bases vacías. No aplicar como parche a instalaciones existentes.
+- Manifiesto migraciones-v1.json con orden numérico, inventario/dependencias estáticas y SHA-256 de los 55 históricos conservados.
+- scripts/instalar-bd-v1.js: verificación aislada, protección de destinos no vacíos y comparación del DDL auditado.
+- Documentadas v1.8 sin extensión, v2.7 .sql), v2.18 truncada, v2.20 vacía, semillas incompatibles y deriva del esquema. No se reescriben históricos.
+- Validado en MariaDB 10.4.32: 50 tablas, 93 FK, 3 triggers y 1 rutina. Sin filas personales, credenciales ni ejemplos operativos.

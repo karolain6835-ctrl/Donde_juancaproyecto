@@ -1,0 +1,960 @@
+{
+  "motor": "MariaDB 10.4.32",
+  "plan_instalacion": [
+    "v2.45_instalacion_limpia_v1.sql"
+  ],
+  "historicas": [
+    {
+      "version": "1.0",
+      "file": "v1.0_estructura.sql",
+      "bytes": 33543,
+      "sha256": "015ff0efc7acb4f3eb4738dd08f98a3bf6fca1d7a7d88a732017028f8a39e359",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [
+        "roles",
+        "usuarios",
+        "sesiones_activas",
+        "otp_tokens",
+        "mesas",
+        "clientes",
+        "pedidos",
+        "historial_cambios_mesa",
+        "pagos",
+        "sesiones_division",
+        "categorias",
+        "proveedores",
+        "compras",
+        "historial_costos",
+        "productos",
+        "movimientos_inventario",
+        "alertas_inventario",
+        "refrigeradores",
+        "refrigerador_stock",
+        "compra_items",
+        "pedido_items",
+        "activos_juego",
+        "sesiones_juego",
+        "pausas_sesion",
+        "rondas",
+        "jugadores",
+        "ronda_jugadores",
+        "historial_estados_activo",
+        "dispositivos",
+        "cola_eventos_offline",
+        "conflictos_sincronizacion",
+        "reportes_generados",
+        "auditoria",
+        "kanban_movimientos",
+        "cierres_caja",
+        "merma_motivos",
+        "mermas"
+      ],
+      "altera_tablas": [],
+      "referencia_tablas": [
+        "roles",
+        "usuarios",
+        "mesas",
+        "clientes",
+        "pedidos",
+        "proveedores",
+        "compras",
+        "categorias",
+        "historial_costos",
+        "productos",
+        "refrigeradores",
+        "activos_juego",
+        "pedido_items",
+        "sesiones_juego",
+        "rondas",
+        "jugadores",
+        "cola_eventos_offline",
+        "dispositivos",
+        "reportes_generados",
+        "merma_motivos",
+        "movimientos_inventario"
+      ],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "1.1",
+      "file": "v1.1_semillas.sql",
+      "bytes": 1611,
+      "sha256": "1368a788d4cd2198863650ec5f0d272685226248503c497c03bd8de267c44334",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [],
+      "referencia_tablas": [],
+      "observacion": "Semillas históricas; categorías sin IDs obligatorios según esquema base. No usar para alta nueva."
+    },
+    {
+      "version": "1.2",
+      "file": "v1.2_agregar_icono_categorias.sql",
+      "bytes": 496,
+      "sha256": "4d373cab42eeb67f255c212dcea09f0e7802674ec0dc78e91f3e6e15394d3bc9",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [
+        "categorias"
+      ],
+      "referencia_tablas": [],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "1.3",
+      "file": "v1.3_modificar_tipo_dato_icono.sql",
+      "bytes": 318,
+      "sha256": "1b58c2fce4e149a9fa27cc6fd2ce13992648add718e762383a8dc2140e5db2b2",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [
+        "categorias"
+      ],
+      "referencia_tablas": [],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "1.4",
+      "file": "v1.4_agregar_restriccion_descripcion.sql",
+      "bytes": 367,
+      "sha256": "a80afd25cf2ee496e031e9d82410bfa9732c94301aacf2c8075aafcdbda006dd",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [
+        "categorias"
+      ],
+      "referencia_tablas": [],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "1.5",
+      "file": "v1.5_eliminar_restriccion_descripcion.sql",
+      "bytes": 343,
+      "sha256": "4403352ce61b2f399f256e7d5eb2bb2c872097d58bda8268c44df4055bf23045",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [
+        "categorias"
+      ],
+      "referencia_tablas": [],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "1.6",
+      "file": "v1.6_definir_politicas_referenciales.sql",
+      "bytes": 541,
+      "sha256": "95f67e70a489c911de6c8ee112590cbb429e7763cc678673f5038cd22f5d50c9",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [
+        "productos"
+      ],
+      "referencia_tablas": [
+        "categorias"
+      ],
+      "observacion": "FK fk_producto_categoria/categoria_id no coincide con fk_productos_categorias1/categorias_id del esquema base."
+    },
+    {
+      "version": "1.7",
+      "file": "v1.7_actualizar_politicas_update.sql",
+      "bytes": 792,
+      "sha256": "33e55e2e7e15ba0d7d5c18e73e688f20eff373edff461a444541127dd3666dc7",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [
+        "clientes",
+        "pedidos"
+      ],
+      "referencia_tablas": [
+        "usuarios",
+        "mesas"
+      ],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "1.8",
+      "file": "V1.8_Asegurar integridad en transacciones críticas",
+      "bytes": 918,
+      "sha256": "350869f9e9d994bb067dc8fa0410c63d09cf4929c58f8489f4642e399d27a07d",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [
+        "pagos",
+        "auditoria",
+        "pedidos"
+      ],
+      "referencia_tablas": [
+        "pedidos",
+        "usuarios",
+        "mesas"
+      ],
+      "observacion": "Nombre sin extensión .sql; conservar identidad histórica en manifiesto."
+    },
+    {
+      "version": "1.9",
+      "file": "v1.9_gestion_api_mesas_productos.sql",
+      "bytes": 1971,
+      "sha256": "197d9c0da39a5e4c2e4fb54b19febd2a5fb8294adad59ce2ca5544fda8dc851a",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [],
+      "referencia_tablas": [],
+      "observacion": "Mezcla DDL/DML de prueba, hashes ficticios e historial_costos con columnas incompatibles."
+    },
+    {
+      "version": "2.0",
+      "file": "v2.0_gestion_api_pagos_cierres.sql",
+      "bytes": 996,
+      "sha256": "083810d75a5d9a826ae63b504064cdd5d173fc795a6f19c6b6b6c3bcad297a7d",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [
+        "pagos"
+      ],
+      "referencia_tablas": [],
+      "observacion": "Mezcla eliminación de índice con datos de prueba y dependencias de user-001."
+    },
+    {
+      "version": "2.1",
+      "file": "v2.1_gestion_api_juegos.sql",
+      "bytes": 1957,
+      "sha256": "ead1be60d494bcddd0831ec4ba5f8fbfd7e6d06a526ad079e40848ed5d1c38e3",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [
+        "juegos"
+      ],
+      "altera_tablas": [],
+      "referencia_tablas": [
+        "mesas"
+      ],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "2.2",
+      "file": "v2.2_gestion_alertas_inventario.sql",
+      "bytes": 399,
+      "sha256": "481be2fb2d9f4338ee11b62c13e9693a6c65cd842c6115ecead170da2974f0c6",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [],
+      "referencia_tablas": [],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "2.3",
+      "file": "v2.3_gestion_clientes.sql",
+      "bytes": 593,
+      "sha256": "c82212c50d62a956216af47b04bf1de3e3d180bfb521c9ec8758f7460202a5c6",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [],
+      "referencia_tablas": [],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "2.4",
+      "file": "v2.4_gestion_ventas_facturacion.sql",
+      "bytes": 1734,
+      "sha256": "f203af6fc5a648aca4da88b20b96906986c4cdb383b0655d10504f08f5657d9e",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [
+        "pedido_items",
+        "facturas"
+      ],
+      "referencia_tablas": [
+        "pedidos",
+        "productos"
+      ],
+      "observacion": "Referencia facturas, ausente del esquema base y del esquema actual auditado."
+    },
+    {
+      "version": "2.5",
+      "file": "v2.5_gestion_usuarios_seguridad.sql",
+      "bytes": 980,
+      "sha256": "a340ea9fb817e9f9e5325066dd202b8b8be72c031c7a2945958d1a56c22d73da",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [
+        "usuarios"
+      ],
+      "referencia_tablas": [
+        "roles"
+      ],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "2.6",
+      "file": "v2.6_datos_maestros.sql",
+      "bytes": 2059,
+      "sha256": "8be02d51d4c5a0795af8005a1d27619c211787aecdc5dcd7ad7cd7dae75921fe",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [],
+      "referencia_tablas": [],
+      "observacion": "Usa tarifa_hora, precio y stock inexistentes; semillas operativas de prueba."
+    },
+    {
+      "version": "2.7",
+      "file": "v2.7_modulo_kanban.sql)",
+      "bytes": 954,
+      "sha256": "72c99d147d7d2673711e76f12c67475b8c8310b49e0246dc6c563de5eb6e0e2b",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [],
+      "referencia_tablas": [],
+      "observacion": "Nombre termina .sql); solo SELECT/documentación; estados descritos obsoletos."
+    },
+    {
+      "version": "2.8",
+      "file": "v2.8_registros_iniciales_parametrizacion.sql",
+      "bytes": 1707,
+      "sha256": "4197b1d4f540165a31606c24a921c870c95b1b3a9dba0374681ca00755faf89e",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [],
+      "referencia_tablas": [],
+      "observacion": "Semillas operativas y roles con IDs históricos; optativas, no seguras para reinicializar."
+    },
+    {
+      "version": "2.9",
+      "file": "v2.9_actualizacion_seguridad_usuarios.sql",
+      "bytes": 787,
+      "sha256": "7dfc88d1f91255fab013c38b5fc6cf144f24d81b4b19fe7479470361a5e0a1a3",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [
+        "usuarios"
+      ],
+      "referencia_tablas": [],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "2.10",
+      "file": "v2.10_actualizacion_sesiones_activas.sql",
+      "bytes": 652,
+      "sha256": "6ca5efa32f9a8ba44ffe5c67ee504050bce8813602ed5bf47b22e1b0b2ed15ce",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [
+        "sesiones_activas"
+      ],
+      "referencia_tablas": [],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "2.11",
+      "file": "v2.11_calculo_cuenta_consolidada.sql",
+      "bytes": 900,
+      "sha256": "b554d238356555a6325b1751d93ed8d7e95859b1513fd3990dbccf97dbc6e83f",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [
+        "pedidos"
+      ],
+      "referencia_tablas": [],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "2.12",
+      "file": "v2.12_otp_tokens.sql",
+      "bytes": 679,
+      "sha256": "283e17cec981011778e9bfc521ba8aa70e0839369b7b7765ff992d5144d49e37",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [
+        "otp_tokens"
+      ],
+      "altera_tablas": [],
+      "referencia_tablas": [
+        "usuarios"
+      ],
+      "observacion": "FK usuarios_id INT contra usuarios.id VARCHAR(36); OTP legado fuera de V1."
+    },
+    {
+      "version": "2.13",
+      "file": "v2.13_estado_usuarios.sql",
+      "bytes": 1676,
+      "sha256": "f8ef60d200bd4e86b0587650bdd3d144a32c449e31d84481bcd45d5f529bf13a",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [
+        "usuarios"
+      ],
+      "referencia_tablas": [],
+      "observacion": "Índice consultado en mydb fijo; VARCHAR de estado difiere del ENUM instalado."
+    },
+    {
+      "version": "2.14",
+      "file": "v2.14_descuento_inventario.sql",
+      "bytes": 775,
+      "sha256": "45bf614f2e2a031e6f463dfc3790e35d395bd7746e021c7c770cd9073691bf86",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [
+        "productos"
+      ],
+      "referencia_tablas": [],
+      "observacion": "Contenido declara v2.15 y modifica stock, no cantidad_disponible canónica."
+    },
+    {
+      "version": "2.15",
+      "file": "v2.15_descuento_inventario.sql",
+      "bytes": 749,
+      "sha256": "21b82b4e791b95d2e5c27f20e70ab154b735800fd1e36ff7f8ca5f228e6a642e",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [
+        "productos"
+      ],
+      "referencia_tablas": [],
+      "observacion": "Repite ALTER de stock de v2.14; columna ajena al esquema canónico."
+    },
+    {
+      "version": "2.16",
+      "file": "v2.16_traslado_cuentas_mesas.sql",
+      "bytes": 2079,
+      "sha256": "791feeeb347dbc7779b659efc7f9cdc12fc8eb341a9eb505023c488d2bd82afd",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [],
+      "referencia_tablas": [],
+      "observacion": "Procedimiento legado de traslado no usado por flujo transaccional actual."
+    },
+    {
+      "version": "2.17",
+      "file": "v2.17_tablero_kanban_cocina.sql",
+      "bytes": 1204,
+      "sha256": "4f64ba424070356bd41659415035ad0c6ce1978d9883d5cf27f07cf0c887a45d",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [],
+      "referencia_tablas": [],
+      "observacion": "Vista usa alias de IDs añadidos fuera de la cadena inicial; vista ausente actualmente."
+    },
+    {
+      "version": "2.18",
+      "file": "v2.18_sesiones_division_cuentas.sql",
+      "bytes": 840,
+      "sha256": "ee5485b87e7ae528dde226fed5dc85a7510a0b695a0d8049069d06914b0287ef",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [
+        "divisiones_cuenta"
+      ],
+      "altera_tablas": [],
+      "referencia_tablas": [],
+      "observacion": "SQL truncado en REFEREN; intenta divisiones_cuenta, no sesiones_division_cuentas requerida después."
+    },
+    {
+      "version": "2.19",
+      "file": "v2.19_division_items_detalle.sql",
+      "bytes": 1538,
+      "sha256": "341edd2148f3f0b7f85c5831960002af28428448c0e5c745148153f3b2882657",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [
+        "division_participantes",
+        "division_items_detalle"
+      ],
+      "altera_tablas": [],
+      "referencia_tablas": [],
+      "observacion": "Crea detalle/participantes sin FK a sesión, pedido_item o participante; estructura posterior depende de sesión ausente en cadena."
+    },
+    {
+      "version": "2.20",
+      "file": "v2.20_pagos_division.sql",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [],
+      "referencia_tablas": [],
+      "observacion": "Archivo cero bytes desde historial Git; no crea asociación de pagos. Mantener vacío, no rellenar."
+    },
+    {
+      "version": "2.21",
+      "file": "v2.21_passwords_desarrollo.sql",
+      "bytes": 713,
+      "sha256": "ff8dfea50d184019a1dece39f039e44341722efd4152afda450f5561c015eeb9",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [],
+      "referencia_tablas": [],
+      "observacion": "Inicializador parametrizado optativo de credenciales de desarrollo; no es DDL de instalación."
+    },
+    {
+      "version": "2.22",
+      "file": "v2.22_movimientos_inventario_trazabilidad.sql",
+      "bytes": 344,
+      "sha256": "9abc39015412c9ddf7803de3178e9306e42c3f17b3fb1c032afee8adbbe6745b",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [
+        "movimientos_inventario"
+      ],
+      "referencia_tablas": [],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "2.23",
+      "file": "v2.23_sesiones_juego_tiempos_tarifa.sql",
+      "bytes": 449,
+      "sha256": "7a6f1f11deeef2c4da88735e8e778c911d0cdc48484602ac5d16fc1a0c682235",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [
+        "sesiones_juego"
+      ],
+      "referencia_tablas": [],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "2.24",
+      "file": "v2.24_modificar_pagos_total_seleccionado.sql",
+      "bytes": 77,
+      "sha256": "4a60be06d2b106555b0d3da5032afa0b2ad91df9e3b9f7f771c03c83a331ca2b",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [
+        "pagos"
+      ],
+      "referencia_tablas": [],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "2.25",
+      "file": "v2.25_create_tabla_comprobantes.sql",
+      "bytes": 1380,
+      "sha256": "a7396fda064037b432e50f873caddabb9b2f47b0709f6bd0e959eb55205e26d4",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [
+        "comprobantes"
+      ],
+      "altera_tablas": [],
+      "referencia_tablas": [
+        "pedidos",
+        "clientes",
+        "usuarios"
+      ],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "2.26",
+      "file": "v2.26_create_tabla_comprobante_items.sql",
+      "bytes": 926,
+      "sha256": "6fe899c06e2a8c6289d821cbb1f4c3270495ff8ec50b4cde56d777343cec2554",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [
+        "comprobante_items"
+      ],
+      "altera_tablas": [],
+      "referencia_tablas": [
+        "comprobantes"
+      ],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "2.27",
+      "file": "v2.27_modificar_importes_cierres_caja.sql",
+      "bytes": 263,
+      "sha256": "cfb99087b81dd7e04ec848f894b45201885c68a89b49500d139594c3b635a2f1",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [
+        "cierres_caja"
+      ],
+      "referencia_tablas": [],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "2.28",
+      "file": "v2.28_agregar_periodo_cierres_caja.sql",
+      "bytes": 419,
+      "sha256": "5f235d9dfc1360edd2fc4056b0dd58252a77762db05e7e44b5e854873a0c0a8c",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [
+        "cierres_caja"
+      ],
+      "referencia_tablas": [],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "2.29",
+      "file": "v2.29_agregar_verificado_en_pagos.sql",
+      "bytes": 175,
+      "sha256": "f583291c4dbf5dc47d3a1c2fbf1b11d39875317f72e8b1d88498a1910e7cab92",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [
+        "pagos"
+      ],
+      "referencia_tablas": [],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "2.30",
+      "file": "v2.30_create_tabla_cierre_pagos.sql",
+      "bytes": 809,
+      "sha256": "59234192e70ac45860bc895cb889fa0677e5163f5b124d6dbdd84726b4009ff6",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [
+        "cierre_pagos"
+      ],
+      "altera_tablas": [],
+      "referencia_tablas": [
+        "cierres_caja",
+        "pagos"
+      ],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "2.31",
+      "file": "v2.31_compras_recepciones_parciales.sql",
+      "bytes": 481,
+      "sha256": "2eeb8b3eef267c73c383cb168b0e53ff46ec0b1aa269d3598d0f49d942c06d27",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [
+        "compras",
+        "compra_items"
+      ],
+      "referencia_tablas": [],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "2.32",
+      "file": "v2.32_productos_version_inventario.sql",
+      "bytes": 635,
+      "sha256": "b23eb494d0e79c9aa8e5a047f347afb9780ea6e5dcc21dc7bce231b54cec0122",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [
+        "productos"
+      ],
+      "referencia_tablas": [],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "2.33",
+      "file": "v2.33_create_recepciones_compra.sql",
+      "bytes": 2721,
+      "sha256": "d4ee29e222de20324743d1ac7ad07e42f1930ecabc2b881208da73b9cd9b461b",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [
+        "recepciones_compra",
+        "recepcion_compra_items"
+      ],
+      "altera_tablas": [],
+      "referencia_tablas": [
+        "compras",
+        "usuarios",
+        "recepciones_compra",
+        "compra_items",
+        "productos",
+        "movimientos_inventario"
+      ],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "2.34",
+      "file": "v2.34_create_historial_costos_recepciones.sql",
+      "bytes": 1748,
+      "sha256": "248985c195531e01ca8395f45fca10285dd1563d866b71d9a14a58974198f57a",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [
+        "historial_costos_recepciones"
+      ],
+      "altera_tablas": [],
+      "referencia_tablas": [
+        "productos",
+        "compras",
+        "recepcion_compra_items",
+        "usuarios"
+      ],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "2.35",
+      "file": "v2.35_alertas_inventario_episodios.sql",
+      "bytes": 6454,
+      "sha256": "505df198cdc8dd1e61e99d87d453f01d8c4b0ab1373338a1addd5262de076bde",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [
+        "alertas_inventario_historial"
+      ],
+      "altera_tablas": [
+        "alertas_inventario"
+      ],
+      "referencia_tablas": [
+        "usuarios",
+        "alertas_inventario"
+      ],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "2.36",
+      "file": "v2.36_productos_historial_costos_opcional.sql",
+      "bytes": 264,
+      "sha256": "53430ff963525957e254c0b143b5c2fa781e537018fb42c4eb1dac488b37633b",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [
+        "productos"
+      ],
+      "referencia_tablas": [],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "2.37",
+      "file": "v2.37_participantes_pedidos.sql",
+      "bytes": 2627,
+      "sha256": "9e042aed57c90ecb519f635439339ba4725867a6691a10755a28c6dc89132b27",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [
+        "pedidos",
+        "jugadores",
+        "pedido_items"
+      ],
+      "referencia_tablas": [
+        "pedidos",
+        "clientes",
+        "jugadores"
+      ],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "2.38",
+      "file": "v2.38_participantes_temporales_homonimos.sql",
+      "bytes": 145,
+      "sha256": "6ae081ee4a51ab803c0e33281e13796f008f885a4da1267f48734be79d0dc47b",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [
+        "jugadores"
+      ],
+      "referencia_tablas": [],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "2.39",
+      "file": "v2.39_sesiones_mesa.sql",
+      "bytes": 2517,
+      "sha256": "c728d221423ba3b020c9c7cb476b31515533136617264d29e10c4ce63dcc7a19",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [
+        "sesiones_mesa"
+      ],
+      "altera_tablas": [
+        "pedidos",
+        "jugadores"
+      ],
+      "referencia_tablas": [
+        "mesas",
+        "sesiones_mesa"
+      ],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "2.40",
+      "file": "v2.40_rondas_consumo.sql",
+      "bytes": 1532,
+      "sha256": "f5afc1d1427f26de1fa0c44dfc0e74daf4d6fe24259dedf23f6b32f44f1f2f84",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [
+        "rondas_consumo"
+      ],
+      "altera_tablas": [
+        "pedido_items"
+      ],
+      "referencia_tablas": [
+        "pedidos",
+        "usuarios",
+        "rondas_consumo"
+      ],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "2.41",
+      "file": "v2.41_divisiones_sesion_pagadores.sql",
+      "bytes": 964,
+      "sha256": "f395271e6aa1eb7bd826b39351c496f08a2f8cb295f92468d2b90e68e26dd6c1",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [
+        "sesiones_division_cuentas",
+        "division_participantes"
+      ],
+      "referencia_tablas": [
+        "sesiones_mesa",
+        "jugadores"
+      ],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "2.42",
+      "file": "v2.42_divisiones_modalidades_ciclo.sql",
+      "bytes": 1346,
+      "sha256": "02410eca3afc3554c88bca17617a37f4c7a5973bae186383b519f4353a2a91df",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [
+        "sesiones_division_cuentas"
+      ],
+      "referencia_tablas": [
+        "pedidos"
+      ],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "2.43",
+      "file": "v2.43_sesiones_juego_pedido_directo.sql",
+      "bytes": 1153,
+      "sha256": "33dc0a3a95499a05dfd964cb583618ea4e058d9d3d11d83a9249e960e47b3169",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [],
+      "altera_tablas": [
+        "sesiones_juego"
+      ],
+      "referencia_tablas": [
+        "pedidos"
+      ],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    },
+    {
+      "version": "2.44",
+      "file": "v2.44_configuracion_negocio.sql",
+      "bytes": 920,
+      "sha256": "5aa20140297212258d33f7d9e2cec42eac686747ba38fb698b9e69f53c03cb75",
+      "estado": "historica-no-reproducir-en-bloque",
+      "crea_tablas": [
+        "configuracion_negocio"
+      ],
+      "altera_tablas": [],
+      "referencia_tablas": [
+        "usuarios"
+      ],
+      "observacion": "Conservar histórico; sus efectos estructurales instalados se incluyen en la baseline, no reaplicar por glob."
+    }
+  ],
+  "baseline": {
+    "version": "2.45",
+    "file": "v2.45_instalacion_limpia_v1.sql",
+    "bytes": 53825,
+    "sha256": "1c3ac943919c8ff21221aea70171cfe8f599203252acb2df7c05fb5720c97fbf",
+    "estado": "baseline-vacia"
+  },
+  "tablas": [
+    "activos_juego",
+    "alertas_inventario",
+    "alertas_inventario_historial",
+    "auditoria",
+    "categorias",
+    "cierre_pagos",
+    "cierres_caja",
+    "clientes",
+    "cola_eventos_offline",
+    "compra_items",
+    "compras",
+    "comprobante_items",
+    "comprobantes",
+    "configuracion_negocio",
+    "conflictos_sincronizacion",
+    "dispositivos",
+    "division_items_detalle",
+    "division_participantes",
+    "historial_cambios_mesa",
+    "historial_costos",
+    "historial_costos_recepciones",
+    "historial_estados_activo",
+    "jugadores",
+    "kanban_movimientos",
+    "merma_motivos",
+    "mermas",
+    "mesas",
+    "movimientos_inventario",
+    "otp_tokens",
+    "pagos",
+    "pausas_sesion",
+    "pedido_items",
+    "pedidos",
+    "productos",
+    "proveedores",
+    "recepcion_compra_items",
+    "recepciones_compra",
+    "refrigerador_stock",
+    "refrigeradores",
+    "reportes_generados",
+    "roles",
+    "ronda_jugadores",
+    "rondas",
+    "rondas_consumo",
+    "sesiones_activas",
+    "sesiones_division",
+    "sesiones_division_cuentas",
+    "sesiones_juego",
+    "sesiones_mesa",
+    "usuarios"
+  ],
+  "rutinas": [
+    "sincronizar_alerta_inventario"
+  ],
+  "triggers": [
+    "trg_producto_alerta_insert",
+    "trg_producto_alerta_update",
+    "trg_productos_version_inventario"
+  ],
+  "claves_foraneas": 93,
+  "aplicacion_historica": "No existe ledger de migraciones; Git prueba contenido versionado, no ejecución. El esquema local fue inspeccionado solo mediante metadatos.",
+  "definiciones_sha256": {
+    "activos_juego": "6eca1411fc7e2de4926e26b9ad3f09bf7e85bf49c1b2815b08084d83eb81dee5",
+    "alertas_inventario": "11abfda0a91266ca578b1869c35748eb36e1c84dadfd4737541f36f29362b400",
+    "alertas_inventario_historial": "4c7563cce9e93fc78ec00056d3603fd7e7044a2cf6b1809622ffeaf518588c0f",
+    "auditoria": "d2a6a50f7d078238709931c121bda5271ff87c03dd07e09a688e9c096698645b",
+    "categorias": "788ac0e098492d70d4e6080077a02b9e8add0eeec99899ebf79dbf4d0833b969",
+    "cierre_pagos": "18b17b738fc8aa8e9c87f67f941238bfb3eeadd9f9353da5f9e601f121e82488",
+    "cierres_caja": "14e394824f1e4268fb3869137b2957cc019c9913bdecf45733addcede796956d",
+    "clientes": "076101c781197b73af0df72142769ba3c609665765ac346d39221e708e4ac572",
+    "cola_eventos_offline": "a9f8d2617646c7bd0bbcd868e7131c4a85d400c67d80c954cb4086d00912fc31",
+    "compra_items": "fc77f55493bd7c4b566fc50fb7f54c94f3ac15c653eb8512f80606605b381ee6",
+    "compras": "58bc65f98f30a44915a63280493b2dcf1eff7e0132e63e88197bb85a0a407190",
+    "comprobante_items": "3da772e5f0f540e028b03d5b3cd957364763fbf0ed0a1d1550dc2ce6e1b0cc2b",
+    "comprobantes": "2824c297248d16221fee914685e66e4a39509d883f54d95a39430e016cbfc094",
+    "configuracion_negocio": "7ceeace92347f7677e17729db69d6af7951bb0dfb4e810655bd1e9e4a235c152",
+    "conflictos_sincronizacion": "c332d8575237fe89eb88a7b95efe7712d4a5942798b454bf2a3387ec007f4301",
+    "dispositivos": "4eaf0b83fafb88969a3e642505807cb0618a80a4e6d2ee26d57fc44b762d781b",
+    "division_items_detalle": "e82064811ab5044983548adc1c425d8c127d861f15057453a79994aa83439c13",
+    "division_participantes": "0cacb637184f64529ac6d38b75d13378eb46204e0ee85742fa09fd4077135ac5",
+    "historial_cambios_mesa": "4b7e51cf81dcf1826e2986f80b7564a3f25e9b5c9056e50b9975800279c0d397",
+    "historial_costos": "9ad1f26ef235e8148ef7a8bf433ca156de2d306c00d232a761fe8b9a70e91205",
+    "historial_costos_recepciones": "95bd1a8e1e2cec21cc165c617875cddbebd33d55947f38682236699bdcd526cb",
+    "historial_estados_activo": "15a253b6eb04f2ee0ef502b16a2d74e4782bbe68ce6dc8a92ade02e495d3eda6",
+    "jugadores": "9f16a630dccc57efb0c3d147e68b5f16356462fd4dd6ba1183ca9e22781d52f7",
+    "kanban_movimientos": "12861cde6cacf513673f91e61975019e1b5118f20b31d32d963b93ce53329bdd",
+    "merma_motivos": "5651f053c6d3e7a6a7a51ff068b7fb29c27b95290ee4f8401d1ec15eb376c32d",
+    "mermas": "feb96b95a31e64b8fb0e9171d31d75907b7540152367c080119245f5e281f2ae",
+    "mesas": "c8f7cc55ce9313c85700e17e39a9ab429559ae5c7a04599f4b46718223517ae6",
+    "movimientos_inventario": "1cd67c386850328b9eb0935e8a6b3fa6ba876f25c195890269c312de6e0ca243",
+    "otp_tokens": "013a9b14cb45bad40c9661d382ce04da63b44a9d424bd1539e4a23ff727da850",
+    "pagos": "413672fb6378e1ab152cb69ffb9506c0b04a2f1ff065b6bd03f532da5f4f2f2f",
+    "pausas_sesion": "607dd396b96b13db384bc2e307fe52a4556d82a052948bbdbca2922efedc0e50",
+    "pedido_items": "5e11d8e8ba80528cd65d61a2d2440c297d5760acb5030488ee159f5b1219ffb6",
+    "pedidos": "b648f3be9c63fe9fb03abdb0a968b70830470b7fd902a1da81983b3509fc7c7b",
+    "productos": "e801be41e2518e9d30637cdbd9810fd0de9fc3681753f0dac16c7e1e3c39a3d1",
+    "proveedores": "8ce7b0efb259ddaa478f855d00a9a7ef21e2f8e4a8d577e879883c0077f990d0",
+    "recepcion_compra_items": "044979dc7e8e0d4ed459001b04c18904edc4e10db07d4b38b738f6a3488f924c",
+    "recepciones_compra": "5a87fdc040003bf2e50fdf46dca4ba87072a6b4f0193adcf426df7ae1d1708c4",
+    "refrigerador_stock": "79fbd63731f9c976bcc69667692821594a6ba8597e850da6821e06fc94a12995",
+    "refrigeradores": "fe9670946481f0bbf94c9dac231a493f4847d93492da4469b89c098aa1d2f6c1",
+    "reportes_generados": "94396367aa273576b31eb64980134dd7f7fa367d07fca2873bd05b368b0a1303",
+    "roles": "c3f60cd76f0bd2ef0a504dc8710d22dad9caeb26a340fa250479f04d29110c3b",
+    "ronda_jugadores": "6816262d65ee06b20c8b4ac6c0fc82744034f3a29625c3825a5d7270d67fcb63",
+    "rondas": "fe5bb6e6292493e537a133884713e6a1752d6d380367d90fa2c5d90bbc6eb0fa",
+    "rondas_consumo": "8d1900c47c01a03ad877a4fe3cc550fc11b7990506e041e2164d06d6cf97dc00",
+    "sesiones_activas": "7c18da4e87e93788dabf0e25caaa5b47e0b80232cb838b93f5b160aedd236072",
+    "sesiones_division": "04ffed69dab2990bae99d650f6bc2061162f72f438263421f4688209d7914cfe",
+    "sesiones_division_cuentas": "2d19464cccb80dab3c0f3b0d6b62b9dec55f06a4296e94db049041a7b07007fd",
+    "sesiones_juego": "43b3f67932d776108d7e056074d6ccf3f1bbd918eed8bdaa0b86ac288224a2dc",
+    "sesiones_mesa": "601aef7e5509256f39aef8e833b6c376afc7176ce109723aca495d050fa5cf7b",
+    "usuarios": "76f573fe494155c846958b8afbb0379f5501b9667fe4daaef6323a9a5ad2f013"
+  },
+  "convencion_checksum": "SHA-256 de UTF-8 normalizado CRLF a LF; bytes es el tamano observado, no una precondicion multiplataforma."
+}
