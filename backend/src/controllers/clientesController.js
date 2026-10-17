@@ -3,6 +3,7 @@ const { ejecutor } = require('../services/identidadService');
 const mysql = require('mysql2');
 const db = require('../config/db');
 const { randomUUID } = require('node:crypto');
+const historialClientes=require('../services/historialClientesService');
 
 const errorCliente = (status, mensaje) => Object.assign(new Error(mensaje), { status });
 const columnas = 'id,nombre,email,telefono,estado,delete_at,usuarios_id';
@@ -68,6 +69,7 @@ const ejecutar = async (res, operacion, lectura = false) => {
     }
   }
 };
+exports.historialCliente = (req,res) => ejecutar(res,async c=>({body:await historialClientes.consultar(c,req.params.id,req.query)}),true);
 exports.listarClientes = (req, res) => ejecutar(res, async c => {
   const pagina = entero(req.query.pagina, 1, Number.MAX_SAFE_INTEGER);
   const limite = entero(req.query.limite, 20, 100);

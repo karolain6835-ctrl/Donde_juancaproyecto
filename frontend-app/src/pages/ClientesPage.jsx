@@ -24,6 +24,7 @@ export default function ClientesPage() {
   const [pagina, setPagina] = useState(1);
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
   const [editor, setEditor] = useState(null);
+  const [clienteHistorial,setClienteHistorial]=useState(null);
   const loader = useCallback(options => listarClientes({ buscar: busqueda, estado: filtroEstado, pagina }, options), [busqueda, filtroEstado, pagina]);
   const catalog = useRemoteCatalog(loader);
   const mutation = useCatalogMutation();
@@ -61,8 +62,9 @@ export default function ClientesPage() {
           <div className="catalogo-actions"><button disabled={pagina <= 1} onClick={() => setPagina(pagina - 1)}>Anterior</button><span>Página {pagina}</span><button disabled={!catalog.data || pagina * catalog.data.limite >= catalog.data.total} onClick={() => setPagina(pagina + 1)}>Siguiente</button></div>
         </section>}
     </>}
-    {seccionActiva === 'historial' && <HistorialClientesSection />}
+    {seccionActiva === 'historial' && <HistorialClientesSection key={clienteHistorial?.id} cliente={clienteHistorial} />}
     {clienteSeleccionado && <><div className="cliente-overlay" onClick={() => { if (!mutation.busy) setClienteSeleccionado(null); }} /><aside className="cliente-drawer"><div className="cliente-drawer-header"><h2>{clienteSeleccionado.nombre}</h2><button className="drawer-close" disabled={mutation.busy} onClick={() => setClienteSeleccionado(null)} aria-label="Cerrar detalle">×</button></div><div className="cliente-detail-grid"><p>Correo: {clienteSeleccionado.email || '—'}</p><p>Teléfono: {clienteSeleccionado.telefono || '—'}</p><span className={`cliente-status ${clienteSeleccionado.estado}`}>{clienteSeleccionado.estado === 'activo' ? 'Activo' : 'Inactivo'}</span></div>
+      <button className="drawer-secondary-button" onClick={()=>{setClienteHistorial(clienteSeleccionado);setClienteSeleccionado(null);setSeccionActiva('historial');}}>Ver historial</button>
       <Can permission="clientes.actualizar"><div className="catalogo-actions"><button className="drawer-primary-button" disabled={mutation.busy} onClick={() => open(clienteSeleccionado)}>Editar cliente</button><button className="drawer-secondary-button" disabled={mutation.busy} onClick={() => cambiarEstado(clienteSeleccionado)}>{clienteSeleccionado.estado === 'activo' ? 'Desactivar cliente' : 'Activar cliente'}</button></div></Can>
       {mutation.error && <p role="alert">{mutation.error}</p>}
     </aside></>}

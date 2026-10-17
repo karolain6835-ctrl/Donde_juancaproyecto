@@ -4,6 +4,7 @@ const router = express.Router();
 const clientesController = require('../controllers/clientesController');
 
 router.get('/', autorizarRoles('Administrador', 'SuperAdmin', 'Mesero', 'Mesera', 'Cajero'), clientesController.listarClientes);
+router.get('/:id/historial', autorizarRoles('Administrador', 'SuperAdmin', 'Mesero', 'Mesera', 'Cajero'), clientesController.historialCliente);
 router.put('/:id', autorizarRoles('Administrador', 'SuperAdmin'), clientesController.actualizarCliente);
 
 // Ruta para registrar un cliente

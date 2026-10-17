@@ -1,5 +1,14 @@
 import { apiClient, ApiError } from './apiClient.js';
 import { readList, invalidResponse } from './catalogoContract.js';
+import {operationPath} from './operacionContract.js';
+import {centavosDivision} from './divisionesService.js';
+
+export async function historialCliente(id,{pagina=1,limite=20}={},options){
+ const r=await apiClient(`/clientes/${operationPath(id)}/historial?${new URLSearchParams({pagina,limite})}`,options);
+ if(typeof r?.cliente?.id!=='string'||r.cliente.id!==id||!Array.isArray(r.datos)||!Number.isSafeInteger(r.paginacion?.total)||!Number.isSafeInteger(r.paginacion?.pagina)||!Number.isSafeInteger(r.paginacion?.total_paginas))throw invalidResponse('historial de clientes');
+ for(const row of r.datos){if(typeof row.id!=='string'||typeof row.fecha!=='string'||typeof row.total_definitivo!=='boolean')throw invalidResponse('historial de clientes');for(const key of ['total_pedido','consumo_cliente','pagos_atribuidos'])centavosDivision(row[key]);}
+ return r;
+}
 
 export function adaptCliente(row) {
   if (!row || typeof row.id !== 'string' || !row.id || typeof row.nombre !== 'string' || !row.nombre.trim() ||
