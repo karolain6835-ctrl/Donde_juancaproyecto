@@ -4,41 +4,6 @@ const mysql = require('mysql2');
 const crypto = require('crypto');
 
 // ==========================================
-// 1. OBTENER PEDIDOS SIMULADOS
-// ==========================================
-const obtenerPedidosKanban = async (req, res) => {
-  const pedidosKanban = [
-    {
-      id: "PED-101",
-      mesa: "Mesa 3",
-      items: "2 Cervezas Club Colombia",
-      estado: "pendiente",
-      hora_pedido: "15:45"
-    },
-    {
-      id: "PED-102",
-      mesa: "Mesa 1 (Tejo)",
-      items: "1 Porción de Chicharrón, 1 Aguardiente",
-      estado: "en_preparacion",
-      hora_pedido: "15:30"
-    },
-    {
-      id: "PED-103",
-      mesa: "Mesa 5",
-      items: "1 Gaseosa Coca-Cola",
-      estado: "entregado",
-      hora_pedido: "15:15"
-    }
-  ];
-
-  res.json({
-    mensaje: "Pedidos para el tablero Kanban cargados con éxito. 📋",
-    total: pedidosKanban.length,
-    pedidos: pedidosKanban
-  });
-};
-
-// ==========================================
 // 2. MOVER UN ÍTEM REAL Y REGISTRAR SU ESTADO ANTERIOR
 // ==========================================
 const actualizarEstadoPedido = async (req, res) => {
@@ -284,7 +249,6 @@ module.exports = {
   despacharTodo,
   estadoDerivado,
   aceptarPedido,
-  obtenerPedidosKanban,
   actualizarEstadoPedido,
   obtenerTableroKanban
 };

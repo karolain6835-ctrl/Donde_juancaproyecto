@@ -50,7 +50,6 @@ test('Todos los permisos operativos coinciden con los roles de las rutas reales'
     ['clientes', 'get', '/', ['clientes.ver']],
     ['clientes', 'post', '/registrar', ['clientes.crear']],
     ['clientes', 'put', '/:id', ['clientes.actualizar']],
-    ['ventas', 'post', '/pedido', ['ventas.crearPedido']],
     ['ventas', 'post', '/facturar', ['ventas.facturar']],
     ['ventas', 'get', '/comprobantes', ['comprobantes.ver']],
     ['cierresCaja', 'get', '/', ['cierres.ver']],

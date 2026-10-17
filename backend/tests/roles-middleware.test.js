@@ -43,9 +43,9 @@ const cases = [
  ['A','GET','proveedores'],['A','POST','proveedores'],['A','PUT','proveedores/x'],
  ['A','GET','compras'],['A','GET','compras/x'],['A','POST','compras'],['A','PATCH','compras/x/recibir'],['A','PATCH','compras/x/cancelar'],['A','PATCH','compras/x/cancelar-pendiente'],['A','GET','compras/x/recepciones'],['A','GET','compras/x/recepciones/y'],['A','PATCH','compras/x/recepciones/y/reversar'],
  ['MC','GET','clientes'],['MC','GET','clientes/x'],['MC','POST','clientes/registrar'],['A','PUT','clientes/x'],
- ['A','POST','ventas/pedido'],['C','POST','ventas/facturar'],['C','GET','ventas/comprobantes'],['C','GET','ventas/comprobantes/x'],['C','GET','ventas/comprobantes/pedido/x'],
+ ['C','POST','ventas/facturar'],['C','GET','ventas/comprobantes'],['C','GET','ventas/comprobantes/x'],['C','GET','ventas/comprobantes/pedido/x'],
  ['C','GET','cierres-caja/resumen'],['C','POST','cierres-caja'],['C','GET','cierres-caja'],['C','GET','cierres-caja/x'],
- ['MB','GET','kanban/simulado'],['MB','GET','kanban/tablero'],['MB','PUT','kanban/x/estado'],
+ ['MB','GET','kanban/tablero'],['MB','PUT','kanban/x/estado'],
  ['MC','POST','sesiones-division'],['MC','GET','sesiones-division/x'],['MC','GET','sesiones-division/x/pagos'],['MC','POST','sesiones-division/x/asignar-items'],['MC','POST','sesiones-division/x/cuotas'],['C','PATCH','sesiones-division/x/cancelar'],['C','PATCH','sesiones-division/x/completar'],
  ['A','GET','usuarios'],['A','GET','usuarios/roles'],['A','POST','usuarios/registrar'],['A','PUT','usuarios/x/estado']
 ];
