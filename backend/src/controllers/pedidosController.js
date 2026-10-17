@@ -92,10 +92,10 @@ const crearPedido = async (req, res) => {
     await conexion.commit(); abierta = false;
     return res.status(201).json({ mensaje: '¡Cuenta abierta con éxito para la mesa! 🍻', id_pedido: id });
   } catch (error) {
-    if (abierta) { try { await conexion.rollback(); } catch (rollback) { console.error('Rollback pedido:', rollback.message); } }
+    if (abierta) { try { await conexion.rollback(); } catch (rollback) { console.error('Rollback pedido:', new Error('Fallo interno; detalles sensibles omitidos.').stack); } }
     const concurrent = ['ER_LOCK_DEADLOCK','ER_LOCK_WAIT_TIMEOUT'].includes(error.code);
     return res.status(error.status || (concurrent ? 409 : 500)).json({ error: error.status ? error.message : concurrent ? 'Conflicto concurrente al ocupar la mesa. Reintenta.' : 'Hubo un error en el servidor al abrir el pedido.' });
-  } finally { if (conexion) { try { await conexion.end(); } catch (error) { console.error('Cierre pedido:', error.message); } } }
+  } finally { if (conexion) { try { await conexion.end(); } catch (error) { console.error('Cierre pedido:', new Error('Fallo interno; detalles sensibles omitidos.').stack); } } }
 };
 
 // ==========================================
@@ -107,16 +107,16 @@ const errorPedido = (status, mensaje) => Object.assign(new Error(mensaje), { sta
 const finalizarTransaccionPedido = async (conexion, transaccionIniciada, error, res, mensaje) => {
   if (transaccionIniciada) {
     try { await conexion.rollback(); }
-    catch (errorRollback) { console.error('Error al revertir pedido:', errorRollback.message); }
+    catch (errorRollback) { console.error('Error al revertir pedido:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
   }
-  console.error('Error al procesar pedido:', error.message);
+  console.error('Error al procesar pedido:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
   return res.status(error.status || 500).json({ error: error.status ? error.message : mensaje });
 };
 
 const cerrarConexionPedido = async (conexion) => {
   if (conexion) {
     try { await conexion.end(); }
-    catch (errorConexion) { console.error('Error al cerrar conexi?n de pedido:', errorConexion.message); }
+    catch (errorConexion) { console.error('Error al cerrar conexi?n de pedido:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
   }
 };
 
@@ -221,13 +221,13 @@ const obtenerCuentaConsolidada = (req, res) => {
 
   db.query(queryProductos, [mesa_id], (err, productos) => {
     if (err) {
-      console.error('❌ Error al consultar productos:', err.message);
+      console.error('❌ Error al consultar productos:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
       return res.status(500).json({ error: 'Error al consultar consumos de productos.' });
     }
 
     db.query(queryJuegos, [mesa_id], (err, juegos) => {
       if (err) {
-        console.error('Error al consultar juegos:', err.message);
+        console.error('Error al consultar juegos:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
         return res.status(500).json({ error: 'Error al consultar consumos de juegos.' });
       }
 

@@ -259,10 +259,7 @@ exports.registrarPago = async (req, res) => {
       try {
         await conexion.rollback();
       } catch (errorRollback) {
-        console.error(
-          'Error al revertir el pago:',
-          errorRollback.message
-        );
+        console.error('Error al revertir el pago:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
       }
     }
 
@@ -279,15 +276,11 @@ exports.registrarPago = async (req, res) => {
       });
     }
 
-    console.error(
-      '❌ Error al procesar el pago:',
-      error
-    );
+    console.error('❌ Error al procesar el pago:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
 
     return res.status(500).json({
       error:
-        'Hubo un error interno al registrar el pago.',
-      detalles: error.message
+        'Error interno del servidor.'
     });
   } finally {
     // Esta conexión sí es independiente,
@@ -296,10 +289,7 @@ exports.registrarPago = async (req, res) => {
       try {
         await conexion.end();
       } catch (errorConexion) {
-        console.error(
-          'Error al cerrar la conexión de pago:',
-          errorConexion.message
-        );
+        console.error('Error al cerrar la conexión de pago:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
       }
     }
   }
@@ -373,14 +363,14 @@ exports.verificarPago = async (req, res) => {
   } catch (error) {
     if (transaccionIniciada) {
       try { await conexion.rollback(); }
-      catch (errorRollback) { console.error('Error al revertir verificación:', errorRollback.message); }
+      catch (errorRollback) { console.error('Error al revertir verificación:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
     }
-    console.error('Error al verificar pago:', error.message);
+    console.error('Error al verificar pago:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
     return res.status(error.status || 500).json({ error: error.status ? error.message : 'Error al verificar el pago.' });
   } finally {
     if (conexion) {
       try { await conexion.end(); }
-      catch (errorConexion) { console.error('Error al cerrar conexión de verificación:', errorConexion.message); }
+      catch (errorConexion) { console.error('Error al cerrar conexión de verificación:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
     }
   }
 };
@@ -420,10 +410,7 @@ exports.obtenerPagoPorId = async (req, res) => {
 
     return res.status(200).json(rows[0]);
   } catch (error) {
-    console.error(
-      '❌ Error al obtener el pago:',
-      error
-    );
+    console.error('❌ Error al obtener el pago:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
 
     return res.status(500).json({
       error: 'Error al consultar el pago.'

@@ -60,7 +60,7 @@ exports.loginUsuario = async (req, res) => {
   const vigencia = Number(process.env.JWT_EXPIRES_IN_SECONDS || 3600);
   if (!secreto || Buffer.byteLength(secreto, 'utf8') < 32 ||
       !Number.isSafeInteger(vigencia) || vigencia <= 0) {
-    console.error('Configuración JWT ausente o inválida.');
+    console.error('Configuración JWT ausente o inválida.', new Error('Fallo interno; detalles sensibles omitidos.').stack);
     return res.status(500).json({ error: 'El inicio de sesión no está configurado correctamente.' });
   }
   try {
@@ -99,7 +99,7 @@ exports.loginUsuario = async (req, res) => {
     });
   } catch (error) {
     // No imprimir la consulta ni valores que puedan contener password_hash.
-    console.error('Error al iniciar sesión:', error.code || error.name);
+    console.error('Error al iniciar sesión:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
     return res.status(500).json({ error: 'Error interno al iniciar sesión.' });
   }
 };
@@ -123,7 +123,7 @@ exports.cambiarEstadoUsuario = (req, res) => {
 
   db.query(sqlBuscar, [id], (err, resultados) => {
     if (err) {
-      console.error('Error al consultar usuario:', err);
+      console.error('Error al consultar usuario:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
       return res.status(500).json({ ok: false, msg: 'Error en el servidor al consultar usuario.' });
     }
 
@@ -139,7 +139,7 @@ exports.cambiarEstadoUsuario = (req, res) => {
 
     db.query(sqlActualizar, [estado.toLowerCase(), id], (errUpdate) => {
       if (errUpdate) {
-        console.error('Error al actualizar estado del usuario:', errUpdate);
+        console.error('Error al actualizar estado del usuario:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
         return res.status(500).json({ ok: false, msg: 'Error al actualizar el estado del usuario.' });
       }
 

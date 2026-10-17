@@ -9,7 +9,7 @@ async function transaccion(req,res,operation){
  const actor=ejecutor(req,res);if(!actor)return;
  let c;
  try{c=mysql.createConnection(db.dbConfig).promise();await c.beginTransaction();const r=await operation(c,actor);await c.commit();return res.status(r.status).json({exito:true,data:r.data});}
- catch(e){if(c)await c.rollback();console.error('Division:',e.message);return res.status(e.status||(['ER_DUP_ENTRY','ER_LOCK_DEADLOCK','ER_LOCK_WAIT_TIMEOUT'].includes(e.code)?409:500)).json({error:e.status?e.message:'No se pudo procesar la division. Reintenta con la misma clave.'});}
+ catch(e){if(c)await c.rollback();console.error('Division:', new Error('Fallo interno; detalles sensibles omitidos.').stack);return res.status(e.status||(['ER_DUP_ENTRY','ER_LOCK_DEADLOCK','ER_LOCK_WAIT_TIMEOUT'].includes(e.code)?409:500)).json({error:e.status?e.message:'No se pudo procesar la division. Reintenta con la misma clave.'});}
  finally{if(c)await c.end();}
 }
 const iniciarSesionDivision=(req,res)=>transaccion(req,res,async(c,actor)=>{
@@ -23,7 +23,7 @@ const iniciarSesionDivision=(req,res)=>transaccion(req,res,async(c,actor)=>{
 });
 const asignarItemsACliente=(req,res)=>{
  const actor=ejecutor(req,res);if(!actor)return;
- let body,key=req.get?.('Idempotency-Key');try{body=validar(req.body,key);}catch(e){return res.status(e.status||400).json({error:e.message});}
+ let body,key=req.get?.('Idempotency-Key');try{body=validar(req.body,key);}catch(e){return res.status([400,409].includes(e.status)?e.status:500).json({error:[400,409].includes(e.status)?e.message:'Error interno del servidor.'});}
  return transaccion(req,res,c=>asignar(c,req.params.id,body,key,actor));
 };
 

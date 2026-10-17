@@ -39,13 +39,13 @@ const ejecutar = async (res, operacion, lectura = false) => {
     await c.commit(); abierta = false;
     return res.status(r.status || 200).json(r.body);
   } catch (e) {
-    if (abierta) { try { await c.rollback(); } catch (r) { console.error('Rollback comprobantes:', r.message); } }
+    if (abierta) { try { await c.rollback(); } catch (r) { console.error('Rollback comprobantes:', new Error('Fallo interno; detalles sensibles omitidos.').stack); } }
     if (e.code === 'ER_DUP_ENTRY') return res.status(409).json({error:'Ya existe el comprobante o una referencia duplicada.'});
-    if (!e.status) console.error('Error comprobantes:', e.message);
+    if (!e.status) console.error('Error comprobantes:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
     return res.status(e.status || 500).json({ error:e.status ? e.message : 'No se pudo completar la operación de comprobantes.',
       ...(e.comprobante ? {comprobante:e.comprobante} : {}) });
   } finally {
-    if (c) { try { await c.end(); } catch (e) { console.error('Cierre comprobantes:', e.message); } }
+    if (c) { try { await c.end(); } catch (e) { console.error('Cierre comprobantes:', new Error('Fallo interno; detalles sensibles omitidos.').stack); } }
   }
 };
 const emitir = async (c, body, actor) => {

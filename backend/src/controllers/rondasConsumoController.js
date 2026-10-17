@@ -64,10 +64,10 @@ async function operar(req,res,confirmar) {
     }
     await c.commit();abierta=false;return res.status(status).json({ datos });
   } catch(error) {
-    if(abierta){try{await c.rollback();}catch(e){console.error('Rollback ronda:',e.message);}}
+    if(abierta){try{await c.rollback();}catch(e){console.error('Rollback ronda:', new Error('Fallo interno; detalles sensibles omitidos.').stack);}}
     const conflicto=['ER_DUP_ENTRY','ER_LOCK_DEADLOCK','ER_LOCK_WAIT_TIMEOUT'].includes(error.code);
     return res.status(error.status || (conflicto?409:500)).json({ error:error.status?error.message:conflicto?'Conflicto concurrente al confirmar la ronda. Reintenta con la misma clave.':'No se pudo procesar la ronda.',codigo:error.codigo || (conflicto?'CONFLICTO_CONCURRENTE':'ERROR_RONDA') });
-  } finally {if(c){try{await c.end();}catch(e){console.error('Cierre ronda:',e.message);}}}
+  } finally {if(c){try{await c.end();}catch(e){console.error('Cierre ronda:', new Error('Fallo interno; detalles sensibles omitidos.').stack);}}}
 }
 exports.listar=(req,res)=>operar(req,res,false);
 exports.obtener=(req,res)=>operar(req,res,false);

@@ -33,15 +33,15 @@ const conConexion = async (res, operacion, lectura = false) => {
   } catch (error) {
     if (transaccion) {
       try { await conexion.rollback(); }
-      catch (rollback) { console.error('Error al revertir compras/proveedores:', rollback.message); }
+      catch (rollback) { console.error('Error al revertir compras/proveedores:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
     }
     if (['ER_LOCK_DEADLOCK','ER_LOCK_WAIT_TIMEOUT','ER_DUP_ENTRY'].includes(error.code)) return res.status(409).json({error:'Conflicto concurrente o referencia duplicada; reintente la consulta.'});
-    console.error('Error en compras/proveedores:', error.message);
+    console.error('Error en compras/proveedores:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
     return res.status(error.status || 500).json({ error: error.status ? error.message : 'No se pudo completar la operación.' });
   } finally {
     if (conexion) {
       try { await conexion.end(); }
-      catch (cierre) { console.error('Error al cerrar compras/proveedores:', cierre.message); }
+      catch (cierre) { console.error('Error al cerrar compras/proveedores:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
     }
   }
 };

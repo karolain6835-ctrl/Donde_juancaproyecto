@@ -58,14 +58,14 @@ const ejecutar = async (res, operacion, lectura = false) => {
     return res.status(respuesta.status || 200).json(respuesta.body);
   } catch (error) {
     if (transaccion) {
-      try { await conexion.rollback(); } catch (e) { console.error('Rollback clientes:', e.message); }
+      try { await conexion.rollback(); } catch (e) { console.error('Rollback clientes:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
     }
     if (error.code === 'ER_DUP_ENTRY') return res.status(409).json({ error: 'El email o ID ya está registrado.' });
-    if (!error.status) console.error('Error clientes:', error.message);
+    if (!error.status) console.error('Error clientes:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
     return res.status(error.status || 500).json({ error: error.status ? error.message : 'No se pudo completar la operación de clientes.' });
   } finally {
     if (conexion) {
-      try { await conexion.end(); } catch (e) { console.error('Cierre clientes:', e.message); }
+      try { await conexion.end(); } catch (e) { console.error('Cierre clientes:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
     }
   }
 };

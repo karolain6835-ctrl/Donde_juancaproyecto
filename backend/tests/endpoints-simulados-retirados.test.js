@@ -13,6 +13,7 @@ test('V1: endpoints simulados ausentes del montaje real; rutas reales conservada
  const pedidos=express.Router();pedidos.post('/',(req,res)=>{hits.push('pedidos.crear');res.status(201).json({handler:'pedido-real'});});reales['./routes/pedidosRoutes']=pedidos;
  const app=express(),listen=app.listen.bind(app);app.listen=()=>{};
  const deps={express:Object.assign(()=>app,{json:express.json}),cors:()=>((req,res,next)=>next()),dotenv:{config(){}},'./config/db':{},'./middleware/authMiddleware':auth,...reales};
+ deps['./middleware/errorMiddleware']=require('../src/middleware/errorMiddleware');
  const index=fs.readFileSync(path.join(__dirname,'../src/index.js'),'utf8');for(const [,r]of index.matchAll(/require\('(\.\/routes\/[^']+)'\)/g))if(!deps[r])deps[r]=express.Router();
  try{load('../src/index.js',deps);server=await new Promise(resolve=>{const s=listen(0,'127.0.0.1',()=>resolve(s));});
  for(const [method,url]of [['GET','/api/kanban/simulado'],['POST','/api/ventas/pedido']]){const r=await fetch('http://127.0.0.1:'+server.address().port+url,{method});assert.equal(r.status,404);assert.doesNotMatch(await r.text(),/PED-999|PED-101|items_registrados/);}

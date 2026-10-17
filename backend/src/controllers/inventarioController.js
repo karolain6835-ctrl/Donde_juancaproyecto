@@ -67,16 +67,16 @@ exports.actualizarStock = async (req, res) => {
   } catch (error) {
     if (transaccionIniciada) {
       try { await conexion.rollback(); }
-      catch (errorRollback) { console.error('Error al revertir ajuste:', errorRollback.message); }
+      catch (errorRollback) { console.error('Error al revertir ajuste:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
     }
-    console.error('Error al ajustar inventario:', error.message);
+    console.error('Error al ajustar inventario:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
     return res.status(error.status || 500).json({
       error: error.status ? error.message : 'No se pudo ajustar el inventario.'
     });
   } finally {
     if (conexion) {
       try { await conexion.end(); }
-      catch (errorConexion) { console.error('Error al cerrar conexión de ajuste:', errorConexion.message); }
+      catch (errorConexion) { console.error('Error al cerrar conexión de ajuste:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
     }
   }
 };
@@ -139,14 +139,14 @@ exports.obtenerMovimientos = async (req, res) => {
   } catch (error) {
     if (transaccion) {
       try { await conexion.rollback(); }
-      catch (rollback) { console.error('Error al revertir lectura:', rollback.message); }
+      catch (rollback) { console.error('Error al revertir lectura:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
     }
-    console.error('Error al consultar movimientos:', error.message);
+    console.error('Error al consultar movimientos:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
     return res.status(500).json({ error: 'No se pudieron consultar los movimientos.' });
   } finally {
     if (conexion) {
       try { await conexion.end(); }
-      catch (cierre) { console.error('Error al cerrar lectura:', cierre.message); }
+      catch (cierre) { console.error('Error al cerrar lectura:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
     }
   }
 };

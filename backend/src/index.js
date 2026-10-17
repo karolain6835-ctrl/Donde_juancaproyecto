@@ -1,4 +1,5 @@
 require('dotenv').config(); // 1. Cargamos las variables de entorno primero
+const {protegerErroresInternos,manejarError}=require('./middleware/errorMiddleware');
 const express = require('express');
 const autenticar = require('./middleware/authMiddleware');
 const cors = require('cors');
@@ -29,6 +30,7 @@ const PORT = process.env.PORT || 5000; // Usa el puerto de .env o el 5000 por de
 
 // 2. Middlewares globales de procesamiento
 app.use(cors());
+app.use(protegerErroresInternos);
 app.use(express.json());
 
 // 3. Rutas de la aplicación
@@ -58,10 +60,7 @@ app.use('/api/configuracion', autenticar, configuracionRoutes);
 app.use('/api/refrigeradores', autenticar, refrigeradoresRoutes);
 
 // 4. Manejo global de errores (SIEMPRE AL FINAL, justo antes del listen)
-app.use((err, req, res, next) => {
-  console.error('❌ Error detectado en el servidor:', err.stack);
-  res.status(500).json({ error: 'Hubo un error interno.', detalles: err.message });
-});
+app.use(manejarError);
 
 app.listen(PORT, () => {
   console.log(`📡 Servidor backend escuchando en http://localhost:${PORT}`);

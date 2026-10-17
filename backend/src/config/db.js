@@ -20,10 +20,7 @@ const connection = mysql.createConnection(dbConfig);
 // Probar conexión con XAMPP
 connection.connect((err) => {
   if (err) {
-    console.error(
-      '❌ Error al conectar a la base de datos:',
-      err.message
-    );
+    console.error('❌ Error al conectar a la base de datos:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
     return;
   }
 

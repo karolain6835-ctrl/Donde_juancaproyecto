@@ -17,10 +17,7 @@ const obtenerProductos = (req, res) => {
 
   db.query(query, (err, resultados) => {
     if (err) {
-      console.error(
-        'Error al consultar los productos:',
-        err.message
-      );
+      console.error('Error al consultar los productos:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
 
       return res.status(500).json({
         error:
@@ -54,10 +51,7 @@ const obtenerProductoPorId = (req, res) => {
 
   db.query(query, [id], (err, resultados) => {
     if (err) {
-      console.error(
-        'Error al consultar el producto:',
-        err.message
-      );
+      console.error('Error al consultar el producto:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
 
       return res.status(500).json({
         error:
@@ -158,10 +152,7 @@ const crearProducto = (req, res) => {
 
   db.query(query, valores, (err) => {
     if (err) {
-      console.error(
-        'Error al crear producto:',
-        err.message
-      );
+      console.error('Error al crear producto:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
 
       if (err.code === 'ER_DUP_ENTRY') {
         return res.status(409).json({
@@ -250,10 +241,7 @@ const actualizarProducto = (req, res) => {
 
   db.query(query, valores, (err, resultado) => {
     if (err) {
-      console.error(
-        'Error al actualizar producto:',
-        err.message
-      );
+      console.error('Error al actualizar producto:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
 
       if (err.code === 'ER_DUP_ENTRY') {
         return res.status(409).json({
@@ -299,10 +287,7 @@ const eliminarProducto = (req, res) => {
 
   db.query(query, [id], (err, resultado) => {
     if (err) {
-      console.error(
-        'Error al eliminar producto:',
-        err.message
-      );
+      console.error('Error al eliminar producto:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
 
       // Si el producto ya está relacionado con pedidos,
       // MySQL puede impedir su eliminación.

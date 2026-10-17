@@ -95,16 +95,16 @@ const actualizarEstadoPedido = async (req, res) => {
   } catch (error) {
     if (transaccionIniciada) {
       try { await conexion.rollback(); }
-      catch (errorRollback) { console.error('Error al revertir movimiento Kanban:', errorRollback.message); }
+      catch (errorRollback) { console.error('Error al revertir movimiento Kanban:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
     }
-    console.error('Error al mover tarjeta Kanban:', error.message);
+    console.error('Error al mover tarjeta Kanban:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
     return res.status(error.status || 500).json({
       error: error.status ? error.message : 'Error al actualizar la tarjeta del Kanban.'
     });
   } finally {
     if (conexion) {
       try { await conexion.end(); }
-      catch (errorConexion) { console.error('Error al cerrar conexión Kanban:', errorConexion.message); }
+      catch (errorConexion) { console.error('Error al cerrar conexión Kanban:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
     }
   }
 };
@@ -133,7 +133,7 @@ const obtenerTableroKanban = (req, res) => {
 
   db.query(query, (err, resultados) => {
     if (err) {
-      console.error('❌ Error al obtener tablero Kanban:', err.message);
+      console.error('❌ Error al obtener tablero Kanban:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
       return res.status(500).json({ error: 'Error al cargar el tablero de cocina.' });
     }
 
@@ -204,10 +204,10 @@ const cambiarLineasPedido = async (req, res, despacho = false) => {
     await conexion.commit(); abierta = false;
     return res.json({ mensaje: despacho ? 'Despacho confirmado.' : enviados.length ? 'Pedido aceptado correctamente.' : 'El pedido no tiene líneas enviadas pendientes de aceptar.', pedido_id: pedido.id, [despacho ? 'items_despachados' : 'items_aceptados']: enviados.length });
   } catch (error) {
-    if (abierta) { try { await conexion.rollback(); } catch (rollback) { console.error('Rollback aceptación:', rollback.message); } }
+    if (abierta) { try { await conexion.rollback(); } catch (rollback) { console.error('Rollback aceptación:', new Error('Fallo interno; detalles sensibles omitidos.').stack); } }
     const concurrent = ['ER_LOCK_DEADLOCK', 'ER_LOCK_WAIT_TIMEOUT'].includes(error.code);
     return res.status(error.status || (concurrent ? 409 : 500)).json({ error: error.status ? error.message : concurrent ? 'Conflicto concurrente. Reintenta la aceptación.' : 'No se pudo aceptar el pedido.' });
-  } finally { if (conexion) { try { await conexion.end(); } catch (error) { console.error('Cierre aceptación:', error.message); } } }
+  } finally { if (conexion) { try { await conexion.end(); } catch (error) { console.error('Cierre aceptación:', new Error('Fallo interno; detalles sensibles omitidos.').stack); } } }
 };
 const aceptarPedido = (req, res) => cambiarLineasPedido(req, res);
 const despacharTodo = (req, res) => cambiarLineasPedido(req, res, true);

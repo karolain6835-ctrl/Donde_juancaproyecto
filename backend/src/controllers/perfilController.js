@@ -3,7 +3,7 @@ const db=require('../config/db');
 const servicio=require('../services/perfilService');
 function handler(accion){return async(req,res)=>{
  const actor=req.usuario?.id;if(!actor)return res.status(401).json({error:'Autenticación requerida.'});
- try{if(Object.keys(req.query||{}).length)throw Object.assign(new Error('Esta operación no admite parámetros de usuario.'),{status:400});if(accion==='actualizar')servicio.validarPerfil(req.body);if(accion==='password')servicio.validarPassword(req.body);}catch(e){return res.status(400).json({error:e.message});}
+ try{if(Object.keys(req.query||{}).length)throw Object.assign(new Error('Esta operación no admite parámetros de usuario.'),{status:400});if(accion==='actualizar')servicio.validarPerfil(req.body);if(accion==='password')servicio.validarPassword(req.body);}catch(e){return res.status(e.status===400?400:500).json({error:e.status===400?e.message:'Error interno del servidor.'});}
  let c;
  try{
   c=mysql.createConnection(db.dbConfig).promise();await c.beginTransaction();

@@ -4,7 +4,7 @@ const servicio=require('../services/auditoriaLecturaService');
 exports.listar=async(req,res)=>{
  if(!req.usuario?.id)return res.status(401).json({error:'Autenticación requerida.'});
  // Validar antes de abrir la conexión; la identidad proviene exclusivamente del JWT.
- try{servicio.filtros(req.query);}catch(e){return res.status(400).json({error:e.message});}
+ try{servicio.filtros(req.query);}catch(e){return res.status(e.status===400?400:500).json({error:e.status===400?e.message:'Error interno del servidor.'});}
  let c;
  try{
   c=mysql.createConnection(db.dbConfig).promise();await c.beginTransaction();

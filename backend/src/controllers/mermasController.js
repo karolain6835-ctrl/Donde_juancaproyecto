@@ -26,16 +26,16 @@ const conConexion = async (res, operacion, lectura = false) => {
   } catch (error) {
     if (transaccion) {
       try { await conexion.rollback(); }
-      catch (rollback) { console.error('Error al revertir mermas:', rollback.message); }
+      catch (rollback) { console.error('Error al revertir mermas:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
     }
-    console.error('Error en mermas:', error.message);
+    console.error('Error en mermas:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
     return res.status(error.status || 500).json({
       error: error.status ? error.message : 'No se pudo completar la operación de mermas.'
     });
   } finally {
     if (conexion) {
       try { await conexion.end(); }
-      catch (cierre) { console.error('Error al cerrar conexión de mermas:', cierre.message); }
+      catch (cierre) { console.error('Error al cerrar conexión de mermas:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
     }
   }
 };

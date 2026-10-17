@@ -9,6 +9,7 @@ test('V1 OTP retirado: montaje real responde 404 uniforme, sin SQL ni generacion
  const router=load('../src/routes/usuariosRoutes.js',{'../controllers/usuariosController':users,'../controllers/perfilController':{consultar:forbidden,actualizar:forbidden,password:forbidden},'../middleware/authMiddleware':forbidden,'../middleware/rolesMiddleware':require('../src/middleware/rolesMiddleware')});
  const app=express(),listen=app.listen.bind(app);app.listen=()=>{};
  const deps={express:Object.assign(()=>app,{json:express.json}),cors:()=>((req,res,next)=>next()),dotenv:{config(){}},'./config/db':{query:forbidden},'./middleware/authMiddleware':forbidden,'./routes/usuariosRoutes':router};
+ deps['./middleware/errorMiddleware']=require('../src/middleware/errorMiddleware');
  const index=fs.readFileSync(path.join(__dirname,'../src/index.js'),'utf8');for(const [,route]of index.matchAll(/require\('(\.\/routes\/[^']+)'\)/g))if(!deps[route])deps[route]=express.Router();
  try{load('../src/index.js',deps);server=await new Promise(resolve=>{const s=listen(0,'127.0.0.1',()=>resolve(s));});let first;
  for(const body of [{email:'existente@example.invalid'},{email:'no-existe@example.invalid'},{email:''},{}, {email:'mal'}]){

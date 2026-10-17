@@ -29,13 +29,13 @@ const ejecutar = async (res, operacion, transaccion = false) => {
     return res.status(respuesta.status || 200).json(respuesta.body);
   } catch (error) {
     if (abierta) {
-      try { await conexion.rollback(); } catch (e) { console.error('Rollback de juegos:', e.message); }
+      try { await conexion.rollback(); } catch (e) { console.error('Rollback de juegos:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
     }
-    if (!error.status) console.error('Error de juegos:', error.message);
+    if (!error.status) console.error('Error de juegos:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
     return res.status(error.status || 500).json({ error: error.status ? error.message : 'No se pudo completar la operación de juegos.' });
   } finally {
     if (conexion) {
-      try { await conexion.end(); } catch (e) { console.error('Cierre de conexión de juegos:', e.message); }
+      try { await conexion.end(); } catch (e) { console.error('Cierre de conexión de juegos:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
     }
   }
 };

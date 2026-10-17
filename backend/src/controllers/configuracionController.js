@@ -3,7 +3,7 @@ const db=require('../config/db');
 const servicio=require('../services/configuracionService');
 function handler(escritura){return async(req,res)=>{
  if(!req.usuario?.id)return res.status(401).json({error:'Autenticación requerida.'});
- if(escritura)try{servicio.validar(req.body);}catch(e){return res.status(400).json({error:e.message});}
+ if(escritura)try{servicio.validar(req.body);}catch(e){return res.status(e.status===400?400:500).json({error:e.status===400?e.message:'Error interno del servidor.'});}
  let c;
  try{
   c=mysql.createConnection(db.dbConfig).promise();await c.beginTransaction();

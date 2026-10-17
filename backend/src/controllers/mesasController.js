@@ -22,7 +22,7 @@ const obtenerMesasPorEstado = (req, res) => {
 
   db.query(query, [estado], (err, resultados) => {
     if (err) {
-      console.error('❌ Error al consultar las mesas:', err.message);
+      console.error('❌ Error al consultar las mesas:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
       return res.status(500).json({ 
         error: 'Hubo un error en el servidor al traer las mesas.' 
       });
@@ -216,14 +216,14 @@ const trasladarMesa = async (req, res) => {
   } catch (error) {
     if (transaccionIniciada) {
       try { await conexion.rollback(); }
-      catch (errorRollback) { console.error('Error al revertir traslado:', errorRollback.message); }
+      catch (errorRollback) { console.error('Error al revertir traslado:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
     }
-    console.error('Error al trasladar mesa:', error.message);
+    console.error('Error al trasladar mesa:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
     return res.status(error.status || 500).json({ error: error.status ? error.message : mensajeError });
   } finally {
     if (conexion) {
       try { await conexion.end(); }
-      catch (errorConexion) { console.error('Error al cerrar conexión de traslado:', errorConexion.message); }
+      catch (errorConexion) { console.error('Error al cerrar conexión de traslado:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
     }
   }
 };

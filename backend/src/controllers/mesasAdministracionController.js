@@ -32,13 +32,13 @@ async function guardar(req, res, editar) {
     await c.commit(); abierta = false;
     return res.status(editar ? 200 : 201).json({ datos: mesa });
   } catch (error) {
-    if (abierta) { try { await c.rollback(); } catch (rollback) { console.error('Rollback mesa:', rollback.message); } }
+    if (abierta) { try { await c.rollback(); } catch (rollback) { console.error('Rollback mesa:', new Error('Fallo interno; detalles sensibles omitidos.').stack); } }
     return res.status(error.status || (['ER_DUP_ENTRY','ER_LOCK_DEADLOCK','ER_LOCK_WAIT_TIMEOUT'].includes(error.code) ? 409 : 500)).json({ error: error.status ? error.message : error.code === 'ER_DUP_ENTRY' ? 'Ya existe una mesa con ese número.' : 'No se pudo guardar la mesa. Reintenta.' });
   } finally {
     if (c) {
       try { if (bloqueo) await c.query("SELECT RELEASE_LOCK(CONCAT('dj:mesas:',LEFT(SHA2(DATABASE(),256),40)))"); }
-      catch (error) { console.error('Liberación de bloqueo de mesas:', error.message); }
-      finally { try { await c.end(); } catch (error) { console.error('Cierre de mesas:', error.message); } }
+      catch (error) { console.error('Liberación de bloqueo de mesas:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
+      finally { try { await c.end(); } catch (error) { console.error('Cierre de mesas:', new Error('Fallo interno; detalles sensibles omitidos.').stack); } }
     }
   }
 }

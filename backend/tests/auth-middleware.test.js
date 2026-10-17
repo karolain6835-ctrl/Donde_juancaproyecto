@@ -26,6 +26,7 @@ test('JWT y montaje: MySQL real con tablas temporales', {skip:process.env.RUN_MY
     const stub=express.Router();stub.get('/',(req,res)=>res.json({usuario:req.usuario}));
     const deps={'express':()=>app,'cors':()=>((req,res,next)=>next()),'./config/db':db,'./middleware/authMiddleware':auth,
       './routes/clientesRoutes':clientesRouter,'./routes/usuariosRoutes':usuariosRouter,'dotenv':{config(){}}};
+ deps['./middleware/errorMiddleware']=require('../src/middleware/errorMiddleware');
     const codigo=fs.readFileSync(path.join(__dirname,'../src/index.js'),'utf8');
     for(const [,ruta]of codigo.matchAll(/require\('(\.\/routes\/[^']+)'\)/g))if(!deps[ruta])deps[ruta]=stub;
     // Express también se usa para express.json() en el montaje.

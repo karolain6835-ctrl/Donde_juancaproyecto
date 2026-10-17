@@ -5,7 +5,7 @@ const obtenerCategorias = (req, res) => {
 
   db.query(query, (err, resultados) => {
     if (err) {
-      console.error('❌ Error al consultar las categorías:', err.message);
+      console.error('❌ Error al consultar las categorías:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
       return res.status(500).json({ error: 'Hubo un error al traer las categorías.' });
     }
     res.json({

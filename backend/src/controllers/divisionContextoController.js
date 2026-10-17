@@ -31,6 +31,6 @@ exports.obtener=async(req,res)=>{
      JOIN pedido_items pi ON pi.id=di.pedido_item_id WHERE dp.sesion_division_id=sd.id AND pi.pedidos_id=?))))
    ORDER BY sd.creado_en,sd.id FOR UPDATE`,[ambito.sesion_mesa_id,pedido.id,pedido.id]);
   await c.commit();return res.json({datos:{pedido:{...pedido,...ambito},saldo:dinero(cuenta.saldo),pendiente_verificacion:dinero(cuenta.pendienteVerificacion),total_definitivo:cuenta.totalDefinitivo,tiene_division_activa:tieneDivisionActiva,items,divisiones}});
- }catch(e){if(c)await c.rollback();console.error('Contexto de división:',e.message);return res.status(e.status||500).json({error:e.status?e.message:'No fue posible cargar la cuenta para dividir.'});}
+ }catch(e){if(c)await c.rollback();console.error('Contexto de división:', new Error('Fallo interno; detalles sensibles omitidos.').stack);return res.status(e.status||500).json({error:e.status?e.message:'No fue posible cargar la cuenta para dividir.'});}
  finally{if(c)await c.end();}
 };

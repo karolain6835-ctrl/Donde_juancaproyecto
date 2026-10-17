@@ -37,11 +37,11 @@ const ejecutar = async(res,operacion,lectura=false)=>{
     abierta=true;const r=await operacion(c);await c.commit();abierta=false;
     return res.status(r.status||200).json(r.body);
   }catch(e){
-    if(abierta){try{await c.rollback();}catch(r){console.error('Rollback cierre:',r.message);}}
+    if(abierta){try{await c.rollback();}catch(r){console.error('Rollback cierre:', new Error('Fallo interno; detalles sensibles omitidos.').stack);}}
     if(['ER_DUP_ENTRY','ER_LOCK_DEADLOCK','ER_LOCK_WAIT_TIMEOUT'].includes(e.code))return res.status(409).json({error:'Conflicto concurrente; vuelve a consultar el resumen antes de intentar cerrar.'});
-    if(!e.status)console.error('Error cierre:',e.message);
+    if(!e.status)console.error('Error cierre:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
     return res.status(e.status||500).json({error:e.status?e.message:'No se pudo completar la operación de cierre.'});
-  }finally{if(c){try{await c.end();}catch(e){console.error('Cierre conexión caja:',e.message);}}}
+  }finally{if(c){try{await c.end();}catch(e){console.error('Cierre conexión caja:', new Error('Fallo interno; detalles sensibles omitidos.').stack);}}}
 };
 const elegibles=async(c,inicio,fin,bloquear=false)=>{
   const [pagos]=await c.query(`SELECT p.id,p.metodo_de_pago,CAST(p.total_seleccionado AS CHAR) AS total_seleccionado,

@@ -11,6 +11,6 @@ exports.listar=async(req,res)=>{
    FROM pagos p LEFT JOIN division_participantes dp ON dp.id=p.participante_id AND dp.sesion_division_id=p.sesion_division_id
    WHERE p.sesion_division_id=? ORDER BY p.creado_en,p.id`,[division.id]);
   return res.json({datos:pagos});
- }catch(e){console.error('Pagos de división:',e.message);return res.status(500).json({error:'No fue posible consultar los pagos de esta división.'});}
+ }catch(e){console.error('Pagos de división:', new Error('Fallo interno; detalles sensibles omitidos.').stack);return res.status(500).json({error:'No fue posible consultar los pagos de esta división.'});}
  finally{if(c)await c.end();}
 };
