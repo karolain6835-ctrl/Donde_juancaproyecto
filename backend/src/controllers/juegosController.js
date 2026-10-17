@@ -6,6 +6,7 @@ const mysql = require('mysql2');
 const db = require('../config/db');
 const { randomUUID } = require('node:crypto');
 const { calcularCosto } = require('../services/juegosService');
+const { cambiarEstado } = require('../services/mantenimientoJuegosService');
 
 const fallo = (status, mensaje) => Object.assign(new Error(mensaje), { status });
 const idValido = id => typeof id === 'string' && id.length > 0 && id.length <= 36 && id.trim() === id;
@@ -62,6 +63,11 @@ exports.listarSesiones = (req, res) => ejecutar(res, async c => {
     ORDER BY s.fecha_inicio DESC,s.id DESC`, valores);
   return { body: { mensaje: 'Sesiones consultadas correctamente.', datos } };
 });
+exports.cambiarEstadoActivo = (req,res) => {
+  const actor=ejecutor(req,res,['usuarios_id']);
+  if(!actor)return;
+  return ejecutar(res,async c=>({body:{mensaje:'Estado del juego actualizado correctamente.',datos:await cambiarEstado(c,req.params.id,req.body,actor)}}),true);
+};
 exports.iniciarJuego = (req, res) => {
   const actor = ejecutor(req, res, ['iniciada_por', 'usuarios_id']);
   if (!actor) return;

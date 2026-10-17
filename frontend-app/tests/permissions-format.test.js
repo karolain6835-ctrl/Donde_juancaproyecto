@@ -27,6 +27,7 @@ test('Todos los permisos operativos coinciden con los roles de las rutas reales'
     ['pagos', 'get', '/:id', ['pagos.ver']],
     ['pagos', 'patch', '/:id/verificar', ['pagos.verificar']],
     ['juegos', 'get', '/activos', ['juegos.ver']],
+    ['juegos', 'patch', '/activos/:id/estado', ['juegos.mantenimiento']],
     ['juegos', 'post', '/iniciar', ['juegos.iniciar']],
     ['juegos', 'put', '/:id/terminar', ['juegos.finalizar']],
     ['inventario', 'get', '/movimientos', ['inventario.movimientos']],

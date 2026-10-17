@@ -37,6 +37,12 @@ export async function finalizarJuego(id){
  if(result?.id_sesion!==id||result.datos?.estado!=='cerrada')throw invalidResponse('finalización de juego');
  centavosDivision(result.total_cobrado);sesion(result.datos);return result;
 }
+export async function cambiarEstadoJuego(id,estado){
+ if(!['disponible','mantenimiento'].includes(estado))operationFail('Selecciona un estado válido.');
+ const result=await apiClient(`/juegos/activos/${operationPath(id)}/estado`,{method:'PATCH',body:{estado}});
+ if(result?.datos?.id!==id||result.datos.estado!==estado)throw invalidResponse('estado del juego');
+ return result;
+}
 export function duracionJuego(s){
  if(!s.fecha_inicio||!s.fecha_fin)return '—';
  const inicio=Date.parse(s.fecha_inicio),fin=Date.parse(s.fecha_fin);

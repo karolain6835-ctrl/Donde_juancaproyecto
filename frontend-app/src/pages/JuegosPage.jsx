@@ -15,7 +15,7 @@ import OperacionRemoteState from '../components/OperacionRemoteState';
 import './JuegosPage.css';
 import '../components/OperacionForms.css';
 import '../components/CatalogoForm.css';
-const etiquetasEstado={disponible:'Disponible',ocupado:'En uso',mantenimiento:'Fuera de servicio'};
+const etiquetasEstado={disponible:'Disponible',ocupado:'En uso',mantenimiento:'En mantenimiento'};
 const iconosTab={activos:Gamepad2,sesiones:Clock3,historial:History,mantenimiento:Wrench};
 export default function JuegosPage(){
  const {user}=useAuth();const permitido=can(user,'juegos.ver');
@@ -52,6 +52,6 @@ export default function JuegosPage(){
   </section>}
   {tab==='sesiones'&&<SesionesJuegosSection resource={sesiones} bloqueado={bloqueado} onChanged={changed}/>}
   {tab==='historial'&&<HistorialJuegosSection resource={sesiones}/>}
-  {tab==='mantenimiento'&&<MantenimientoJuegosSection/>}
+  {tab==='mantenimiento'&&<MantenimientoJuegosSection resource={activos} onChanged={refresh}/>}
  </div>;
 }

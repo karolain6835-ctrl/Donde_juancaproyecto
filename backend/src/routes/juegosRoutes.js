@@ -5,6 +5,7 @@ const juegosController = require('../controllers/juegosController');
 
 router.get('/activos', autorizarRoles('Administrador', 'SuperAdmin', 'Mesero', 'Mesera', 'Cajero'), juegosController.listarActivos);
 router.get('/sesiones', autorizarRoles('Administrador', 'SuperAdmin', 'Mesero', 'Mesera', 'Cajero'), juegosController.listarSesiones);
+router.patch('/activos/:id/estado', autorizarRoles('Administrador', 'SuperAdmin'), juegosController.cambiarEstadoActivo);
 
 // Iniciar una nueva partida
 router.post('/iniciar', autorizarRoles('Administrador', 'SuperAdmin', 'Mesero', 'Mesera'), juegosController.iniciarJuego);

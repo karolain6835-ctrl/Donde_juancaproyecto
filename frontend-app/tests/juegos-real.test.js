@@ -49,7 +49,7 @@ test('Juegos real renderizado: activos, sesiones, historial, permisos y operacio
   await t.test('historial real, duración, activos sin costo inventado, mantenimiento honesto',()=>{
    const history=page('historial');assert.match(history,/Billar real/);assert.match(history,/6\.000/);assert.match(history,/0 h 30 min 0 s/);
    const active=page('sesiones');assert.match(active,/Mesa (?:<!-- -->)?5/);assert.match(active,/costo final se calcula/);assert.doesNotMatch(active,/6\.000/);
-   assert.match(page('mantenimiento'),/aún no está disponible/);assert.doesNotMatch(page('mantenimiento'),/Programar|Registrar mantenimiento/);
+   assert.match(page('mantenimiento'),/Mantenimiento de juegos/);assert.doesNotMatch(page('mantenimiento'),/Programar|Registrar mantenimiento/);
   });
   await t.test('vacío, cargando y error con reintentar',()=>{
    assert.match(page('activos','Mesera',recurso([])),/No hay juegos disponibles/);
