@@ -1,5 +1,7 @@
 # Recuperación de contraseña: alcance V1
 
+> Documento histórico del cierre V1. Desde el bloque post-V1 del 18 de octubre de 2026 existe una implementación nueva y separada: ver [recuperación segura post-V1](recuperacion-password-post-v1.md). La ruta antigua y `otp_tokens` siguen retirados/sin escrituras.
+
 Recuperación por correo: fuera del alcance V1.
 Requiere proveedor SMTP/API real y evolución segura de otp_tokens.
 

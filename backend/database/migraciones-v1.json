@@ -1,7 +1,8 @@
 {
   "motor": "MariaDB 10.4.32",
   "plan_instalacion": [
-    "v2.45_instalacion_limpia_v1.sql"
+    "v2.45_instalacion_limpia_v1.sql",
+    "v2.46_recuperacion_password_segura.sql"
   ],
   "historicas": [
     {
@@ -956,5 +957,20 @@
     "sesiones_mesa": "601aef7e5509256f39aef8e833b6c376afc7176ce109723aca495d050fa5cf7b",
     "usuarios": "76f573fe494155c846958b8afbb0379f5501b9667fe4daaef6323a9a5ad2f013"
   },
-  "convencion_checksum": "SHA-256 de UTF-8 normalizado CRLF a LF; bytes es el tamano observado, no una precondicion multiplataforma."
+  "convencion_checksum": "SHA-256 de UTF-8 normalizado CRLF a LF; bytes es el tamano observado, no una precondicion multiplataforma.",
+  "posteriores": [
+    {
+      "version": "2.46",
+      "file": "v2.46_recuperacion_password_segura.sql",
+      "bytes": 1192,
+      "sha256": "fffeab7a7846a628913a0a3c79eb9047012cbb2cc01164368c4de5a2f8e4bd82",
+      "tablas": [
+        "recuperaciones_password"
+      ],
+      "claves_foraneas": 1,
+      "definiciones_sha256": {
+        "recuperaciones_password": "cc325085965b8a0c86781658d922a6903a14e759a2e5a90464d81db3b729b850"
+      }
+    }
+  ]
 }

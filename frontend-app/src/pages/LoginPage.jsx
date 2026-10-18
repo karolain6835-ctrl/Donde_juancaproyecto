@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { apiClient } from "../services/apiClient";
 import { isUsableSession } from "../services/sessionStorage";
 import { useAuth } from "../context/useAuth";
+import RecuperacionPassword from "../components/RecuperacionPassword";
 
 import {
   Mail,
@@ -27,6 +28,7 @@ function LoginPage() {
   const [error, setError] = useState("");
   const [enviando, setEnviando] = useState(false);
   const solicitudEnCurso = useRef(false);
+  const [recuperando, setRecuperando] = useState(false);
 
   async function iniciarSesion(event) {
     event.preventDefault();
@@ -146,6 +148,8 @@ function LoginPage() {
       <section className="login-access-panel">
 
         <div className="login-form-container">
+
+          {recuperando ? <RecuperacionPassword onClose={() => setRecuperando(false)} /> : <>
 
           <div className="login-form-header">
 
@@ -267,6 +271,8 @@ function LoginPage() {
 
           </form>
 
+          <button type="button" className="login-recovery-link" disabled={enviando} onClick={() => { setError(""); setPassword(""); setRecuperando(true); }}>¿Olvidaste tu contraseña?</button>
+
           <div className="login-security-note">
 
             <LockKeyhole
@@ -280,6 +286,8 @@ function LoginPage() {
             </span>
 
           </div>
+
+          </>}
 
         </div>
 

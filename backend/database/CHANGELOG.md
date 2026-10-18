@@ -162,3 +162,9 @@ Implementación de Controladores y Rutas para Mesas: Se desarrolló la lógica p
 - scripts/instalar-bd-v1.js: verificación aislada, protección de destinos no vacíos y comparación del DDL auditado.
 - Documentadas v1.8 sin extensión, v2.7 .sql), v2.18 truncada, v2.20 vacía, semillas incompatibles y deriva del esquema. No se reescriben históricos.
 - Validado en MariaDB 10.4.32: 50 tablas, 93 FK, 3 triggers y 1 rutina. Sin filas personales, credenciales ni ejemplos operativos.
+
+## [v2.46] — 2026-10-18 — Recuperación segura post-V1
+- Nueva `recuperaciones_password`: FK al usuario real, HMAC OTP, expiración, cinco intentos, estado de envío/uso/consumo y autorización temporal guardada como hash.
+- Sin alteraciones a `otp_tokens`, v2.12 ni otras migraciones aplicadas.
+- Instalación nueva: baseline v2.45 seguida de v2.46; manifiesto y validación DDL ampliados. 51 tablas y 94 FK en MariaDB 10.4.32 temporal.
+- SMTP configurable fuera de Git; sin datos personales ni credenciales nuevas en SQL. No aplicada automáticamente a la base habitual.

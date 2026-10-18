@@ -1,4 +1,5 @@
 const path=require('node:path');const net=require('node:net');
+const fs=require('node:fs');
 const {spawn}=require('node:child_process');const {randomUUID,randomBytes}=require('node:crypto');
 const root=path.join(__dirname,'..');
 require('../backend/node_modules/dotenv').config({path:path.join(root,'backend/.env'),quiet:true});
@@ -17,6 +18,7 @@ async function main(){
  const database='dj_v1_e2e_'+randomUUID().replaceAll('-','');
  const config={host:process.env.DB_HOST,port:process.env.DB_PORT,user:process.env.DB_USER,password:process.env.DB_PASSWORD};
  const c=await mysql.createConnection(config);let created=false,backend,frontend;
+ const mailFile=path.join(__dirname,'test-results','correo-'+randomUUID().replaceAll('-','')+'.log');
  try{
   await c.query('CREATE DATABASE `'+database+'` CHARACTER SET utf8 COLLATE utf8_general_ci');created=true;
   await install(c,database);
@@ -29,8 +31,10 @@ async function main(){
   await c.query("INSERT INTO clientes(id,nombre,estado,usuarios_id) VALUES ('e2e-cliente','E2E Cliente','activo','e2e-admin')");
   await c.query("INSERT INTO activos_juego(id,nombre,tipo,precio_hora,estado) VALUES ('e2e-game','E2E Billar','billar',3600,'disponible')");
   const apiPort=await freePort(),webPort=await freePort();
-  const env={...process.env,NODE_ENV:'test',DB_NAME:database,PORT:String(apiPort),JWT_SECRET:randomBytes(48).toString('hex'),E2E_DATABASE:database,E2E_API_URL:'http://127.0.0.1:'+apiPort+'/api',E2E_WEB_URL:'http://127.0.0.1:'+webPort,E2E_PASSWORD:password};
-  backend=spawn(process.execPath,['src/index.js'],{cwd:path.join(root,'backend'),env,windowsHide:true,stdio:'ignore'});
+  fs.mkdirSync(path.dirname(mailFile),{recursive:true});
+  const env={...process.env,NODE_ENV:'test',DB_NAME:database,PORT:String(apiPort),JWT_SECRET:randomBytes(48).toString('hex'),E2E_DATABASE:database,E2E_API_URL:'http://127.0.0.1:'+apiPort+'/api',E2E_WEB_URL:'http://127.0.0.1:'+webPort,E2E_PASSWORD:password,
+   RECOVERY_HMAC_SECRET:randomBytes(32).toString('hex'),SMTP_HOST:'smtp.example.invalid',SMTP_PORT:'587',SMTP_SECURE:'false',SMTP_USER:'e2e',SMTP_PASSWORD:randomBytes(24).toString('hex'),MAIL_FROM:'correo@example.invalid',E2E_MAIL_FILE:mailFile};
+  backend=spawn(process.execPath,['--require',path.join(__dirname,'correo-test-preload.cjs'),'src/index.js'],{cwd:path.join(root,'backend'),env,windowsHide:true,stdio:'ignore'});
   frontend=spawn(process.execPath,[path.join(root,'frontend-app/node_modules/vite/bin/vite.js'),'--host','127.0.0.1','--port',String(webPort),'--strictPort'],{cwd:path.join(root,'frontend-app'),env:{...env,VITE_API_URL:env.E2E_API_URL},windowsHide:true,stdio:'ignore'});
   await Promise.all([ready('http://127.0.0.1:'+apiPort,backend),ready(env.E2E_WEB_URL,frontend)]);
   console.log('E2E: backend, Vite y base aislados listos.');
@@ -38,6 +42,7 @@ async function main(){
   process.exitCode=exitCode;
  }finally{
   await Promise.all([stop(frontend),stop(backend)]);
+  if(fs.existsSync(mailFile))fs.unlinkSync(mailFile);
   if(created&&/^dj_v1_e2e_[a-f0-9]{32}$/.test(database))await c.query('DROP DATABASE `'+database+'`');
   await c.end();console.log('E2E: procesos detenidos y base temporal eliminada.');
  }

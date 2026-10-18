@@ -9,7 +9,7 @@ test('Manifiesto completo, orden numérico y checksums históricos inmutables',(
  assert.equal(manifest.historicas.filter(e=>e.bytes===0).length,1);
  assert.equal(manifest.historicas.find(e=>e.bytes===0).file,'v2.20_pagos_division.sql');
  assert.equal(manifest.historicas.filter(e=>!e.file.endsWith('.sql')).length,2);
- assert.deepEqual(manifest.plan_instalacion,['v2.45_instalacion_limpia_v1.sql']);
+ assert.deepEqual(manifest.plan_instalacion,['v2.45_instalacion_limpia_v1.sql','v2.46_recuperacion_password_segura.sql']);
 });
 test('Baseline sin referencias a mydb, definers, datos personales ni contraseñas',()=>{
  const sql=fs.readFileSync(path.join(__dirname,'../database',manifest.baseline.file),'utf8');
@@ -32,5 +32,5 @@ test('Instalador rechaza destino no vacío o nombre inválido antes de escribir'
 });
 test('Instalación real aislada: DDL, FKs, índices, checks, columnas, triggers y bloqueo de repetición',{skip:process.env.RUN_MARIADB_BOOTSTRAP_TESTS!=='1'},()=>{
  const r=spawnSync(process.execPath,[path.join(__dirname,'../scripts/instalar-bd-v1.js'),'--verify'],{encoding:'utf8',timeout:60000});
- assert.equal(r.status,0,r.stderr||r.stdout);const result=JSON.parse(r.stdout.trim());assert.equal(result.tablas,50);assert.equal(result.claves_foraneas,93);assert.equal(result.triggers,3);assert.equal(result.rutinas,1);
+ assert.equal(r.status,0,r.stderr||r.stdout);const result=JSON.parse(r.stdout.trim());assert.equal(result.tablas,51);assert.equal(result.claves_foraneas,94);assert.equal(result.triggers,3);assert.equal(result.rutinas,1);
 });

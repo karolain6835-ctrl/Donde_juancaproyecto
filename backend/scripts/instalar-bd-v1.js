@@ -19,11 +19,11 @@ function statements(sql){
  return result;
 }
 function checkManifest(){
- const known=[...manifest.historicas,manifest.baseline];
+ const known=[...manifest.historicas,manifest.baseline,...(manifest.posteriores||[])];
  const files=fs.readdirSync(root).filter(f=>/^v\d+\.\d+_/i.test(f));
  if(files.length!==known.length||files.some(file=>!known.some(e=>e.file===file)))throw Error('Hay migraciones fuera del manifiesto.');
  if(new Set(known.map(e=>e.version)).size!==known.length)throw Error('Versiones duplicadas.');
- for(const e of [...manifest.historicas,manifest.baseline]){
+ for(const e of known){
   const bytes=fs.readFileSync(path.join(root,e.file));
   if(fileHash(bytes)!==e.sha256)throw Error('Checksum distinto: '+e.file);
  }
@@ -45,14 +45,17 @@ async function install(c,database){
 }
 async function validate(c){
  const [tables]=await c.query("SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_TYPE='BASE TABLE' ORDER BY TABLE_NAME");
- if(JSON.stringify(tables.map(t=>t.TABLE_NAME).sort())!==JSON.stringify(manifest.tablas))throw Error('Inventario de tablas incorrecto.');
- for(const table of manifest.tablas){
+ const posteriores=manifest.posteriores||[];
+ const esperadas=[...manifest.tablas,...posteriores.flatMap(e=>e.tablas)].sort();
+ if(JSON.stringify(tables.map(t=>t.TABLE_NAME).sort())!==JSON.stringify(esperadas))throw Error('Inventario de tablas incorrecto.');
+ const definiciones=Object.assign({},manifest.definiciones_sha256,...posteriores.map(e=>e.definiciones_sha256||{}));
+ for(const table of esperadas){
   const [[ddl]]=await c.query('SHOW CREATE TABLE `'+table+'`');
   const hash=createHash('sha256').update(ddl['Create Table'].replace(/ AUTO_INCREMENT=\d+/g,'')).digest('hex');
-  if(hash!==manifest.definiciones_sha256[table])throw Error('DDL distinto del auditado: '+table);
+  if(hash!==definiciones[table])throw Error('DDL distinto del auditado: '+table);
  }
  const [[fks]]=await c.query("SELECT COUNT(*) AS n FROM information_schema.TABLE_CONSTRAINTS WHERE CONSTRAINT_SCHEMA=DATABASE() AND CONSTRAINT_TYPE='FOREIGN KEY'");
- if(Number(fks.n)!==manifest.claves_foraneas)throw Error('Número de FKs incorrecto.');
+ if(Number(fks.n)!==manifest.claves_foraneas+posteriores.reduce((n,e)=>n+e.claves_foraneas,0))throw Error('Número de FKs incorrecto.');
  const [triggers]=await c.query('SHOW TRIGGERS');
  if(JSON.stringify(triggers.map(t=>t.Trigger).sort())!==JSON.stringify(manifest.triggers))throw Error('Triggers incorrectos.');
  const required={usuarios:['nombre','email','password_hash','roles_id','estado'],productos:['cantidad_disponible','costo_promedio_ponderado','version_inventario','historial_costos_id'],pedidos:['clientes_id','usuarios_id','sesion_mesa_id','total_general'],pedido_items:['pedido_id','pedidos_id','producto_id','productos_id','participante_id','ronda_consumo_id','cantidad_pedida','cantidad_pagada'],sesiones_division_cuentas:['modalidad','estado','sesion_mesa_id','pedido_id','total_objetivo'],division_participantes:['jugadores_id','idempotencia_clave'],pagos:['participante_id','sesion_division_id','total_seleccionado','verificado_en'],sesiones_juego:['pedidos_id','pedido_items_id','fecha_inicio','tarifa_hora_aplicada'],auditoria:['categoria','tipo_evento','entidad_id','cambios_json','resultado'],refrigeradores:['nombre','ubicacion','estado'],configuracion_negocio:['nombreNegocio','actualizado_por']};

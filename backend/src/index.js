@@ -17,6 +17,7 @@ const clientesRoutes = require('./routes/clientesRoutes');
 const ventasRoutes = require('./routes/ventasRoutes');
 const cierresCajaRoutes = require('./routes/cierresCajaRoutes');
 const usuariosRoutes = require('./routes/usuariosRoutes');
+const recuperacionRoutes = require('./routes/recuperacionRoutes');
 const kanbanRoutes = require('./routes/kanbanRoutes');
 const db = require('./config/db'); // Importa la base de datos para asegurar la conexión al inicio
 const divisionesRoutes = require('./routes/divisionesRoutes');
@@ -53,6 +54,7 @@ app.use('/api/clientes', autenticar, clientesRoutes);
 app.use('/api/ventas', autenticar, ventasRoutes);
 app.use('/api/cierres-caja', autenticar, cierresCajaRoutes);
 app.use('/api/usuarios', usuariosRoutes);
+app.use('/api/usuarios/recuperacion', recuperacionRoutes);
 app.use('/api/kanban', autenticar, kanbanRoutes);
 app.use('/api/sesiones-division', autenticar, divisionesRoutes);
 app.use('/api/auditoria', autenticar, auditoriaRoutes);

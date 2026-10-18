@@ -83,7 +83,7 @@ Existen cambios de esquema sin transición histórica reproducible: alias de ped
 
 `v2.45_instalacion_limpia_v1.sql` es una baseline acumulativa, **no un parche incremental para una instalación existente**. Procede de SHOW CREATE del esquema local auditado, contrastado con las migraciones recientes y columnas críticas del backend. No exporta filas de negocio, contadores AUTO_INCREMENT, credenciales, DEFINER del equipo ni nombres de base fijos.
 
-El manifiesto ejecuta únicamente esa baseline, en este orden:
+En el cierre V1 el manifiesto ejecutaba únicamente esa baseline, en este orden:
 
 1. 50 tablas, índices y CHECKs sin FK.
 2. 93 FK, con comprobaciones activas y todas las tablas disponibles.
@@ -116,3 +116,9 @@ Se conserva el esquema actual, incluidas tablas legacy OTP, refrigerador_stock, 
 Prueba real: base aislada creada sin errores SQL, 50 tablas/93 FK/3 triggers/1 rutina, SHA-256 de cada SHOW CREATE TABLE igual al auditado (ignorando contadores AUTO_INCREMENT), columnas críticas del backend y rechazo de segunda instalación. La base habitual solo se consultó para obtener metadatos.
 
 Los checksums de archivos normalizan CRLF a LF antes de SHA-256 para permitir clones Windows/Linux con core.autocrlf. Esto no modifica archivos históricos. El tamaño en bytes del manifiesto es informativo del checkout auditado. Las huellas del DDL se calculan sobre SHOW CREATE, independientemente de los finales de línea del archivo SQL.
+
+### Evolución post-V1 — v2.46 (2026-10-18)
+
+El plan actual para una base nueva es **v2.45 → v2.46_recuperacion_password_segura.sql**. La baseline y los 55 históricos no se modifican. `posteriores` en el manifiesto agrega checksum, tabla, FK y huella DDL de la recuperación segura. La validación actual comprueba 51 tablas y 94 FK, además de los mismos 3 triggers y 1 rutina.
+
+Para una base existente compatible se aplica únicamente v2.46, una sola vez y tras revisar el esquema del destino. No ejecutar v2.45 ni históricos de nuevo. La tabla `otp_tokens` permanece como legado sin escrituras; la recuperación usa una tabla nueva. Ver [operación y configuración SMTP](../docs/recuperacion-password-post-v1.md). Las pruebas de este bloque solo aplicaron DDL a bases temporales; la base habitual no fue migrada automáticamente.

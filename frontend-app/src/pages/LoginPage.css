@@ -781,3 +781,20 @@
     margin-top: 28px;
   }
 }
+.login-recovery-link {
+  display: block;
+  width: fit-content;
+  margin: 14px auto 0;
+  padding: 5px 0;
+  border: 0;
+  background: transparent;
+  color: #24513b;
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+.login-recovery-link:hover { text-decoration: underline; }
+.login-recovery-link:focus-visible { outline: 2px solid #e37a24; outline-offset: 4px; }
+.login-recovery-link:disabled { opacity: .6; cursor: wait; }
+.login-recovery-fields { display: grid; gap: 18px; border: 0; padding: 0; margin: 0; min-width: 0; }
+.login-recovery-success { background: #eef5ef; border: 1px solid #d4e4d5; border-radius: 10px; color: #24513b; padding: 12px; font-size: 14px; }
