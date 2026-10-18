@@ -50,9 +50,7 @@ function ReporteVentasSection() {
         <div>
           <h2>Resumen de ingresos verificados</h2>
 
-          <p>
-            Consulta los ingresos del período seleccionado.
-          </p>
+
         </div>
 
         <div className="reporte-ventas-periodo">
@@ -78,7 +76,7 @@ function ReporteVentasSection() {
 
       </section>
 
-      <ReporteControles resource={resource} periodo={periodo} desde={desde} hasta={hasta} setDesde={setDesde} setHasta={setHasta} setPagina={setPagina} nota="Pagos confirmados durante el período seleccionado."/>
+      <ReporteControles resource={resource} periodo={periodo} desde={desde} hasta={hasta} setDesde={setDesde} setHasta={setHasta} setPagina={setPagina} refresh={false}/>
       <ReporteRemote resource={resource}>
       {!transacciones.length&&<p>No hay pagos verificados en este período.</p>}
       <section className="reporte-ventas-kpis">

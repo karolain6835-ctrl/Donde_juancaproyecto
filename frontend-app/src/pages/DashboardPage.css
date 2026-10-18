@@ -1030,3 +1030,9 @@
 .dashboard-page .quick-actions button{background:#fffdf7;border:1px solid #e8dfce;color:#28513a;box-shadow:none}
 .dashboard-page .quick-actions button span{background:#fff0df;color:#cf6c25}
 .dashboard-page .quick-actions button:hover{background:#f8f1e5;border-color:#e3c5a1}
+
+.dashboard-page .dashboard-bottom-grid{align-items:start}
+.dashboard-page .quick-actions-panel{padding-block:20px;min-height:0;align-self:start}
+.dashboard-page .quick-actions-panel::after{display:none}
+.dashboard-page .quick-actions{margin-top:14px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.dashboard-page .quick-actions button{min-height:62px;padding:10px 8px;gap:7px}

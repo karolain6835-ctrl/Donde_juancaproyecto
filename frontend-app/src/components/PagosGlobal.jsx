@@ -24,7 +24,6 @@ export default function PagosGlobal(){
    <label>Método<select value={filtros.metodo_de_pago} onChange={e=>cambiar('metodo_de_pago',e.target.value)}><option value="">Todos</option>{Object.entries(metodosPago).map(([v,t])=><option value={v} key={v}>{t}</option>)}</select></label>
    <label>Mesa<select disabled={mesas.loading||Boolean(mesas.error)} value={filtros.mesas_id} onChange={e=>cambiar('mesas_id',e.target.value)}><option value="">Todas</option>{(mesas.data||[]).map(m=><option key={m.id} value={m.id}>Mesa {m.numero}</option>)}</select></label>
    {['desde','hasta'].map(field=><label key={field}>{field==='desde'?'Desde':'Hasta'}<input type="date" value={filtros[field]} onChange={e=>cambiar(field,e.target.value)}/></label>)}
-   <button className="drawer-secondary-button" disabled={resource.loading||mutation.busy} onClick={resource.refresh}>Actualizar</button>
   </div>
   {mesas.error&&<div role="alert">{mesas.error}<button onClick={mesas.refresh}>Reintentar mesas</button></div>}
   <OperacionRemoteState resource={resource}>

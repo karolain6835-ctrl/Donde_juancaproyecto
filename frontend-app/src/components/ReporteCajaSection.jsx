@@ -49,9 +49,7 @@ function ReporteCajaSection() {
             Comportamiento de caja
           </h2>
 
-          <p>
-            Consulta pagos verificados y el arqueo real de los cierres.
-          </p>
+
         </div>
 
         <div className="reporte-caja-periodo">
@@ -88,7 +86,7 @@ function ReporteCajaSection() {
 
       </section>
 
-      <ReporteControles resource={resource} periodo={periodo} desde={desde} hasta={hasta} setDesde={setDesde} setHasta={setHasta} setPagina={setPagina} nota="Resumen de pagos y cierres del período seleccionado."/>
+      <ReporteControles resource={resource} periodo={periodo} desde={desde} hasta={hasta} setDesde={setDesde} setHasta={setHasta} setPagina={setPagina} refresh={false}/>
       <ReporteRemote resource={resource}>
       {!cierres.length&&<p>No hay cierres en este período.</p>}
       <section className="reporte-caja-kpis">

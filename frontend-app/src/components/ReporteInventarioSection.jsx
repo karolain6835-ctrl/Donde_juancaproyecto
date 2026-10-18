@@ -1,4 +1,4 @@
-import ReporteRemote, {ReporteControles,ReportePaginacion} from './ReporteRemote';
+import ReporteRemote, {ReportePaginacion} from './ReporteRemote';
 import {useReporteReal} from '../hooks/useReporteReal';
 import { formatCurrency as formatearDinero } from "../utils/formatCurrency";
 import { useState } from "react";
@@ -10,7 +10,6 @@ import {
   ArrowLeftRight,
   Tags,
   BarChart3,
-  CalendarRange,
   BadgeDollarSign,
   PackageSearch,
   ArrowRight,
@@ -25,7 +24,8 @@ function ReporteInventarioSection() {
   const periodo="actual";
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
 
-  const [desde,setDesde]=useState(''),[hasta,setHasta]=useState(''),[pagina,setPagina]=useState(1);
+  const desde='',hasta='';
+  const [pagina,setPagina]=useState(1);
   const resource=useReporteReal('inventario',periodo,desde,hasta,pagina);
   const {productosCriticos,categorias,valorInventario,stockBajo,agotados,movimientos,alertasActivas}=resource.data||{productosCriticos:[],categorias:[],valorInventario:null,stockBajo:0,agotados:0,movimientos:0,alertasActivas:0};
 
@@ -54,29 +54,12 @@ function ReporteInventarioSection() {
           <h2>
             Estado del inventario
           </h2>
-
-          <p>
-            Analiza valor, disponibilidad y movimientos de existencias.
-          </p>
-        </div>
-
-        <div className="reporte-inventario-periodo">
-
-          <CalendarRange
-            size={16}
-            strokeWidth={1.9}
-          />
-
-          <span>Existencias actuales</span>
-
         </div>
 
       </section>
-
-      <ReporteControles resource={resource} periodo={'actual'} desde={desde} hasta={hasta} setDesde={setDesde} setHasta={setHasta} setPagina={setPagina} nota="Existencias actuales a costo promedio. Movimientos y alertas acumulados; no reconstruye existencias históricas."/>
       <ReporteRemote resource={resource}>
       {!productosCriticos.length&&<p>No hay productos con stock bajo o agotado.</p>}
-      <p>Alertas activas: {alertasActivas}</p>
+      <div className="reporte-inventario-alertas">Alertas activas: <strong>{alertasActivas}</strong></div>
       <section className="reporte-inventario-kpis">
 
         <article className="reporte-inventario-kpi">

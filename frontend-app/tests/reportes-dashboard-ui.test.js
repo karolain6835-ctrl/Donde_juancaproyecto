@@ -17,6 +17,12 @@ test('Controles de reportes y apertura de acciones respetan permisos y navegaci�
    assert.match(html,/aria-label="Actualizar datos"/);
    assert.doesNotMatch(html,/Anterior|Siguiente|Página/);
   });
+  await t.test('reportes sin recarga no dejan controles vacíos y conservan las fechas',()=>{
+   const props={resource,refresh:false,desde:'',hasta:'',setDesde:()=>{},setHasta:()=>{},setPagina:()=>{}};
+   assert.equal(renderToString(React.createElement(ReporteControles,{...props,periodo:'hoy'})),'');
+   const html=renderToString(React.createElement(ReporteControles,{...props,periodo:'personalizado'}));
+   assert.match(html,/Desde/);assert.match(html,/Hasta/);assert.doesNotMatch(html,/Actualizar datos/);
+  });
   await t.test('paginación conserva límites y número real de resultados',()=>{
    const render=pagina=>renderToString(React.createElement(ReportePaginacion,{resource,pagina,setPagina:()=>{}})).replaceAll('<!-- -->','');
    assert.match(render(1),/disabled="">Anterior/);
