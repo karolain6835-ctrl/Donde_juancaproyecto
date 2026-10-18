@@ -1,0 +1,44 @@
+/* Presentación exclusiva del detalle; no altera Nuevo pedido ni otros drawers. */
+.pedido-detail-modal.pedido-drawer{top:24px;left:50%;right:auto;transform:translateX(-50%);width:min(820px,calc(100% - 40px));height:auto;max-height:min(820px,calc(100dvh - 48px));padding:0;display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--color-border);border-radius:18px;box-shadow:0 20px 70px rgba(18,30,25,.22)}
+.pedido-detail-modal .pedido-drawer-header{flex:0 0 auto;margin:0;padding:18px 22px;border-bottom:1px solid var(--color-border);align-items:start;gap:12px}
+.pedido-detail-modal .pedido-drawer-header h2{margin:0;font:600 25px/1.3 var(--font-brand)}
+.pedido-detail-mesa{margin:5px 0 0;font-size:14px;color:var(--color-text-secondary)}
+.pedido-detail-header-actions{display:flex;align-items:center;gap:12px}
+.pedido-detail-modal .drawer-close{width:32px;height:32px;padding:0;flex:none}
+.pedido-detail-body{overflow-y:auto;min-height:0;padding:16px 22px 22px;overscroll-behavior:contain}
+.pedido-detail-modal .pedido-visual-id{margin:0 0 12px;font-size:10px;color:var(--color-text-secondary)}
+.pedido-detail-modal .pedido-detail-info{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:0 0 16px;padding:0 0 16px;border-bottom:1px solid var(--color-border);background:none}
+.pedido-detail-modal .operacion-info dd{margin:4px 0 0;overflow-wrap:anywhere;font-size:13px}
+.pedido-detail-modal .operacion-info dt{font-size:11px;color:var(--color-text-secondary)}
+.pedido-detail-modal h3{font:600 19px/1.3 var(--font-brand);margin:0 0 12px}
+.pedido-detail-modal .operacion-drawer-section,.pedido-detail-modal .pedido-products{margin:16px 0 0;padding-top:16px;border-top:1px solid var(--color-border)}
+.pedido-detail-modal .pedido-participantes{gap:0;margin:0 0 10px}
+.pedido-detail-modal .pedido-participantes li{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:12px;align-items:center;padding:8px 0;border:0;border-bottom:1px solid var(--color-border);border-radius:0;background:none}
+.pedido-detail-modal .pedido-participantes strong{font-size:13px;overflow-wrap:anywhere}
+.pedido-detail-modal .pedido-participantes small{font-size:11px}
+.pedido-detail-modal .drawer-primary-button,.pedido-detail-modal .drawer-secondary-button{display:inline-flex;align-items:center;justify-content:center;width:auto;min-height:32px;padding:6px 10px;margin:0;font-size:12px;flex:0 0 auto}
+.pedido-detail-modal details>summary{width:fit-content;cursor:pointer;color:var(--color-primary);font-size:12px;padding:6px 0}
+.pedido-detail-modal .operacion-actions{align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0}
+.pedido-detail-modal .operacion-actions h3{margin:0 auto 0 0}
+.pedido-detail-modal .operacion-item:not(.pedido-detail-line){margin:6px 0;padding:10px 12px;display:grid;gap:4px;border-radius:10px;background:var(--color-background-secondary)}
+.pedido-detail-modal .operacion-item:not(.pedido-detail-line) p{margin:0;font-size:12px;line-height:1.5}
+.pedido-products-table{min-width:0}
+.pedido-detail-modal .pedido-product-head,.pedido-detail-modal .pedido-detail-line{display:grid;grid-template-columns:minmax(130px,1.7fr) minmax(72px,1fr) 42px minmax(68px,.85fr) minmax(68px,.85fr) 76px 72px;gap:9px;align-items:center}
+.pedido-product-head{padding:9px 0;color:var(--color-text-secondary);font-size:10px;border-bottom:1px solid var(--color-border)}
+.pedido-detail-modal .pedido-detail-line{margin:0;padding:10px 0;border:0;border-bottom:1px solid var(--color-border);border-radius:0;background:none}
+.pedido-detail-line>[role="cell"]{min-width:0;font-size:11px;overflow-wrap:anywhere}
+.pedido-product-name{display:flex;align-items:center;gap:8px}
+.pedido-product-name strong{font-size:13px;line-height:1.4;overflow-wrap:anywhere}
+.pedido-detail-modal .producto-imagen{width:38px;height:42px;flex:0 0 38px;border-radius:8px}
+.pedido-detail-line .pedido-state-badge{font-size:10px;padding:4px 6px}
+.pedido-detail-line .drawer-secondary-button{font-size:10px;padding:5px 6px;max-width:100%}
+.pedido-products-total{display:flex;justify-content:space-between;gap:16px;padding:14px 0 0;font-size:14px;color:var(--color-primary)}
+.pedido-detail-modal .pedido-add-form{margin:12px 0 0}
+.pedido-detail-modal .pedido-add-form>fieldset{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr) 80px auto;gap:10px;align-items:end}
+.pedido-detail-modal .pedido-add-form label{min-width:0;font-size:12px}
+.pedido-detail-modal .pedido-add-form input,.pedido-detail-modal .pedido-add-form select{min-width:0;max-width:100%;padding:8px 9px;min-height:38px}
+.pedido-add-preview{grid-column:1/-1;display:flex;align-items:center;gap:12px;padding:10px 0}
+.pedido-detail-modal .pedido-add-preview .operacion-info{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0;flex:1;min-width:0}
+.pedido-detail-modal .pedido-feedback{margin:12px 0 0;padding:10px 12px;font-size:12px}
+@media(max-width:700px){.pedido-detail-modal .pedido-product-head{display:none}.pedido-detail-modal .pedido-detail-line{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 14px}.pedido-detail-line>[role="cell"]::before{content:attr(data-label);display:block;color:var(--color-text-secondary);font-size:10px;font-weight:400;margin-bottom:3px}.pedido-detail-line>.pedido-product-name{grid-column:1/-1}.pedido-detail-line>.pedido-product-name::before{display:none}.pedido-detail-modal .pedido-add-form>fieldset{grid-template-columns:repeat(2,minmax(0,1fr))}.pedido-detail-modal .pedido-add-preview .operacion-info{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.pedido-detail-modal.pedido-drawer{top:12px;width:calc(100% - 24px);max-height:calc(100dvh - 24px);border-radius:14px}.pedido-detail-modal .pedido-drawer-header{padding:16px;flex-wrap:wrap}.pedido-detail-modal .pedido-drawer-header h2{font-size:22px}.pedido-detail-body{padding:14px 16px 18px}.pedido-detail-modal .pedido-detail-info{grid-template-columns:1fr;gap:10px}.pedido-detail-modal .pedido-participantes li{grid-template-columns:minmax(0,1fr) auto;gap:6px}.pedido-detail-modal .pedido-participantes li button{grid-column:2;grid-row:1/3}.pedido-detail-modal .pedido-add-form>fieldset{grid-template-columns:1fr}.pedido-detail-modal .pedido-add-form .drawer-primary-button{justify-self:end}.pedido-detail-modal .pedido-detail-header-actions{margin-left:auto}}

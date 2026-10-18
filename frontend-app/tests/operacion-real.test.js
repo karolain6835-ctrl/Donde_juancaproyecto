@@ -211,7 +211,7 @@ test('Componentes reales de operación: recursos, formularios y controles por pe
       const accumulated = { ...pedido, items: [{ ...pedido.items[0], cantidad_pedida: 4 }] };
       const html = render(Detail, [{ data: accumulated }], { id: pedido.id, summary: pedido, mesas: { data: [mesa] }, productos: { data: [product] } });
       assert.equal(html.split('class="operacion-item pedido-detail-line"').length - 1, 1);
-      assert.match(html, /Cantidad: <!-- -->4/);
+      assert.match(html, /data-label="Cantidad">4/);
     });
     await t.test('detalle distingue personas por línea y ofrece participantes reales al agregar', () => {
       const persons = [{ id: 'persona-carlos', nombre: 'Carlos', tipo_participante: 'registrado' }, { id: 'persona-laura', nombre: 'Laura', tipo_participante: 'temporal' }];
@@ -219,8 +219,16 @@ test('Componentes reales de operación: recursos, formularios y controles por pe
       const html = render(Detail, [{ data: identified }, { data: persons }], { id: pedido.id, summary: { ...pedido, clientes_id: null, cliente_nombre: null }, mesas: { data: [mesa] }, productos: { data: [product] } });
       assert.match(html, /Sin cliente registrado/);
       assert.match(html, /value="persona-carlos"/); assert.match(html, /value="persona-laura"/);
-      assert.match(html, /class="pedido-line-person">Carlos/); assert.match(html, /class="pedido-line-person">Laura/);
+      assert.match(html, /class="pedido-line-person"[^>]*>Carlos/); assert.match(html, /class="pedido-line-person"[^>]*>Laura/);
       assert.equal(html.split('class="operacion-item pedido-detail-line"').length - 1, 2);
+    });
+    await t.test('detalle presenta centavos históricos exactos y excluye cancelados del total de productos', () => {
+      const data = { ...pedido, items: [{ ...pedido.items[0], precio_unitario: '2844.44', cantidad_pedida: 3 }, { ...pedido.items[0], id: 'cancelado', precio_unitario: '9000.00', cantidad_pedida: 1, estado: 'cancelado' }] };
+      const html = render(Detail, [{ data }], { id: pedido.id, summary: pedido, mesas: { data: [mesa] }, productos: { data: [product] } });
+      assert.match(html, /role="table" aria-label="Productos del pedido"/);
+      assert.match(html, /Total productos<\/strong><strong>\$\s*8\.533,32/);
+      assert.match(html, /Sin imagen de Poker prueba 330ml/);
+      assert.equal((html.match(/>Cancelar producto<\/button>/g)||[]).length, 1);
     });
     await t.test('cuenta de mesa usa total del servidor y permisos de traslado/estado', () => {
       const props = { id: mesa.id, mesas: { data: [mesa, { id: 'destino-real', numero: 8, estado: 'disponible' }] } };
