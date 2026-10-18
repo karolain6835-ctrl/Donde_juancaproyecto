@@ -40,6 +40,42 @@
 .pedido-participantes li { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; padding: 10px; border: 1px solid var(--border-color, #e5e7eb); border-radius: 8px; }
 .pedido-participantes small { color: var(--text-secondary, #64748b); }
 .pedido-line-person { font-weight: 600; color: var(--text-secondary, #64748b); }
+
+/* Nuevo pedido: composición aislada del detalle y de los demás formularios. */
+.pedido-create-modal.pedido-drawer{top:24px;left:50%;right:auto;transform:translateX(-50%);width:min(820px,calc(100% - 40px));height:auto;max-height:min(760px,calc(100dvh - 48px));padding:0;display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--color-border);border-radius:18px;box-shadow:0 20px 70px rgba(18,30,25,.22)}
+.pedido-create-modal .pedido-drawer-header{flex:0 0 auto;margin:0;padding:19px 24px;border-bottom:1px solid var(--color-border);align-items:center}
+.pedido-create-modal .pedido-drawer-header h2{margin:0;font-family:var(--font-brand);font-size:25px}
+.pedido-create-modal .drawer-close{width:32px;height:32px;padding:0;flex:none}
+.pedido-create-modal .operacion-form{display:flex;flex:1;min-height:0;margin:0}
+.pedido-create-modal .operacion-form>fieldset{display:grid;grid-template-rows:minmax(0,1fr) auto;flex:1;min-height:0;gap:0}
+.pedido-create-body{overflow-y:auto;min-height:0;padding:22px 24px;display:flex;flex-direction:column;gap:20px;overscroll-behavior:contain}
+.pedido-create-assignment{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}
+.pedido-create-modal label{min-width:0}
+.pedido-create-modal input,.pedido-create-modal select{min-height:40px;padding:9px 11px;min-width:0;max-width:100%}
+.pedido-create-modal .pedido-responsable-card{padding:9px 11px;gap:9px;min-height:40px}
+.pedido-create-client{border-top:1px solid var(--color-border);padding-top:18px;min-width:0}
+.pedido-create-client-header{display:flex;justify-content:space-between;align-items:start;gap:12px;margin-bottom:14px}
+.pedido-create-client-header h3{font-family:var(--font-brand);font-size:20px;margin:0}
+.pedido-create-client-header>div{max-width:65%;min-width:0}
+.pedido-create-modal .pedido-person-fields{gap:12px}
+.pedido-create-modal .pedido-person-fields>label:first-child{max-width:330px}
+.pedido-client-results{display:grid;gap:6px;margin:0;padding:0;list-style:none;max-height:240px;overflow-y:auto;overscroll-behavior:contain}
+.pedido-create-modal .pedido-person-fields-compact.registrado{grid-template-columns:minmax(160px,.7fr) minmax(0,1.3fr);align-items:start}
+.pedido-person-fields-compact.registrado>ul,.pedido-person-fields-compact.registrado>div,.pedido-person-fields-compact.registrado>p{grid-column:1/-1}
+.pedido-client-results li{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 12px;border:1px solid var(--color-border);border-radius:10px;background:var(--color-background-secondary)}
+.pedido-client-results strong{font-size:14px;line-height:1.4;overflow-wrap:anywhere}
+.pedido-create-modal .drawer-secondary-button,.pedido-create-modal .drawer-primary-button{display:inline-flex;align-items:center;justify-content:center;width:auto;min-height:36px;padding:8px 14px;margin:0;flex:0 0 auto;font-size:13px}
+.pedido-create-modal .pedido-client-pagination{align-items:center;justify-content:center;gap:12px;margin-top:2px;font-size:12px;color:var(--color-text-secondary)}
+.pedido-create-modal .pedido-client-pagination button{width:auto;min-height:30px;padding:5px 9px;border:1px solid var(--color-border);border-radius:8px;background:var(--color-surface);color:var(--color-primary);cursor:pointer}
+.pedido-create-modal .pedido-client-pagination button:disabled{opacity:.45;cursor:default}
+.pedido-client-summary{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:12px 14px;border:1px solid var(--color-border);border-radius:11px;background:var(--color-background-secondary)}
+.pedido-client-summary>div{display:grid;gap:4px;min-width:0}
+.pedido-client-summary strong{overflow-wrap:anywhere;font-size:15px}
+.pedido-client-summary small{font-size:12px;color:var(--color-text-secondary)}
+.pedido-create-footer{position:sticky;bottom:0;background:var(--color-surface,#fff);border-top:1px solid var(--color-border);padding:14px 24px;z-index:1}
+.pedido-create-footer-actions{display:flex;justify-content:flex-end;gap:10px}
+.pedido-create-modal .pedido-session-note{display:block;margin:8px 0 0;text-align:right;font-size:11px}
+@media(max-width:600px){.pedido-create-modal.pedido-drawer{top:12px;width:calc(100% - 24px);height:calc(100dvh - 24px);border-radius:14px}.pedido-create-assignment{grid-template-columns:1fr;gap:14px}.pedido-create-modal .pedido-drawer-header,.pedido-create-body{padding:16px}.pedido-create-footer{padding:12px 16px}.pedido-create-client-header{flex-wrap:wrap}.pedido-create-client-header>div{max-width:100%}.pedido-create-modal .pedido-person-fields>label:first-child{max-width:none}.pedido-client-summary{flex-wrap:wrap}.pedido-create-modal .pedido-person-fields-compact.registrado{grid-template-columns:1fr}}
 .mesa-consumo-resumen > strong { display: block; margin-bottom: 8px; overflow-wrap: anywhere; }
 .mesa-consumo-resumen .operacion-info { margin-bottom: 0; }
 .mesa-cuenta-total { padding-top: 12px; border-top: 1px solid var(--border-color, #e5e7eb); font-weight: 600; }

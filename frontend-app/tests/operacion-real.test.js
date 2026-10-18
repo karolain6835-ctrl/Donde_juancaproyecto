@@ -197,7 +197,8 @@ test('Componentes reales de operación: recursos, formularios y controles por pe
     });
     await t.test('formulario solo ofrece clientes activos y responsables reales distintos del ejecutor', () => {
       const html = render(Form, [{ data: { datos: [{ id: 'cliente-activo', nombre: 'Cliente real', estado: 'activo' }, { id: 'cliente-inactivo', nombre: 'Cliente inactivo', estado: 'inactivo' }], pagina: 1, limite: 20, total: 1 } }, { data: [{ id: 'responsable-real', nombre: 'Responsable real', estado: 'activo' }] }], { mesas: { data: [mesa] }, initialMesa: mesa.id });
-      assert.match(html, /value="cliente-activo"/); assert.doesNotMatch(html, /Cliente inactivo/); assert.match(html, /value="responsable-real"/); assert.match(html, /Responsable del pedido/); assert.match(html, /value="mesa-real" selected=""/);
+      assert.match(html, /aria-label="Seleccionar a Cliente real"/); assert.doesNotMatch(html, /Cliente inactivo/); assert.match(html, /value="responsable-real"/); assert.match(html, /Responsable del pedido/); assert.match(html, /value="mesa-real" selected=""/);
+      assert.match(html, /pedido-create-assignment/); assert.match(html, /<footer class="pedido-create-footer">/); assert.match(html, /type="button">Cancelar/);
     });
     await t.test('detalle muestra ítems reales y cancelación exclusivamente a roles autorizados', () => {
       const props = { id: pedido.id, summary: pedido, mesas: { data: [mesa] }, productos: { data: [product] } };

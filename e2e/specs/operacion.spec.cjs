@@ -12,7 +12,8 @@ test('Login → mesa → pedido → producto → persistencia → cancelación c
  await expect(page).toHaveURL(/operacion\/mesas/);
  await page.getByRole('button',{name:'Nuevo pedido',exact:true}).click();
  await page.getByRole('combobox',{name:'Mesa',exact:true}).selectOption('e2e-mesa');
- await page.getByRole('combobox',{name:'Cliente',exact:true}).selectOption('e2e-cliente');
+ await page.getByLabel('Buscar cliente',{exact:true}).fill('E2E Cliente');
+ await page.getByRole('button',{name:'Seleccionar a E2E Cliente',exact:true}).click();
  await page.getByRole('combobox',{name:'Responsable del pedido',exact:true}).selectOption('e2e-admin');
  await page.getByRole('button',{name:'Crear pedido',exact:true}).click();
  await expect(page).toHaveURL(/operacion\/pedidos\?pedido=/);
