@@ -50,7 +50,8 @@ test('Dashboard real renderizado: estructura conservada, permisos y fallo parcia
   const recursos=()=>[resource({total:'2844.44',cantidad:2}),resource({datos:[pedido],paginacion:{total:51}}),resource({pendientes:3,verificados:9,total_verificado:'12345.67'}),resource({datos:[alerta],paginacion:{total:21}}),resource({total:'2844.50',dias:diasDashboard(ahora).map((fecha,i)=>({fecha,total:i===6?'2844.44':'0.01',cantidad:1,altura:i===6?100:0.01}))}),resource({total:3,disponibles:1,ocupadas:1,en_cobro:1,mesas:[{id:'m',numero:5,estado:'ocupada'}]}),resource([sesion])];
   const render=(rol='Administrador',r=recursos())=>{globalThis.__dashboardResources=r;globalThis.__dashboardLoaders=[];return renderToString(React.createElement(MemoryRouter,null,React.createElement(AuthContext.Provider,{value:{user:{rol}}},React.createElement(Dashboard))));};
   await t.test('valores reales, etiquetas correctas y barras con importes reales',()=>{
-   const html=render();for(const txt of ['Ingresos verificados hoy','2.844,44','51','21','Producto real','Billar real','Laura real',formatTime(stamp),'UTC','En cobro'])assert.ok(html.includes(txt),txt);
+   const html=render();for(const txt of ['Ingresos verificados hoy','2.844,44','51','21','Producto real','Billar real','Laura real',formatTime(stamp),'pagos confirmados','En cobro'])assert.ok(html.includes(txt),txt);
+   assert.ok(!html.includes('UTC'));
    for(const cls of ['dashboard-kpis','dashboard-main-grid','sales-panel','operation-panel','fake-chart','dashboard-secondary-grid','dashboard-bottom-grid'])assert.ok(html.includes(cls),cls);
    assert.match(html,/height:100%/);assert.doesNotMatch(html,/1\.280\.000|7\.800\.000|8%|hace 2 minutos|Estado de caja|Caja abierta|Ronda 3/);
   });

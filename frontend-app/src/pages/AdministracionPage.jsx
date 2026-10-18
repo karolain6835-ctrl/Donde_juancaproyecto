@@ -1,3 +1,4 @@
+import {useQuickAction} from '../hooks/useQuickAction';
 import { useHeaderSection } from '../hooks/useHeaderSection';
 import {useCallback,useState} from 'react';
 import {useAuth} from '../context/useAuth';
@@ -14,7 +15,7 @@ import '../components/OperacionForms.css';
 import '../components/CatalogoForm.css';
 export default function AdministracionPage(){
  const {user}=useAuth();const permitido=can(user,'usuarios.ver');
- const [seccion,setSeccion]=useHeaderSection('usuarios', ['usuarios','roles','auditoria','configuracion']),[busqueda,setBusqueda]=useState(''),[estado,setEstado]=useState(''),[crear,setCrear]=useState(false),[notice,setNotice]=useState('');
+ const [seccion,setSeccion]=useHeaderSection('usuarios', ['usuarios','roles','auditoria','configuracion']),[busqueda,setBusqueda]=useState(''),[estado,setEstado]=useState(''),[crear,setCrear]=useQuickAction("usuario",can(user,"usuarios.registrar")),[notice,setNotice]=useState('');
  const usuarios=useRemoteCatalog(useCallback(options=>permitido?listarUsuariosAdmin(options):Promise.resolve([]),[permitido]));
  const roles=useRemoteCatalog(useCallback(options=>permitido?listarRolesUsuarios(options):Promise.resolve([]),[permitido]));
  const mutation=useCatalogMutation();

@@ -1,5 +1,5 @@
 import {centavosReporte,decimalReporte,porcentajeReporte} from '../services/reportesService';
-import ReporteRemote, {ReporteControles} from './ReporteRemote';
+import ReporteRemote, {ReporteControles,ReportePaginacion} from './ReporteRemote';
 import {useReporteReal} from '../hooks/useReporteReal';
 import { formatCurrency as formatearDinero } from "../utils/formatCurrency";
 import { useState } from "react";
@@ -88,7 +88,7 @@ function ReporteCajaSection() {
 
       </section>
 
-      <ReporteControles resource={resource} periodo={periodo} desde={desde} hasta={hasta} setDesde={setDesde} setHasta={setHasta} pagina={pagina} setPagina={setPagina} nota="Pagos por fecha de pago UTC; cierres por fecha de generación UTC. Diferencia de esta página y gráfica de esta página."/>
+      <ReporteControles resource={resource} periodo={periodo} desde={desde} hasta={hasta} setDesde={setDesde} setHasta={setHasta} setPagina={setPagina} nota="Resumen de pagos y cierres del período seleccionado."/>
       <ReporteRemote resource={resource}>
       {!cierres.length&&<p>No hay cierres en este período.</p>}
       <section className="reporte-caja-kpis">
@@ -183,7 +183,7 @@ function ReporteCajaSection() {
           </div>
 
           <span>
-            Diferencia de esta página
+            Diferencia de los cierres mostrados
           </span>
 
           <strong>
@@ -192,7 +192,7 @@ function ReporteCajaSection() {
 
           <small>
             {diferenciaTotal === '0.00'
-              ? "Sin diferencia en esta página"
+              ? "Sin diferencia en los cierres mostrados"
               : "Requiere revisión"}
           </small>
 
@@ -221,7 +221,7 @@ function ReporteCajaSection() {
                 </h3>
 
                 <p>
-                  Cierres de esta página, sin sumar nuevamente pagos
+                  Totales de los cierres mostrados
                 </p>
               </div>
 
@@ -403,7 +403,7 @@ function ReporteCajaSection() {
                     cierre.estado === "diferencia"
                 )
                   ? "Con incidencias"
-                  : "Sin diferencias en esta página"}
+                  : "Sin diferencias en los cierres mostrados"}
               </strong>
 
             </div>
@@ -753,6 +753,7 @@ function ReporteCajaSection() {
         </>
       )}
 
+      <ReportePaginacion resource={resource} pagina={pagina} setPagina={setPagina}/>
       </ReporteRemote>
     </div>
   );

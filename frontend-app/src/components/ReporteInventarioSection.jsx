@@ -1,4 +1,4 @@
-import ReporteRemote, {ReporteControles} from './ReporteRemote';
+import ReporteRemote, {ReporteControles,ReportePaginacion} from './ReporteRemote';
 import {useReporteReal} from '../hooks/useReporteReal';
 import { formatCurrency as formatearDinero } from "../utils/formatCurrency";
 import { useState } from "react";
@@ -73,7 +73,7 @@ function ReporteInventarioSection() {
 
       </section>
 
-      <ReporteControles resource={resource} periodo={'actual'} desde={desde} hasta={hasta} setDesde={setDesde} setHasta={setHasta} pagina={pagina} setPagina={setPagina} nota="Existencias actuales a costo promedio. Movimientos y alertas acumulados; no reconstruye existencias históricas."/>
+      <ReporteControles resource={resource} periodo={'actual'} desde={desde} hasta={hasta} setDesde={setDesde} setHasta={setHasta} setPagina={setPagina} nota="Existencias actuales a costo promedio. Movimientos y alertas acumulados; no reconstruye existencias históricas."/>
       <ReporteRemote resource={resource}>
       {!productosCriticos.length&&<p>No hay productos con stock bajo o agotado.</p>}
       <p>Alertas activas: {alertasActivas}</p>
@@ -549,6 +549,7 @@ function ReporteInventarioSection() {
         </>
       )}
 
+      <ReportePaginacion resource={resource} pagina={pagina} setPagina={setPagina}/>
       </ReporteRemote>
     </div>
   );

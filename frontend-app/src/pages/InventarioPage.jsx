@@ -1,3 +1,4 @@
+import {useQuickAction} from '../hooks/useQuickAction';
 import { useHeaderSection } from '../hooks/useHeaderSection';
 import { useInventoryResources } from "../hooks/useInventoryResources";
 import AjusteStockForm from "../components/AjusteStockForm";
@@ -114,7 +115,7 @@ function InventarioPage() {
 
   const [errorProductos, setErrorProductos] = useState("");
 
-  const [mostrarFormularioProducto, setMostrarFormularioProducto] = useState(false);
+  const [mostrarFormularioProducto, setMostrarFormularioProducto] = useQuickAction("producto", can(user, "productos.crear"));
   const [guardandoProducto, setGuardandoProducto] = useState(false);
   const [eliminandoProducto, setEliminandoProducto] = useState(false);
   const [productoEditandoId, setProductoEditandoId] = useState(null);

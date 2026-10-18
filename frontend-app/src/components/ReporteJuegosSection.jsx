@@ -1,4 +1,4 @@
-import ReporteRemote, {ReporteControles} from './ReporteRemote';
+import ReporteRemote, {ReporteControles,ReportePaginacion} from './ReporteRemote';
 import {useReporteReal} from '../hooks/useReporteReal';
 import { formatCurrency as formatearDinero } from "../utils/formatCurrency";
 import { useState } from "react";
@@ -92,7 +92,7 @@ function ReporteJuegosSection() {
 
       </section>
 
-      <ReporteControles resource={resource} periodo={periodo} desde={desde} hasta={hasta} setDesde={setDesde} setHasta={setHasta} pagina={pagina} setPagina={setPagina} nota="Sesiones iniciadas en el período UTC. Costos finales conocidos; no equivalen a ingresos cobrados."/>
+      <ReporteControles resource={resource} periodo={periodo} desde={desde} hasta={hasta} setDesde={setDesde} setHasta={setHasta} setPagina={setPagina} nota="Sesiones del período y su costo final. Estos valores no representan pagos recibidos."/>
       <ReporteRemote resource={resource}>
       {!sesiones.length&&<p>No hay sesiones en este período.</p>}
       <section className="reporte-juegos-kpis">
@@ -667,6 +667,7 @@ function ReporteJuegosSection() {
         </>
       )}
 
+      <ReportePaginacion resource={resource} pagina={pagina} setPagina={setPagina}/>
       </ReporteRemote>
     </div>
   );

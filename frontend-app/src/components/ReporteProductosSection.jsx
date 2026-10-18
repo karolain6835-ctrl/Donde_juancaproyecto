@@ -1,5 +1,5 @@
 import {porcentajeReporte} from '../services/reportesService';
-import ReporteRemote, {ReporteControles} from './ReporteRemote';
+import ReporteRemote, {ReporteControles,ReportePaginacion} from './ReporteRemote';
 import {useReporteReal} from '../hooks/useReporteReal';
 import { formatCurrency as formatearDinero } from "../utils/formatCurrency";
 import { useState } from "react";
@@ -68,7 +68,7 @@ function ReporteProductosSection() {
 
       </section>
 
-      <ReporteControles resource={resource} periodo={periodo} desde={desde} hasta={hasta} setDesde={setDesde} setHasta={setHasta} pagina={pagina} setPagina={setPagina} nota="Consumos no cancelados de pedidos cerrados creados en el período UTC. Precios históricos; no equivale a cobros."/>
+      <ReporteControles resource={resource} periodo={periodo} desde={desde} hasta={hasta} setDesde={setDesde} setHasta={setHasta} setPagina={setPagina} nota="Productos de pedidos cerrados durante el período, con sus precios originales. No representa pagos recibidos."/>
       <ReporteRemote resource={resource}>
       {!productos.length&&<p>No hay consumos en este período.</p>}
       {resource.data?.rankingDisponible===false&&<p role="status">El historial supera 200 pedidos cerrados. No se calcula un ranking parcial; se muestra el catálogo real. Un reporte global requiere una fuente agregada.</p>}
@@ -604,6 +604,7 @@ function ReporteProductosSection() {
         </>
       )}
 
+      <ReportePaginacion resource={resource} pagina={pagina} setPagina={setPagina}/>
       </ReporteRemote>
     </div>
   );

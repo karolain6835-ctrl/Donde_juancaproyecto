@@ -1,3 +1,4 @@
+import {useQuickAction} from '../hooks/useQuickAction';
 import { useHeaderSection } from '../hooks/useHeaderSection';
 import { useCallback, useMemo, useState } from 'react';
 import { ShoppingCart, Clock3, CircleCheck, XCircle, Search, Plus, Building2 } from 'lucide-react';
@@ -23,7 +24,7 @@ export default function ComprasPage() {
   const [query, setQuery] = useState({ pagina: 1 });
   const [busqueda, setBusqueda] = useState('');
   const [selectedId, setSelectedId] = useState(null);
-  const [creating, setCreating] = useState(false);
+  const [creating, setCreating] = useQuickAction("compra", can(user, "compras.crear"));
   const [success, setSuccess] = useState('');
   const [intentos] = useState(crearIntentoRecepcion);
   const loader = useCallback(options => allowed ? listarCompras(query, options) : Promise.resolve(null), [allowed, query]);

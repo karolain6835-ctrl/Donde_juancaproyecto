@@ -1,4 +1,4 @@
-import ReporteRemote, {ReporteControles} from './ReporteRemote';
+import ReporteRemote, {ReporteControles,ReportePaginacion} from './ReporteRemote';
 import {useReporteReal} from '../hooks/useReporteReal';
 import { formatCurrency as formatearDinero } from "../utils/formatCurrency";
 import { useState } from "react";
@@ -51,7 +51,7 @@ function ReporteVentasSection() {
           <h2>Resumen de ingresos verificados</h2>
 
           <p>
-            Comportamiento comercial según el período seleccionado.
+            Consulta los ingresos del período seleccionado.
           </p>
         </div>
 
@@ -78,7 +78,7 @@ function ReporteVentasSection() {
 
       </section>
 
-      <ReporteControles resource={resource} periodo={periodo} desde={desde} hasta={hasta} setDesde={setDesde} setHasta={setHasta} pagina={pagina} setPagina={setPagina} nota="Ingresos cobrados: pagos verificados por fecha de pago UTC. Resúmenes completos, no solo esta página."/>
+      <ReporteControles resource={resource} periodo={periodo} desde={desde} hasta={hasta} setDesde={setDesde} setHasta={setHasta} setPagina={setPagina} nota="Pagos confirmados durante el período seleccionado."/>
       <ReporteRemote resource={resource}>
       {!transacciones.length&&<p>No hay pagos verificados en este período.</p>}
       <section className="reporte-ventas-kpis">
@@ -175,7 +175,7 @@ function ReporteVentasSection() {
                 </h3>
 
                 <p>
-                  Evolución por fecha de pago UTC
+                  Ingresos por fecha de pago
                 </p>
               </div>
 
@@ -541,6 +541,7 @@ function ReporteVentasSection() {
         </>
       )}
 
+      <ReportePaginacion resource={resource} pagina={pagina} setPagina={setPagina}/>
       </ReporteRemote>
     </div>
   );
