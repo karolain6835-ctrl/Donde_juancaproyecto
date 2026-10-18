@@ -9,7 +9,7 @@ test('Manifiesto completo, orden numérico y checksums históricos inmutables',(
  assert.equal(manifest.historicas.filter(e=>e.bytes===0).length,1);
  assert.equal(manifest.historicas.find(e=>e.bytes===0).file,'v2.20_pagos_division.sql');
  assert.equal(manifest.historicas.filter(e=>!e.file.endsWith('.sql')).length,2);
- assert.deepEqual(manifest.plan_instalacion,['v2.45_instalacion_limpia_v1.sql','v2.46_recuperacion_password_segura.sql']);
+ assert.deepEqual(manifest.plan_instalacion,['v2.45_instalacion_limpia_v1.sql','v2.46_recuperacion_password_segura.sql','v2.47_productos_imagen_opcional.sql']);
 });
 test('Baseline sin referencias a mydb, definers, datos personales ni contraseñas',()=>{
  const sql=fs.readFileSync(path.join(__dirname,'../database',manifest.baseline.file),'utf8');

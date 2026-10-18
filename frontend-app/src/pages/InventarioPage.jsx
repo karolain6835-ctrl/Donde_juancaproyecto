@@ -1,6 +1,9 @@
 import { useHeaderSection } from '../hooks/useHeaderSection';
 import { useInventoryResources } from "../hooks/useInventoryResources";
 import AjusteStockForm from "../components/AjusteStockForm";
+import ProductoImagen from "../components/ProductoImagen";
+import ProductoImagenEditor from "../components/ProductoImagenEditor";
+import {subirImagenProducto,eliminarImagenProducto} from "../services/productoImagenService";
 import { listarProductos, crearProducto, actualizarProducto, eliminarProducto as eliminarProductoAPI } from "../services/productosService";
 import { listarCategorias } from "../services/categoriasService";
 import { listarProveedores } from "../services/proveedoresService";
@@ -117,6 +120,8 @@ function InventarioPage() {
   const [productoEditandoId, setProductoEditandoId] = useState(null);
   const [mensajeProducto, setMensajeProducto] = useState("");
   const [errorFormularioProducto, setErrorFormularioProducto] = useState("");
+  const [imagenProducto,setImagenProducto] = useState({archivo:null,eliminar:false,error:''});
+  const [imagenActual,setImagenActual] = useState(null);
 
   const [categorias, setCategorias] = useState([]);
   const [proveedores, setProveedores] = useState([]);
@@ -340,6 +345,7 @@ function InventarioPage() {
    * la vista del formulario en modo creación.
    */
   function abrirNuevoProducto() {
+    setImagenProducto({archivo:null,eliminar:false,error:''});setImagenActual(null);
     setProductoEditandoId(null);
     setMensajeProducto("");
     setErrorFormularioProducto("");
@@ -357,6 +363,7 @@ function InventarioPage() {
    * seleccionado para que puedan ser modificados por el usuario.
    */
   function abrirEditarProducto(producto) {
+    setImagenProducto({archivo:null,eliminar:false,error:''});setImagenActual(producto.imagen_url);
     setProductoSeleccionado(null);
     setProductoEditandoId(producto.id);
     setMensajeProducto("");
@@ -383,6 +390,7 @@ function InventarioPage() {
    */
   function cerrarFormularioProducto() {
     if (guardandoProducto) return;
+    setImagenProducto({archivo:null,eliminar:false,error:''});
 
     setMostrarFormularioProducto(false);
     setProductoEditandoId(null);
@@ -413,6 +421,7 @@ function InventarioPage() {
     const esEdicion = Boolean(productoEditandoId);
     if (operacionEnCurso.current || !can(user, esEdicion ? "productos.editar" : "productos.crear")) return;
     if (cargandoCategorias || errorCategorias || cargandoProveedores || errorProveedores) return;
+    if (imagenProducto.error) {setErrorFormularioProducto(imagenProducto.error);return;}
     if (!categorias.some(c => c.id === formProducto.categorias_id) || !proveedores.some(p => p.id === formProducto.proveedores_id)) {
       setErrorFormularioProducto("Selecciona relaciones existentes en los cat\u00e1logos actuales."); return;
     }
@@ -420,6 +429,7 @@ function InventarioPage() {
     setGuardandoProducto(true);
     setErrorFormularioProducto("");
     setMensajeProducto("");
+    let guardadoId=null;
     try {
       // Solo los campos editables del contrato participan en validación y envío.
       const datos = {
@@ -432,13 +442,18 @@ function InventarioPage() {
         ...(esEdicion ? { estado: formProducto.estado } : { cantidad: formProducto.cantidad }),
       };
       if (esEdicion) await actualizarProducto(productoEditandoId, datos);
-      else await crearProducto(datos);
+      else {const creado=await crearProducto(datos);guardadoId=creado.id_producto;}
+      guardadoId=guardadoId||productoEditandoId;
+      if(imagenProducto.archivo)await subirImagenProducto(guardadoId,imagenProducto.archivo);
+      else if(imagenProducto.eliminar&&imagenActual)await eliminarImagenProducto(guardadoId);
       setMensajeProducto(esEdicion ? "Producto actualizado correctamente." : "Producto creado correctamente.");
+      setImagenProducto({archivo:null,eliminar:false,error:''});
       setMostrarFormularioProducto(false);
       setProductoEditandoId(null);
       await cargarProductos();
     } catch (error) {
-      setErrorFormularioProducto(error.status === 403 ? "No tienes permiso para guardar productos." : error.message);
+      if(guardadoId){setProductoEditandoId(guardadoId);setErrorFormularioProducto('El producto se guardó, pero no fue posible actualizar su imagen. '+error.message);await cargarProductos();}
+      else setErrorFormularioProducto(error.status === 403 ? "No tienes permiso para guardar productos." : error.message);
     } finally {
       operacionEnCurso.current = false;
       setGuardandoProducto(false);
@@ -1318,7 +1333,7 @@ function InventarioPage() {
 
                       <td>
 
-                        <strong>{producto.nombre}</strong>
+                        <div className="producto-con-imagen"><ProductoImagen url={producto.imagen_url} nombre={producto.nombre}/><strong>{producto.nombre}</strong></div>
 
                       </td>
 
@@ -1770,6 +1785,7 @@ function InventarioPage() {
               }}
             >
               <fieldset disabled={guardandoProducto} style={{ display: "contents", border: 0, padding: 0, margin: 0 }}>
+              <ProductoImagenEditor actual={imagenActual} value={imagenProducto} onChange={setImagenProducto}/>
               <label style={{ display: "grid", gap: "6px" }}>
                 <span style={{ fontSize: "12px", fontWeight: 700 }}>
                   Nombre
@@ -2001,7 +2017,7 @@ function InventarioPage() {
                 <button
                   type="submit"
                   className="drawer-primary-button"
-                  disabled={guardandoProducto || cargandoCategorias || Boolean(errorCategorias) || cargandoProveedores || Boolean(errorProveedores)}
+                  disabled={guardandoProducto || Boolean(imagenProducto.error) || cargandoCategorias || Boolean(errorCategorias) || cargandoProveedores || Boolean(errorProveedores)}
                 >
                   <Plus size={17} strokeWidth={1.9} />
 
@@ -2107,6 +2123,7 @@ function InventarioPage() {
 
 
 
+            <div className="producto-imagen-detalle"><ProductoImagen grande url={productoSeleccionado.imagen_url} nombre={productoSeleccionado.nombre}/></div>
             <div
 
               className={`inventario-drawer-status ${

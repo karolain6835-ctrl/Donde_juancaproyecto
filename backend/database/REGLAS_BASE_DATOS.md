@@ -122,3 +122,7 @@ Los checksums de archivos normalizan CRLF a LF antes de SHA-256 para permitir cl
 El plan actual para una base nueva es **v2.45 → v2.46_recuperacion_password_segura.sql**. La baseline y los 55 históricos no se modifican. `posteriores` en el manifiesto agrega checksum, tabla, FK y huella DDL de la recuperación segura. La validación actual comprueba 51 tablas y 94 FK, además de los mismos 3 triggers y 1 rutina.
 
 Para una base existente compatible se aplica únicamente v2.46, una sola vez y tras revisar el esquema del destino. No ejecutar v2.45 ni históricos de nuevo. La tabla `otp_tokens` permanece como legado sin escrituras; la recuperación usa una tabla nueva. Ver [operación y configuración SMTP](../docs/recuperacion-password-post-v1.md). Las pruebas de este bloque solo aplicaron DDL a bases temporales; la base habitual no fue migrada automáticamente.
+
+### Evolución post-V1 — v2.47 (2026-10-18)
+
+El plan para base nueva añade `v2.47_productos_imagen_opcional.sql` después de v2.46. En base existente compatible, aplicar solo esa nueva migración una vez. Conserva 51 tablas y 94 FK y agrega únicamente una columna nullable e índice único en productos. La huella de productos posterior a v2.47 se registra en el manifiesto sin reescribir la huella histórica de v2.45. Ver [imágenes de productos](../docs/productos-imagenes.md).

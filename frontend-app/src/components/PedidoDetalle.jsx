@@ -1,4 +1,5 @@
 import ComprobantePedido from './ComprobantePedido';
+import ProductoImagen from './ProductoImagen';
 import { useCallback, useState } from 'react';
 import { useAuth } from '../context/useAuth';
 import { can } from '../utils/permissions';
@@ -72,7 +73,7 @@ export default function PedidoDetalle({ id, summary, mesas, productos, onClose, 
             <form className="catalogo-form operacion-form" onSubmit={add}><fieldset disabled={mutation.busy || productos.loading || Boolean(productos.error)}>
               <label>Cliente<select value={form.participante_id || ''} disabled={participants.loading || Boolean(participants.error)} onChange={e => setForm({ ...form, participante_id: e.target.value })}><option value="">Sin asignar</option>{(participants.data || []).map(p => <option key={p.id} value={p.id}>{p.nombre} — {p.tipo_participante === 'temporal' ? 'Temporal' : 'Registrado'}</option>)}</select></label>
               <label>Producto<select value={form.productos_id} onChange={event => setForm({ ...form, productos_id: event.target.value, cantidad_pedida: '' })} required><option value="">Selecciona un producto</option>{(productos.data || []).map(p => <option key={p.id} value={p.id} disabled={p.stock <= 0}>{p.codigo} — {p.nombre} — Stock: {p.stock}</option>)}</select></label>
-              {product && <dl className="operacion-info"><div><dt>Código</dt><dd>{product.codigo}</dd></div><div><dt>Producto</dt><dd>{product.nombre}</dd></div><div><dt>Stock disponible</dt><dd>{product.stock}</dd></div><div><dt>Precio de venta</dt><dd>{formatCurrency(product.precio)}</dd></div></dl>}
+              {product && <><ProductoImagen url={product.imagen_url} nombre={product.nombre}/><dl className="operacion-info"><div><dt>Código</dt><dd>{product.codigo}</dd></div><div><dt>Producto</dt><dd>{product.nombre}</dd></div><div><dt>Stock disponible</dt><dd>{product.stock}</dd></div><div><dt>Precio de venta</dt><dd>{formatCurrency(product.precio)}</dd></div></dl></>}
               <label>Cantidad<input type="number" min="1" max={product?.stock ?? 2147483647} step="1" value={form.cantidad_pedida} onChange={event => setForm({ ...form, cantidad_pedida: event.target.value })} required /></label>
               <button className="drawer-primary-button" type="submit" disabled={!product || product.stock <= 0}>{mutation.busy ? 'Guardando...' : 'Agregar producto'}</button>
             </fieldset></form>

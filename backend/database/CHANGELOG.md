@@ -168,3 +168,8 @@ Implementación de Controladores y Rutas para Mesas: Se desarrolló la lógica p
 - Sin alteraciones a `otp_tokens`, v2.12 ni otras migraciones aplicadas.
 - Instalación nueva: baseline v2.45 seguida de v2.46; manifiesto y validación DDL ampliados. 51 tablas y 94 FK en MariaDB 10.4.32 temporal.
 - SMTP configurable fuera de Git; sin datos personales ni credenciales nuevas en SQL. No aplicada automáticamente a la base habitual.
+
+## [v2.47] — 2026-10-18 — Imágenes opcionales de productos
+- Columna nullable `productos.imagen_url` e índice único; sin backfill ni modificación de históricos.
+- Upload local validado y recodificado a WebP; contratos JSON de productos conservados.
+- Manifiesto añade v2.47 y huella DDL de productos; validación en MariaDB temporal. No aplicada automáticamente a la base habitual.

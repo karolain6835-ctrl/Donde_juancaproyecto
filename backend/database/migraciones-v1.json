@@ -2,7 +2,8 @@
   "motor": "MariaDB 10.4.32",
   "plan_instalacion": [
     "v2.45_instalacion_limpia_v1.sql",
-    "v2.46_recuperacion_password_segura.sql"
+    "v2.46_recuperacion_password_segura.sql",
+    "v2.47_productos_imagen_opcional.sql"
   ],
   "historicas": [
     {
@@ -970,6 +971,17 @@
       "claves_foraneas": 1,
       "definiciones_sha256": {
         "recuperaciones_password": "cc325085965b8a0c86781658d922a6903a14e759a2e5a90464d81db3b729b850"
+      }
+    },
+    {
+      "version": "2.47",
+      "file": "v2.47_productos_imagen_opcional.sql",
+      "bytes": 191,
+      "sha256": "aab4782a9a24abe6832c80f98dfc8e9b1930e987aabfad4a33de90519544ef98",
+      "tablas": [],
+      "claves_foraneas": 0,
+      "definiciones_sha256": {
+        "productos": "8de5dfc85cbedd38af29d32d755de73de2c9c1b5a8d5297b97430ffd6e3a86f2"
       }
     }
   ]

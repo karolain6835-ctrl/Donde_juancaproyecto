@@ -18,6 +18,7 @@ export function adaptProductos(response) {
       estadoStock: stock <= 0 ? 'agotado' : stock <= minimo ? 'bajo' : 'normal',
       categorias_id: String(row.categorias_id), proveedores_id: row.proveedores_id,
       historial_costos_id: row.historial_costos_id,
+      imagen_url: row.imagen_url ?? null,
     };
   });
 }

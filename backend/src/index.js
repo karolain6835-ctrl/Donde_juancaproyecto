@@ -5,6 +5,8 @@ const autenticar = require('./middleware/authMiddleware');
 const cors = require('cors');
 const categoriasRoutes = require('./routes/categoriasRoutes');
 const productosRoutes = require('./routes/productosRoutes');
+const productoImagenRoutes = require('./routes/productoImagenRoutes');
+const productoImagenArchivoRoutes = require('./routes/productoImagenArchivoRoutes');
 const mesasRoutes = require('./routes/mesasRoutes')
 const pedidosRoutes = require('./routes/pedidosRoutes');
 const pagosRoutes = require('./routes/pagosRoutes');
@@ -42,6 +44,8 @@ app.get('/', (req, res) => {
 // Registrar aquí las rutas de la API
 app.use('/api/categorias', autenticar, categoriasRoutes);
 app.use('/api/productos', autenticar, productosRoutes);
+app.use('/api/productos', autenticar, productoImagenRoutes);
+app.use('/uploads/productos', productoImagenArchivoRoutes);
 app.use('/api/mesas', autenticar, mesasRoutes);
 app.use('/api/pedidos', autenticar, pedidosRoutes);
 app.use('/api/pagos', autenticar, pagosRoutes);

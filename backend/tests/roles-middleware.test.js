@@ -36,6 +36,7 @@ const cases = [
  ['M','GET','usuarios/responsables'],['MC','GET','pedidos'],
  ['ALL','GET','categorias'],['ALL','GET','productos'],['ALL','GET','productos/x'],
  ['A','POST','productos'],['A','PUT','productos/x'],['A','DELETE','productos/x'],
+ ['A','PUT','productos/x/imagen'],['A','DELETE','productos/x/imagen'],
  ['MC','GET','mesas/x/cuenta'],['MC','GET','mesas/estado/disponible'],['C','PATCH','mesas/x/estado'],['M','POST','mesas/traslado'],
  ['M','POST','pedidos'],['M','POST','pedidos/x/items'],['MC','GET','pedidos/x/division-contexto'],['MC','GET','pedidos/x'],['MC','GET','pedidos/x/cuenta'],['C','PUT','pedidos/items/x/cancelar'],
  ['MC','POST','pagos'],['C','GET','pagos/x'],['C','PATCH','pagos/x/verificar'],
@@ -77,7 +78,7 @@ test('matriz HTTP completa con identidad y cambios de rol en MySQL temporal', {s
     for(const [,route] of index.matchAll(/require\('(\.\/routes\/[^']+)'\)/g)){
       const file='../src/'+route.slice(2)+'.js';
       const code=fs.readFileSync(path.join(__dirname,file),'utf8');
-      const routerDeps={'../middleware/authMiddleware':auth,'../middleware/rolesMiddleware':{autorizarRoles},'../middleware/recuperacionLimiter':require('../src/middleware/recuperacionLimiter')};
+      const routerDeps={'../middleware/authMiddleware':auth,'../middleware/rolesMiddleware':{autorizarRoles},'../middleware/recuperacionLimiter':require('../src/middleware/recuperacionLimiter'),'../middleware/imagenProductoUpload':require('../src/middleware/imagenProductoUpload')};
       for(const [,controller] of code.matchAll(/require\('(\.\.\/controllers\/[^']+)'\)/g))routerDeps[controller]=controllers;
       deps[route]=load(file,routerDeps);
     }
