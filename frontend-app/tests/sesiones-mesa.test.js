@@ -61,7 +61,7 @@ test('UI de visita en mesa y pedidos conserva identidades y muestra consumos acu
     });
     await t.test('lectura personal muestra total de varios pedidos separado del saldo',() => {
       globalThis.__visitResources = [{ data:consumo }]; const html = render(Consumos,{ persona:persons[0] });
-      assert.match(html,/Consumos de <!-- -->Carlos/); assert.match(html,/Poker/); assert.match(html,/Cantidad total: <!-- -->3/); assert.match(html,/310/); assert.match(html,/no representa el saldo pendiente/);
+      assert.match(html,/Consumos de <!-- -->Carlos/); assert.match(html,/Poker/); assert.match(html,/Cant. <!-- -->3/); assert.match(html,/310/); assert.match(html,/no representa el saldo pendiente/);
       globalThis.__visitResources = [{ error:'Error real de visita' }]; assert.match(render(Consumos,{ persona:persons[0] }),/Reintentar/);
     });
   } finally { delete globalThis.__visitResources; await server.close(); }

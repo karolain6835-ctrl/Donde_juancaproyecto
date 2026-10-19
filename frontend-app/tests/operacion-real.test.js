@@ -219,13 +219,13 @@ test('Componentes reales de operación: recursos, formularios y controles por pe
       const html = render(Detail, [{ data: identified }, { data: persons }], { id: pedido.id, summary: { ...pedido, clientes_id: null, cliente_nombre: null }, mesas: { data: [mesa] }, productos: { data: [product] } });
       assert.match(html, /Sin cliente registrado/);
       assert.match(html, /value="persona-carlos"/); assert.match(html, /value="persona-laura"/);
-      assert.match(html, /class="pedido-line-person"[^>]*>Carlos/); assert.match(html, /class="pedido-line-person"[^>]*>Laura/);
+      assert.match(html, /role="table" aria-label="Productos del pedido"/);assert.doesNotMatch(html,/pedido-client-products|pedido-line-person/);assert.doesNotMatch(html,/Sin asignar/);assert.match(html,/Selecciona primero el cliente que pidió este producto/);assert.match(html,/type="submit" disabled=""[^>]*>Agregar producto/);
       assert.equal(html.split('class="operacion-item pedido-detail-line"').length - 1, 2);
     });
     await t.test('detalle presenta centavos históricos exactos y excluye cancelados del total de productos', () => {
       const data = { ...pedido, items: [{ ...pedido.items[0], precio_unitario: '2844.44', cantidad_pedida: 3 }, { ...pedido.items[0], id: 'cancelado', precio_unitario: '9000.00', cantidad_pedida: 1, estado: 'cancelado' }] };
       const html = render(Detail, [{ data }], { id: pedido.id, summary: pedido, mesas: { data: [mesa] }, productos: { data: [product] } });
-      assert.match(html, /role="table" aria-label="Productos del pedido"/);
+      assert.match(html, /role="table" aria-label="Productos del pedido"/);assert.match(html,/consumos históricos sin cliente identificado/);assert.doesNotMatch(html,/Sin asignar/);
       assert.match(html, /Total productos<\/strong><strong>\$\s*8\.533,32/);
       assert.match(html, /Sin imagen de Poker prueba 330ml/);
       assert.equal((html.match(/>Cancelar producto<\/button>/g)||[]).length, 1);

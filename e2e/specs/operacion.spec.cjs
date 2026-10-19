@@ -20,6 +20,8 @@ test('Login → mesa → pedido → producto → persistencia → cancelación c
  const pedido=new URL(page.url()).searchParams.get('pedido');expect(pedido).toBeTruthy();
  await page.getByRole('combobox',{name:'Producto',exact:true}).selectOption('e2e-product');
  await page.getByLabel('Cantidad',{exact:true}).fill('2');
+ await expect(page.getByRole('button',{name:'Agregar producto',exact:true})).toBeDisabled();
+ await page.locator('.pedido-add-form').getByRole('combobox',{name:'Cliente',exact:true}).selectOption({label:'E2E Cliente — Registrado'});
  await page.getByRole('button',{name:'Agregar producto',exact:true}).click();
  await expect(page.getByRole('status').filter({hasText:'Producto agregado'})).toBeVisible();
  await expect(page.getByText(/\$\s*2\.844,44/).first()).toBeVisible();

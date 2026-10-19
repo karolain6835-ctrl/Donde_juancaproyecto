@@ -20,7 +20,7 @@ test('Detalle real: lista, miniaturas, consumos, ronda, agregar y cancelar sin c
  await expect(modal.getByRole('img',{name:'Imagen de Producto con foto detalle',exact:true})).toBeVisible();
  await expect(modal.getByRole('img',{name:'Sin imagen de E2E Producto',exact:true})).toBeVisible();
  await expect(modal.locator('.pedido-products-total')).toContainText(/9\.188,88/);
- await expect(modal.locator('.pedido-line-person').first()).toContainText('E2E Cliente');
+ await expect(modal.locator('.pedido-products-table')).toHaveCount(1);await expect(modal.locator('.pedido-products-table')).not.toContainText('E2E Cliente');
  await modal.getByRole('button',{name:'Ver consumos',exact:true}).first().click();await expect(modal.getByRole('heading',{name:'Consumos de E2E Cliente',exact:true})).toBeVisible();await modal.getByRole('button',{name:'Cerrar consumos',exact:true}).click();
  await modal.getByRole('button',{name:'Ronda',exact:true}).click();await expect(modal.locator('.ronda-borrador')).toBeVisible();await modal.locator('.ronda-borrador').getByRole('button',{name:'Cancelar',exact:true}).click();
  for(const width of [1440,768,390]){

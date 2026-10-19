@@ -36,6 +36,7 @@ export default function PedidoDetalle({ id, summary, mesas, productos, onClose, 
   const [syncError, setSyncError] = useState('');
   const product = productos.data?.find(p => p.id === form.productos_id);
   const pedido = detail.data;
+  const clienteSeleccionado = !participants.loading && !participants.error && (participants.data || []).some(p => p.id === form.participante_id);
   const subtotales = pedido?.items.filter(item => item.estado !== 'cancelado').map(subtotalProducto);
   const totalProductos = subtotales && subtotales.every(value => value !== null) ? decimalDivision(subtotales.reduce((sum,value)=>sum+centavosDivision(value),0n)) : null;
   async function refresh() {
@@ -47,7 +48,7 @@ export default function PedidoDetalle({ id, summary, mesas, productos, onClose, 
   }
   function add(event) {
     event.preventDefault();
-    if (!can(user, 'pedidos.agregarItems') || pedido?.estado !== 'abierto' || productos.loading || productos.error) return;
+    if (!clienteSeleccionado || !can(user, 'pedidos.agregarItems') || pedido?.estado !== 'abierto' || productos.loading || productos.error) return;
     mutation.run(() => sincronizarOperacion(() => agregarItemPedido(id, form, productos.data || []), [refresh]), async () => setForm({ productos_id: '', cantidad_pedida: '' }), 'Producto agregado y stock actualizado.');
   }
   function cancel() {
@@ -68,13 +69,13 @@ export default function PedidoDetalle({ id, summary, mesas, productos, onClose, 
             <div><dt>Creado</dt><dd>{formatDateTime(pedido.creado_en)}</dd></div>
           </dl>
           {pedido.estado==='cerrado'&&<ComprobantePedido pedidoId={id} estado={pedido.estado} mesaNumero={summary?.mesa_numero}/>}
-          <PedidoParticipantes id={id} resource={participants} titulo={pedido.sesion_mesa_id ? 'Clientes en la mesa' : 'Clientes del pedido'} editable={can(user, 'pedidos.agregarItems') && pedido.estado === 'abierto'} />
+          <PedidoParticipantes id={id} resource={participants} productos={productos.data || []} titulo={pedido.sesion_mesa_id ? 'Clientes en la mesa' : 'Clientes del pedido'} editable={can(user, 'pedidos.agregarItems') && pedido.estado === 'abierto'} />
           {<RondasConsumo key={id} sesionId={pedido.sesion_mesa_id} mesaId={pedido.mesas_id} pedidoId={id} editable={pedido.estado==='abierto'} version={pedido} onChanged={refresh} />}
           <section className="pedido-products"><h3>Productos del pedido</h3>
-            <div className="pedido-products-table" role="table" aria-label="Productos del pedido"><div className="pedido-product-head" role="row">{['Producto','Cliente','Cantidad','Precio unitario','Subtotal','Estado','Acción'].map(label=><span role="columnheader" key={label}>{label}</span>)}</div>
+            {pedido.items.some(item => !item.participante_id) && <p className="pedido-client-warning" role="alert">Estos productos incluyen consumos históricos sin cliente identificado. Es necesario revisar su asociación; no se asignaron a otra persona.</p>}
+            <div className="pedido-products-table" role="table" aria-label="Productos del pedido"><div className="pedido-product-head" role="row">{['Producto','Cantidad','Precio unitario','Subtotal','Estado','Acción'].map(label=><span role="columnheader" key={label}>{label}</span>)}</div>
             {pedido.items.map(item => <article className="operacion-item pedido-detail-line" role="row" key={item.id}>
               <div className="pedido-product-name" role="cell" data-label="Producto"><ProductoImagen url={item.imagen_url || productos.data?.find(p=>p.id===item.productos_id)?.imagen_url} nombre={item.nombre}/><strong>{item.nombre}</strong></div>
-              <span className="pedido-line-person" role="cell" data-label="Cliente">{item.participante_nombre || 'Sin asignar'}</span>
               <span role="cell" data-label="Cantidad">{item.cantidad_pedida}</span>
               <span role="cell" data-label="Precio unitario">{formatCurrency(item.precio_unitario)}</span>
               <span role="cell" data-label="Subtotal">{subtotalProducto(item)===null?'—':formatCurrency(subtotalProducto(item))}</span>
@@ -87,11 +88,12 @@ export default function PedidoDetalle({ id, summary, mesas, productos, onClose, 
           {can(user, 'pedidos.agregarItems') && pedido.estado === 'abierto' && <section className="operacion-drawer-section"><h3>Agregar producto</h3>
             <OperacionRemoteState resource={productos} empty="No hay productos disponibles." />
             <form className="catalogo-form operacion-form pedido-add-form" onSubmit={add}><fieldset disabled={mutation.busy || productos.loading || Boolean(productos.error)}>
-              <label>Cliente<select value={form.participante_id || ''} disabled={participants.loading || Boolean(participants.error)} onChange={e => setForm({ ...form, participante_id: e.target.value })}><option value="">Sin asignar</option>{(participants.data || []).map(p => <option key={p.id} value={p.id}>{p.nombre} — {p.tipo_participante === 'temporal' ? 'Temporal' : 'Registrado'}</option>)}</select></label>
+              <label>Cliente<select value={form.participante_id || ''} required aria-describedby={!clienteSeleccionado ? "pedido-cliente-requerido" : undefined} disabled={participants.loading || Boolean(participants.error)} onChange={e => setForm({ ...form, participante_id: e.target.value })}><option value="">Selecciona un cliente</option>{(participants.data || []).map(p => <option key={p.id} value={p.id}>{p.nombre} — {p.tipo_participante === 'temporal' ? 'Temporal' : 'Registrado'}</option>)}</select></label>
               <label>Producto<select value={form.productos_id} onChange={event => setForm({ ...form, productos_id: event.target.value, cantidad_pedida: '' })} required><option value="">Selecciona un producto</option>{(productos.data || []).map(p => <option key={p.id} value={p.id} disabled={p.stock <= 0}>{p.codigo} — {p.nombre} — Stock: {p.stock}</option>)}</select></label>
               <label>Cantidad<input type="number" min="1" max={product?.stock ?? 2147483647} step="1" value={form.cantidad_pedida} onChange={event => setForm({ ...form, cantidad_pedida: event.target.value })} required /></label>
-              <button className="drawer-primary-button" type="submit" disabled={!product || product.stock <= 0}>{mutation.busy ? 'Guardando...' : 'Agregar producto'}</button>
+              <button className="drawer-primary-button" type="submit" disabled={!clienteSeleccionado || !product || product.stock <= 0}>{mutation.busy ? 'Guardando...' : 'Agregar producto'}</button>
               {product && <div className="pedido-add-preview"><ProductoImagen url={product.imagen_url} nombre={product.nombre}/><dl className="operacion-info"><div><dt>Código</dt><dd>{product.codigo}</dd></div><div><dt>Producto</dt><dd>{product.nombre}</dd></div><div><dt>Stock disponible</dt><dd>{product.stock}</dd></div><div><dt>Precio de venta</dt><dd>{formatCurrency(product.precio)}</dd></div></dl></div>}
+              {!clienteSeleccionado && <p id="pedido-cliente-requerido" className="pedido-client-warning">Selecciona primero el cliente que pidió este producto.</p>}
             </fieldset></form>
           </section>}
         </>}
