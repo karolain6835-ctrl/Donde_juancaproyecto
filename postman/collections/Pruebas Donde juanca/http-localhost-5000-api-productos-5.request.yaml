@@ -1,0 +1,29 @@
+$kind: http-request
+name: http://localhost:5000/api/productos
+description: ""
+url: http://localhost:5000/api/productos
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"nombre\": \"Agua Prueba SENA\",\r
+
+    \  \"codigo\": \"AGUA_SENA_001\",\r
+
+    \  \"precio_venta\": 3000,\r
+
+    \  \"cantidad\": 20,\r
+
+    \  \"stock_minimo\": 5,\r
+
+    \  \"categorias_id\": 1,\r
+
+    \  \"proveedores_id\": \"prov-001\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{json_web_token_1775}}"
+order: 4503596146316635

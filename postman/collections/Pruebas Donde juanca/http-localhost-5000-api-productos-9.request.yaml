@@ -1,0 +1,33 @@
+$kind: http-request
+name: " http://localhost:5000/api/productos"
+description: ""
+url: " http://localhost:5000/api/productos"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"nombre\": \"Producto evidencia GA9\",\r
+
+    \  \"codigo\": \"GA9-VIDEO-181026-KJ-4827\",\r
+
+    \  \"precio_venta\": 6000,\r
+
+    \  \"cantidad\": 10,\r
+
+    \  \"stock_minimo\": 3,\r
+
+    \  \"categorias_id\": 1,\r
+
+    \  \"proveedores_id\": \"prov-001\"\r
+
+    }\r\n"
+auth:
+  type: bearer
+  credentials:
+    token: "{{json_web_token_0g1o}}"
+scripts:
+  - type: afterResponse
+    code: pm.globals.set("producto_video_id", pm.response.json().id_producto);
+    language: text/javascript
+order: 4503596146323635

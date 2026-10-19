@@ -3,4 +3,8 @@ name: http://localhost:5000/api/productos
 description: ""
 url: http://localhost:5000/api/mesas/mesa-002/cuenta
 method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
 order: 4503587660345643

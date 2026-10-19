@@ -21,3 +21,21 @@ variables:
   - key: json_web_token_0xho
     secret: true
     disabled: false
+  - key: json_web_token_12x1
+    secret: true
+    disabled: false
+  - key: json_web_token_0d29
+    secret: true
+    disabled: false
+  - key: json_web_token_1775
+    secret: true
+    disabled: false
+  - key: json_web_token_0g1o
+    secret: true
+    disabled: false
+  - key: token
+    secret: true
+    disabled: false
+  - key: correo_login
+    secret: true
+    disabled: false

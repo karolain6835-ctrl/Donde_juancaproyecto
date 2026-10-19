@@ -1,0 +1,10 @@
+$kind: http-request
+name: http://localhost:5000/api/categorias
+description: ""
+url: http://localhost:5000/api/categorias
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{json_web_token_0d29}}"
+order: 4503596146312635

@@ -1,0 +1,9 @@
+$kind: http-request
+name: http://localhost:5000/api/usuarios/login
+description: ""
+url: http://localhost:5000/api/usuarios/login
+method: POST
+body:
+  type: json
+  content: "{}"
+order: 4503596146307635

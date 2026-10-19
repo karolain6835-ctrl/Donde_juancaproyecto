@@ -1,0 +1,10 @@
+$kind: http-request
+name: http://localhost:5000/api/productos
+description: ""
+url: http://localhost:5000/api/productos
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{json_web_token_1775}}"
+order: 4503596146317635
