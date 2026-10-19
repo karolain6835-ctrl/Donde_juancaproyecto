@@ -1,0 +1,65 @@
+[
+  {
+    "metodo": "GET",
+    "ruta": "/api/productos",
+    "archivo": "src/routes/productosRoutes.js",
+    "controlador": "productosController.js",
+    "funcion": "obtenerProductos"
+  },
+  {
+    "metodo": "GET",
+    "ruta": "/api/productos/:id",
+    "archivo": "src/routes/productosRoutes.js",
+    "controlador": "productosController.js",
+    "funcion": "obtenerProductoPorId"
+  },
+  {
+    "metodo": "POST",
+    "ruta": "/api/productos",
+    "archivo": "src/routes/productosRoutes.js",
+    "controlador": "productosController.js",
+    "funcion": "crearProducto"
+  },
+  {
+    "metodo": "PUT",
+    "ruta": "/api/productos/:id",
+    "archivo": "src/routes/productosRoutes.js",
+    "controlador": "productosController.js",
+    "funcion": "actualizarProducto"
+  },
+  {
+    "metodo": "DELETE",
+    "ruta": "/api/productos/:id",
+    "archivo": "src/routes/productosRoutes.js",
+    "controlador": "productosController.js",
+    "funcion": "eliminarProducto"
+  },
+  {
+    "metodo": "GET",
+    "ruta": "/api/categorias",
+    "archivo": "src/routes/categoriasRoutes.js",
+    "controlador": "categoriasController.js",
+    "funcion": "obtenerCategorias"
+  },
+  {
+    "metodo": "PUT",
+    "ruta": "/api/productos/:id/imagen",
+    "archivo": "src/routes/productoImagenRoutes.js",
+    "controlador": "productoImagenController.js",
+    "funcion": "subir"
+  },
+  {
+    "metodo": "DELETE",
+    "ruta": "/api/productos/:id/imagen",
+    "archivo": "src/routes/productoImagenRoutes.js",
+    "controlador": "productoImagenController.js",
+    "funcion": "quitar"
+  },
+  {
+    "metodo": "GET",
+    "ruta": "/uploads/productos/:archivo",
+    "archivo": "src/routes/productoImagenArchivoRoutes.js",
+    "controlador": "productoImagenController.js",
+    "funcion": "archivo"
+  }
+]
