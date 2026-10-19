@@ -1,0 +1,9 @@
+$kind: http-request
+name: http://localhost:5000/api/proveedores
+description: ""
+url: http://localhost:5000/api/proveedores/0529ea45-02d3-48fb-8eee-b2df2a601849
+method: PUT
+body:
+  type: json
+  content: "{\r\n  \"estado\": \"inactivo\"\r\n}"
+order: 4503596146260635

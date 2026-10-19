@@ -1,0 +1,85 @@
+vite v8.3.2 building client environment for production...
+transforming...
+✓ 2063 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                                     0.47 kB │ gzip:   0.30 kB
+dist/assets/source-sans-3-cyrillic-ext-600-normal-6AhwUnSr.woff2    5.52 kB
+dist/assets/source-sans-3-cyrillic-ext-700-normal-BhUSqjb8.woff2    5.54 kB
+dist/assets/source-sans-3-cyrillic-ext-500-normal-D8Dd5jAI.woff2    5.54 kB
+dist/assets/source-sans-3-cyrillic-ext-400-normal-BwJdxs7r.woff2    5.57 kB
+dist/assets/source-sans-3-greek-ext-600-normal-DynePNDL.woff2       5.93 kB
+dist/assets/source-sans-3-greek-ext-500-normal-9wgnofA_.woff2       5.96 kB
+dist/assets/source-sans-3-greek-ext-700-normal-Dd6uIcuy.woff2       6.01 kB
+dist/assets/source-sans-3-greek-ext-400-normal-CpIwTHMM.woff2       6.02 kB
+dist/assets/source-sans-3-vietnamese-700-normal-Bgamivog.woff2      6.13 kB
+dist/assets/fraunces-vietnamese-500-normal-GOH_-EGq.woff2           6.16 kB
+dist/assets/source-sans-3-vietnamese-500-normal-BSXhk166.woff2      6.17 kB
+dist/assets/source-sans-3-vietnamese-400-normal-CwtaIDr2.woff2      6.21 kB
+dist/assets/source-sans-3-vietnamese-600-normal-B2sTNYey.woff2      6.22 kB
+dist/assets/fraunces-vietnamese-600-normal-BjlAJixd.woff2           6.28 kB
+dist/assets/source-sans-3-cyrillic-ext-700-normal-B6RPsSdD.woff     6.94 kB
+dist/assets/source-sans-3-cyrillic-ext-500-normal-CaAUUz-j.woff     6.97 kB
+dist/assets/source-sans-3-cyrillic-ext-600-normal-uAL1a5gb.woff     6.98 kB
+dist/assets/source-sans-3-cyrillic-ext-400-normal-Cd63HKDh.woff     7.01 kB
+dist/assets/source-sans-3-greek-ext-500-normal-FO4an0ZF.woff        7.83 kB
+dist/assets/source-sans-3-greek-ext-700-normal-C6ITAlBU.woff        7.88 kB
+dist/assets/source-sans-3-greek-ext-400-normal-BI1kUwmR.woff        7.89 kB
+dist/assets/source-sans-3-greek-ext-600-normal-D7vJ4nVX.woff        7.91 kB
+dist/assets/fraunces-vietnamese-500-normal-B-KbxExq.woff            7.92 kB
+dist/assets/fraunces-vietnamese-600-normal-DlAl5EAR.woff            7.93 kB
+dist/assets/source-sans-3-greek-500-normal-eLQqTu5G.woff2           7.96 kB
+dist/assets/source-sans-3-greek-700-normal-C8Tp2qRF.woff2           7.98 kB
+dist/assets/source-sans-3-greek-400-normal-DZReXJla.woff2           8.02 kB
+dist/assets/source-sans-3-greek-600-normal-BSO157bq.woff2           8.02 kB
+dist/assets/source-sans-3-vietnamese-500-normal-7g9Z1MMl.woff       8.15 kB
+dist/assets/source-sans-3-vietnamese-700-normal-BHxM10oo.woff       8.16 kB
+dist/assets/source-sans-3-vietnamese-600-normal-DpSexF-T.woff       8.16 kB
+dist/assets/source-sans-3-vietnamese-400-normal-dYp9C364.woff       8.18 kB
+dist/assets/source-sans-3-cyrillic-500-normal-BmnPaoCF.woff2        9.56 kB
+dist/assets/source-sans-3-cyrillic-400-normal-DjhbW-4D.woff2        9.60 kB
+dist/assets/source-sans-3-cyrillic-700-normal-CIuudVLB.woff2        9.60 kB
+dist/assets/source-sans-3-cyrillic-600-normal-BnFu5nHC.woff2        9.64 kB
+dist/assets/source-sans-3-greek-500-normal-BOY5JFvG.woff            9.94 kB
+dist/assets/source-sans-3-greek-700-normal-BWdBblwd.woff           10.00 kB
+dist/assets/source-sans-3-greek-600-normal-BNF9LBpG.woff           10.01 kB
+dist/assets/source-sans-3-greek-400-normal-DJm9Ud5h.woff           10.03 kB
+dist/assets/source-sans-3-cyrillic-700-normal-DYE6gq6k.woff        11.91 kB
+dist/assets/source-sans-3-cyrillic-500-normal-B7bCyCk_.woff        11.97 kB
+dist/assets/source-sans-3-cyrillic-400-normal-7kQcAFpS.woff        12.00 kB
+dist/assets/source-sans-3-cyrillic-600-normal-y-RO8wOd.woff        12.00 kB
+dist/assets/source-sans-3-latin-700-normal-CkzU-mV9.woff2          15.59 kB
+dist/assets/source-sans-3-latin-500-normal-DiWS0tcR.woff2          15.65 kB
+dist/assets/source-sans-3-latin-600-normal-DeckBYAU.woff2          15.66 kB
+dist/assets/source-sans-3-latin-400-normal-DQi5PRDE.woff2          15.69 kB
+dist/assets/fraunces-latin-ext-500-normal-Z5DV8IzT.woff2           17.29 kB
+dist/assets/fraunces-latin-ext-600-normal-BtzmzP0X.woff2           17.33 kB
+dist/assets/fraunces-latin-500-normal-DnGCNyPD.woff2               18.00 kB
+dist/assets/fraunces-latin-600-normal-BFCDtZfi.woff2               18.09 kB
+dist/assets/source-sans-3-latin-700-normal-BBbVrHF_.woff           19.81 kB
+dist/assets/source-sans-3-latin-500-normal-BtDzq-z9.woff           19.86 kB
+dist/assets/source-sans-3-latin-400-normal-AFMiCETP.woff           19.90 kB
+dist/assets/source-sans-3-latin-600-normal-BvDVuF-j.woff           19.90 kB
+dist/assets/fraunces-latin-ext-600-normal-B0Dy4lqi.woff            22.36 kB
+dist/assets/fraunces-latin-ext-500-normal-BMcFk1Xs.woff            22.43 kB
+dist/assets/fraunces-latin-500-normal-BTR4KCeb.woff                22.46 kB
+dist/assets/fraunces-latin-600-normal-DL5QCzvS.woff                22.51 kB
+dist/assets/source-sans-3-latin-ext-600-normal-AEyhgUpm.woff2      32.70 kB
+dist/assets/source-sans-3-latin-ext-500-normal-tzH6xoxH.woff2      32.94 kB
+dist/assets/source-sans-3-latin-ext-700-normal-6Xi0A2be.woff2      32.95 kB
+dist/assets/source-sans-3-latin-ext-400-normal-UNsKFIBq.woff2      33.02 kB
+dist/assets/source-sans-3-latin-ext-700-normal-ChH_v7nA.woff       43.30 kB
+dist/assets/source-sans-3-latin-ext-600-normal-Wy7HIzqC.woff       43.40 kB
+dist/assets/source-sans-3-latin-ext-500-normal-DYiJOyLu.woff       43.52 kB
+dist/assets/source-sans-3-latin-ext-400-normal-BGPHfnm_.woff       43.64 kB
+dist/assets/icono-DTMQQFv3.png                                    686.71 kB
+dist/assets/oscuro-peoXZui9.png                                   768.55 kB
+dist/assets/index-D9ftf5kZ.css                                    315.38 kB │ gzip:  37.48 kB
+dist/assets/index-cNx0Wt-C.js                                     655.06 kB │ gzip: 170.49 kB
+
+✓ built in 476ms
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.

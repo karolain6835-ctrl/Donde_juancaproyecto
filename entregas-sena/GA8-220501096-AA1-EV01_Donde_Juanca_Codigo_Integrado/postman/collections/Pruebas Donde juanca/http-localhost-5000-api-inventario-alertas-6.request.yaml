@@ -1,0 +1,12 @@
+$kind: http-request
+name: http://localhost:5000/api/inventario/alertas
+description: ""
+url: http://localhost:5000/api/inventario/alertas?estado=resuelta
+method: GET
+queryParams:
+  estado: resuelta
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+order: 4503596146303635

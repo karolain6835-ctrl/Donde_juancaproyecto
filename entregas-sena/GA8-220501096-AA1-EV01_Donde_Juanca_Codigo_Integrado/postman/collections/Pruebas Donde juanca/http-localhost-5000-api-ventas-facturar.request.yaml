@@ -1,0 +1,13 @@
+$kind: http-request
+name: http://localhost:5000/api/ventas/facturar
+description: ""
+url: http://localhost:5000/api/ventas/facturar
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"pedido_id\": \"ped-001\"\r
+
+    }"
+order: 4503596146277635

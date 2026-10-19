@@ -1,0 +1,6 @@
+$kind: http-request
+name: http://localhost:5000/api/inventario/alertas
+description: ""
+url: http://localhost:5000/api/inventario/alertas
+method: GET
+order: 4503596146270635

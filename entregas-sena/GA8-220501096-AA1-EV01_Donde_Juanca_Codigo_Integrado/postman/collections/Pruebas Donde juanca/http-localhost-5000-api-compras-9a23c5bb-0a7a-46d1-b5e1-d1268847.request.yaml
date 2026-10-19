@@ -1,0 +1,6 @@
+$kind: http-request
+name: " http://localhost:5000/api/compras/9a23c5bb-0a7a-46d1-b5e1-d1268847ef21/recibir"
+description: ""
+url: " http://localhost:5000/api/compras/9a23c5bb-0a7a-46d1-b5e1-d1268847ef21/recibir"
+method: PATCH
+order: 4503596146264635

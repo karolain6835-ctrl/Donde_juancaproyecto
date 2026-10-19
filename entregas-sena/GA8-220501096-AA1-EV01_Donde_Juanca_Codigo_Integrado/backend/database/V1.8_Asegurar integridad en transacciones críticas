@@ -1,0 +1,16 @@
+-- ==========================================
+-- MIGRACIÓN V1.8: Asegurar integridad en transacciones críticas
+-- ==========================================
+USE `mydb`;
+
+-- 1. PAGOS (Depende de Pedidos y Usuarios)
+ALTER TABLE `pagos` DROP FOREIGN KEY `fk_pagos_pedidos1`;
+ALTER TABLE `pagos` ADD CONSTRAINT `fk_pagos_pedidos1` FOREIGN KEY (`pedidos_id`) REFERENCES `pedidos` (`id`) ON UPDATE CASCADE;
+
+-- 2. AUDITORIA (Vital para el rastro del sistema)
+ALTER TABLE `auditoria` DROP FOREIGN KEY `fk_auditoria_usuarios1`;
+ALTER TABLE `auditoria` ADD CONSTRAINT `fk_auditoria_usuarios1` FOREIGN KEY (`usuarios_id`) REFERENCES `usuarios` (`id`) ON UPDATE CASCADE;
+
+-- 3. PEDIDOS (Depende de Mesas, Usuarios y Clientes)
+ALTER TABLE `pedidos` DROP FOREIGN KEY `fk_pedidos_mesas1`;
+ALTER TABLE `pedidos` ADD CONSTRAINT `fk_pedidos_mesas1` FOREIGN KEY (`mesas_id`) REFERENCES `mesas` (`id`) ON UPDATE CASCADE;

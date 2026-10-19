@@ -1,0 +1,13 @@
+$kind: http-request
+name: http://localhost:5000/api/kanban/38be601c-902f-4b07-a9ce-18537635cf03/estado
+description: ""
+url: http://localhost:5000/api/kanban/38be601c-902f-4b07-a9ce-18537635cf03/estado
+method: PUT
+body:
+  type: json
+  content: "{\r
+
+    \  \"nuevo_estado\": \"servido\"\r
+
+    }"
+order: 4503596146249635

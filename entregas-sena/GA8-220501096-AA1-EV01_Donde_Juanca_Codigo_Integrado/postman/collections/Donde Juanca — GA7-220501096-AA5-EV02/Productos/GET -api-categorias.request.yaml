@@ -1,0 +1,10 @@
+$kind: http-request
+name: GET /api/categorias
+description: "Origen: http-localhost-5000-api-categorias.request.yaml"
+url: "{{base_url}}/api/categorias"
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+order: 7000

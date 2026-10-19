@@ -1,0 +1,2458 @@
+[
+  {
+    "archivo": ".env.example",
+    "sha256": "462b0f12ed91d194a5451dd28cf10b61f4488db939da3454becf3f79b25adb28"
+  },
+  {
+    "archivo": "backend/.env.example",
+    "sha256": "54db8f1cf1788b4198eec33c3c1a27cb1d17200ad27f9bdeb0e265469c0c7a4e"
+  },
+  {
+    "archivo": "backend/database/CHANGELOG.md",
+    "sha256": "100a0479557775c95269b0343088fc42b8416fec8962b37c2918b1aaafdb7017"
+  },
+  {
+    "archivo": "backend/database/migraciones-v1.json",
+    "sha256": "a6bca484bb4f204d75fa62bc8a04de6da0cebc046c4c28da11addd3db0ea89a3"
+  },
+  {
+    "archivo": "backend/database/REGLAS_BASE_DATOS.md",
+    "sha256": "83b404e12f59c025657211fcf8a19daff53260a1c50a0689cd4572629df3b99b"
+  },
+  {
+    "archivo": "backend/database/v1.0_estructura.sql",
+    "sha256": "a7219eb13827f8bb37d68029b26e0e024d0a2ae6f235eb988c3b406e2a1d1ea9"
+  },
+  {
+    "archivo": "backend/database/v1.1_semillas.sql",
+    "sha256": "25056fde2d8fb923718c36e1542da90c4a41b39d0a19cb70c87e3c61d8d5bad4"
+  },
+  {
+    "archivo": "backend/database/v1.2_agregar_icono_categorias.sql",
+    "sha256": "144d0b005b79505cc3459c153a14f0fe7c00575737fb972d0b7902a7c3562ba6"
+  },
+  {
+    "archivo": "backend/database/v1.3_modificar_tipo_dato_icono.sql",
+    "sha256": "803a904848cd0b48396ede28a2031d7291992480def95b735a53686585cbd92a"
+  },
+  {
+    "archivo": "backend/database/v1.4_agregar_restriccion_descripcion.sql",
+    "sha256": "117ba1a745f2e2d0dd0b82a8c27ee2051676f55e14b26ea9d4c77a4ee254a891"
+  },
+  {
+    "archivo": "backend/database/v1.5_eliminar_restriccion_descripcion.sql",
+    "sha256": "10ae9bbb3ae7ce8d3dc26033dfd7b180aa689a44b6162ac0731c73a8576f5b3c"
+  },
+  {
+    "archivo": "backend/database/v1.6_definir_politicas_referenciales.sql",
+    "sha256": "654de1566b2c1ef1700cef61bcb23c3f10ffd3fc287d17f42fbfb720883f0a50"
+  },
+  {
+    "archivo": "backend/database/v1.7_actualizar_politicas_update.sql",
+    "sha256": "70a0e3d3af56695c125409c7ebd58839ff81227ad047e94820886bff29e8465b"
+  },
+  {
+    "archivo": "backend/database/V1.8_Asegurar integridad en transacciones críticas",
+    "sha256": "a40cc9ff68ffa0fcb71a1a25b533fe60a0127e6934914c9a23e405084dfccfe4"
+  },
+  {
+    "archivo": "backend/database/v1.9_gestion_api_mesas_productos.sql",
+    "sha256": "eb0c965302bf545119e57e0cac8538ce62f9531cef1942d68f72c60638ab4d12"
+  },
+  {
+    "archivo": "backend/database/v2.0_gestion_api_pagos_cierres.sql",
+    "sha256": "79edef91f03c473cc8a9d5cbcd522d74d5bfd5c0fdb3cb1f15fdad8770aaa4f6"
+  },
+  {
+    "archivo": "backend/database/v2.10_actualizacion_sesiones_activas.sql",
+    "sha256": "1d1756b905a5910cfe1a78a6996ca89e4eb5d9f0867b539783cc6352853cbd13"
+  },
+  {
+    "archivo": "backend/database/v2.11_calculo_cuenta_consolidada.sql",
+    "sha256": "c69a1bb886f5d137537f7620a69031cd3c0520458d71c073457f69ff7ea0c9fa"
+  },
+  {
+    "archivo": "backend/database/v2.12_otp_tokens.sql",
+    "sha256": "9d55249ed9bbcac272b7573430122503556379fb9157596e6aee34b30b12bd53"
+  },
+  {
+    "archivo": "backend/database/v2.13_estado_usuarios.sql",
+    "sha256": "36ade847f75a613dfec9f10683222a35d39eb9adcbc701d1f891d230d6a54c21"
+  },
+  {
+    "archivo": "backend/database/v2.14_descuento_inventario.sql",
+    "sha256": "bc6143914aaebea31c774094c55797a02c6328a73c4ac878a2c477b4f808d925"
+  },
+  {
+    "archivo": "backend/database/v2.15_descuento_inventario.sql",
+    "sha256": "4da3e71b5afbf4fcc7531d84dab183b7242b7b267e04f7c13a665552fa5c9a91"
+  },
+  {
+    "archivo": "backend/database/v2.16_traslado_cuentas_mesas.sql",
+    "sha256": "212a62cb21f64ff52d9a3a259a8b7fb58635b1adeb26342a38dbe610b9e008fc"
+  },
+  {
+    "archivo": "backend/database/v2.17_tablero_kanban_cocina.sql",
+    "sha256": "25de70fb2da66e45264ced0264a98dae71470f5282b9b3d21b9b64ad60166123"
+  },
+  {
+    "archivo": "backend/database/v2.18_sesiones_division_cuentas.sql",
+    "sha256": "7e82e6bcbb19c5a13ace0067b931873a0f2bd00c092c78196ac18a9792579bde"
+  },
+  {
+    "archivo": "backend/database/v2.19_division_items_detalle.sql",
+    "sha256": "8a2af8ce7543d70d1a33ae217c5ddc995475834d450b80df703d081f1999b463"
+  },
+  {
+    "archivo": "backend/database/v2.1_gestion_api_juegos.sql",
+    "sha256": "567c12bc6366ecd9fff68617a288564a0d8b6038b25add1c57892e3c41063a8b"
+  },
+  {
+    "archivo": "backend/database/v2.20_pagos_division.sql",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "archivo": "backend/database/v2.21_passwords_desarrollo.sql",
+    "sha256": "ff8dfea50d184019a1dece39f039e44341722efd4152afda450f5561c015eeb9"
+  },
+  {
+    "archivo": "backend/database/v2.22_movimientos_inventario_trazabilidad.sql",
+    "sha256": "9abc39015412c9ddf7803de3178e9306e42c3f17b3fb1c032afee8adbbe6745b"
+  },
+  {
+    "archivo": "backend/database/v2.23_sesiones_juego_tiempos_tarifa.sql",
+    "sha256": "7a6f1f11deeef2c4da88735e8e778c911d0cdc48484602ac5d16fc1a0c682235"
+  },
+  {
+    "archivo": "backend/database/v2.24_modificar_pagos_total_seleccionado.sql",
+    "sha256": "4a60be06d2b106555b0d3da5032afa0b2ad91df9e3b9f7f771c03c83a331ca2b"
+  },
+  {
+    "archivo": "backend/database/v2.25_create_tabla_comprobantes.sql",
+    "sha256": "a7396fda064037b432e50f873caddabb9b2f47b0709f6bd0e959eb55205e26d4"
+  },
+  {
+    "archivo": "backend/database/v2.26_create_tabla_comprobante_items.sql",
+    "sha256": "6fe899c06e2a8c6289d821cbb1f4c3270495ff8ec50b4cde56d777343cec2554"
+  },
+  {
+    "archivo": "backend/database/v2.27_modificar_importes_cierres_caja.sql",
+    "sha256": "cfb99087b81dd7e04ec848f894b45201885c68a89b49500d139594c3b635a2f1"
+  },
+  {
+    "archivo": "backend/database/v2.28_agregar_periodo_cierres_caja.sql",
+    "sha256": "5f235d9dfc1360edd2fc4056b0dd58252a77762db05e7e44b5e854873a0c0a8c"
+  },
+  {
+    "archivo": "backend/database/v2.29_agregar_verificado_en_pagos.sql",
+    "sha256": "f583291c4dbf5dc47d3a1c2fbf1b11d39875317f72e8b1d88498a1910e7cab92"
+  },
+  {
+    "archivo": "backend/database/v2.2_gestion_alertas_inventario.sql",
+    "sha256": "72fffa5f47f1f4a4c51331e289060ce02e597cf89b70a01b39a14f766014a625"
+  },
+  {
+    "archivo": "backend/database/v2.30_create_tabla_cierre_pagos.sql",
+    "sha256": "59234192e70ac45860bc895cb889fa0677e5163f5b124d6dbdd84726b4009ff6"
+  },
+  {
+    "archivo": "backend/database/v2.31_compras_recepciones_parciales.sql",
+    "sha256": "2eeb8b3eef267c73c383cb168b0e53ff46ec0b1aa269d3598d0f49d942c06d27"
+  },
+  {
+    "archivo": "backend/database/v2.32_productos_version_inventario.sql",
+    "sha256": "b23eb494d0e79c9aa8e5a047f347afb9780ea6e5dcc21dc7bce231b54cec0122"
+  },
+  {
+    "archivo": "backend/database/v2.33_create_recepciones_compra.sql",
+    "sha256": "d4ee29e222de20324743d1ac7ad07e42f1930ecabc2b881208da73b9cd9b461b"
+  },
+  {
+    "archivo": "backend/database/v2.34_create_historial_costos_recepciones.sql",
+    "sha256": "248985c195531e01ca8395f45fca10285dd1563d866b71d9a14a58974198f57a"
+  },
+  {
+    "archivo": "backend/database/v2.35_alertas_inventario_episodios.sql",
+    "sha256": "505df198cdc8dd1e61e99d87d453f01d8c4b0ab1373338a1addd5262de076bde"
+  },
+  {
+    "archivo": "backend/database/v2.36_productos_historial_costos_opcional.sql",
+    "sha256": "53430ff963525957e254c0b143b5c2fa781e537018fb42c4eb1dac488b37633b"
+  },
+  {
+    "archivo": "backend/database/v2.37_participantes_pedidos.sql",
+    "sha256": "9e042aed57c90ecb519f635439339ba4725867a6691a10755a28c6dc89132b27"
+  },
+  {
+    "archivo": "backend/database/v2.38_participantes_temporales_homonimos.sql",
+    "sha256": "6ae081ee4a51ab803c0e33281e13796f008f885a4da1267f48734be79d0dc47b"
+  },
+  {
+    "archivo": "backend/database/v2.39_sesiones_mesa.sql",
+    "sha256": "c728d221423ba3b020c9c7cb476b31515533136617264d29e10c4ce63dcc7a19"
+  },
+  {
+    "archivo": "backend/database/v2.3_gestion_clientes.sql",
+    "sha256": "c7c27c795abfd87ebf5b746c1870a8bc8c88d2cc8e83add98505e2ef3ba054a8"
+  },
+  {
+    "archivo": "backend/database/v2.40_rondas_consumo.sql",
+    "sha256": "f5afc1d1427f26de1fa0c44dfc0e74daf4d6fe24259dedf23f6b32f44f1f2f84"
+  },
+  {
+    "archivo": "backend/database/v2.41_divisiones_sesion_pagadores.sql",
+    "sha256": "f395271e6aa1eb7bd826b39351c496f08a2f8cb295f92468d2b90e68e26dd6c1"
+  },
+  {
+    "archivo": "backend/database/v2.42_divisiones_modalidades_ciclo.sql",
+    "sha256": "02410eca3afc3554c88bca17617a37f4c7a5973bae186383b519f4353a2a91df"
+  },
+  {
+    "archivo": "backend/database/v2.43_sesiones_juego_pedido_directo.sql",
+    "sha256": "33dc0a3a95499a05dfd964cb583618ea4e058d9d3d11d83a9249e960e47b3169"
+  },
+  {
+    "archivo": "backend/database/v2.44_configuracion_negocio.sql",
+    "sha256": "5aa20140297212258d33f7d9e2cec42eac686747ba38fb698b9e69f53c03cb75"
+  },
+  {
+    "archivo": "backend/database/v2.45_instalacion_limpia_v1.sql",
+    "sha256": "1c3ac943919c8ff21221aea70171cfe8f599203252acb2df7c05fb5720c97fbf"
+  },
+  {
+    "archivo": "backend/database/v2.46_recuperacion_password_segura.sql",
+    "sha256": "fffeab7a7846a628913a0a3c79eb9047012cbb2cc01164368c4de5a2f8e4bd82"
+  },
+  {
+    "archivo": "backend/database/v2.47_productos_imagen_opcional.sql",
+    "sha256": "aab4782a9a24abe6832c80f98dfc8e9b1930e987aabfad4a33de90519544ef98"
+  },
+  {
+    "archivo": "backend/database/v2.4_gestion_ventas_facturacion.sql",
+    "sha256": "035ba1d747f08484c81c773fa36f14a93d17d567f9ce6e2b6356ab7debf54ab2"
+  },
+  {
+    "archivo": "backend/database/v2.5_gestion_usuarios_seguridad.sql",
+    "sha256": "acba108113a3f85a91afd469db89fd150c04e124f5f35c6194239c309afccfe2"
+  },
+  {
+    "archivo": "backend/database/v2.6_datos_maestros.sql",
+    "sha256": "ccf649ade00fb934bc3a5231b24a75408fd5cf58f6b17eea53a2505b65ebf939"
+  },
+  {
+    "archivo": "backend/database/v2.7_modulo_kanban.sql)",
+    "sha256": "20e1a83816e5edcf1b9358c5996fc84e104f37273cab6a89cab717b3d45a254f"
+  },
+  {
+    "archivo": "backend/database/v2.8_registros_iniciales_parametrizacion.sql",
+    "sha256": "d8b85ca25ec515aa5f77b0a3b74265dcf688bbc6a7b2877c38f839c13f66c4ec"
+  },
+  {
+    "archivo": "backend/database/v2.9_actualizacion_seguridad_usuarios.sql",
+    "sha256": "ff01710f5fa68c1e1177a5ca13e30772d24be963a9738269b316acf8253f81e0"
+  },
+  {
+    "archivo": "backend/docs/administracion-mesas.md",
+    "sha256": "92d88c40d2141cf4950d6cb757dd77c04759008ff028c0f6bccb98b99e66abdb"
+  },
+  {
+    "archivo": "backend/docs/divisiones-fase8a.md",
+    "sha256": "3bb9b7e904923aff69c47ffa37ec8f2d750114718eb9bbcb0fe68a479d473d62"
+  },
+  {
+    "archivo": "backend/docs/divisiones-fase8b.md",
+    "sha256": "c2b317598094012109cdf64d5678010d8a9859c65ca1930981f02d648d84d642"
+  },
+  {
+    "archivo": "backend/docs/endpoints-retirados-v1.md",
+    "sha256": "9587a96fd9558d63e53dc2d4ffa2096050f976ce48e9a3930e22ac245893a0bc"
+  },
+  {
+    "archivo": "backend/docs/errores-backend-v1.md",
+    "sha256": "2a4fe1f51cd5413436084ef34e652a49fbde456a8130c2f00e8eebba5287c699"
+  },
+  {
+    "archivo": "backend/docs/estado-v1.md",
+    "sha256": "f3faeb35be307e177ae134966ae3cbfbd88243f660283c36f41a0f2cc55ec5e0"
+  },
+  {
+    "archivo": "backend/docs/fechas-zona-horaria.md",
+    "sha256": "8e7686ffc8f64981ea0c85830535aa3784a5d3107786b6cd90a8c3d2b9876a4f"
+  },
+  {
+    "archivo": "backend/docs/historial-clientes.md",
+    "sha256": "84f34fc8d26c0ad1e662870e114b2f3c91ae4124f0f6e47a1dd8af7ac566d7d6"
+  },
+  {
+    "archivo": "backend/docs/historial-compras-proveedor.md",
+    "sha256": "51eb69e60e05db94cfc32768bb3e6201945767f94958a8cbd50a2230dc1b89c6"
+  },
+  {
+    "archivo": "backend/docs/juegos-pedido-directo.http",
+    "sha256": "538ed731f01d5e0e8acaa4afd5400bc843e9897de0664bf870d1089377fa8492"
+  },
+  {
+    "archivo": "backend/docs/pagos-division-fase8d.md",
+    "sha256": "6ef4319cc9e03c1253035e4492f4ed7195b70e03bf77c37aa436e43b9b0e253c"
+  },
+  {
+    "archivo": "backend/docs/participantes-pedidos.md",
+    "sha256": "5a73f03277b4d9cecfa74ddf49171fb8566fe1f713ba3dd43c3c9e96d5964b3e"
+  },
+  {
+    "archivo": "backend/docs/productos-imagenes.md",
+    "sha256": "948e3e87f3af2ecb6693917ac3ee4a8e627b0df4203eb7d713c4e4ef57c9c1bd"
+  },
+  {
+    "archivo": "backend/docs/recuperacion-contrasena-v1.md",
+    "sha256": "e6637049f2e3a0169c467b0e46f730c496e75b022bdcb536cd7d5da7c9fc6db6"
+  },
+  {
+    "archivo": "backend/docs/recuperacion-password-post-v1.md",
+    "sha256": "0dff82e18388fe54add38ca7744f31b4d63b602f941abd9307cd1a0157bfca8a"
+  },
+  {
+    "archivo": "backend/docs/rondas-consumo.md",
+    "sha256": "6963a266bd4f3c46ec4b2bcabd7a4efd2f11c39b0b8b6d6b0d492bf89b7832cc"
+  },
+  {
+    "archivo": "backend/docs/sesiones-mesa.md",
+    "sha256": "142e69d0efd97b2cca93d17b3a25c074495af8717a9553397a81b97f69f1e05e"
+  },
+  {
+    "archivo": "backend/package-lock.json",
+    "sha256": "37e4a03fc8be471fb3ae7e9bde5af3f699556ba93a38e28da3e64a98e2307ae8"
+  },
+  {
+    "archivo": "backend/package.json",
+    "sha256": "bd122cb7c5b86693cbd26001326387df5e6d22850f2e03d95e2376ad1f0591db"
+  },
+  {
+    "archivo": "backend/scripts/inicializar-login-desarrollo.js",
+    "sha256": "9faaaab3076951b647b05636aa0b2385c9a66cad0a9a18e1f6f0b69c88102599"
+  },
+  {
+    "archivo": "backend/scripts/instalar-bd-v1.js",
+    "sha256": "de6ba96fcacbbc1dd457e0d92db2458f0b4e3e816cafcb386db4dc1fe1674b77"
+  },
+  {
+    "archivo": "backend/src/config/db.js",
+    "sha256": "866e9d627170ed94efc8f25bb2533c697d12e9a6173def9cfa5c39e9cdd11638"
+  },
+  {
+    "archivo": "backend/src/controllers/alertasInventarioController.js",
+    "sha256": "2057948aff7c2eba743465dde34560beb7d073efd51ec9b8153dad4c2cb35afd"
+  },
+  {
+    "archivo": "backend/src/controllers/auditoriaController.js",
+    "sha256": "656470221845f784ca5f24ef9bf0d3733e55356c569e39d14dd02d3f036f6cf2"
+  },
+  {
+    "archivo": "backend/src/controllers/categoriasController.js",
+    "sha256": "3f0bcaa5cbdecc30c08dedfb860a06048d5723b066e6eb93c7a73fa5c3418ce2"
+  },
+  {
+    "archivo": "backend/src/controllers/cierresCajaController.js",
+    "sha256": "c3d4a693c515ac8275c5f72eb33ce1a38c1c6f01358db88c03ec5591e1683887"
+  },
+  {
+    "archivo": "backend/src/controllers/clientesController.js",
+    "sha256": "d6f6f1148674bcef60842e22c6a17517f7d24016ff8d91654370116ae9c36775"
+  },
+  {
+    "archivo": "backend/src/controllers/comprasController.js",
+    "sha256": "693bd2820b100c9fabdcec9e4dc49c298d2412c4b867dacef4c0fa03c7d17567"
+  },
+  {
+    "archivo": "backend/src/controllers/configuracionController.js",
+    "sha256": "4035b017d1477b8f029688742e16d132bea4bf4f9394325c69a1c3cb04f622c9"
+  },
+  {
+    "archivo": "backend/src/controllers/divisionContextoController.js",
+    "sha256": "753d3ebc7bd8e9ff4b1912decaf244644dd68bc138399e95d22d78cc04a676ca"
+  },
+  {
+    "archivo": "backend/src/controllers/divisionesController.js",
+    "sha256": "79e21bb06f63308fe314a9d737509dfcf1bfe52ee7acd368d95a32d9f64d5751"
+  },
+  {
+    "archivo": "backend/src/controllers/divisionPagosController.js",
+    "sha256": "5cd2d1274c0bc4f1064a5a7614eaabc2f52d257bd1bd94716ae7c0b17841ea4f"
+  },
+  {
+    "archivo": "backend/src/controllers/inventarioController.js",
+    "sha256": "30e6b71f00e07962c9c21c243a01073c438d9bd5d7f406cdc719b28914b310fb"
+  },
+  {
+    "archivo": "backend/src/controllers/juegosController.js",
+    "sha256": "fd84ef5a7dc9a68b23b772fba18061c4a81b4b94efbee0095bcd5f5b1d8f262c"
+  },
+  {
+    "archivo": "backend/src/controllers/kanbanController.js",
+    "sha256": "955a06e666b4bf999c1880ec3b042b214b7495f175fd1aeeb6318fdae2b89697"
+  },
+  {
+    "archivo": "backend/src/controllers/mermasController.js",
+    "sha256": "2f502accb3d87e748224ff19b2dc7e5e239588ba55dcc0870d178688bda9e6b2"
+  },
+  {
+    "archivo": "backend/src/controllers/mesasAdministracionController.js",
+    "sha256": "d11673e72f8e0fcba5d3bcbde9f93466b7dc6d9db1de121a05636025eb2e5bea"
+  },
+  {
+    "archivo": "backend/src/controllers/mesasController.js",
+    "sha256": "a610f1096df51359374a2e6d01288d5e3da5ea5486b81e81ccad2d9199053535"
+  },
+  {
+    "archivo": "backend/src/controllers/pagosController.js",
+    "sha256": "8defdf6decb7a193d3dbb739ca7b846ea106ed13eed9a95aa7bdce5665675dd3"
+  },
+  {
+    "archivo": "backend/src/controllers/pagosLecturaController.js",
+    "sha256": "97599484dae6296f398947eeca3be1212018eb3351ba5d4007904b2be52e1541"
+  },
+  {
+    "archivo": "backend/src/controllers/participantesController.js",
+    "sha256": "1b7c44e562ee89906eeee45493e9ba98f27a773e11ca70644e6ee730c75bb327"
+  },
+  {
+    "archivo": "backend/src/controllers/pedidosController.js",
+    "sha256": "1a3636765dd841f7452806efb2806f2e2cf20257582a85726f488013790a1b97"
+  },
+  {
+    "archivo": "backend/src/controllers/perfilController.js",
+    "sha256": "60c0c304f5da3f3376c099ae41cf42866b82946b4372f4c04656e1ed1d580dc6"
+  },
+  {
+    "archivo": "backend/src/controllers/productoImagenController.js",
+    "sha256": "c282ae6cf2694607b4200365a361c68bef7ce0810e336d48185a6dbae0a5b2bd"
+  },
+  {
+    "archivo": "backend/src/controllers/productosController.js",
+    "sha256": "7c013790f2e0fa9229cb765830e065beeb8bd0c24a758e56218c1e5e4476a832"
+  },
+  {
+    "archivo": "backend/src/controllers/proveedoresController.js",
+    "sha256": "39dcb13f93d5f5cf2917c9d796a84daa9624daecc7fcc40fc3864b5c3e6cded1"
+  },
+  {
+    "archivo": "backend/src/controllers/recuperacionController.js",
+    "sha256": "d012606bbc8f29a54a8f07217857a65f0d4c34de1f559d03f83176c95810372c"
+  },
+  {
+    "archivo": "backend/src/controllers/refrigeradoresController.js",
+    "sha256": "23a7689715a4e6b0afd711b824a9b73cef5a1e0d51a1fa4a67b84a4e29433ebe"
+  },
+  {
+    "archivo": "backend/src/controllers/rondasConsumoController.js",
+    "sha256": "4db5e94015a447c64ef7517884e4007ec4eb26d84f40e90d25454965e24f630b"
+  },
+  {
+    "archivo": "backend/src/controllers/sesionesMesaController.js",
+    "sha256": "afe6cb83cd15e711bea249aee2d9845f6c6ccd1f0525bbb40e3aed80df167a6c"
+  },
+  {
+    "archivo": "backend/src/controllers/usuariosController.js",
+    "sha256": "327568b13594ed58908f082fd09c413b1fba640662d7bef1feb09f66dbcec7ac"
+  },
+  {
+    "archivo": "backend/src/controllers/ventasController.js",
+    "sha256": "836f92bf72b03d8e757a42b8b9e6d69b3d568a23afca33e297210b43e0457563"
+  },
+  {
+    "archivo": "backend/src/index.js",
+    "sha256": "59be65eac016d0991c9ec001395233af043e26e52a9a7884ac2c0fd1f78ec373"
+  },
+  {
+    "archivo": "backend/src/middleware/authMiddleware.js",
+    "sha256": "e863023e27a1ab8ce46b13438f85ca675c7b19a41921ae7e1957d2c2f1bffd01"
+  },
+  {
+    "archivo": "backend/src/middleware/errorMiddleware.js",
+    "sha256": "43dd94df21f1c3fb3527a580bf443520780625939c7334f2dad0e141b75a2957"
+  },
+  {
+    "archivo": "backend/src/middleware/imagenProductoUpload.js",
+    "sha256": "0044e44ffc9e29a0712694e54af6c12819cf1c25e612b49037cbb17bfc13b066"
+  },
+  {
+    "archivo": "backend/src/middleware/recuperacionLimiter.js",
+    "sha256": "52289667e6fb9f2e981ac281b98927fd3a0e75a264a97d0db557de1d4772c976"
+  },
+  {
+    "archivo": "backend/src/middleware/rolesMiddleware.js",
+    "sha256": "9f1d703a1fe1e95d41b77f173264f739edced0a4fd2704749e33fc5e3bc550a6"
+  },
+  {
+    "archivo": "backend/src/routes/auditoriaRoutes.js",
+    "sha256": "82e226780e26e6ff4dcf8fcf90ecc95cca3629df9d849cf2137b6031e74533a8"
+  },
+  {
+    "archivo": "backend/src/routes/categoriasRoutes.js",
+    "sha256": "26f010f91c05af96d5a1fbfd00de4f47727e8e4ff9de6cede3ba50359babc15e"
+  },
+  {
+    "archivo": "backend/src/routes/cierresCajaRoutes.js",
+    "sha256": "a4784ee5bc9da34667e3d32560c041afad23300193dc92c9f228a45c5d3cb8ab"
+  },
+  {
+    "archivo": "backend/src/routes/clientesRoutes.js",
+    "sha256": "5aa14fc84fa6bade981e3a79fc9e8b51ead74dff66e2095f081597758c2d7cc5"
+  },
+  {
+    "archivo": "backend/src/routes/comprasRoutes.js",
+    "sha256": "193e1ee9811c571aada2ca6c1ce4579131cc92b23738fc5998dda63a9aa3aabb"
+  },
+  {
+    "archivo": "backend/src/routes/configuracionRoutes.js",
+    "sha256": "18820804267110df8107ece8d507dab3a3c65dcc0745b45d852dd86b46775d06"
+  },
+  {
+    "archivo": "backend/src/routes/divisionesRoutes.js",
+    "sha256": "47d536a8b799edcf87a9558766d0acab4e6c8fdc17e1585b4ecf6c5d2bf013cd"
+  },
+  {
+    "archivo": "backend/src/routes/inventarioRoutes.js",
+    "sha256": "9b620a413cbbbd4ffa9276bc02eb8dd049f9fa22575add98d9eb0ced2b3ac576"
+  },
+  {
+    "archivo": "backend/src/routes/juegosRoutes.js",
+    "sha256": "4bef04427a6a2ceb412017dba217e8b4bd93eff91f093d873afbd731f31da82a"
+  },
+  {
+    "archivo": "backend/src/routes/kanbanRoutes.js",
+    "sha256": "870b06e8e6db94f60c6b767d95ade20e53f8da378408aa0c355da1051f9b9f16"
+  },
+  {
+    "archivo": "backend/src/routes/mermasRoutes.js",
+    "sha256": "0fc65121287be61ea23eac64431d0bd5afb9c7042369151c7a0102ec34bd5d9f"
+  },
+  {
+    "archivo": "backend/src/routes/mesasRoutes.js",
+    "sha256": "787ba989af147aad61559c1ad690c280191a30724b26349ae994c03f8cfcbac3"
+  },
+  {
+    "archivo": "backend/src/routes/pagosRoutes.js",
+    "sha256": "3d6d768c4c02bc95ef2e99d9913621371c12019d6dc95dce67c27b07508cd8ad"
+  },
+  {
+    "archivo": "backend/src/routes/pedidosRoutes.js",
+    "sha256": "420bafa13132e7ae2aba165b2454cb0368856b1432e4a1764c50c7a11c875de1"
+  },
+  {
+    "archivo": "backend/src/routes/productoImagenArchivoRoutes.js",
+    "sha256": "855d6b3d689469063e854c7a6ebff78b0cde806e5cebefa9acd27724884d2402"
+  },
+  {
+    "archivo": "backend/src/routes/productoImagenRoutes.js",
+    "sha256": "d2bc0672c069cbfda976753861a6b82c926bf7a02b202d446ed5a2807c28585e"
+  },
+  {
+    "archivo": "backend/src/routes/productosRoutes.js",
+    "sha256": "6a4c123c4c1f295c27bbb380fc12804a5b90e281882aa6675ccd08a5578b2d3e"
+  },
+  {
+    "archivo": "backend/src/routes/proveedoresRoutes.js",
+    "sha256": "78ffe1555923da8f31b6523438e90fb365acf894d65aee6bf7d25e67ab6d65be"
+  },
+  {
+    "archivo": "backend/src/routes/recuperacionRoutes.js",
+    "sha256": "431913fac0deca2fcc8bd50b6607b4c890eeba80843055af805a0299454f5568"
+  },
+  {
+    "archivo": "backend/src/routes/refrigeradoresRoutes.js",
+    "sha256": "9695e6e051e32ed667a2fc6d6146aa969ba72304f5e1f1d80a3bf7ae2e772940"
+  },
+  {
+    "archivo": "backend/src/routes/usuariosRoutes.js",
+    "sha256": "dbca631c75eb9f3d9048945d1f1f7a80fa05f744cad72f7ea1ea265eda029523"
+  },
+  {
+    "archivo": "backend/src/routes/ventasRoutes.js",
+    "sha256": "c4a871c3d59682e03e61089ace17f113125f0623ee9187c78961f97134e93f16"
+  },
+  {
+    "archivo": "backend/src/services/alertasInventarioService.js",
+    "sha256": "180bec662f7a88cb5e3e3afa21a71c4d0bbade3f1e76a90292686ba254ed8921"
+  },
+  {
+    "archivo": "backend/src/services/auditoriaLecturaService.js",
+    "sha256": "f60af1c349d3fc95c8e278528ef48ce225b0760b96abdb149aa36ac369b2807d"
+  },
+  {
+    "archivo": "backend/src/services/auditoriaService.js",
+    "sha256": "6074757b7ad1697ceb5a8b128f75ef4b500aea8bc9d6779b25cc572f20cc4979"
+  },
+  {
+    "archivo": "backend/src/services/cierresCajaService.js",
+    "sha256": "07fc2150d605001a03ed60a445e2a82580a62f9eb1e915cf6e8427a5ec71863c"
+  },
+  {
+    "archivo": "backend/src/services/comprasService.js",
+    "sha256": "68c442eb2a4b3ac0e6620f38caf6372fc3afb582d143b7ba0746a0fd4b678997"
+  },
+  {
+    "archivo": "backend/src/services/comprobantesService.js",
+    "sha256": "71fbc7612999d3672c4ebc585138abe222fd87a9e5ed1d572a042d82b8a400e1"
+  },
+  {
+    "archivo": "backend/src/services/configuracionService.js",
+    "sha256": "3d9ca11c4b252ada870fbd568128879b67ce9b8b08c51c707178bec486136713"
+  },
+  {
+    "archivo": "backend/src/services/correoRecuperacionService.js",
+    "sha256": "837e8a5e1d3718c0b4978691c25ad0740779699e747aba7910b6d84f4f404678"
+  },
+  {
+    "archivo": "backend/src/services/divisionCuotasService.js",
+    "sha256": "133d45f7c2c07cbf93de1b4c5267a3942a8160d70c6545a7c222ef4b9c64d5e8"
+  },
+  {
+    "archivo": "backend/src/services/divisionesService.js",
+    "sha256": "3dcedeb684f812c8dc64075d37643fbaeb584fd3fff66dfaec2999c081c026a1"
+  },
+  {
+    "archivo": "backend/src/services/errorLog.js",
+    "sha256": "d366588cca207583549ba2764961cee83215512713089c54206f92bd7de3765c"
+  },
+  {
+    "archivo": "backend/src/services/historialClientesService.js",
+    "sha256": "c79c777c136bfc855793dfdecd567c2c0ea6b5a1ef8c1a61ba65ab2b6980fc4e"
+  },
+  {
+    "archivo": "backend/src/services/identidadService.js",
+    "sha256": "48e97f61072192b2826269f7f02aed7df7a22caae61c8b943c2e46eb21f52244"
+  },
+  {
+    "archivo": "backend/src/services/juegosPedidoService.js",
+    "sha256": "f98c3917bb4695724611de96a85ba19a7c96ce45b0f232f1121a385ff5d68e94"
+  },
+  {
+    "archivo": "backend/src/services/juegosService.js",
+    "sha256": "45b7fd7ba5b181edef8d0f1e67314183b9b5336e1ae946f5980b06bee4cfcf62"
+  },
+  {
+    "archivo": "backend/src/services/liquidacionService.js",
+    "sha256": "3439e27f1bebf49e0df3b7d9c230a4e588e7beb96fb5f52d250fb463ad8b2b8b"
+  },
+  {
+    "archivo": "backend/src/services/mantenimientoJuegosService.js",
+    "sha256": "cbfb8f83af86f6eee3cd793dba41ea0c03cbe731fd87e50d477039a590b63e10"
+  },
+  {
+    "archivo": "backend/src/services/pagosLecturaService.js",
+    "sha256": "fd833e4a386589bbd55aecf9c84d770dfa21a6fcea2e0d26f48ec815a34612e4"
+  },
+  {
+    "archivo": "backend/src/services/participantesService.js",
+    "sha256": "9051652e78704081fef9a27f29b39e2514a3bbd34430ce064f599e0663c1764e"
+  },
+  {
+    "archivo": "backend/src/services/pedidoItemsService.js",
+    "sha256": "bfaa42b729959219e608a57f9ecbd6795f85e090a9db5cd81ede0b3dacb18e21"
+  },
+  {
+    "archivo": "backend/src/services/perfilService.js",
+    "sha256": "70e5255816c653db560ff0c85bdb1d38b357ee147b167c19d18e3ba118732e6b"
+  },
+  {
+    "archivo": "backend/src/services/productoImagenService.js",
+    "sha256": "1adc679f1c433164cb2f8d3aa03a06f001e104a4ff9b60f805bcdcbe83bb6b39"
+  },
+  {
+    "archivo": "backend/src/services/recepcionesCompraService.js",
+    "sha256": "cb3b2fab44eed2bd83fcdeb24e602a20cc207bb02de13fc167293f2af20e9c27"
+  },
+  {
+    "archivo": "backend/src/services/recuperacionService.js",
+    "sha256": "126dd7793b8ad1cc98a50f0967cddb1d4aabd877a1d9ebf83197136e954edc3e"
+  },
+  {
+    "archivo": "backend/src/services/refrigeradoresService.js",
+    "sha256": "9b041277e0a9ce643556d1a232461768f6a6a0e4ca1db3eb807ae26a0dacd5c4"
+  },
+  {
+    "archivo": "backend/src/services/sesionesMesaService.js",
+    "sha256": "c3ab11010e941e4ae47d62e7c4813ac7df68fdba9fe9d4a59111ecb13099c0de"
+  },
+  {
+    "archivo": "backend/src/utils/fechaHora.js",
+    "sha256": "9bdafa00402c5cfa74b9f32cf8a2cafdbbde6e329133acd142ba154241434e77"
+  },
+  {
+    "archivo": "backend/tests/auditoria-actores.test.js",
+    "sha256": "39393c9e28a7fc1d99830aaf1d36c8b14da25ad5ded4a459f548edd2e086beff"
+  },
+  {
+    "archivo": "backend/tests/auditoria-lectura.test.js",
+    "sha256": "0b7ccaa2629a53b4e050545b51a56b0973013c696e79b813777f2e373aeb48bf"
+  },
+  {
+    "archivo": "backend/tests/auth-middleware.test.js",
+    "sha256": "134e51f049fcf8ca19918376c66028b74ff35f59966d71cf10779fe443b480b0"
+  },
+  {
+    "archivo": "backend/tests/cierres-caja.test.js",
+    "sha256": "8bf404cdaa8fab5938bd6d5bea1c437fa3cf5adb1a574641a87fca4a421f2728"
+  },
+  {
+    "archivo": "backend/tests/cierres-concurrencia.test.js",
+    "sha256": "c4102b846feabc95daf7fce67984e21a69246f629ec0ba8bb9f6cc8484f20129"
+  },
+  {
+    "archivo": "backend/tests/clientes.test.js",
+    "sha256": "96883b9a178178dd1b97667e256b29d7d57b76a7cc080a71edfd77341d073407"
+  },
+  {
+    "archivo": "backend/tests/compras-fase2.test.js",
+    "sha256": "56e36fa6f6c50fa3c19ad88694c8a87377898eee5df8f12dd627be380c29e765"
+  },
+  {
+    "archivo": "backend/tests/compras-proveedores.test.js",
+    "sha256": "5bb760338cb7f35862f9fb9db7747b99df15451cc140aac98d9b45a35766ce93"
+  },
+  {
+    "archivo": "backend/tests/comprobantes.test.js",
+    "sha256": "0c17a5a562e62ed4f1700e553b4efd0c033dced28855a5a45264bf7c01554418"
+  },
+  {
+    "archivo": "backend/tests/configuracion.test.js",
+    "sha256": "6b08a834036e116b813f26456b8ddcc18f8b6157b729d69207090cf7beae3be4"
+  },
+  {
+    "archivo": "backend/tests/cuenta-mesa-lectura.test.js",
+    "sha256": "1225b6cd9347f696ec3c08999fe37eecf253aac89493efd770bc8b594f5a1552"
+  },
+  {
+    "archivo": "backend/tests/cuentas-contexto-concurrencia.test.js",
+    "sha256": "ae7e540121af77131e4968d6c59437f1aef801e0b1b09c29167ce439721bb863"
+  },
+  {
+    "archivo": "backend/tests/divisiones-cuotas.test.js",
+    "sha256": "bdc0c4aeb5983b3206b54ba08c3f3ff36dd1c3ea97e835bc2d470cd195918d94"
+  },
+  {
+    "archivo": "backend/tests/divisiones-sesion.test.js",
+    "sha256": "52fe43811803d35f71b6f6e8e6143af087190b315f5bac41631626d256f83f24"
+  },
+  {
+    "archivo": "backend/tests/endpoints-simulados-retirados.test.js",
+    "sha256": "b4ec29a30cbc38ebbccbb60bcc86a6709e4c57649df782c41eecff7b6d832840"
+  },
+  {
+    "archivo": "backend/tests/error-middleware.test.js",
+    "sha256": "9ef3ca4e77c0fb25740dda490dc0bf0abfa8bd1b2dcb906693a2f5c4e43f3058"
+  },
+  {
+    "archivo": "backend/tests/fechas-bogota.test.js",
+    "sha256": "c110ec0e1a8fca5a44b44533438581a646573879e2ba1f24f2f5882922c8844c"
+  },
+  {
+    "archivo": "backend/tests/helpers/comprasSandbox.js",
+    "sha256": "2a5cd5cd8b99d2d07ee9f81e1c3a11b46fc3e83e1e81b80914157f50df1f6d62"
+  },
+  {
+    "archivo": "backend/tests/helpers/divisionesTemporales.js",
+    "sha256": "0fb3706e8f4ca77358fca091513bf2d87740fd9a4adb426f902704b7eafbab9a"
+  },
+  {
+    "archivo": "backend/tests/helpers/participantesTemporales.js",
+    "sha256": "3afaaed8aac5293817cb41293c44152fd4ea2213a58cd4da4da03f60c3ee2bec"
+  },
+  {
+    "archivo": "backend/tests/historial-clientes.test.js",
+    "sha256": "a2afc99baae4d98017873d66c7f1086acade9cdf8ab2a2eb216a9df658d74472"
+  },
+  {
+    "archivo": "backend/tests/historial-proveedores.test.js",
+    "sha256": "3296afdf18a0d0f5cc9a6288f573eaf207d1c08fe0a5d4c446fe518ff722ef49"
+  },
+  {
+    "archivo": "backend/tests/identidad-ejecutor.test.js",
+    "sha256": "ad368680b9f8d59d35e1c069c06e1a4a9cb856c8743f065801d994ccb08406b3"
+  },
+  {
+    "archivo": "backend/tests/inventario-ajuste.test.js",
+    "sha256": "10662b7ff090378e1e76576272866a5352773531224c433d668b1cebcc063c17"
+  },
+  {
+    "archivo": "backend/tests/inventario-alertas.test.js",
+    "sha256": "608efd1a5e083c931ba35058c338136bd6c149d798979a60317802014e4fa9bf"
+  },
+  {
+    "archivo": "backend/tests/inventario-movimientos.test.js",
+    "sha256": "50faded60bc428f81a8ac2917de714d8639d557872625fc73e54d1e070b098ff"
+  },
+  {
+    "archivo": "backend/tests/juegos-pedido-directo.test.js",
+    "sha256": "c912396783d158e4e1c0f215734469e98edc133d1c7f0cf5213dcfd80eb116ad"
+  },
+  {
+    "archivo": "backend/tests/juegos.test.js",
+    "sha256": "47f5af3ef6dd9e330580ff86f8cffb5be16a3b2bede712573fc3cad28e340c13"
+  },
+  {
+    "archivo": "backend/tests/kanban-agrupado.test.js",
+    "sha256": "468873b590e6acdf487b83e593db32ed4e1934950cc399f31ea8747293c818c1"
+  },
+  {
+    "archivo": "backend/tests/kanban-movimiento.test.js",
+    "sha256": "ddcf814b043bb660161b5d052625951edcaf8d25f07f43eac5cc8b58a09ca511"
+  },
+  {
+    "archivo": "backend/tests/login.test.js",
+    "sha256": "67779896658a9ac7fc6cc18bd825fb423617e1516b5a4b7972dbc7bcf640edcd"
+  },
+  {
+    "archivo": "backend/tests/mantenimiento-juegos.test.js",
+    "sha256": "d622a3d15fcba2ca25e6d2a8602ee47284f2c6982a7ed6bee5d7a029edce0db4"
+  },
+  {
+    "archivo": "backend/tests/mermas-refrigeradores.test.js",
+    "sha256": "b76ea7cad0f7df29b23888c63fd1bac95cdb9cde1a2b9e586bd58425f39c7883"
+  },
+  {
+    "archivo": "backend/tests/mermas.test.js",
+    "sha256": "d87fc6acc7df6fb70581071527cac71b1fa9db7ca7ee1fc990f09956bbe06303"
+  },
+  {
+    "archivo": "backend/tests/mesas-administracion.test.js",
+    "sha256": "0882b2bf5a3b471a85f6d28830da7c5e2e92409bbe204b72d66b8f422083397a"
+  },
+  {
+    "archivo": "backend/tests/mesas-ocupacion.test.js",
+    "sha256": "0a02547ff8553f2f2c9ec4a5ee6fbc94af249b4c7994fb49c9571ab04ed61d6d"
+  },
+  {
+    "archivo": "backend/tests/migraciones-v1.test.js",
+    "sha256": "0ef96c7f6b55e9b83aa57fb17e5437da0e5ad8d5883d49ea5f320252303e2e2f"
+  },
+  {
+    "archivo": "backend/tests/operacion-lecturas.test.js",
+    "sha256": "86c612c28adb168dd39ae35ae195d9c0990a4abaeac9cd635e52f4783be7290f"
+  },
+  {
+    "archivo": "backend/tests/otp-retirado.test.js",
+    "sha256": "48e33fd8361c0a78a472074e4a54e67ac7fbb5c2a7007e9bab17ca53d070e23b"
+  },
+  {
+    "archivo": "backend/tests/pagos-global.test.js",
+    "sha256": "47831c5ab8ae9be0856b2de2c2e6c49bddcf7a9e36582021b9335c648fa70d4e"
+  },
+  {
+    "archivo": "backend/tests/pagos-liquidacion.test.js",
+    "sha256": "40a1382d59dea1caf3c7a0f6a1d5f8ad1acef9048737c73791c13fe9a6408c88"
+  },
+  {
+    "archivo": "backend/tests/participantes-pedidos.test.js",
+    "sha256": "03902a883ea37f20e78a1d77d401754d860c976d3f277e4494284f87a58b840b"
+  },
+  {
+    "archivo": "backend/tests/pedidos-clientes.test.js",
+    "sha256": "b4de98c752b02c853aa395ada9c4640fa481a736228f8f2a138810702871de3c"
+  },
+  {
+    "archivo": "backend/tests/pedidos-consolidacion.test.js",
+    "sha256": "00c80dad344a27122816ae3b0aa92f3b3638640f16c2b1e9d4e8e962da7bd7d6"
+  },
+  {
+    "archivo": "backend/tests/perfil.test.js",
+    "sha256": "a7b4c99c6bfaebed8db8185dae54186f8811554f2cec7cc556a20a70fb5f63b1"
+  },
+  {
+    "archivo": "backend/tests/producto-imagen.test.js",
+    "sha256": "1137f824a0e6b896a52a77f887831c5f53a1b1e8e41475ce613164205884095c"
+  },
+  {
+    "archivo": "backend/tests/productos.test.js",
+    "sha256": "8fe00be4e0eea067921cb1f14569c4158bd4985756a5bf6ab84ca6067ba6d876"
+  },
+  {
+    "archivo": "backend/tests/recuperacion.test.js",
+    "sha256": "b4b5a0c0c0079c08cd467fe23da3984cc823987c68afe1ec9af984b231fba95d"
+  },
+  {
+    "archivo": "backend/tests/refrigeradores.test.js",
+    "sha256": "79dac7dcc47f81007133f4d8d6f7e1b8abfd1182d5f19bad3a11312bcf38263d"
+  },
+  {
+    "archivo": "backend/tests/roles-middleware.test.js",
+    "sha256": "e3847a7e5fe8e1e9878961477ce2b5c9bfb2c4afde1dfffc331fcab4b498f89f"
+  },
+  {
+    "archivo": "backend/tests/rondas-consumo.test.js",
+    "sha256": "59b11caa1a2cd3634f0d35f94ad15ae2be91e3a0d3c19ed791c8687c52d0d847"
+  },
+  {
+    "archivo": "backend/tests/sesiones-mesa.test.js",
+    "sha256": "545260ef20563ffbeda3c1737de0f20c0cf4dca60ea2bfcc0fea99315201d19d"
+  },
+  {
+    "archivo": "backend/tests/usuarios-admin.test.js",
+    "sha256": "fc5cdef365f3470b2d4b19acc72a2b59292fe4fce66e2bb28ca0fb7f95b6bb69"
+  },
+  {
+    "archivo": "backend/uploads/.gitignore",
+    "sha256": "240a3e0d37d2e86b614063f5347eb02d4f99ca6c254de6b82871ff8d95532a7d"
+  },
+  {
+    "archivo": "documentacion/ALCANCE.md",
+    "sha256": "2b5d2b6d5aca3cb1f0e0e2635c6f367cedd1609afac618a900c7ab4286616755"
+  },
+  {
+    "archivo": "documentacion/BASE_DE_DATOS.md",
+    "sha256": "dca0ed5dd9268a450210805967bf7c5885f010ae11696d3adf7ff1246ad6f39e"
+  },
+  {
+    "archivo": "documentacion/logs/backend-tests-sin-sql.txt",
+    "sha256": "a360be933bb9a57f8f5789648b7b9ce7f3ddaf8ac36644b3fe346dfa34b307a9"
+  },
+  {
+    "archivo": "documentacion/logs/frontend-build.txt",
+    "sha256": "f3ac19fcf13a513f1789c3ae8e8f4836ac0ed03a163f51130f5893be6ec9bdc5"
+  },
+  {
+    "archivo": "documentacion/logs/frontend-lint.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "archivo": "documentacion/logs/frontend-tests.txt",
+    "sha256": "b350d8d58d05b410b1cf7f1666ab6dca31b804f4dfd9a35ba1f640c9e4b5f14f"
+  },
+  {
+    "archivo": "documentacion/RUTAS.md",
+    "sha256": "1cafcfbaf552e5db8c6d59ff916bb1b1f8fe06f900617b58d42c0e84224faf64"
+  },
+  {
+    "archivo": "documentacion/VERIFICACION.md",
+    "sha256": "93eb17376b28220f1db224f23f8b5640355450e39cdb83659910239871e83b30"
+  },
+  {
+    "archivo": "e2e/.gitignore",
+    "sha256": "2a83e7e11386308a004b30f9ab6e859edc6cebf3d31a6d0312f031cffb070b3e"
+  },
+  {
+    "archivo": "e2e/backend-regression.cjs",
+    "sha256": "329cd569640b5c00773d4940e068c1eda7105fad89897ef2ac33f9091b2db79f"
+  },
+  {
+    "archivo": "e2e/correo-test-preload.cjs",
+    "sha256": "59d3a0f6535fe22e89726f8bdec98557c95134e332230b1f1d34fbb4a71ea808"
+  },
+  {
+    "archivo": "e2e/package-lock.json",
+    "sha256": "04a9e4f63ac85d295db9bf5343d54928d2df7ac68cf5ed4e5319fae845cef5ef"
+  },
+  {
+    "archivo": "e2e/package.json",
+    "sha256": "1f3314781a321e926ccff49b8ef6bd953877c687213b50888c177cb8e8716b79"
+  },
+  {
+    "archivo": "e2e/playwright.config.cjs",
+    "sha256": "d27a490a867a0d8df124862bd60beb6a4793223305852404ae3d5dc64e842b90"
+  },
+  {
+    "archivo": "e2e/run.cjs",
+    "sha256": "233b09265d67580cd14d97835103a7507ccbb4c56d89ba79469f405230eed7b2"
+  },
+  {
+    "archivo": "e2e/specs/imagenes.spec.cjs",
+    "sha256": "33b63a6c75be3286b05b6c850615cf480586ff077a30c3946ee19014a2d75572"
+  },
+  {
+    "archivo": "e2e/specs/modales-operacion.spec.cjs",
+    "sha256": "8fff20bf237c8d0992986bf9f15de871b9a164aabc6313c9b0d5bea517adbc4a"
+  },
+  {
+    "archivo": "e2e/specs/operacion.spec.cjs",
+    "sha256": "9fd6df74a445bd879b831fe1f2227bae509ae5b0e6959db2b9ab45649a6e41fd"
+  },
+  {
+    "archivo": "e2e/specs/pantallas.spec.cjs",
+    "sha256": "1b47edfa8592c5a09f284529bf8ebe89035e20b825e22f73b5e70a54102250f5"
+  },
+  {
+    "archivo": "e2e/specs/pedido-detalle.spec.cjs",
+    "sha256": "43d62553d94ffea89cd1596f2aa22aa5825816c41a70d286503a7eef8fe9282b"
+  },
+  {
+    "archivo": "e2e/specs/pedido-modal.spec.cjs",
+    "sha256": "a32d162ef0a73b58515f4e97e65606a84cb3c6091772be4bb8af8da4ef6c7136"
+  },
+  {
+    "archivo": "e2e/specs/recuperacion.spec.cjs",
+    "sha256": "e51ba3268774d6afbb69e13587e7396930cf93d84de24b075a0f23eb60d77084"
+  },
+  {
+    "archivo": "e2e/specs/reglas.spec.cjs",
+    "sha256": "29f769d3100830a61ace85ca693278921cd41c7a73262bba456306a0fc82f713"
+  },
+  {
+    "archivo": "e2e/specs/reportes-dashboard.spec.cjs",
+    "sha256": "425b4d26ffbfe4e829bff2f13411636094162a6639975ae04e765856e996d1a1"
+  },
+  {
+    "archivo": "e2e/specs/z-cuentas-layout.spec.cjs",
+    "sha256": "91a39ab22f7aae07ae898540357dae7e69a4a60cc18d533f0e8647ce553cdde6"
+  },
+  {
+    "archivo": "e2e/specs/zz-responsive.spec.cjs",
+    "sha256": "d80aa1d37de82e114169a64b25fd89648990dd185706ca43474ed216da1e4d96"
+  },
+  {
+    "archivo": "e2e/specs/zzz-productos-cliente.spec.cjs",
+    "sha256": "4d0790e695915fe6882937429f6ab3a931502459fa77d4fb1922856b1f5e6e6d"
+  },
+  {
+    "archivo": "frontend-app/.env.example",
+    "sha256": "756e26b073ad7ed9da6a444d262f61ef222183cd19d57d1cda533c8af76544f2"
+  },
+  {
+    "archivo": "frontend-app/docs/division-cuenta.md",
+    "sha256": "2aed98b3fd5f1fb35814970820d390e54fac9baf34ff9dd7577a196d68d08fb0"
+  },
+  {
+    "archivo": "frontend-app/eslint.config.js",
+    "sha256": "9f9b44b8e55768eaf86e417b96919510b12055d87806e0e2f0703c5a0eb64817"
+  },
+  {
+    "archivo": "frontend-app/index.html",
+    "sha256": "72e3c6fce0d45317419fc2f1adc0c5fbf0f27ddb38476139a550965866fb5078"
+  },
+  {
+    "archivo": "frontend-app/package-lock.json",
+    "sha256": "cf64219cda0b84d294e615105aaabed59de03ae8f17dcd8c874c7f9ed41bf632"
+  },
+  {
+    "archivo": "frontend-app/package.json",
+    "sha256": "8af49b3937873be7f75c3b882ebbc175bcb974a157cacf49eab0e982406c4cf8"
+  },
+  {
+    "archivo": "frontend-app/public/favicon.svg",
+    "sha256": "61bc9a161de58248288e6905425d7180f0624c2865007b97d763fdac12043a66"
+  },
+  {
+    "archivo": "frontend-app/public/icons.svg",
+    "sha256": "7ca2d67c9c3aebf50cdc8709ee8aacf8cdb8cc7ea6325ea94939caef5da1c53d"
+  },
+  {
+    "archivo": "frontend-app/src/App.css",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "archivo": "frontend-app/src/App.jsx",
+    "sha256": "18e676833eb6297785ac906fa955cac5b7b4b13e8b0fcfaddc3eb61fb703b22e"
+  },
+  {
+    "archivo": "frontend-app/src/assets/brand/logos/claro.png",
+    "sha256": "37630c8ff76b5fcd95d13779baf3fbfee2d4e9a0a23a15d1c4d5457eaee48e5b"
+  },
+  {
+    "archivo": "frontend-app/src/assets/brand/logos/elementos/ambiente-campestre.svg",
+    "sha256": "774c48d0617219d026545e93e437f62b08bb32d473c7824bda03f736b4eb854d"
+  },
+  {
+    "archivo": "frontend-app/src/assets/brand/logos/elementos/ambiente-campestre.svg.png",
+    "sha256": "07832a621230c95125dd155fe09b5d0aec3d19088e7607bc6968b79aba96b20f"
+  },
+  {
+    "archivo": "frontend-app/src/assets/brand/logos/elementos/buena-compania-y-juegos.svg",
+    "sha256": "7fa3cf1ab02ea31fcc61122cfc25bcdeebaba08b666d2bf657b4393679c03dff"
+  },
+  {
+    "archivo": "frontend-app/src/assets/brand/logos/elementos/buena-compania-y-juegos.svg.png",
+    "sha256": "d1b140e2cbf6535bc667e771539efa198770b512461e8ccbbc530ff077589f50"
+  },
+  {
+    "archivo": "frontend-app/src/assets/brand/logos/elementos/para-todas-las-generaciones.svg",
+    "sha256": "178e741821ecb1188cca9181b0ff2b10d7b6c1004d42d7db53ad13c3a4031015"
+  },
+  {
+    "archivo": "frontend-app/src/assets/brand/logos/elementos/para-todas-las-generaciones.svg.png",
+    "sha256": "4ec7ff3c86470ebd869ab919c982167606dc6347ce0cf72ffb12c3c31861c1c7"
+  },
+  {
+    "archivo": "frontend-app/src/assets/brand/logos/elementos/tradicion-local.svg",
+    "sha256": "2b924828d12562f8bb9f498fe42baafd1886518f1e0643581b39de999e2ed253"
+  },
+  {
+    "archivo": "frontend-app/src/assets/brand/logos/elementos/tradicion-local.svg.png",
+    "sha256": "d7c20a09e3ed673f03587bf748bb91abd428db09ca1d8e01f151b1c7b8c59163"
+  },
+  {
+    "archivo": "frontend-app/src/assets/brand/logos/icono.png",
+    "sha256": "450b9203bc0c551d3bd67c1635ba330b680a7bb6122a733a12b165a44f9415b5"
+  },
+  {
+    "archivo": "frontend-app/src/assets/brand/logos/oscuro.png",
+    "sha256": "948072de2237be20a90a1203511d94cdb3e99533ca510e38bff972c3b6f0e6ba"
+  },
+  {
+    "archivo": "frontend-app/src/assets/hero.png",
+    "sha256": "881ffbcaafc212e49addad08846a5b82761355fa20624253af3477ba33262c5c"
+  },
+  {
+    "archivo": "frontend-app/src/assets/react.svg",
+    "sha256": "35ef61ed53b323ae94a16a8ec659b3d0af3880698791133f23b084085ab1c2e5"
+  },
+  {
+    "archivo": "frontend-app/src/assets/vite.svg",
+    "sha256": "2f1f6c6f90a0ef7422cbb4cfafcd8ad329c507a18afdc34cc21fa72179b9c54a"
+  },
+  {
+    "archivo": "frontend-app/src/components/AccessDenied.jsx",
+    "sha256": "8250167b06721e93c2f416a06b77e1fcf5f848e943890f52c510c3cfc22b0e7a"
+  },
+  {
+    "archivo": "frontend-app/src/components/AjusteStockForm.jsx",
+    "sha256": "bae88a82c8971da4d310392ed1dd6458c2d9593cb318699c1753cd6071c8b16e"
+  },
+  {
+    "archivo": "frontend-app/src/components/AlertasSection.css",
+    "sha256": "d927a601e38456dc2139cf9810345e8566294b43f5fafec2464218d53c18369f"
+  },
+  {
+    "archivo": "frontend-app/src/components/AlertasSection.jsx",
+    "sha256": "5ef20bc3d7cea28ff2d354e0c4763040c1a7b92e8bc36ccbd9fd1aba765dabc5"
+  },
+  {
+    "archivo": "frontend-app/src/components/AuditoriaSection.css",
+    "sha256": "8f333c44355aea1787cf65a448066c14ef5b8b5fbce937a75976596337b4ac0b"
+  },
+  {
+    "archivo": "frontend-app/src/components/AuditoriaSection.jsx",
+    "sha256": "be8cfbcae872769ff4d1f06228807960f9234a39ecd32ff74133146607cde0c3"
+  },
+  {
+    "archivo": "frontend-app/src/components/Can.jsx",
+    "sha256": "f1723dc25c8cf469b03c0122f1cabfd2a43f2022d50010d82da08753f6258873"
+  },
+  {
+    "archivo": "frontend-app/src/components/CatalogoForm.css",
+    "sha256": "2ff4cf98bf67003d538df8cc278f82c54adb82b749a79e895671a62bd7927667"
+  },
+  {
+    "archivo": "frontend-app/src/components/CatalogoForm.jsx",
+    "sha256": "21f716e5e3b5844ded4a193c3760a76c96f67f945b5c7ed7248f90375ca904a2"
+  },
+  {
+    "archivo": "frontend-app/src/components/CierreCajaReal.jsx",
+    "sha256": "7a57255c06c764ead73c03eb6c946d1712685aaff10d4d35c1e1c65e359b7b26"
+  },
+  {
+    "archivo": "frontend-app/src/components/CierresCajaSection.css",
+    "sha256": "dadaeca4b7198bead0c7208f6c976f4e0a61c8d11772c1096ec886b91e3085c2"
+  },
+  {
+    "archivo": "frontend-app/src/components/CierresCajaSection.jsx",
+    "sha256": "dde63c120529607095f0417a9579a792a9b071c726f2be7633241d8b6954f599"
+  },
+  {
+    "archivo": "frontend-app/src/components/ClientePedidoFields.jsx",
+    "sha256": "8aa0b9a7440c426d55c2a93504ac26b474d4869e5d07383a9c2a77a1d5401442"
+  },
+  {
+    "archivo": "frontend-app/src/components/CompraDetalle.jsx",
+    "sha256": "79ee1ba1df25ac5e47db000ad95805521f2ecc7e0cd03002c6737b60de6f755b"
+  },
+  {
+    "archivo": "frontend-app/src/components/CompraForm.jsx",
+    "sha256": "bda9f0954eb613b92984d83296b60e3b0c35c5a26846e487355cafa9910c68bf"
+  },
+  {
+    "archivo": "frontend-app/src/components/ComprobantePedido.css",
+    "sha256": "d3621cfaed688eb65550a3166a9f1469a3080889b2e34cd26c33baf33c80e85f"
+  },
+  {
+    "archivo": "frontend-app/src/components/ComprobantePedido.jsx",
+    "sha256": "617fb4b5fe238bd628b3d58072a5da60f60ed0cb13c5f34e6bbfaebbefcc2629"
+  },
+  {
+    "archivo": "frontend-app/src/components/ConfiguracionSection.css",
+    "sha256": "1f877d97e8145af85d827bd6ddc0072b8e27cc7419123e5136fd04381ef7aced"
+  },
+  {
+    "archivo": "frontend-app/src/components/ConfiguracionSection.jsx",
+    "sha256": "a4ad30033436940b7016ed8862548a74915e66c02c14970c02bd47b95ddd268a"
+  },
+  {
+    "archivo": "frontend-app/src/components/CuentasPendientesSection.css",
+    "sha256": "86b9fe36c9796b375b71c510c34b6dd7b389caeedd87622fd1ee8011af8d562a"
+  },
+  {
+    "archivo": "frontend-app/src/components/CuentasPendientesSection.jsx",
+    "sha256": "58168ba7b65acfaff79dcaf7690de3817705d312fa330f5a7b248571426a6d42"
+  },
+  {
+    "archivo": "frontend-app/src/components/DivisionCuenta.css",
+    "sha256": "dab6c4197c579bb1149ac1d51157d3caea436b6e479da928cc9f78df11f624a7"
+  },
+  {
+    "archivo": "frontend-app/src/components/DivisionCuenta.jsx",
+    "sha256": "f9a7dd82712e249e874c1b77aa176f6f5c21dd5c5f604f0527b5c28888910f3d"
+  },
+  {
+    "archivo": "frontend-app/src/components/DivisionResumen.jsx",
+    "sha256": "8aa02161d566cc116943eccc46a965dc5ba9aae52b855b6bc658c034153722db"
+  },
+  {
+    "archivo": "frontend-app/src/components/GlobalHeaderTools.css",
+    "sha256": "877caf8b3ada712f8a8625ac54c9bbedc10546a2ea31a69d412655ab4b00d844"
+  },
+  {
+    "archivo": "frontend-app/src/components/GlobalHeaderTools.jsx",
+    "sha256": "936475c07442703d6164eb388d99eb2f0a3d333bad5139abff9b190b0ad99842"
+  },
+  {
+    "archivo": "frontend-app/src/components/HistorialClientesSection.css",
+    "sha256": "4326857e8c0f12aafb8fd12b7ca7798712d2e5fb07d70c218d86db76908de8d1"
+  },
+  {
+    "archivo": "frontend-app/src/components/HistorialClientesSection.jsx",
+    "sha256": "be667a33b9ef5cf3292dbe08588ed7c7df3ba2cb62894de233832e30a03bffef"
+  },
+  {
+    "archivo": "frontend-app/src/components/HistorialComprasProveedor.css",
+    "sha256": "2ad4dc417f2723a38058cf09b1975aac5b2d74f24b26b9247af2609754b2d0de"
+  },
+  {
+    "archivo": "frontend-app/src/components/HistorialComprasProveedor.jsx",
+    "sha256": "abfd4d87b0b8cc224ce647f59a240e1e696f8d7a8a305daaa9c2dab4c0c1930a"
+  },
+  {
+    "archivo": "frontend-app/src/components/HistorialJuegosSection.css",
+    "sha256": "43b44ef2497d40c9d6c7fbd73c0b397ea10977f5aa7ff615ecd3f9eebdce3160"
+  },
+  {
+    "archivo": "frontend-app/src/components/HistorialJuegosSection.jsx",
+    "sha256": "14d21da30cfa5de77a1dda75c79b897515a2be59832d85eacdff131d47b2799e"
+  },
+  {
+    "archivo": "frontend-app/src/components/InventarioNav.css",
+    "sha256": "28c403cb685044ee4e5c9f8679d925bd56991a50a2062c01bf451344006e8534"
+  },
+  {
+    "archivo": "frontend-app/src/components/InventarioNav.jsx",
+    "sha256": "85111ce726da0cf814d8ef4e00e70ec3c262f03cc19dc91954c21b502f42d4a9"
+  },
+  {
+    "archivo": "frontend-app/src/components/InventoryRemoteState.jsx",
+    "sha256": "67220b53e91ee38705635ea32686a4b67b3bb97cfff13fdf33682c5f8af14bd8"
+  },
+  {
+    "archivo": "frontend-app/src/components/JuegoInicioForm.jsx",
+    "sha256": "125b30ee6ecb697811a9cccc48f9e61e25b92b5c4d69ecb57393740a4fcfc291"
+  },
+  {
+    "archivo": "frontend-app/src/components/MantenimientoJuegosSection.css",
+    "sha256": "b896906eb69d8ebb9862982d0d4deee8b8faf9ab5734e4b2291a4f4c8b33fff8"
+  },
+  {
+    "archivo": "frontend-app/src/components/MantenimientoJuegosSection.jsx",
+    "sha256": "0f2c66f5efc7ad485782e7f4bcee876ddb9085f202d58dfb1c10b47a18fcb5c5"
+  },
+  {
+    "archivo": "frontend-app/src/components/MermasSection.css",
+    "sha256": "f35c2c2ab5e986b8aae8ec6b0a90a59a3df2cce56ca22a5a86c9ec9f8aaaa426"
+  },
+  {
+    "archivo": "frontend-app/src/components/MermasSection.jsx",
+    "sha256": "eeb6c87952fcb3b5fe2721c1d9cb2920a99a9c6ef37f8b92cc61819923e122b1"
+  },
+  {
+    "archivo": "frontend-app/src/components/MesaCuentaResumen.jsx",
+    "sha256": "514c8ebddcc54458c6bd2fb867c340bc0446f8e13f43c05ecab1e56c6e081b7a"
+  },
+  {
+    "archivo": "frontend-app/src/components/MesaDetalle.jsx",
+    "sha256": "0d2e3498dbce5b79317f9f3e4ddf529793a19cd0712983f941d05029f57151e3"
+  },
+  {
+    "archivo": "frontend-app/src/components/MesaForm.jsx",
+    "sha256": "51a86a5bcd38ac67b3e1d6d8a37609788e5ea4b94f7cf5f9402b48e31886fbd4"
+  },
+  {
+    "archivo": "frontend-app/src/components/ModalOperacion.css",
+    "sha256": "53a922be08b3a27549b4559495306d2d327a2d21241defe0452a7fe5a00492de"
+  },
+  {
+    "archivo": "frontend-app/src/components/ModalOperacion.jsx",
+    "sha256": "8e447f0b353a0a555a993252d1830dcc114793faaed740220d5f0b5c1129824d"
+  },
+  {
+    "archivo": "frontend-app/src/components/MovimientosSection.css",
+    "sha256": "9534750f57dde0bcd47227b52f80984fa83d36fddc9eba1bdf7e6c52d0434c2a"
+  },
+  {
+    "archivo": "frontend-app/src/components/MovimientosSection.jsx",
+    "sha256": "83ae37e36a69173e4e7a26bcec315a681e61a4e7d9c2e8700a035cb020c4699f"
+  },
+  {
+    "archivo": "frontend-app/src/components/OperacionForms.css",
+    "sha256": "268dae335068a43b43dd9cdfe89b5fc50de9c5cb7540d5dcb23757d21446a9b4"
+  },
+  {
+    "archivo": "frontend-app/src/components/OperacionRemoteState.jsx",
+    "sha256": "d4cabe27e9c3cdc2250f9376583cdaa241a08bdbe55b089001a40c91ee90caec"
+  },
+  {
+    "archivo": "frontend-app/src/components/PagoDirectoPedido.jsx",
+    "sha256": "97d2e4fbff7367b028180f7886fae8309244da08e5098f8bc2ab7af15e29e17a"
+  },
+  {
+    "archivo": "frontend-app/src/components/PagosDivision.css",
+    "sha256": "59ec1f2a25ccdc046dffe686d8086fe9eb7456ffc0d1037cb14d1e4c5c676ce9"
+  },
+  {
+    "archivo": "frontend-app/src/components/PagosDivision.jsx",
+    "sha256": "54a30adc30ec00bb3e232b8576dacc56a4baa1d8efa6c274dcbbb3439080e8b9"
+  },
+  {
+    "archivo": "frontend-app/src/components/PagosGlobal.jsx",
+    "sha256": "ad5714dc33114db89e862e05773e3c03ce16acdc7614aa64d21cbc0e79d4b03a"
+  },
+  {
+    "archivo": "frontend-app/src/components/ParticipanteConsumos.css",
+    "sha256": "28d9c4dcc87928223fdba25f6ae182eaa9ff5e29ded7277a5a7a5a385f5ee5fb"
+  },
+  {
+    "archivo": "frontend-app/src/components/ParticipanteConsumos.jsx",
+    "sha256": "1a2bee649662c9fade1bbc59f957a48d9711dfde1638dd09a3ac3a83440a5ae1"
+  },
+  {
+    "archivo": "frontend-app/src/components/ParticipanteVisitaSelector.jsx",
+    "sha256": "ed71409c4d220d18b683e394304dca117813de64d19384f81f06c50acfacba75"
+  },
+  {
+    "archivo": "frontend-app/src/components/PedidoDetalle.css",
+    "sha256": "9bed6bef009db34589a1ea7e57bf805a2d3bea17ed38454184e9e5d50fb9433b"
+  },
+  {
+    "archivo": "frontend-app/src/components/PedidoDetalle.jsx",
+    "sha256": "2f2582fc9c3af610d898f0b658a811a4917475c262e3de6da097b3fbea4d9bfe"
+  },
+  {
+    "archivo": "frontend-app/src/components/PedidoForm.jsx",
+    "sha256": "517c0b665d949959277d9ca09b5f626e9d6c5526a3f766111273efe5bbba91a2"
+  },
+  {
+    "archivo": "frontend-app/src/components/PedidoParticipantes.jsx",
+    "sha256": "5a9470e3a467c3f45faf5c433f853539720aad71af2f676fc81e0ff5c83cd6d2"
+  },
+  {
+    "archivo": "frontend-app/src/components/PerfilPanel.jsx",
+    "sha256": "b7da083291290a5d101f5ef441b848c51b3f190750719eeaa7ae39a5d3ab3720"
+  },
+  {
+    "archivo": "frontend-app/src/components/ProductoImagen.css",
+    "sha256": "e63e467b6d65668144b88de760a4867282fbeb932146dc0f804f746b0d83ae1b"
+  },
+  {
+    "archivo": "frontend-app/src/components/ProductoImagen.jsx",
+    "sha256": "2adbea6da76f5699b54fd98f0a8f55533134db0acb6ef98f1ea0e89ce158fca8"
+  },
+  {
+    "archivo": "frontend-app/src/components/ProductoImagenEditor.jsx",
+    "sha256": "4dff49a5db8b6c1b484adee65a07c53b370e321360fc432e205422fd8b057773"
+  },
+  {
+    "archivo": "frontend-app/src/components/ProveedoresSection.jsx",
+    "sha256": "21627c978195ee78bf82be11136833754ac4181b8e7434b35c0528cb675d3e50"
+  },
+  {
+    "archivo": "frontend-app/src/components/RecuperacionPassword.jsx",
+    "sha256": "ec0630f4e6488b66e60ba77ac27cf657849dd7c8b85456cb253b3d6f6bd245d8"
+  },
+  {
+    "archivo": "frontend-app/src/components/RefrigeradoresSection.css",
+    "sha256": "eb99900b0631846410687030523bafdb667d42c80c4b7e818eabe98c63a9d06f"
+  },
+  {
+    "archivo": "frontend-app/src/components/RefrigeradoresSection.jsx",
+    "sha256": "1a6c3ede439ddf441c94aa251cfe631ee6372269041f9e827b471ded5b0343bc"
+  },
+  {
+    "archivo": "frontend-app/src/components/ReporteCajaSection.css",
+    "sha256": "a8cd97318b6307c8d0d172ac3103eecf775c09275a2162f24738b765291f3c46"
+  },
+  {
+    "archivo": "frontend-app/src/components/ReporteCajaSection.jsx",
+    "sha256": "ee7f314eea97b48a9de1e72b87a940587097d329f412ffcba797a09416897ea4"
+  },
+  {
+    "archivo": "frontend-app/src/components/ReporteInventarioSection.css",
+    "sha256": "8a94acb0c6e539de9809b1a85c85a21a07413f1a294dd1d079140a31fa57bc1e"
+  },
+  {
+    "archivo": "frontend-app/src/components/ReporteInventarioSection.jsx",
+    "sha256": "0302ca3ef38f7d4ed758d0c20c1ef16644fa3a4056f0f0428799ea55a8821708"
+  },
+  {
+    "archivo": "frontend-app/src/components/ReporteJuegosSection.css",
+    "sha256": "9d61cf0455085202e271d59bea2aa426b8b827d60e623c8e61df9868f87c62cb"
+  },
+  {
+    "archivo": "frontend-app/src/components/ReporteJuegosSection.jsx",
+    "sha256": "7da9c6492e3568ded24ca0f79f2b92db208133362ccf623a74f0462a43541886"
+  },
+  {
+    "archivo": "frontend-app/src/components/ReporteProductosSection.css",
+    "sha256": "27543463409760fab8f5e11fc9d1224439661832b3186b8febb34f4e3b3a7397"
+  },
+  {
+    "archivo": "frontend-app/src/components/ReporteProductosSection.jsx",
+    "sha256": "2fd5165c4a81ccad12b134dfe94b8e2bd1c8a0c25a776e9a5eefabec86402768"
+  },
+  {
+    "archivo": "frontend-app/src/components/ReporteRemote.css",
+    "sha256": "e5c4871b3d88d1d62eec5f17bae89690fa2e6088f9e56f1069207b2ccc91b05d"
+  },
+  {
+    "archivo": "frontend-app/src/components/ReporteRemote.jsx",
+    "sha256": "821e22a3167594afaf846b86f2d9b437e33bee3176771d07d704dcb9298e8835"
+  },
+  {
+    "archivo": "frontend-app/src/components/ReporteVentasSection.css",
+    "sha256": "923f64c23f6fb268ef274a8f45ad8df7b3b0a08275b110b102770538651dc558"
+  },
+  {
+    "archivo": "frontend-app/src/components/ReporteVentasSection.jsx",
+    "sha256": "706bb7e2cfb0286c480fa1027c8859b8a974bbcbcf1834034736c96b61aa02b0"
+  },
+  {
+    "archivo": "frontend-app/src/components/RolesPermisosSection.css",
+    "sha256": "0892ea54b136868691a05102ee59474a0a79c3dbba349c095cd252047de84814"
+  },
+  {
+    "archivo": "frontend-app/src/components/RolesPermisosSection.jsx",
+    "sha256": "4f730df692a18b8205dafcb7da6410adb2712342524ac3842d9d5d679a874744"
+  },
+  {
+    "archivo": "frontend-app/src/components/RondasConsumo.jsx",
+    "sha256": "ab688f52472004b7f14c2ce5588ec5c4b16ebf28b278fc9cdbd2bdd6d733770b"
+  },
+  {
+    "archivo": "frontend-app/src/components/SesionesJuegosSection.css",
+    "sha256": "48f51750ae90096f6664d8cfb17d6fa6e314157303197245b86d74b8d80d61f5"
+  },
+  {
+    "archivo": "frontend-app/src/components/SesionesJuegosSection.jsx",
+    "sha256": "aa81411f2d30293fb53178e717b71569fe8780e53f8d1077e7ad240a7c676742"
+  },
+  {
+    "archivo": "frontend-app/src/components/UserProfileMenu.css",
+    "sha256": "96ed718a98c631fce5e5972855a7fe45fdc946ea0bab0d478d154d3f1d3fc2b7"
+  },
+  {
+    "archivo": "frontend-app/src/components/UserProfileMenu.jsx",
+    "sha256": "747c061a00dab250e3109d8c08cb85d10aec820557e89b31fb1c3803a6d12e09"
+  },
+  {
+    "archivo": "frontend-app/src/components/UsuarioAdminForm.jsx",
+    "sha256": "c2e47fb0410a04001bfdb1856f538e855de22ab978272b7d1afe1ade0f3e8dbd"
+  },
+  {
+    "archivo": "frontend-app/src/context/AuthContext.jsx",
+    "sha256": "5703221d3c60e1c1abe705e288066020bb5256ecac0e2ef6832f5aafe99d7c5f"
+  },
+  {
+    "archivo": "frontend-app/src/context/useAuth.js",
+    "sha256": "3e027c651b725845002996b4fe2adbac251ae0b8af7139032d54c0c360463c93"
+  },
+  {
+    "archivo": "frontend-app/src/hooks/useHeaderSection.js",
+    "sha256": "5e4f7d7791ae7db7263ee1621e0b4d40f1329ef492800871b4b95a9714b9de26"
+  },
+  {
+    "archivo": "frontend-app/src/hooks/useInventoryResources.js",
+    "sha256": "a38495393c94fae4be168655177a48b3242d74524d638a42aee86aac98063bec"
+  },
+  {
+    "archivo": "frontend-app/src/hooks/useQuickAction.js",
+    "sha256": "8930a4dd044709f47803a3de836c032b7cdd3a540ed717848ecd5aea20307997"
+  },
+  {
+    "archivo": "frontend-app/src/hooks/useRemoteCatalog.js",
+    "sha256": "c709b43967506c51a5f34e3d0d502a7353a0ba4abfd701bbae8624fa3e61b85c"
+  },
+  {
+    "archivo": "frontend-app/src/hooks/useReporteReal.js",
+    "sha256": "e4e7448ce264fa5a23a66150eb318c5fe04ddff58f5b9789f78f5b76767ae17a"
+  },
+  {
+    "archivo": "frontend-app/src/index.css",
+    "sha256": "a212d8825f2df46be95f99d7243af47880ca9de3b5de0afefa39a098771db3f2"
+  },
+  {
+    "archivo": "frontend-app/src/layouts/AdminLayout/AdminLayout.css",
+    "sha256": "735c3c234c160c62c7a7d678323daf1ad8c575406968265a665316a25ee85e88"
+  },
+  {
+    "archivo": "frontend-app/src/layouts/AdminLayout/AdminLayout.jsx",
+    "sha256": "c1b3d344cc86ea741363218283c3722a4554d62fe241dbf4014cd38605d6c2bd"
+  },
+  {
+    "archivo": "frontend-app/src/main.jsx",
+    "sha256": "8e50e3a74ca7bb7e69b842bcb80ab36c8c7864f717e3bf8114ed1617972fe9a0"
+  },
+  {
+    "archivo": "frontend-app/src/pages/AdministracionPage.css",
+    "sha256": "95585aa3538ebb8bf8c8f555cb1cd1e997fccfa5259319fb83ddb0a72512b5a3"
+  },
+  {
+    "archivo": "frontend-app/src/pages/AdministracionPage.jsx",
+    "sha256": "567e03923fdca6983383814d37d9bb85dadd9af7189d32447e149349767a4856"
+  },
+  {
+    "archivo": "frontend-app/src/pages/CajaPage.css",
+    "sha256": "1d4c56ccee882ef2f6efb37715269ed4d2c9704a212cbef3eea900cc89cde6cc"
+  },
+  {
+    "archivo": "frontend-app/src/pages/CajaPage.jsx",
+    "sha256": "a29ef75110105904afe0fc2752ce29e98ed9cfe0df0e21e8cac8d662c0563439"
+  },
+  {
+    "archivo": "frontend-app/src/pages/ClientesPage.css",
+    "sha256": "f803b9a757acddd3405bb2de120338e2d1db46b182e06390f0b4b5a1078a1649"
+  },
+  {
+    "archivo": "frontend-app/src/pages/ClientesPage.jsx",
+    "sha256": "1e2d718a84342d1f9665d563006180efae924d65f57b4b94584357e0d1355a3f"
+  },
+  {
+    "archivo": "frontend-app/src/pages/ComprasPage.css",
+    "sha256": "3ee2df60aa6e263dbedf2a5d95e522cb1f1210e741479e9ea4d2c18dff4014c9"
+  },
+  {
+    "archivo": "frontend-app/src/pages/ComprasPage.jsx",
+    "sha256": "d8379b33af7b64a45312b16f1ef33170d180dbc04914cba6b1c8ba40771b3d6a"
+  },
+  {
+    "archivo": "frontend-app/src/pages/DashboardPage.css",
+    "sha256": "183cb7310fafebe2e60a58861c840ff0b55e61fa9cffc7c4a465b848db87f6de"
+  },
+  {
+    "archivo": "frontend-app/src/pages/DashboardPage.jsx",
+    "sha256": "8a7463c3cb4b8a0a9ad8d3be23d82b6fcb32d1fcf18530d6c27a3c228291659f"
+  },
+  {
+    "archivo": "frontend-app/src/pages/InventarioPage.css",
+    "sha256": "b297ec84a1440faf855c1ca975f17cdd2cb4c62b80b6e3dcfa472280613f8c00"
+  },
+  {
+    "archivo": "frontend-app/src/pages/InventarioPage.jsx",
+    "sha256": "e22a498fd7dc791b4c7786f16246123223a0846ee05088c1fc742630d670e579"
+  },
+  {
+    "archivo": "frontend-app/src/pages/JuegosPage.css",
+    "sha256": "266b874b42a2a11a032aaf727fda615bfcdfefdc14131b95fc3965611292f2dc"
+  },
+  {
+    "archivo": "frontend-app/src/pages/JuegosPage.jsx",
+    "sha256": "631db9c7ab44edf3494fc44614076941230ac18611d0f47801fe98ca07d0ef5c"
+  },
+  {
+    "archivo": "frontend-app/src/pages/KanbanPage.css",
+    "sha256": "0c39871c4c0682d40faff3243b8788bcec32171f3d4f0eef43f4a4776d43ee5a"
+  },
+  {
+    "archivo": "frontend-app/src/pages/KanbanPage.jsx",
+    "sha256": "5c3999224c848727cc1e8cdff78331feae6b53039615b85dfa830bf103561fc1"
+  },
+  {
+    "archivo": "frontend-app/src/pages/LoginPage.css",
+    "sha256": "89b5828004682eebd8d83c325c23f20b1ba111d7f77299493fbe9e09533e2fe0"
+  },
+  {
+    "archivo": "frontend-app/src/pages/LoginPage.jsx",
+    "sha256": "1469ee4e773aa55184f8083fb3bab65bf3b2269f7df544067d71ced2476846b4"
+  },
+  {
+    "archivo": "frontend-app/src/pages/MesasPage.css",
+    "sha256": "f79de0a37f8e04791a6cd0e44f4bc22dd020872b548698559c586632d406938d"
+  },
+  {
+    "archivo": "frontend-app/src/pages/MesasPage.jsx",
+    "sha256": "7c5b8d9a0708ef0da447a1172f909839686a8497cf8facc77cdc5fd7b36b5a4d"
+  },
+  {
+    "archivo": "frontend-app/src/pages/PedidosPage.css",
+    "sha256": "2df2d25abd68266a7894b2a693f823e0fd3af91596d8e10e741d2a7ffa0d5c98"
+  },
+  {
+    "archivo": "frontend-app/src/pages/PedidosPage.jsx",
+    "sha256": "1dbe97c53aedfc070e582774f0ffdd2c81d5a054572f9c270ddd394df5f656da"
+  },
+  {
+    "archivo": "frontend-app/src/pages/ReportesPage.css",
+    "sha256": "68911dc39cc1e55f3ed112f9a5d1184640963b6132f10bb4ddde645aa4147419"
+  },
+  {
+    "archivo": "frontend-app/src/pages/ReportesPage.jsx",
+    "sha256": "8d93ccde8213b974ec461851fb3d580e2aab113d1920394d896009298bd08417"
+  },
+  {
+    "archivo": "frontend-app/src/routes/ProtectedRoute.jsx",
+    "sha256": "d3569f8297a80205eb579721a7cf0cf59f1bb49762da90ba3111e186002c83ff"
+  },
+  {
+    "archivo": "frontend-app/src/services/alertasInventarioService.js",
+    "sha256": "e517c090c950afb5d7cc26c23886bd50993b5fd90197f4f36256fdd9ca75ff3b"
+  },
+  {
+    "archivo": "frontend-app/src/services/apiClient.js",
+    "sha256": "f0cce1dd1d90bd1b0d9c4cd5e2218d1f4ebd9a3f8da889e48498d35cdca1ebce"
+  },
+  {
+    "archivo": "frontend-app/src/services/auditoriaService.js",
+    "sha256": "a88e7b43b5ff21dce22b9f3d20a9af8a0bc83d24568149bd21dc7d3ec536db2f"
+  },
+  {
+    "archivo": "frontend-app/src/services/catalogoContract.js",
+    "sha256": "79b5773eba7ac8dedb599510ad5208ee23724e53d756c105b29c037e723a7e7d"
+  },
+  {
+    "archivo": "frontend-app/src/services/categoriasService.js",
+    "sha256": "bdf63169ac77c71846b8140b3bb48702337f452307c2f19d93d222a645b55e7f"
+  },
+  {
+    "archivo": "frontend-app/src/services/cierresCajaService.js",
+    "sha256": "b9ed6b63e2b2cd32b603ac165c05ecb9de5567e4959ef0f0ba6a0c642d363b32"
+  },
+  {
+    "archivo": "frontend-app/src/services/clientesService.js",
+    "sha256": "b2006e162995ae2ae11affbc5cbfbbfc9bb8a3d573e33cf2a9c4de4314d4d3d0"
+  },
+  {
+    "archivo": "frontend-app/src/services/comprasService.js",
+    "sha256": "a9b574c1f5ccddcf9d80acf1be4d0d140715128768447542a90d3ba61d86db61"
+  },
+  {
+    "archivo": "frontend-app/src/services/comprobantesService.js",
+    "sha256": "d485848738d73163b1a61ec9cf18bd2ad997dd900cfd4c420c161588fe9d0d9e"
+  },
+  {
+    "archivo": "frontend-app/src/services/configuracionService.js",
+    "sha256": "8cf2f5b7fc7fc79c686db5008cee0d946b39aed43df298a6fb81d7612aeea4b7"
+  },
+  {
+    "archivo": "frontend-app/src/services/dashboardService.js",
+    "sha256": "3bd635936930862f82f712c3c1cae0c6ed7dd40d042f5d13a94678fd612b95b8"
+  },
+  {
+    "archivo": "frontend-app/src/services/divisionesService.js",
+    "sha256": "5cbf71782079e10be1f6f140b13d2a7f1ccaab7d40bd9c2cd6306d3668f42aa2"
+  },
+  {
+    "archivo": "frontend-app/src/services/inventarioService.js",
+    "sha256": "ffb027d3c3a8ad22500a7eaa451c1d762be46ad5142ba89a08fb274b1115fb55"
+  },
+  {
+    "archivo": "frontend-app/src/services/juegosService.js",
+    "sha256": "6945580158d574741e45e8f39f11319503e16c9737b849150dddb0fbda588178"
+  },
+  {
+    "archivo": "frontend-app/src/services/kanbanService.js",
+    "sha256": "75911f57eb5ba04aae33e9646d7fcfadf3e2549e129aaa6bb895f74190434725"
+  },
+  {
+    "archivo": "frontend-app/src/services/mermasService.js",
+    "sha256": "011cd49a3441a4f5e03323ab15d8d4bb4b29cc93541a3dcb6a4ddd037c0b7211"
+  },
+  {
+    "archivo": "frontend-app/src/services/mesasService.js",
+    "sha256": "4214f86ea7f3a61400af74d5b723789c2fe9b1556d51f227ea476db8e84f83ed"
+  },
+  {
+    "archivo": "frontend-app/src/services/operacionContract.js",
+    "sha256": "803b83942be2a2ec470cb45f5be15afe2a507a5eab6dd2e88d22617ceed0f104"
+  },
+  {
+    "archivo": "frontend-app/src/services/pagosService.js",
+    "sha256": "3a40e40b9c816629db3461ee77bbe2e39933aa3a505d4006ac97dcbd88bff080"
+  },
+  {
+    "archivo": "frontend-app/src/services/participantesService.js",
+    "sha256": "b5e978d453742c02a6253a25d7a6bd59b40cf7f54a8b3d55bc07e116fff670d9"
+  },
+  {
+    "archivo": "frontend-app/src/services/pedidosService.js",
+    "sha256": "c8a9a70749abf7aab367b044385cfb28447a8996c833a02c4fb772cdb6b75da5"
+  },
+  {
+    "archivo": "frontend-app/src/services/perfilService.js",
+    "sha256": "24b641b6b61c195415f01bd08e012748e354ed5be0a44ed4f8b98bba93e0c785"
+  },
+  {
+    "archivo": "frontend-app/src/services/productoImagenService.js",
+    "sha256": "9b984477813e6fa47d2acd18c0ba4e634a0ee1b35ea505c52c9128190e5af4a2"
+  },
+  {
+    "archivo": "frontend-app/src/services/productosService.js",
+    "sha256": "675315dc2cbafd9234648b1a428db3dbf50391f7a1d370625f54443664403ddd"
+  },
+  {
+    "archivo": "frontend-app/src/services/proveedoresService.js",
+    "sha256": "df5d047f03e68ee923523df1d2a223850493a6078956c080792859a27e2a1522"
+  },
+  {
+    "archivo": "frontend-app/src/services/recuperacionService.js",
+    "sha256": "0ef3fb9d863714e1030a72a8d254dc3921f2f39601428084d474042c8c3c21fe"
+  },
+  {
+    "archivo": "frontend-app/src/services/refrigeradoresService.js",
+    "sha256": "829bccd062148cedfd1eff25d1883740f8b60e5e12f954b24c9215d3c49d18f4"
+  },
+  {
+    "archivo": "frontend-app/src/services/reportesService.js",
+    "sha256": "68df7feb6dcc197d7bf64b1decfe49cfba7b69f566a188f90429a43f361a986f"
+  },
+  {
+    "archivo": "frontend-app/src/services/rondasConsumoService.js",
+    "sha256": "224b1f85ffb1b8e1765e8541d4402624e2d93d5afb34a51b759532ea25f4e2ae"
+  },
+  {
+    "archivo": "frontend-app/src/services/sessionStorage.js",
+    "sha256": "a038d041cec976aeb3a3336d7baeec955d8b6ecebc6297b83ad3d236a3b4a809"
+  },
+  {
+    "archivo": "frontend-app/src/services/usuariosAdminService.js",
+    "sha256": "d7ee70623f1f5b8d212195a88f276c155b873f65fa2402279af0affd6e68d46a"
+  },
+  {
+    "archivo": "frontend-app/src/services/usuariosService.js",
+    "sha256": "e24d563b245c0f35f2104dab26199486885fb58fa68552144ca6d197ba77bc44"
+  },
+  {
+    "archivo": "frontend-app/src/utils/businessTime.js",
+    "sha256": "7b14888866f59b74792708fbdae9ffb2675091cc077694c3bc94d22f3528a629"
+  },
+  {
+    "archivo": "frontend-app/src/utils/copInput.js",
+    "sha256": "e4617cfa14007b688ca0142f1a6eb760cdda2ce6b246abfecf0e7044268eaf64"
+  },
+  {
+    "archivo": "frontend-app/src/utils/dateTime.js",
+    "sha256": "dbd6411b928e3213bd5b7073320413c05350df13ad4bfa4880ae770ba87e78f5"
+  },
+  {
+    "archivo": "frontend-app/src/utils/formatCurrency.js",
+    "sha256": "76e03885d92e303c3270429547f17cc5f4899cd1e4f83e03d1e55380f8838815"
+  },
+  {
+    "archivo": "frontend-app/src/utils/globalNavigation.js",
+    "sha256": "30dde7923d0590591688029adeab41747b728bc8473b7c97508d7c5d11d264c0"
+  },
+  {
+    "archivo": "frontend-app/src/utils/permissions.js",
+    "sha256": "92288591adde8a96df9586fe40035237eebc19efe5d4f83ced4a8646459431c2"
+  },
+  {
+    "archivo": "frontend-app/src/utils/resumenCuenta.js",
+    "sha256": "c26bd7dc51531e072fd251b7ff10ea6b58f961a327ac1815a944b7b28095cedf"
+  },
+  {
+    "archivo": "frontend-app/tests/alertas-presentacion.test.js",
+    "sha256": "b50332afe966a9260ffbdf4bdbb8f59c8992a2208e580199270e5127cd888ede"
+  },
+  {
+    "archivo": "frontend-app/tests/auditoria-real.test.js",
+    "sha256": "0cbb523bfaafa61b89f0c3418a6943c270c4ea39cf5653655f31923afe73d49b"
+  },
+  {
+    "archivo": "frontend-app/tests/auth-api.test.js",
+    "sha256": "2be52fa322d4ce72051a0bf01f8934dcf8dede4514b30df865787d3acf413793"
+  },
+  {
+    "archivo": "frontend-app/tests/cierres-caja.test.js",
+    "sha256": "ddfd5fb15d8196e4f3c165a49c38f446fd9db8bf5052c61951b7503236d6a4c3"
+  },
+  {
+    "archivo": "frontend-app/tests/cliente-mesa-ui.test.js",
+    "sha256": "0e88842e11c3bca7614af75937e732ad8bfc57c2d105ab9001a11c71cb64b0dd"
+  },
+  {
+    "archivo": "frontend-app/tests/clientes-proveedores.test.js",
+    "sha256": "a4d8738eb0822ea72f3e24f6a3ac2923d11ed8f3beaaeed64f81c4027cf5f127"
+  },
+  {
+    "archivo": "frontend-app/tests/compras-real.test.js",
+    "sha256": "4604739a49c6e81a575563192f8b837347d13681152d2edccc68d8802ef81f58"
+  },
+  {
+    "archivo": "frontend-app/tests/comprobantes.test.js",
+    "sha256": "3842714270b208c18c396b51f9ad0335cb1391fdfd27e5e11eafe62ef113ecd7"
+  },
+  {
+    "archivo": "frontend-app/tests/configuracion.test.js",
+    "sha256": "05c0fefbd2ce5c145f3f6627a88f30eafdfaa893f9c8ebde6fa407843883a456"
+  },
+  {
+    "archivo": "frontend-app/tests/cop-input.test.js",
+    "sha256": "8484af0da033434de79c9218f0c8f23ff9a6ba4f6ee02e8e35e2643524670500"
+  },
+  {
+    "archivo": "frontend-app/tests/cuenta-resumen.test.js",
+    "sha256": "5a7febcb6cd7287ad16d061b227c936d6558df6938e7298e0291ba1213ee81df"
+  },
+  {
+    "archivo": "frontend-app/tests/dashboard-real.test.js",
+    "sha256": "d6b10a3cb97cba91c07ae8aaaa48381b797628b953ff77a21fa553d348c437e2"
+  },
+  {
+    "archivo": "frontend-app/tests/divisiones.test.js",
+    "sha256": "64975447b5c21f6e2901f9c72f46688980336958276f10de8a3cb4e20b5d829d"
+  },
+  {
+    "archivo": "frontend-app/tests/endpoints-reales-v1.test.js",
+    "sha256": "e60d1d6a8472caa38e5c53c2993f2c5936f5e3ca8282c94e820da62da8fed22f"
+  },
+  {
+    "archivo": "frontend-app/tests/fechas-bogota.test.js",
+    "sha256": "083888eb894b541e3065a9044582ee848ffdf4afb10effe1d54c66afa2a50897"
+  },
+  {
+    "archivo": "frontend-app/tests/global-header.test.js",
+    "sha256": "0261377e9863502367faf54df8ebddfeeea340e146e914e7b2b75473e6fa298a"
+  },
+  {
+    "archivo": "frontend-app/tests/historial-clientes.test.js",
+    "sha256": "17d468cba221375134fff2dae2a0b2845aaae13b6f3f5519256759163403432c"
+  },
+  {
+    "archivo": "frontend-app/tests/historial-proveedores.test.js",
+    "sha256": "d16ebb359dee9a9f7197fd9b89034cab74171f75d34b08ff6372d1e7757792e6"
+  },
+  {
+    "archivo": "frontend-app/tests/inventario-real.test.js",
+    "sha256": "e87682ada051fa403c94bb2534688cf154fe4bd23eb84c60eebc2830398910c9"
+  },
+  {
+    "archivo": "frontend-app/tests/inventario-ui.test.js",
+    "sha256": "d74459c50a06ef3868d21277c9c6d9665dbecec6548a234ae42f3ea4ef6863ee"
+  },
+  {
+    "archivo": "frontend-app/tests/juegos-real.test.js",
+    "sha256": "edd3bcc46ff212f255d332f44eeec68f0665e46b72e16db2e7587f79fdf68a16"
+  },
+  {
+    "archivo": "frontend-app/tests/kanban-agrupado.test.js",
+    "sha256": "7a79fb0f565cc62b47d01c07bfd7350d5f98e5bf27b6c0b9fd7c43ba54204139"
+  },
+  {
+    "archivo": "frontend-app/tests/mantenimiento-juegos.test.js",
+    "sha256": "3caea9964b89f55f03c78e35c2ebed9e6814b566f51c809fb5a820febe8cb48e"
+  },
+  {
+    "archivo": "frontend-app/tests/mesas-ocupacion.test.js",
+    "sha256": "86f1618df53a053b02972e5d13ce4994f343231dcd746677552715205e7e5ebc"
+  },
+  {
+    "archivo": "frontend-app/tests/operacion-base.test.js",
+    "sha256": "bf944a1121b99fc16a02c08a2c65a7b91a568c210797206c3526efdbce567307"
+  },
+  {
+    "archivo": "frontend-app/tests/operacion-real.test.js",
+    "sha256": "742d22bd3528cb2703ab027ac2f77c76f8b1362c10023571cd5c73ef2365f03c"
+  },
+  {
+    "archivo": "frontend-app/tests/pago-directo.test.js",
+    "sha256": "80672b892129c1bcf08f9472cbe827dd6ef269d053dfe88c000236db25753a43"
+  },
+  {
+    "archivo": "frontend-app/tests/pagos-division.test.js",
+    "sha256": "84d91980b31924de258ee4d3dc0be8168f576d052f701b088afc2b6c3bbd5514"
+  },
+  {
+    "archivo": "frontend-app/tests/pagos-global.test.js",
+    "sha256": "77ef54e35ab62aa6699e55e87dca9db04b262e27bf9504516d6d3a8af980d7db"
+  },
+  {
+    "archivo": "frontend-app/tests/participantes-pedidos.test.js",
+    "sha256": "8e7516d59c2de8e180f1a7e9dbcfd5d96a07b060b6dd6f117cf7a8a4a45bb3ff"
+  },
+  {
+    "archivo": "frontend-app/tests/pedido-rondas-integracion.test.js",
+    "sha256": "c7021483fce7b6fc32e47e005cc50578aff0ecd82a6d4388523acc6be7040ea8"
+  },
+  {
+    "archivo": "frontend-app/tests/perfil.test.js",
+    "sha256": "3fce49b81715f267e0268383e37b64de3c8ecae6e2b2c1547c014a60a2774445"
+  },
+  {
+    "archivo": "frontend-app/tests/permissions-format.test.js",
+    "sha256": "ef4cc9bda0f5662ccaeb25be2cc1e611de2f599c5c98502f2862395adc9e4b6b"
+  },
+  {
+    "archivo": "frontend-app/tests/permissions-ui.test.js",
+    "sha256": "b59289905cb99d10d8fa8b82d8316eabaa9f7d613818953571a590e2dc0d008e"
+  },
+  {
+    "archivo": "frontend-app/tests/producto-imagen.test.js",
+    "sha256": "dd64008934372950f5373a462be0a92e529079fdd8c60e524a6ee105f7e00daf"
+  },
+  {
+    "archivo": "frontend-app/tests/productos-categorias.test.js",
+    "sha256": "6c053d82858b4d248256b7871e3d18cf20273544ff1a6534e20d8869e7902559"
+  },
+  {
+    "archivo": "frontend-app/tests/recuperacion-fuera-v1.test.js",
+    "sha256": "367753352b8bb428239ec515e6b6b802b894f40feb33a673d48b38aa75588770"
+  },
+  {
+    "archivo": "frontend-app/tests/recuperacion.test.js",
+    "sha256": "5fc6a8438040ae90067a227ba45ca7f5ac52f6f7f040ac96d64bbb27331a3cfc"
+  },
+  {
+    "archivo": "frontend-app/tests/refrigeradores.test.js",
+    "sha256": "32e8bd09033bf52fa64b562c652601f667b2c7f9499bb14f0801bd33b655543e"
+  },
+  {
+    "archivo": "frontend-app/tests/reportes-dashboard-ui.test.js",
+    "sha256": "fc6284f09164b9ab29ffd60bd298a4ec38f5a974049387e852b876281935de3d"
+  },
+  {
+    "archivo": "frontend-app/tests/reportes-reales.test.js",
+    "sha256": "ec8bc97176ef0135c84fa7a5b67216c9d9212eab67776f928f1a3883473cfac1"
+  },
+  {
+    "archivo": "frontend-app/tests/rondas-consumo.test.js",
+    "sha256": "bc3698fa74d01a5c841692d82ba55cd1273b546c54a665c4273c2833e93467ed"
+  },
+  {
+    "archivo": "frontend-app/tests/sesiones-mesa.test.js",
+    "sha256": "7ff4285a1b4949ca147a99c93eabe9507a4718ec395f17b1cdfb4128a826107d"
+  },
+  {
+    "archivo": "frontend-app/tests/usuarios-admin.test.js",
+    "sha256": "3dbad8b90bb0a313dfca76fa2a49c2e315305488fd569b21e8f31edf65e0daf2"
+  },
+  {
+    "archivo": "frontend-app/vite.config.js",
+    "sha256": "f58edcc886dbf642f0aad60dce0c36a378df3022aa88cec76592532b12d529cc"
+  },
+  {
+    "archivo": "package-lock.json",
+    "sha256": "43604c2f86fafd314cd706f56620fd03b1d770ea33032ed9a26d8a6a485d69b1"
+  },
+  {
+    "archivo": "package.json",
+    "sha256": "75e7c23495cb7169ae4bbeabca4271261f6be43f9c65b2f695c7c5dfa6d021e3"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/.resources/definition.yaml",
+    "sha256": "b4c6a8d7b2f272f5aeac97bea011f27a21cc548861fa9c8299f30a4b38bb8002"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Autenticación/.resources/definition.yaml",
+    "sha256": "e32f41fc018e7018ac06dff9d296525a8843f8a66caa968bd07476e9099a327e"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Autenticación/POST -api-usuarios-auth-otp-solicitar.request.yaml",
+    "sha256": "7d3c4cf01af138f69efa59f56cb7bb5a8a796416a46e5c29611fabdb51c61dd2"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Autenticación/POST -api-usuarios-login — Variante 1.request.yaml",
+    "sha256": "4009d4610d7b9c3d89a8e8398b7060bbf1a0f42eea6a230f13e098021da0b9f6"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Autenticación/POST -api-usuarios-login — Variante 2.request.yaml",
+    "sha256": "006cb5d2ff9401400e70ede43c4baa8af67863dc48398879928a6d477768dee7"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Autenticación/POST -api-usuarios-login — Variante 3.request.yaml",
+    "sha256": "7aacdeea691542a87f2ccf101d681e0b653ce88a592a6b67a2378244e6442ee9"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Autenticación/POST -api-usuarios-login.request.yaml",
+    "sha256": "6f24fdb6b270b97a2aa03cd3731b5b102fa41d20a028f2a71d1440a5bca9bd6f"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Inventario/.resources/definition.yaml",
+    "sha256": "ef21e0a5ab5bc700104f7a36cceca431bd991e76b332d9d5c5dcc1dc8cc41f6a"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Inventario/GET -api-inventario-alertas — Variante 1.request.yaml",
+    "sha256": "0403e660e902fccf10f980c0f2192bf5b09b3edd603d8927b19d91db3dbf64dc"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Inventario/GET -api-inventario-alertas — Variante 2.request.yaml",
+    "sha256": "b9a8f763ab175b4bf7fda00dbc38fe86b41a1a55e29f6a1d796d90cad077022d"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Inventario/GET -api-inventario-alertas — Variante 3.request.yaml",
+    "sha256": "02ace237a9a7e051d41a3eaa5b6f1210f8d41bff7206bfd42b883b18fb7ef7e0"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Inventario/GET -api-inventario-alertas — Variante 4.request.yaml",
+    "sha256": "2191bd9da2427d7894c73f9c74dc3a0fd17e9363ff3b86681bfd3f536466de94"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Inventario/GET -api-inventario-alertas — Variante 5.request.yaml",
+    "sha256": "58c59bc0359b447fa98e1e7287c9fc4c9115a8d87aac278cc34f88a2a56391b8"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Inventario/GET -api-inventario-alertas — Variante 6.request.yaml",
+    "sha256": "11fee612d33c0d7e68136f2d09a8507c5846812a4d8bfb0af8bedcceed02673b"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Inventario/GET -api-inventario-alertas — Variante 7.request.yaml",
+    "sha256": "29d466984d829b90faacc248442278b2cc691a70bab895592d6771e5be3a5dbd"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Inventario/GET -api-inventario-movimientos — Variante 70.request.yaml",
+    "sha256": "6c1ec4c85f958171fa8216dc6668870251a923eb64254f0cc5f3b7865d05bd45"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Inventario/GET -api-inventario-movimientos.request.yaml",
+    "sha256": "6fc985117b007537f422da7bf3b7bfeac5b43fab129bdcd88c429df6c5c29304"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Inventario/GET -api-mermas — Variante 1.request.yaml",
+    "sha256": "3bdad197b805b727b1baf0420e72eb9e8129b735920ca1e2d132511134cd3c9b"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Inventario/GET -api-mermas-refrigeradores.request.yaml",
+    "sha256": "1a7ff9ef492eed6d1f3b11a003b179244b9e849ebe849b8ace9d9ef572374c90"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Inventario/PATCH -api-inventario-alertas-{{alerta_id}}-reactivar — Varian.request.yaml",
+    "sha256": "5a041e315ff046c30959f524aaafd28b2b592beda6c988fab4515dd0fd9d90fc"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Inventario/PATCH -api-inventario-alertas-{{alerta_id}}-silenciar — Varian.request.yaml",
+    "sha256": "15a2aca93259eed5ee293b1ea6f021b416f7707cba5503accc66547330cb2520"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Inventario/PATCH -api-inventario-alertas-{{alerta_id}}-vista.request.yaml",
+    "sha256": "b46426337b3ccd541a7fad24f0b892a3ecca91dcfbf26aa18aee82454a8e5f93"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Inventario/POST -api-mermas — Variante 2.request.yaml",
+    "sha256": "fee23327e0fa95ee0974559f06c24e9d4bd7e4eba63457a5027942b85a0cad35"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Inventario/POST -api-mermas.request.yaml",
+    "sha256": "2906211536de03af6a7b6b718420090274d23f58de0e680db813e73ddd954111"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Inventario/PUT -api-inventario-actualizar-stock — Variante 1.request.yaml",
+    "sha256": "d75ef420e96ebb08bab720685b3cc64da8397e1eb91d1370a00d5d7a9f60884b"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Inventario/PUT -api-inventario-actualizar-stock — Variante 2.request.yaml",
+    "sha256": "2ce23cee16f587847abba578dc7b152277c8d80d288e30139a9f79ee837a4dfb"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Inventario/PUT -api-inventario-actualizar-stock — Variante 3.request.yaml",
+    "sha256": "967c256df0691d0142fbde724813a366f6b06fabbe8a7d095fcdc6dcc01f7288"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Inventario/PUT -api-inventario-actualizar-stock — Variante 4.request.yaml",
+    "sha256": "c48d138e5ea582a8bf7c2ee1a9f029e2309e54bb464c0eb67cf54be78159be46"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Inventario/PUT -api-inventario-actualizar-stock — Variante 5.request.yaml",
+    "sha256": "f7826673bbdc6b31bb69e0fed9443d14a7978b9292c4f15f3c47b026050e4480"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Inventario/PUT -api-inventario-actualizar-stock-1.request.yaml",
+    "sha256": "89e568d9faa998708eeaad245602ed8108695ef27f7e2863b6e8d3da8c55fc90"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Inventario/PUT -api-inventario-actualizar-stock.request.yaml",
+    "sha256": "4dba0650449072d595878c498eb4a85a75e2187016c7708c9e90ce2569a4c80e"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Productos/.resources/definition.yaml",
+    "sha256": "cc96357dd520cad0e0182228e61046d2bdf59d2da832bc6073f9aa99b0b4dfa2"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Productos/GET -api-categorias.request.yaml",
+    "sha256": "8bbc920a028bd31ef23abb7a24ff111e1d6ea35157054e2a7f12954f3dbf1db1"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Productos/GET -api-productos-{{producto_id_3}}.request.yaml",
+    "sha256": "a05ba97b1a08229cdf07425e5bf1d55c3f51fadf4032a3bee5630aad1f716953"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Productos/GET -api-productos-{{producto_id}}.request.yaml",
+    "sha256": "87c5c0d9e501c1a95b788e12f4d4608c4ae8738ac4a994176fb6a25acbe4571a"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Productos/GET -api-productos.request.yaml",
+    "sha256": "e7bfe1d1b545fdefa00ae5658448ccabf9e41dd96607d83e9e8f2e58531c0b0c"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Productos/POST -api-productos — Variante 2.request.yaml",
+    "sha256": "4471e5e08056be4a94e8f65be98b74a5597f5eed058957b40ecb204db2eeb6f6"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Productos/POST -api-productos — Variante 3.request.yaml",
+    "sha256": "e84100ef89289dfdd0a0641b01ee66e58e94e9b084254d06946d7d1df9e27d12"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Productos/POST -api-productos — Variante 4.request.yaml",
+    "sha256": "f0284d3402a0ada31ea03f46d47477a13a3d25698c80c1ddb0be2135de5fdeb0"
+  },
+  {
+    "archivo": "postman/collections/Donde Juanca — GA7-220501096-AA5-EV02/Productos/PUT -api-productos-{{producto_id_3}} — Variante 1.request.yaml",
+    "sha256": "08d0e28e9345e29cafba328151a9b45415304d0a35151a78ae9185e9f944e7d0"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/.resources/definition.yaml",
+    "sha256": "584486a7789164f33a88ac444a8b63c0546b56070119ecdf27736a34eb81a2fa"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-categorias.request.yaml",
+    "sha256": "03ab887b285000a299988325998d7496c03b53ea6e64ec405672c5c506bdc822"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-cierres-caja-1.request.yaml",
+    "sha256": "209c2afb3062dc69356aebc93cd39fee40d539fb44fd27703f7a2e14f0828ff5"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-cierres-caja-resumen.request.yaml",
+    "sha256": "e53272a02ee9ee7b5a2bdc0a443cbff07d078124d86a4cd6e0b4602b5c6040ad"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-cierres-caja.request.yaml",
+    "sha256": "7fd0274ea73b18921828aaaed1f22ebe6460bf577fe10da8bec04472fdf8d1f4"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-clientes-1.request.yaml",
+    "sha256": "7342108b5d83a16bdce6f767fd5bd7c7615561d2e1f0182498d01955aa9c471b"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-clientes-f374444b-5254-4864-9b35-f9b718a-1.request.yaml",
+    "sha256": "c48cf040095506dc60baabf1aeaed80483406dbdeb85f4ac732c8b3b25528c41"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-clientes-f374444b-5254-4864-9b35-f9b718a.request.yaml",
+    "sha256": "b424840bd252c8625f832d2c0bb9c3c7ada681ecffcd10cc9e6ea02c9bdac5e1"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-clientes-registrar.request.yaml",
+    "sha256": "6e0f5e8bcd9cd2125164f2caba688ee07b13786f5aac0f990b311880e5d9a590"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-clientes.request.yaml",
+    "sha256": "894d93337bad06a4e4bc2e1d2e80d39878757bbf4557c1934b1ec1df8893fe46"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-compras-1.request.yaml",
+    "sha256": "4db61f5e6f73db7cd4c1b3b27d066c343a01c80210d75000672dd16b0a2465bf"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-compras-130d020b-86c0-428b-8f64-62e0caec.request.yaml",
+    "sha256": "12c3449a830943589b9f4eae391cb1e812a0ccd8390c3cb6f3a3ff0e57078c4c"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-compras-2.request.yaml",
+    "sha256": "1258c7d53126b08e708713485c395f74ab39edced9bfb84369da3973ebb3d1e5"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-compras-3.request.yaml",
+    "sha256": "bd98b981c60ab76617e121e6c68876811255e591b4873ddaef602d440f47e53f"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-compras-351d900e-8f97-4172-86e4-a7fa065e-1.request.yaml",
+    "sha256": "de91cadab2f25c6e53d49b831f23da49907f512fe09a34e688fed2d80f38e6da"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-compras-351d900e-8f97-4172-86e4-a7fa065e-2.request.yaml",
+    "sha256": "caa408c1525f626c6faf4ec09d11b0702c51b156cded9c3ef2d24abc6c67d947"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-compras-351d900e-8f97-4172-86e4-a7fa065e-3.request.yaml",
+    "sha256": "32025398fd61bd40d89cd45831117e7915f369fd761b56e82a379467f6f6c784"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-compras-351d900e-8f97-4172-86e4-a7fa065e-4.request.yaml",
+    "sha256": "f53150804d0a9da71c8893204f1bafe5d039ba769ef51ca2858680b3b8f8bda3"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-compras-351d900e-8f97-4172-86e4-a7fa065e.request.yaml",
+    "sha256": "b22c866d82a34cfba709d1e1e2be89fb07b17950ba9ef5b96768a9f062c6a8a3"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-compras-9a23c5bb-0a7a-46d1-b5e1-d1268847-1.request.yaml",
+    "sha256": "7813894390609554547a1bd0a959080c06436d2113eb4637a30e29c552733be2"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-compras-9a23c5bb-0a7a-46d1-b5e1-d1268847.request.yaml",
+    "sha256": "00d3e10809ce9f01b9303ac2c22c166456e1f6507726f9f36b5d44fc94eb5735"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-compras.request.yaml",
+    "sha256": "e0a82f0285f55fdbe2426a5b8c23abd790a63e486b8541bbc6ca3cfd3c0c7151"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-inventario-actualizar-stock-1.request.yaml",
+    "sha256": "0e96de1c1498bd7b989f0ae52d4e18c3081f276a37cdf265e5afea66549c1f0e"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-inventario-actualizar-stock-2.request.yaml",
+    "sha256": "93265e6df3697453fb6c42f3df346f5729dbf278339289e41ba1c978d5bf7a86"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-inventario-actualizar-stock-3.request.yaml",
+    "sha256": "ae7412f3edaa4183f973c063254d92f0d8134a9b08c4325f7ea3fc31cbc8cad9"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-inventario-actualizar-stock-4.request.yaml",
+    "sha256": "d7c4280e3bb258e496280c749b0816392e2c4a5a5a25f6d4c8a6e3567205f82c"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-inventario-actualizar-stock-5.request.yaml",
+    "sha256": "4cb60d0fe30eae036241e67aa64ba946cc5427acbd48776a9779edfce6115fce"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-inventario-actualizar-stock.request.yaml",
+    "sha256": "c7eabe723ee389f2cbefde0c62f5a56c459c2824fb95762878433558d4e3146f"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-inventario-alertas-1.request.yaml",
+    "sha256": "7cd9ea3199a4a0bf8b8de0181568dac1f1eb53cefd0b1dc1b1872716491766b9"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-inventario-alertas-1057a544-c6c8-11f1-a0-1.request.yaml",
+    "sha256": "54b567218ac6d6353ed224b8c23bfa74b443f8a11d03e0eb5ceee851e297cf14"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-inventario-alertas-1057a544-c6c8-11f1-a0-2.request.yaml",
+    "sha256": "588d2f8cb9afafcc6c0df7c1ae6ad5f51d387c65566124b2b9b3a05c45d0af82"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-inventario-alertas-1057a544-c6c8-11f1-a0.request.yaml",
+    "sha256": "b48fc09c7b12c2c746ee5f4944b111bdbb033bb19f0fba1744b76068c585237e"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-inventario-alertas-2.request.yaml",
+    "sha256": "babd943617a0854f547f68727b29213d8ad21fa8d017f88c148c7bbc3294c683"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-inventario-alertas-3.request.yaml",
+    "sha256": "61f7ed675516523f89d234122573f57e219e6dd7a84ac2dde984f593a83519d4"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-inventario-alertas-4.request.yaml",
+    "sha256": "a8d32185a0d26fae87be23a4f0eb3e990c5eef14c247e63be9d32e6f22572fde"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-inventario-alertas-5.request.yaml",
+    "sha256": "459099b0023cd33637e5bb98efab1e90e9855bff0de3a17d80c56e884d36e7fc"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-inventario-alertas-6.request.yaml",
+    "sha256": "823c42c92adfafd040aa12468b208fb77780bdd1c6c4afa3a54f71ea8d1e5eb2"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-inventario-alertas-7.request.yaml",
+    "sha256": "faa224da00fb865ecf9bc6aa2b5932fbfa99516f13658d84bd58df84601dd3cd"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-inventario-alertas.request.yaml",
+    "sha256": "5dd78ceee9acb8f7481de1b4d629ea68816efa3d20583341b4ae077786ac8570"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-inventario-movimientos.request.yaml",
+    "sha256": "4390ba4292e1301504ed79b3ba7581e632146638c6ea4ea38f7d2ee3dcf70582"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-juegos-iniciar.request.yaml",
+    "sha256": "ec974e229347f3fb830953adff120090c7b9774afbec73cc661aec41c8aae16b"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-kanban-38be601c-902f-4b07-a9ce-18537635c.request.yaml",
+    "sha256": "0627a8ad08a1f3a4cdfb71a4d99667bde45145b5ebd2f97b66f1e08aca79c507"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-kanban-cd67d0f9-c602-470b-a9fe-d6df9214d.request.yaml",
+    "sha256": "2f739229106aebff29ebca95e9b7f2bc1c31099c35d8577c9584155d9ef572f7"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-kanban-tablero.request.yaml",
+    "sha256": "a2deff0d2d336cce1907e07ac6927bd97d105fa06fe38c836203e06def08891d"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-mermas-1.request.yaml",
+    "sha256": "2ffe667c348eb8dc7346037a0b50f41c7a3c0526d0027f67dacfc4555add7cff"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-mermas-2.request.yaml",
+    "sha256": "537237510e6c41aa9c65ea25971c923ef23d89b8ffe99855a8e004ea57e517f3"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-mermas-refrigeradores.request.yaml",
+    "sha256": "9c3cd66b8ae9a59b00431fb2d4f3b6de7b488484c529c01d17318b4481433b98"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-mermas.request.yaml",
+    "sha256": "c1ab48349a194f75fb86d2676ca36247695f59193aa25774d8f1cbdab59a16b4"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-mesas-traslado-1.request.yaml",
+    "sha256": "8606f064fe5e9b3d50293bb2598f0316be3df4ef991077b1ec857988f0711fa3"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-mesas-traslado.request.yaml",
+    "sha256": "9f55ef8199803a5fbe597bc6f51d5217612f8db00e1d2d4144f6fb5081b43773"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-pagos-1.request.yaml",
+    "sha256": "8270eef1b76fc497cb283f7540b6909294425e38aeeee671fe4739979a8a4560"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-pagos-2.request.yaml",
+    "sha256": "ace8e86b34faf0196fc76ca130365aa1c0c043a800288c158deb92d9d9294ad7"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-pagos-3.request.yaml",
+    "sha256": "4989e2e48ebc36664d51ffc16b93b9599ccef4a4b5edc230f98604e1613ad5d1"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-pagos-PAGO-001-verificar.request.yaml",
+    "sha256": "e3ea66da12ce70decb4540d97928b79f339d59799d13285436b16dd96fb9a122"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-pagos-pago-1791311549792-verificar.request.yaml",
+    "sha256": "06226a4de09c84dfb2db44846315b2dba9dabe6319d89e6aeec44b31eeeee563"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-pagos-pago-a6626a7db345f-verificar.request.yaml",
+    "sha256": "fed46e8e23e8eb68349cf9a4e4bfd26ee8169fc577546f8228939674d0af1054"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-pagos.request.yaml",
+    "sha256": "b8066362851e6faa0d4fadea342ced52e62782b76448ea5b6e0bc4516be40461"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-pedidos-act-001-cuenta.request.yaml",
+    "sha256": "83061183565c57f739227007c0f590adc0a05dc6db16ffe701521f76b26fcb09"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-pedidos-beded72e-5143-45d8-9fbb-0def2ec8.request.yaml",
+    "sha256": "113eaac6beceaa4286dff72d489c70f1ed11a42eb0ed8c7cbe6c84a07bc89a01"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-pedidos-items-48faacae-6bf4-475c-89c8-d8-1.request.yaml",
+    "sha256": "19035d3034e5b394eb0cc787e277a3cc8777dd1a8c0bc6a1456aa05a52909011"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-pedidos-items-48faacae-6bf4-475c-89c8-d8.request.yaml",
+    "sha256": "5b5369c23e84a1348759e041155ed9e4b96c2c640d748afe3489074781638c2e"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-pedidos-items-55bf5da9-4e8f-4af3-9a82-b5.request.yaml",
+    "sha256": "b91e23526b024f6e4d5281e8ab9c3c3be8e0cbb9ed59a59da59def118da5d3e8"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-pedidos-items-9fd12a63-0f4b-4ce2-9891-70.request.yaml",
+    "sha256": "4e16c94c0e856e189475ba15f0eecbcf5e0e1a6e1191aeeb8c32a9993768c2a5"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-pedidos-ped-001-items.request.yaml",
+    "sha256": "03fb0fb5f720f20224819a332f77234076e420f7cf3af269b73a257f79d4f5a4"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-pedidos.request.yaml",
+    "sha256": "c8de2334bffc7130027559332aa65668e843610cb8e5e13e9f2a8ba8423d4f9a"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-productos-1.request.yaml",
+    "sha256": "3435a59d142442b9caac2f7ace54f0e5be3153df4c8bcf9dd1340d699c27bec3"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-productos-2.request.yaml",
+    "sha256": "e3c9f2d8e3a979e6c5a2c9440f883f88a0f3c2189d949ddd46df9c86d1d43a08"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-productos-3.request.yaml",
+    "sha256": "03da9699641111763aaff0f11796bcc63e8be9b7de4fdf3de913232532218bd0"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-productos-4.request.yaml",
+    "sha256": "3c8e2223c34b3c6fd1cf47e3145db955f732518820e767370f95bfca02741c9f"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-productos-6fe747e7-0193-4d20-891a-9fad0e.request.yaml",
+    "sha256": "5f7d8bfdb1a4937a71dc8c62a720b77946142c345f7e3af8c07678cbe6c8933c"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-productos-a32745cb-091f-4e02-9ea2-87f4d6-1.request.yaml",
+    "sha256": "c69bf58d679d2431c7b999c702d2390dd657bc8ae37d0fb1db78d6c8b3cc1a10"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-productos-a32745cb-091f-4e02-9ea2-87f4d6.request.yaml",
+    "sha256": "a51ba7c0705db0616390191f63b5e1e6d9631ecec7063873dd12c4aa06c45b50"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-productos.request.yaml",
+    "sha256": "a96bf914c434a8a0c0e19ea169640819b0647a75efe681e9626ff0e90a7930ef"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-proveedores-0529ea45-02d3-48fb-8eee-b2df.request.yaml",
+    "sha256": "1aef0a84ad6fe686f63cac08de995d79108ff8bc12617e7300545155b94f711e"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-proveedores-1.request.yaml",
+    "sha256": "0acbc2c7d3529d517d442b5acd7ce2e6d535ae96f6be6de83d9c90d68b904f54"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-proveedores.request.yaml",
+    "sha256": "b87ce4a994434fae8946e1a433ed4e763b64bcf1e5f737a715218b097afbe48e"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-sesiones-division-div-1784677462690-asig.request.yaml",
+    "sha256": "281c892a10342af1af9642072699cac6066ab5d7ab328712598bb2182021bffe"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-sesiones-division-div-1784677462690.request.yaml",
+    "sha256": "f55962f78fe27796befcfa43e860794ca51766bd56e7966dd0e00258ad8082a8"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-sesiones-division.request.yaml",
+    "sha256": "2a5fa490dbf74c8f92fad775394e311fa0876c9c5eea2118d69f3cf25751f57a"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-usuarios-auth-otp-solicitar.request.yaml",
+    "sha256": "4894078e729e3d45d02ec1791e653531399c57f7f47c2201a8173c48e20147a4"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-usuarios-login-1.request.yaml",
+    "sha256": "e6da7a0ba2dfe0eabdcda2588873d619b1cd670e9d215d7fba5615aa87e9f488"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-usuarios-login-2.request.yaml",
+    "sha256": "a43ce13d50ab99a9026fc7adfde53f20d4a2955eea5a3678fc1704a4948a6962"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-usuarios-login-3.request.yaml",
+    "sha256": "bf37982ad6a56947f597b4daad0365e166e444f6680bfd7bb2825bff1ce531b4"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-usuarios-login.request.yaml",
+    "sha256": "4fe4fdc94230ccfe3aa7d5d90e34d50f48e680cdb878ca114b96d3654dd3c002"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-usuarios-user-001-estado.request.yaml",
+    "sha256": "8b17fb1e8d821b7a041062b588701d465cce26b028bfc15b962842d1c5412391"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-ventas-facturar-1.request.yaml",
+    "sha256": "21f282c61d2638b2cdf7db7894bc326b210cab28c13f8c45f6fa0ce0e037935a"
+  },
+  {
+    "archivo": "postman/collections/Pruebas Donde juanca/http-localhost-5000-api-ventas-facturar.request.yaml",
+    "sha256": "1b1930cfa0f8b14c918dbcf5c70147bd4c172df28e5248701ee5a15616972564"
+  },
+  {
+    "archivo": "postman/globals/workspace.globals.yaml",
+    "sha256": "6f8cd55d464ff186cddd5e90db4644a74947ed5d254f033653706568d9905585"
+  },
+  {
+    "archivo": "README.md",
+    "sha256": "8b38a800125a0fc59ae8455c3554fda3bdaefc451456f25ec9e74f4ff47d8933"
+  }
+]

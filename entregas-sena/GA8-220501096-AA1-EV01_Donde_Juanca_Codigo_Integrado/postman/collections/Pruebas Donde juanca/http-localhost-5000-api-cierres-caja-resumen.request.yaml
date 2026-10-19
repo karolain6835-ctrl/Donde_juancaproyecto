@@ -1,0 +1,9 @@
+$kind: http-request
+name: http://localhost:5000/api/cierres-caja/resumen
+description: ""
+url: http://localhost:5000/api/cierres-caja/resumen?fecha_inicio=2026-10-12T00:00:00&fecha_fin=2026-10-13T00:00:00
+method: GET
+queryParams:
+  fecha_inicio: 2026-10-12T00:00:00
+  fecha_fin: 2026-10-13T00:00:00
+order: 4503596146281635

@@ -1,0 +1,147 @@
+﹣ Fase 3B: actores y atomicidad con MySQL temporal (0.9887ms) # SKIP
+✔ Auditoría: filtros estrictos y detalle seguro recursivo (4.782ms)
+﹣ Auditoría real: Express/JWT y tablas temporales MySQL (0.2225ms) # SKIP
+﹣ JWT y montaje: MySQL real con tablas temporales (0.9079ms) # SKIP
+﹣ Cierres: MySQL real y tablas temporales (0.8058ms) # SKIP
+﹣ cierres concurrentes reales no duplican pagos; metodos y actor persistidos (3.1503ms) # SKIP
+﹣ Clientes: HTTP y MySQL real en tablas temporales (0.6663ms) # SKIP
+﹣ Compras Fase 2: MariaDB desechable, trigger y conexiones independientes (0.809ms) # SKIP
+﹣ proveedores y compras por HTTP con MySQL temporal (0.8322ms) # SKIP
+﹣ Comprobantes: HTTP y MySQL real con tablas temporales (0.9565ms) # SKIP
+✔ Configuracion valida campos vacios, horarios nocturnos y porcentaje; rechaza datos invalidos (4.4742ms)
+﹣ Configuracion: HTTP real JWT, persistencia MySQL temporal, auditoria y rollback (0.1919ms) # SKIP
+﹣ Cuenta de mesa mantiene alcance, precios históricos, juegos y persistencia intacta (0.7271ms) # SKIP
+✔ Contexto informativo no bloquea; liquidación conserva bloqueos por defecto (2.6056ms)
+﹣ HTTP/MySQL: contextos y pagos concurrentes, recargas y cierre único (0.2883ms) # SKIP
+﹣ Divisiones 8B: modalidades, ciclo de vida, saldos y traslados (0.7427ms) # SKIP
+﹣ Divisiones 8A: identidad, cantidades, dinero, concurrencia y pagos (0.6761ms) # SKIP
+✔ V1: endpoints simulados ausentes del montaje real; rutas reales conservadas (322.3624ms)
+✔ HTTP real: excepciones y 500 locales genéricos, JSON seguro y semántica 4xx (227.7885ms)
+✔ Logger no serializa message, stack de entrada, SQL, cuerpos, JWT ni OTP (0.7561ms)
+✔ Validadores conservan 400 esperado y no disfrazan excepciones internas como validación (11.5389ms)
+✔ Headers ya enviados: delega un error genérico sin el original sensible (0.4648ms)
+✔ Log local de controlador no imprime el error SQL ni credenciales (2.2074ms)
+✔ Montaje protege respuestas antes del parser y maneja excepciones después de rutas (0.9857ms)
+✔ Conversión central de Bogotá conserva medianoche y fin del día sin depender de Node (30.9407ms)
+﹣ MariaDB: pagos 00:05/23:55, historia, rondas, división y cierre conservan sus instantes (3.025ms) # SKIP
+✔ Historial valida cliente, paginación y vacío (3.6786ms)
+✔ Historial consulta por lote, separa dinero personal y pedido y no escribe (1.1864ms)
+✔ Historial mantiene roles de consulta de clientes (2.2396ms)
+﹣ Historial MySQL temporal: asociaciones reales, duplicados, orden y pagos atribuidos (0.1409ms) # SKIP
+✔ Filtro de compras valida proveedor inexistente, vacío y paginación (34.1942ms)
+✔ Consulta parametrizada, sin JOIN multiplicador y orden descendente (4.2478ms)
+✔ Roles de compras permanecen administrativos (1.9238ms)
+﹣ MySQL temporal: proveedor, exclusión, orden, páginas y costo histórico (0.1956ms) # SKIP
+▶ Fase 3A: rechazar atribución por body antes de cualquier escritura
+  ✔ inventario.actualizarStock (1.2417ms)
+  ✔ mermas.registrarMerma (0.3799ms)
+  ✔ compras.crearCompra (0.387ms)
+  ✔ compras.recibirCompra (0.3458ms)
+  ✔ pagos.registrarPago (0.7453ms)
+  ✔ clientes.registrarCliente (0.3214ms)
+  ✔ pedidos.agregarItemPedido (1.8283ms)
+  ✔ pedidos.cancelarItemPedido (0.5227ms)
+  ✔ kanban.actualizarEstadoPedido (0.9541ms)
+  ✔ divisiones.iniciarSesionDivision (0.4901ms)
+  ✔ ventas.generarFactura (0.2114ms)
+  ✔ cierresCaja.crear (0.2654ms)
+  ✔ juegos.iniciarJuego (0.3408ms)
+  ✔ juegos.terminarJuego (0.3025ms)
+✔ Fase 3A: rechazar atribución por body antes de cualquier escritura (37.0195ms)
+﹣ Divisiones y responsable de pedido: MySQL real temporal (0.0787ms) # SKIP
+﹣ ajuste de inventario contra MySQL con tablas temporales (0.819ms) # SKIP
+﹣ Alertas Fase 2: episodios, acciones e integraciones en MariaDB desechable (0.8589ms) # SKIP
+﹣ v2.35 observa estado actual sin reinterpretar legado (0.1619ms) # SKIP
+﹣ trazabilidad y lectura contra MySQL con tablas temporales (0.7782ms) # SKIP
+﹣ Juegos por pedido: migracion, historicos, cobro, comprobantes, traslado y divisiones (0.8044ms) # SKIP
+✔ costo exacto, segundos completos, mitad hacia arriba y limites (2.3631ms)
+﹣ API juegos: MySQL real con tablas temporales, sin escrituras persistentes (0.2475ms) # SKIP
+✔ Estado agrupado excluye canceladas y representa mezclas sin persistir estados nuevos (9.8762ms)
+✔ Diez ítems generan una sola tarjeta; pedidos solo cancelados no aparecen (2.0641ms)
+✔ Responsable: Mesero/Mesera ajeno 403; propio permitido; Admin puede asignar otro activo (66.0889ms)
+✔ Responsable inexistente/inactivo se rechaza antes de insertar (3.8329ms)
+﹣ Kanban agrupado y despacho contra MySQL temporal (0.2106ms) # SKIP
+﹣ movimiento Kanban contra MySQL con tablas temporales (0.8492ms) # SKIP
+﹣ login HTTP, bcrypt, JWT e inicialización contra MySQL temporal (0.8217ms) # SKIP
+✔ Mantenimiento persiste, registra historial y auditoría del actor; no toca históricos ni stock (2.3273ms)
+✔ Sesión activa y ocupado impiden mantenimiento; reintento mismo estado no duplica historial (0.9237ms)
+✔ Validación: estados reales, ID, campos extra e inexistente (0.6334ms)
+✔ Controlador usa transacción, actor JWT y rollback si auditoría falla (28.005ms)
+✔ Inicio real rechaza juego en mantenimiento antes de crear sesión (12.7766ms)
+✔ Ruta mantenimiento restringida a administradores (2.4862ms)
+Mon, 19 Oct 2026 15:51:22 GMT router deprecated handlers that are Promise-like are deprecated, use a native Promise instead at node_modules\router\index.js:342:13
+▶ GET /mermas/refrigeradores: JWT, roles, lectura minima y errores
+  ✔ sin JWT o alterado devuelve 401 antes de consultar catalogo (83.0381ms)
+Mon, 19 Oct 2026 15:51:22 GMT router deprecated handlers that are Promise-like are deprecated, use a native Promise instead at node_modules\router\lib\route.js:157:13
+  ✔ Administrador recibe solo campos utiles y no eliminados (36.5732ms)
+  ✔ SuperAdmin recibe solo campos utiles y no eliminados (7.0849ms)
+  ✔ Bartender obtiene 403 sin abrir conexion de catalogo (15.538ms)
+  ✔ Mesero obtiene 403 sin abrir conexion de catalogo (4.5808ms)
+  ✔ Mesera obtiene 403 sin abrir conexion de catalogo (4.8611ms)
+  ✔ Cajero obtiene 403 sin abrir conexion de catalogo (15.9195ms)
+  ✔ Desconocido obtiene 403 sin abrir conexion de catalogo (55.6403ms)
+  ✔ lista vacia valida (6.6577ms)
+  ✔ error SQL devuelve 500, revierte y libera conexion (38.2388ms)
+✔ GET /mermas/refrigeradores: JWT, roles, lectura minima y errores (315.0459ms)
+﹣ API de mermas contra MySQL con tablas temporales (0.7997ms) # SKIP
+﹣ Administración de mesas real: altas, duplicados concurrentes y renumeración segura (0.8595ms) # SKIP
+✔ Protección de liberación distingue pedidos abiertos y juegos activos (1.2241ms)
+✔ Saldo se obtiene de consumos menos pagos verificados, no del total cacheado (0.9844ms)
+﹣ Ocupación y liberación con MySQL temporal, transacciones y stock intacto (0.1577ms) # SKIP
+✔ Manifiesto completo, orden numérico y checksums históricos inmutables (17.3494ms)
+✔ Baseline sin referencias a mydb, definers, datos personales ni contraseñas (15.5884ms)
+✔ Parser mantiene rutinas completas y rechaza SQL incompleto (1.2616ms)
+✔ Instalador rechaza destino no vacío o nombre inválido antes de escribir (1.054ms)
+﹣ Instalación real aislada: DDL, FKs, índices, checks, columnas, triggers y bloqueo de repetición (0.1758ms) # SKIP
+✔ Listado pedidos valida filtros/paginación antes de consultar (166.9496ms)
+✔ Listado pedidos usa referencias reales, joins de nombres y filtros parametrizados (3.5444ms)
+✔ Listado pedidos conserva vacío y errores de ambas consultas (4.6458ms)
+✔ Responsables solo expone id/nombre/estado de usuarios activos (149.2726ms)
+✔ Responsables conserva vacío y fallo de SQL (2.8283ms)
+✔ Aceptar pedido valida identidad, ID y body sin consultar ni permitir actor manual (2.2795ms)
+﹣ Lecturas reales con tablas MySQL temporales y pedido sin ítems (0.1155ms) # SKIP
+✔ V1 OTP retirado: montaje real responde 404 uniforme, sin SQL ni generacion (386.3242ms)
+◇ injected env (14) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
+✔ pagos global: validacion de filtros (3.2105ms)
+✔ pagos global: mismos roles de lectura y autenticacion (520.6939ms)
+﹣ pagos global: lecturas reales, filtros, resumen, paginacion e identidades (0.1476ms) # SKIP
+🌸 ¡Conexión exitosa a la base de datos de XAMPP para el sistema de Juanca!
+﹣ pagos y liquidación con MySQL y tablas temporales (1.3301ms) # SKIP
+✔ Participantes: identidad temporal y registrada válida, sin datos de contacto (2.2928ms)
+﹣ Participantes y consumos reales, migración repetible y datos históricos (0.2076ms) # SKIP
+﹣ Migración de identidad preserva pedido, jugador e ítem anteriores sin asignar persona (0.1199ms) # SKIP
+▶ Pedidos: validacion previa y errores sin insertar
+  ✔ inexistente (48.4557ms)
+  ✔ inactivo (1.8045ms)
+  ✔ error de consulta (1.6235ms)
+  ✔ campos obligatorios mantienen 400 sin consultar (3.8419ms)
+  ✔ fallo del INSERT mantiene 500 (1.5753ms)
+✔ Pedidos: validacion previa y errores sin insertar (67.9562ms)
+﹣ Pedidos: persistencia MySQL temporal y responsable asignado (0.1227ms) # SKIP
+﹣ Consolidación real de pedidos, cantidades adicionales y concurrencia (1.1736ms) # SKIP
+✔ Perfil: validaciones estrictas, confirmacion, limite bcrypt y campos privados (2.314ms)
+﹣ Perfil propio: HTTP JWT, persistencia, login y auditoria (0.1967ms) # SKIP
+✔ Imagen real: decodifica JPG/JPEG/PNG/WebP, rechaza ejecutables, SVG y contenido falso (203.452ms)
+﹣ Imágenes HTTP/MariaDB: opcionales, permisos, reemplazo, eliminación, rollback y archivos seguros (0.343ms) # SKIP
+✔ Alta de producto valida entradas y rechaza campos internos antes de SQL (2.7705ms)
+﹣ Productos: HTTP, FK y migracion v2.36 en MariaDB desechable (0.2276ms) # SKIP
+✔ Recuperación: contratos estrictos y política bcrypt existente sin actor manual (1.1062ms)
+✔ SMTP: configuración obligatoria, TLS, sin logs y entrega real con contenido controlado (0.6346ms)
+✔ Límites por IP/cuenta normalizada, verificación, expiración y capacidad acotada (1.3762ms)
+﹣ Recuperación HTTP y MariaDB aislada: OTP, token, correo, contraseña y auditoría (0.0645ms) # SKIP
+✔ Refrigeradores valida contrato real, estados y longitudes (1.6789ms)
+﹣ Refrigeradores: HTTP JWT, MySQL temporal, auditoria y compatibilidad mermas (0.1907ms) # SKIP
+✔ autorizaci?n exige identidad y compara exclusivamente el rol exacto actual (0.6661ms)
+﹣ matriz HTTP completa con identidad y cambios de rol en MySQL temporal (0.111ms) # SKIP
+﹣ Rondas reales: atomicidad, idempotencia, separación, repetición y concurrencia (0.8179ms) # SKIP
+﹣ Visita compartida: identidad, consumos, concurrencia, liberación, traslado e históricos (1.1219ms) # SKIP
+﹣ Migración 7B preserva datos de 7A sin inferir visitas (0.2387ms) # SKIP
+﹣ Administración de usuarios: HTTP/JWT y persistencia MySQL temporal (0.4078ms) # SKIP
+ℹ tests 132
+ℹ suites 0
+ℹ pass 84
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 48
+ℹ todo 0
+ℹ duration_ms 1843.134

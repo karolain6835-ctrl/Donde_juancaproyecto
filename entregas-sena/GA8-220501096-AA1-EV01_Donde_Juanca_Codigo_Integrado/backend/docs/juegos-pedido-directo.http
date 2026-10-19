@@ -1,0 +1,44 @@
+### V1-2B: IDs reales consultados en la base local (2026-10-15).
+### Reiniciar el backend para cargar el contrato nuevo. Usar JWT de Administrador,
+### SuperAdmin, Mesero o Mesera; no poner secretos en este archivo.
+@baseUrl = http://localhost:5000/api
+@token = REEMPLAZAR_POR_TOKEN_DE_SESION
+@pedidoId = ab841fba-7572-4e17-97c9-5c156cce3542
+@mesaId = 9119637f-8e18-4c48-bb19-d5ef87817e0c
+@activoId = act-003
+
+### 200: activos reales y sus sesiones activas. Confirmar disponibilidad antes de iniciar.
+GET {{baseUrl}}/juegos/activos
+Authorization: Bearer {{token}}
+
+### 201: pedidos_id es el pedido indicado; pedido_items_id es NULL; costo_total es NULL.
+# @name iniciarJuego
+POST {{baseUrl}}/juegos/iniciar
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "activos_juego_id": "{{activoId}}",
+  "mesas_id": "{{mesaId}}",
+  "pedidos_id": "{{pedidoId}}"
+}
+
+### 200: sesión activa, mesa/pedido y tarifa aplicada reales.
+GET {{baseUrl}}/juegos/sesiones?estado=activa
+Authorization: Bearer {{token}}
+
+### 200: fecha_fin, estado cerrada y costo definitivo calculado según duración real.
+### REST Client resuelve el ID devuelto por la petición anterior; en Postman guardarlo como variable.
+PUT {{baseUrl}}/juegos/{{iniciarJuego.response.body.id_sesion}}/terminar
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{}
+
+### 200: el juego cerrado sigue en la cuenta del pedido abierto, exactamente una vez.
+GET {{baseUrl}}/mesas/{{mesaId}}/cuenta
+Authorization: Bearer {{token}}
+
+### 200: historial real. Finalizar no registra pagos ni libera la mesa.
+GET {{baseUrl}}/juegos/sesiones?estado=cerrada
+Authorization: Bearer {{token}}

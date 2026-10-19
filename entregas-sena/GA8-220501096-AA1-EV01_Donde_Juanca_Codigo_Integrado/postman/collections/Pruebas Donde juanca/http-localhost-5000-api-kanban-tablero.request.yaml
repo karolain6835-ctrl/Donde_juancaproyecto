@@ -1,0 +1,6 @@
+$kind: http-request
+name: http://localhost:5000/api/kanban/tablero
+description: ""
+url: http://localhost:5000/api/kanban/tablero
+method: GET
+order: 4503338261362819

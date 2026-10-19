@@ -1,0 +1,19 @@
+$kind: http-request
+name: POST /api/usuarios/login
+description: |-
+  Origen: http-localhost-5000-api-usuarios-login.request.yaml
+  Endpoint publico. Contrasena deliberadamente incorrecta; resultado esperado: 401.
+url: "{{base_url}}/api/usuarios/login"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "correo": "{{correo_login_2}}",
+      "contrasena": "{{password_desarrollo}}"
+    }
+auth:
+  type: noauth
+order: 2000

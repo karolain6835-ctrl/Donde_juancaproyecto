@@ -1,0 +1,17 @@
+$kind: http-request
+name: Login - Administrador - exitoso
+description: "Endpoint publico. Resultado esperado: 200 con las credenciales actuales y usuario activo. Definir password_desarrollo localmente como secreto; sin valor exportado. El rol efectivo procede de MySQL."
+url: http://localhost:5000/api/usuarios/login
+method: POST
+body:
+  type: json
+  content: |-
+    {
+      "correo": "usuario@example.invalid",
+      "contrasena": "{{password_desarrollo}}"
+    }
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+order: 4503596146284635

@@ -1,0 +1,13 @@
+$kind: http-request
+name: http://localhost:5000/api/inventario/alertas/1057a544-c6c8-11f1-a080-30c599879abf/reactivar
+description: ""
+url: http://localhost:5000/api/inventario/alertas/1057a544-c6c8-11f1-a080-30c599879abf/reactivar
+method: PATCH
+body:
+  type: json
+  content: "{}"
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+order: 4503596146302635

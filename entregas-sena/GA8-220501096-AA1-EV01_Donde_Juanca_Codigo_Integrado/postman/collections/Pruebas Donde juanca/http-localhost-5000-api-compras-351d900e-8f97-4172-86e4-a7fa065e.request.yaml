@@ -1,0 +1,10 @@
+$kind: http-request
+name: http://localhost:5000/api/compras/351d900e-8f97-4172-86e4-a7fa065e6e97
+description: ""
+url: http://localhost:5000/api/compras/351d900e-8f97-4172-86e4-a7fa065e6e97
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+order: 4503596146290635

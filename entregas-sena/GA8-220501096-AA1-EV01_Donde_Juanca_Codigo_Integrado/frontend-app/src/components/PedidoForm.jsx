@@ -1,0 +1,62 @@
+import { useCallback, useRef, useState } from 'react';
+import { UserRound } from 'lucide-react';
+import { useAuth } from '../context/useAuth';
+import { can } from '../utils/permissions';
+import { useRemoteCatalog, useCatalogMutation } from '../hooks/useRemoteCatalog';
+import ClientePedidoFields from './ClientePedidoFields';
+import ParticipanteVisitaSelector from './ParticipanteVisitaSelector';
+import { listarResponsables } from '../services/usuariosService';
+import { crearPedido } from '../services/pedidosService';
+import OperacionRemoteState from './OperacionRemoteState';
+import './CatalogoForm.css';
+import './OperacionForms.css';
+
+export default function PedidoForm({ mesas, initialMesa = '', onClose, onCreated }) {
+  const { user } = useAuth();
+  const assignable = can(user, 'pedidos.asignarResponsable');
+  const [form, setForm] = useState({ mesas_id: initialMesa, usuarios_id: '' });
+  const responsableId = assignable ? form.usuarios_id : user?.id;
+  const [participant, setParticipant] = useState(null);
+  const clientSection = useRef(null);
+  const responsibleLoader = useCallback(options => assignable ? listarResponsables(options) : Promise.resolve([]), [assignable]);
+  const responsible = useRemoteCatalog(responsibleLoader);
+  const mutation = useCatalogMutation();
+  const [validation, setValidation] = useState('');
+  const ready = !mesas.loading && !mesas.error && (!assignable || (!responsible.loading && !responsible.error));
+  // Conservar el ID real confirmado para abrir el detalle después de la reconsulta.
+  function submit(event) {
+    event.preventDefault(); setValidation('');
+    if (!can(user, 'pedidos.crear') || !ready) return;
+    if (!mesas.data?.some(m => m.id === form.mesas_id) || !participant?.nombre?.trim() || !responsableId || (assignable && !responsible.data?.some(u => u.id === responsableId && u.estado === 'activo'))) {
+      setValidation('Selecciona una mesa, un cliente y un responsable reales.'); return;
+    }
+    let result;
+    return mutation.run(async () => { result = await crearPedido({ ...form, usuarios_id: responsableId, clientes_id: participant.tipo_participante === 'registrado' ? participant.clientes_id : null, ...(participant.participante_id ? { participante_id: participant.participante_id } : participant.tipo_participante === 'temporal' ? { participante_temporal: { nombre: participant.nombre } } : {}) }); }, async () => { await onCreated(result.id_pedido); }, 'Pedido creado correctamente.');
+  }
+  return <>
+    <div className="pedido-overlay" onClick={() => { if (!mutation.busy) onClose(); }} />
+    <aside className="pedido-drawer pedido-create-modal" role="dialog" aria-modal="true" aria-label="Nuevo pedido">
+      <div className="pedido-drawer-header"><h2>Nuevo pedido</h2><button className="drawer-close" disabled={mutation.busy} onClick={onClose} aria-label="Cerrar formulario">×</button></div>
+      <form className="catalogo-form operacion-form" onSubmit={submit}><fieldset disabled={mutation.busy}>
+        <div className="pedido-create-body">
+        {[mesas, ...(assignable ? [responsible] : [])].map((resource, index) => <OperacionRemoteState key={index} resource={resource} />)}
+        <div className="pedido-create-assignment">
+        <label>Mesa<select value={form.mesas_id} onChange={event => { setForm({ ...form, mesas_id: event.target.value }); setParticipant(null); }} disabled={mesas.loading || Boolean(mesas.error)} required><option value="">Selecciona una mesa</option>{(mesas.data || []).map(m => <option key={m.id} value={m.id}>Mesa {m.numero} — {m.estado}</option>)}</select></label>
+        {assignable ? <label>Responsable del pedido<select value={form.usuarios_id} onChange={event => setForm({ ...form, usuarios_id: event.target.value })} disabled={responsible.loading || Boolean(responsible.error)} required><option value="">Selecciona un responsable</option>{(responsible.data || []).map(u => <option key={u.id} value={u.id}>{u.nombre || u.id}</option>)}</select></label> : <div className="pedido-responsable-block"><p className="pedido-responsable-label">Responsable del pedido</p><div className="pedido-responsable-card"><span className="pedido-responsable-avatar" aria-hidden="true"><UserRound size={20} /></span><div className="pedido-responsable-identity"><strong>{user?.nombre || user?.id}</strong><span>Asignado automáticamente</span></div></div></div>}
+        </div>
+        {assignable && !responsible.loading && !responsible.error && !responsible.data?.length && <p>No hay responsables activos disponibles.</p>}
+        <section className="pedido-create-client" ref={clientSection}><div className="pedido-create-client-header"><h3>Cliente</h3>{!participant?.clientes_id&&!participant?.participante_id&&<ParticipanteVisitaSelector mesaId={form.mesas_id} onSelect={setParticipant} onAdd={()=>requestAnimationFrame(()=>clientSection.current?.querySelector('input[type="search"]')?.focus())}/>}</div>
+        {participant?.participante_id ? <div className="pedido-client-summary"><div><small>Cliente seleccionado</small><strong>{participant.nombre}</strong></div><button type="button" className="drawer-secondary-button" onClick={() => setParticipant(null)}>Cambiar</button></div> : <ClientePedidoFields compact value={participant} onChange={setParticipant} disabled={mutation.busy} />}
+        </section>
+        {(validation || mutation.error) && <p role="alert">{validation || mutation.error}</p>}
+        </div>
+        <footer className="pedido-create-footer"><div className="pedido-create-footer-actions">
+        <button className="drawer-secondary-button" type="button" onClick={onClose}>Cancelar</button>
+        <button className="drawer-primary-button" type="submit" disabled={!ready || !form.mesas_id || !participant?.nombre?.trim() || !responsableId}>{mutation.busy ? 'Guardando...' : 'Crear pedido'}</button>
+        </div>
+        <small className="pedido-session-note">El pedido quedará registrado con tu sesión.</small>
+        </footer>
+      </fieldset></form>
+    </aside>
+  </>;
+}

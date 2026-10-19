@@ -1,0 +1,29 @@
+$kind: http-request
+name: http://localhost:5000/api/compras/351d900e-8f97-4172-86e4-a7fa065e6e97/recibir
+description: ""
+url: http://localhost:5000/api/compras/351d900e-8f97-4172-86e4-a7fa065e6e97/recibir
+method: PATCH
+headers:
+  Idempotency-Key: prueba-aguila-12
+body:
+  type: json
+  content: "{\r
+
+    \  \"items\": [\r
+
+    \    {\r
+
+    \      \"compra_item_id\": \"81a9088d-6f35-4ab8-9847-562a065c76ad\",\r
+
+    \      \"cantidad_recibida\": 12\r
+
+    \    }\r
+
+    \  ]\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+order: 4503596146293635

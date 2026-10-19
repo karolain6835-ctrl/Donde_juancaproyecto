@@ -1,0 +1,10 @@
+$kind: http-request
+name: "Compras - listado autenticado - rol autorizado"
+description: "GET canonico de compras. Requiere token vigente de Administrador o SuperAdmin. Variable conservada; su rol no puede demostrarse desde el archivo. Resultado esperado: 200 si cumple esas condiciones."
+url: http://localhost:5000/api/compras
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+order: 4503596146288635

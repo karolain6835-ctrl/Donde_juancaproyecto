@@ -1,0 +1,10 @@
+$kind: http-request
+name: http://localhost:5000/api/proveedores
+description: ""
+url: http://localhost:5000/api/proveedores
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+order: 4503596146313635

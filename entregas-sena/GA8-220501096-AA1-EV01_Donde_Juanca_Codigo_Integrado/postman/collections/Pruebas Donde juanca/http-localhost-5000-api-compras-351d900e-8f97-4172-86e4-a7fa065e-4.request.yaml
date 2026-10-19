@@ -1,0 +1,17 @@
+$kind: http-request
+name: http://localhost:5000/api/compras/351d900e-8f97-4172-86e4-a7fa065e6e97/cancelar-pendiente
+description: ""
+url: http://localhost:5000/api/compras/351d900e-8f97-4172-86e4-a7fa065e6e97/cancelar-pendiente
+method: PATCH
+body:
+  type: json
+  content: "{\r
+
+    \  \"motivo\": \"Proveedor no entregará el saldo\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+order: 4503596146295635

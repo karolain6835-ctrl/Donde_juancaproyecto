@@ -1,0 +1,27 @@
+import { useState } from 'react';
+import { useCatalogMutation } from '../hooks/useRemoteCatalog';
+import { agregarParticipante } from '../services/participantesService';
+import ClientePedidoFields from './ClientePedidoFields';
+import OperacionRemoteState from './OperacionRemoteState';
+import ParticipanteConsumos from './ParticipanteConsumos';
+export default function PedidoParticipantes({ id, resource, editable, agregar, titulo = 'Clientes en la mesa', etiquetaRegistrado = 'Registrado', productos = [] }) {
+  const [person, setPerson] = useState(null);
+  const [selected, setSelected] = useState(null);
+  const mutation = useCatalogMutation();
+  function add(e) {
+    e.preventDefault();
+    if (!person || !editable) return;
+    return mutation.run(() => agregar ? agregar(person) : agregarParticipante(id, person), async () => { await resource.refresh(); setPerson(null); }, 'Cliente agregado.');
+  }
+  return <section className="operacion-drawer-section"><h3>{titulo}</h3>
+    <OperacionRemoteState resource={resource} />
+    <ul className="pedido-participantes">{(resource.data || []).map(p => <li key={p.id}><strong>{p.nombre}</strong><small>{p.tipo_participante === 'temporal' ? 'Temporal' : etiquetaRegistrado}</small>{p.sesion_mesa_id && <button type="button" className="drawer-secondary-button" onClick={() => setSelected(p)}>Ver consumos</button>}</li>)}</ul>
+    {!resource.loading && !resource.error && !resource.data?.length && <p>Aún no hay clientes asociados.</p>}
+    {selected && <ParticipanteConsumos key={selected.id} persona={selected} productos={productos} onClose={() => setSelected(null)} />}
+    {editable && <details><summary>+ Agregar cliente</summary><form className="catalogo-form operacion-form" onSubmit={add}>
+      <ClientePedidoFields value={person} onChange={setPerson} disabled={mutation.busy} participante />
+      <button className="drawer-secondary-button" disabled={mutation.busy || !person?.nombre?.trim()}>Agregar cliente</button>
+    </form></details>}
+    {mutation.error && <p role="alert">{mutation.error}</p>}{mutation.success && <p role="status">{mutation.success}</p>}
+  </section>;
+}

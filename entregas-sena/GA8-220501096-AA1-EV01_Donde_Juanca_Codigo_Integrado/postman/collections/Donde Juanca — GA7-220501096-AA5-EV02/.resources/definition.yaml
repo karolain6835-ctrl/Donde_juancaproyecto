@@ -1,0 +1,22 @@
+$kind: collection
+description: Solicitudes reales de autenticación, productos/categorías e inventario/mermas. Se conservan variantes de error, métodos, parámetros y cuerpos vacíos. No se ejecutaron peticiones. Completar variables localmente; no exportar credenciales. base_url no incluye /api. Identificadores y credenciales distintos usan variables distintas. Las solicitudes sin autenticación explícita conservan noauth.
+variables:
+  base_url: http://localhost:5000
+  token_admin: ""
+  correo_login: ""
+  producto_id: ""
+  correo_login_2: ""
+  password_login: ""
+  producto_id_2: ""
+  motivo_merma_id: ""
+  refrigerador_id: ""
+  token_prueba_6: ""
+  password_login_2: ""
+  password_login_3: ""
+  token_prueba_2: ""
+  alerta_id: ""
+  token_prueba_4: ""
+  token_prueba_3: ""
+  token_prueba_5: ""
+  proveedor_id: ""
+  producto_id_3: ""

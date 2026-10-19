@@ -1,0 +1,24 @@
+{
+ "main": "src/index.js",
+ "scripts": {
+  "test": "echo \"Error: no test specified\" && exit 1",
+  "start": "node src/index.js",
+  "init:login:dev": "node scripts/inicializar-login-desarrollo.js",
+  "test:login": "node --test tests/login.test.js"
+ },
+ "keywords": [],
+ "author": "",
+ "license": "ISC",
+ "type": "commonjs",
+ "dependencies": {
+  "bcrypt": "^6.0.0",
+  "cors": "^2.8.6",
+  "dotenv": "^17.4.2",
+  "express": "^5.2.1",
+  "jsonwebtoken": "^9.0.3",
+  "multer": "^2.4.0",
+  "mysql2": "^3.23.1",
+  "nodemailer": "^10.1.7",
+  "sharp": "^0.35.5"
+ }
+}

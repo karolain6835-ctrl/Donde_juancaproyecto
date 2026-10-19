@@ -1,0 +1,31 @@
+$kind: http-request
+name: http://localhost:5000/api/compras
+description: ""
+url: http://localhost:5000/api/compras
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"proveedores_id\": \"prov-001\",\r
+
+    \  \"items\": [\r
+
+    \    {\r
+
+    \      \"productos_id\": \"4b2b8ad5-1353-4e07-b87b-932faa6785b8\",\r
+
+    \      \"cantidad\": 20,\r
+
+    \      \"precio_unitario\": 3000\r
+
+    \    }\r
+
+    \  ]\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+order: 4503596146289635

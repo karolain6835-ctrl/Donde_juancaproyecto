@@ -1,0 +1,108 @@
+.operacion-form { margin-top: 24px; }
+.operacion-info { display: grid; gap: 10px; margin: 20px 0; padding: 16px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-background-secondary); }
+.operacion-info > div { min-width: 0; }
+.operacion-info dt { color: var(--color-text-secondary); font-size: 13px; }
+.operacion-info dd { margin: 4px 0 0; overflow-wrap: anywhere; font-weight: 600; }
+.operacion-item { display: grid; gap: 8px; margin-top: 14px; padding: 16px; border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+.operacion-item strong, .operacion-id { overflow-wrap: anywhere; }
+.operacion-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+.operacion-pagination { margin-top: 24px; }
+.operacion-search { width: 100%; padding: 10px 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font: inherit; }
+.operacion-drawer-section { margin-top: 24px; }
+
+.pedido-responsable-block { display: grid; gap: 8px; min-width: 0; }
+.pedido-responsable-label { color: var(--color-text); font-size: 13px; font-weight: 600; }
+.pedido-responsable-card { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-background-secondary); }
+.pedido-responsable-avatar { display: grid; place-items: center; flex: 0 0 36px; width: 36px; height: 36px; border-radius: 50%; background: var(--color-surface); color: var(--color-primary); }
+.pedido-responsable-identity { display: grid; gap: 3px; min-width: 0; }
+.pedido-responsable-identity strong { color: var(--color-text); font-size: 15px; font-weight: 600; line-height: 1.35; overflow-wrap: anywhere; }
+.pedido-responsable-identity span { color: var(--color-text-secondary); font-size: 12px; line-height: 1.4; }
+.pedido-session-note { margin-top: -8px; color: var(--color-text-secondary); font-size: 12px; line-height: 1.5; text-align: center; }
+
+.pedido-visual-header { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 10px 14px; }
+.pedido-visual-header > strong { flex: 1 1 90px; min-width: 0; font-family: var(--font-brand); font-size: 21px; line-height: 1.3; overflow-wrap: anywhere; }
+.pedido-visual-header-detail { margin-top: 22px; }
+.pedido-state-badge { display: inline-flex; flex: 0 0 auto; align-items: center; width: fit-content; max-width: 100%; padding: 5px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; line-height: 1.4; text-transform: capitalize; background: var(--color-background-secondary); color: var(--color-primary); }
+.pedido-state-badge.preparando, .pedido-state-badge.parcialmente_servido { background: var(--color-warning-bg); color: var(--color-warning); }
+.pedido-state-badge.servido, .pedido-state-badge.cerrado { background: var(--color-success-bg); color: var(--color-success); }
+.pedido-state-badge.cancelado { background: var(--color-danger-bg); color: var(--color-danger); }
+.pedido-visual-id { margin: 10px 0 14px; color: var(--color-text-secondary); font: 11px/1.6 ui-monospace, SFMono-Regular, Consolas, monospace; overflow-wrap: anywhere; }
+.pedido-visual-meta { margin-top: 5px; color: var(--color-text-secondary); font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
+.pedido-navigation-button, .pedido-navigation-button:visited { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; text-decoration: none; color: var(--color-primary); }
+.pedido-navigation-button:hover { text-decoration: none; color: var(--color-primary); }
+.pedido-detail-line { background: var(--color-surface); }
+.pedido-detail-line > strong { font-size: 17px; line-height: 1.4; }
+.pedido-detail-line > p { color: var(--color-text-secondary); font-size: 14px; line-height: 1.5; }
+.pedido-feedback { margin: 18px 0; padding: 14px 16px; border: 1px solid var(--color-border); border-left: 4px solid var(--color-success); border-radius: var(--radius-sm); background: var(--color-success-bg); color: var(--color-success); font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; }
+.pedido-feedback[role="alert"] { border-left-color: var(--color-danger); background: var(--color-danger-bg); color: var(--color-danger); }
+.pedido-person-fields { display: grid; gap: 12px; min-width: 0; padding: 0; border: 0; }
+.pedido-participantes { display: grid; gap: 8px; list-style: none; padding: 0; }
+.pedido-participantes li { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; padding: 10px; border: 1px solid var(--border-color, #e5e7eb); border-radius: 8px; }
+.pedido-participantes small { color: var(--text-secondary, #64748b); }
+.pedido-line-person { font-weight: 600; color: var(--text-secondary, #64748b); }
+
+/* Nuevo pedido: composición aislada del detalle y de los demás formularios. */
+.pedido-create-modal.pedido-drawer{top:24px;left:50%;right:auto;transform:translateX(-50%);width:min(820px,calc(100% - 40px));height:auto;max-height:min(760px,calc(100dvh - 48px));padding:0;display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--color-border);border-radius:18px;box-shadow:0 20px 70px rgba(18,30,25,.22)}
+.pedido-create-modal .pedido-drawer-header{flex:0 0 auto;margin:0;padding:19px 24px;border-bottom:1px solid var(--color-border);align-items:center}
+.pedido-create-modal .pedido-drawer-header h2{margin:0;font-family:var(--font-brand);font-size:25px}
+.pedido-create-modal .drawer-close{width:32px;height:32px;padding:0;flex:none}
+.pedido-create-modal .operacion-form{display:flex;flex:1;min-height:0;margin:0}
+.pedido-create-modal .operacion-form>fieldset{display:grid;grid-template-rows:minmax(0,1fr) auto;flex:1;min-height:0;gap:0}
+.pedido-create-body{overflow-y:auto;min-height:0;padding:22px 24px;display:flex;flex-direction:column;gap:20px;overscroll-behavior:contain}
+.pedido-create-assignment{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}
+.pedido-create-modal label{min-width:0}
+.pedido-create-modal input,.pedido-create-modal select{min-height:40px;padding:9px 11px;min-width:0;max-width:100%}
+.pedido-create-modal .pedido-responsable-card{padding:9px 11px;gap:9px;min-height:40px}
+.pedido-create-client{border-top:1px solid var(--color-border);padding-top:18px;min-width:0}
+.pedido-create-client-header{display:flex;justify-content:space-between;align-items:start;gap:12px;margin-bottom:14px}
+.pedido-create-client-header h3{font-family:var(--font-brand);font-size:20px;margin:0}
+.pedido-create-client-header>div{max-width:65%;min-width:0}
+.pedido-create-modal .pedido-person-fields{gap:12px}
+.pedido-create-modal .pedido-person-fields>label:first-child{max-width:330px}
+.pedido-client-results{display:grid;gap:6px;margin:0;padding:0;list-style:none;max-height:240px;overflow-y:auto;overscroll-behavior:contain}
+.pedido-create-modal .pedido-person-fields-compact.registrado{grid-template-columns:minmax(160px,.7fr) minmax(0,1.3fr);align-items:start}
+.pedido-person-fields-compact.registrado>ul,.pedido-person-fields-compact.registrado>div,.pedido-person-fields-compact.registrado>p{grid-column:1/-1}
+.pedido-client-results li{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 12px;border:1px solid var(--color-border);border-radius:10px;background:var(--color-background-secondary)}
+.pedido-client-results strong{font-size:14px;line-height:1.4;overflow-wrap:anywhere}
+.pedido-create-modal .drawer-secondary-button,.pedido-create-modal .drawer-primary-button{display:inline-flex;align-items:center;justify-content:center;width:auto;min-height:36px;padding:8px 14px;margin:0;flex:0 0 auto;font-size:13px}
+.pedido-create-modal .pedido-client-pagination{align-items:center;justify-content:center;gap:12px;margin-top:2px;font-size:12px;color:var(--color-text-secondary)}
+.pedido-create-modal .pedido-client-pagination button{width:auto;min-height:30px;padding:5px 9px;border:1px solid var(--color-border);border-radius:8px;background:var(--color-surface);color:var(--color-primary);cursor:pointer}
+.pedido-create-modal .pedido-client-pagination button:disabled{opacity:.45;cursor:default}
+.pedido-client-summary{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:12px 14px;border:1px solid var(--color-border);border-radius:11px;background:var(--color-background-secondary)}
+.pedido-client-summary>div{display:grid;gap:4px;min-width:0}
+.pedido-client-summary strong{overflow-wrap:anywhere;font-size:15px}
+.pedido-client-summary small{font-size:12px;color:var(--color-text-secondary)}
+.pedido-create-footer{position:sticky;bottom:0;background:var(--color-surface,#fff);border-top:1px solid var(--color-border);padding:14px 24px;z-index:1}
+.pedido-create-footer-actions{display:flex;justify-content:flex-end;gap:10px}
+.pedido-mesa-clientes-vacio{display:grid;gap:8px;margin-top:10px;font-size:12px;color:var(--color-text-secondary)}
+.pedido-mesa-clientes-vacio p{margin:0}
+.pedido-create-modal .pedido-mesa-clientes-vacio button{justify-self:start}
+.pedido-create-modal .pedido-session-note{display:block;margin:8px 0 0;text-align:right;font-size:11px}
+@media(max-width:600px){.pedido-create-modal.pedido-drawer{top:12px;width:calc(100% - 24px);height:calc(100dvh - 24px);border-radius:14px}.pedido-create-assignment{grid-template-columns:1fr;gap:14px}.pedido-create-modal .pedido-drawer-header,.pedido-create-body{padding:16px}.pedido-create-footer{padding:12px 16px}.pedido-create-client-header{flex-wrap:wrap}.pedido-create-client-header>div{max-width:100%}.pedido-create-modal .pedido-person-fields>label:first-child{max-width:none}.pedido-client-summary{flex-wrap:wrap}.pedido-create-modal .pedido-person-fields-compact.registrado{grid-template-columns:1fr}}
+.mesa-consumo-resumen > strong { display: block; margin-bottom: 8px; overflow-wrap: anywhere; }
+.mesa-consumo-resumen .operacion-info { margin-bottom: 0; }
+.mesa-cuenta-total { padding-top: 12px; border-top: 1px solid var(--border-color, #e5e7eb); font-weight: 600; }
+.mesa-cuenta-detalle { margin-top: 16px; }
+.mesa-cuenta-detalle summary { cursor: pointer; margin-bottom: 12px; }
+.mesa-cuenta-juegos { margin-top: 16px; }
+.ronda-borrador { margin-top: 16px; padding: 12px; border: 1px solid var(--border-color, #e5e7eb); border-radius: 10px; }
+.ronda-draft-line { display: grid; gap: 10px; min-width: 0; }
+.ronda-draft-line label, .ronda-draft-line select { min-width: 0; max-width: 100%; }
+
+/* Resultados compactos solo en Nuevo pedido; la fila completa selecciona al cliente. */
+.pedido-create-modal .pedido-client-results{display:block;max-height:min(260px,32dvh);margin:0;border:1px solid var(--color-border);border-radius:9px;background:var(--color-surface,#fff);scrollbar-width:thin;overflow-x:hidden}
+.pedido-create-modal .pedido-client-results:empty{display:none}
+.pedido-create-modal .pedido-client-results li{display:block;margin:0;padding:0;border:0;border-radius:0;background:none}
+.pedido-create-modal .pedido-client-results li+li{border-top:1px solid var(--color-border)}
+.pedido-create-modal .pedido-client-option{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:44px;padding:9px 12px;margin:0;border:0;border-radius:0;background:transparent;color:var(--color-text);text-align:left;font:inherit;cursor:pointer}
+.pedido-create-modal .pedido-client-option:hover:not(:disabled){background:#f2f6ef}
+.pedido-create-modal .pedido-client-option:focus-visible{outline:2px solid var(--color-accent);outline-offset:-2px;background:#f2f6ef}
+.pedido-create-modal .pedido-client-option:disabled{opacity:.55;cursor:default}
+.pedido-create-modal .pedido-client-option-copy{display:grid;gap:2px;min-width:0}
+.pedido-create-modal .pedido-client-option-copy strong{font-size:13px;font-weight:600;line-height:1.35}
+.pedido-create-modal .pedido-client-option-copy small{font-size:11px;color:var(--color-text-secondary);overflow-wrap:anywhere;line-height:1.3}
+.pedido-create-modal .pedido-client-option-action{flex-shrink:0;padding:4px 7px;border:1px solid #dce5dd;border-radius:6px;font-size:11px;line-height:1.3;color:var(--color-primary);background:#fff}
+.pedido-create-modal .pedido-client-summary{padding:10px 12px;border-color:#a8c2b0;background:#f3f7ef;border-left:3px solid var(--color-primary);gap:10px}
+.pedido-create-modal .pedido-client-summary small{font-size:11px;color:var(--color-primary)}
+.pedido-create-modal .pedido-client-summary strong{font-size:14px}
+.pedido-create-modal .pedido-client-empty{margin:4px 0;padding:12px 0;color:var(--color-text-secondary);font-size:13px;line-height:1.5}

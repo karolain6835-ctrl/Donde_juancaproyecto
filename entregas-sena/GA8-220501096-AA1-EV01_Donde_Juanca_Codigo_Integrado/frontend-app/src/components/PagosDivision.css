@@ -1,0 +1,10 @@
+.pagos-cliente { border-top:1px solid var(--color-border,#dfe8e2); padding-top:12px; margin-top:12px; }
+.pagos-cliente h4 { font-size:14px; margin:0 0 8px; }
+.pago-historia { padding:8px 0; }
+.pago-historia p { margin:0 0 4px; overflow-wrap:anywhere; }
+.pago-historia small { color:var(--color-text-secondary,#63756b); }
+.pago-historia .operacion-actions { margin-top:8px; }
+.pago-form { margin-top:14px; padding:12px; border:1px solid var(--color-border,#dfe8e2); border-radius:10px; }
+.pago-form fieldset { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.pago-form .operacion-actions { margin-top:12px; }
+@media(max-width:520px){.pago-form fieldset {grid-template-columns:minmax(0,1fr);}}

@@ -1,0 +1,17 @@
+$kind: http-request
+name: "Login - credenciales incorrectas - 401"
+description: "Endpoint publico. Contrasena deliberadamente incorrecta; resultado esperado: 401."
+url: http://localhost:5000/api/usuarios/login
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"correo\": \"usuario@example.invalid\",\r
+
+    \  \"contrasena\": \"{{password_desarrollo}}\"\r
+
+    }"
+auth:
+  type: noauth
+order: 4503596146253635

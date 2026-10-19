@@ -1,0 +1,9 @@
+$kind: http-request
+name: http://localhost:5000/api/pedidos/ped-001/items
+description: ""
+url: " http://localhost:5000/api/pedidos/items/b68eba59-c4ed-4291-b05d-2098cb8ccd00/cancelar"
+method: PUT
+body:
+  type: json
+  content: ""
+order: 4503596146244635

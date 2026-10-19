@@ -1,0 +1,38 @@
+$kind: http-request
+name: http://localhost:5000/api/sesiones-division/div-1784677462690/asignar-items
+url: http://localhost:5000/api/sesiones-division/div-1784677462690/asignar-items
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: "{\r
+
+    \  \"nombre_cliente\": \"Carlos Perez\",\r
+
+    \  \"items\": [\r
+
+    \    {\r
+
+    \      \"pedido_item_id\": \"item-001\",\r
+
+    \      \"cantidad\": 2,\r
+
+    \      \"precio_unitario\": 12000\r
+
+    \    },\r
+
+    \    {\r
+
+    \      \"pedido_item_id\": \"item-002\",\r
+
+    \      \"cantidad\": 1,\r
+
+    \      \"precio_unitario\": 8000\r
+
+    \    }\r
+
+    \  ]\r
+
+    }"
+order: 4503531956426400

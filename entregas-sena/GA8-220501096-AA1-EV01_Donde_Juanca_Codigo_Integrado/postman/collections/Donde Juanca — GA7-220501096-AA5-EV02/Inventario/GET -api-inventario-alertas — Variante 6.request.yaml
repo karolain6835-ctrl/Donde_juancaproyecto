@@ -1,0 +1,12 @@
+$kind: http-request
+name: GET /api/inventario/alertas — Variante 6
+description: "Origen: http-localhost-5000-api-inventario-alertas-6.request.yaml"
+url: "{{base_url}}/api/inventario/alertas?estado=resuelta"
+method: GET
+queryParams:
+  estado: resuelta
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+order: 20000

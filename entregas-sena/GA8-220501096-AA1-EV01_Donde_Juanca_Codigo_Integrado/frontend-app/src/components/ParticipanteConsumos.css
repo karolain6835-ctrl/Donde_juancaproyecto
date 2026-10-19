@@ -1,0 +1,13 @@
+.cliente-consumos{min-width:0}
+.cliente-consumos .cliente-consumos-header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.cliente-consumos .cliente-consumos-header h4{margin:0;font-size:15px;color:var(--color-primary);overflow-wrap:anywhere}
+.cliente-consumos .cliente-consumos-lista{list-style:none;margin:0;padding:0}
+.cliente-consumos .cliente-consumos-lista li{display:grid;grid-template-columns:minmax(0,1fr) 72px minmax(90px,auto);align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--color-border);background:none}
+.cliente-consumo-producto{display:flex;align-items:center;gap:9px;min-width:0}
+.cliente-consumo-producto>strong{font-size:13px;line-height:1.4;overflow-wrap:anywhere}
+.cliente-consumos .producto-imagen{width:34px;height:38px;flex:0 0 34px;border-radius:8px}
+.cliente-consumo-cantidad{font-size:12px;white-space:nowrap;color:var(--color-text-secondary)}
+.cliente-consumo-subtotal{text-align:right;font-size:13px;overflow-wrap:anywhere}
+.cliente-consumos-total{display:flex;justify-content:space-between;gap:12px;padding:12px 0;font-size:14px;color:var(--color-primary)}
+.cliente-consumos>small{display:block;font-size:11px;line-height:1.5;color:var(--color-text-secondary)}
+@media(max-width:480px){.cliente-consumos .cliente-consumos-lista li{grid-template-columns:minmax(0,1fr) 44px minmax(66px,auto);gap:8px}.cliente-consumo-producto{gap:7px}.cliente-consumo-producto>strong,.cliente-consumo-subtotal{font-size:12px}.cliente-consumo-cantidad{font-size:11px}.cliente-consumos .producto-imagen{width:28px;height:32px;flex-basis:28px}.cliente-consumos-header button{font-size:11px}}

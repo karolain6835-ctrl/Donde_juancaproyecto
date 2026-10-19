@@ -1,0 +1,10 @@
+.proveedor-history { background:#fffdf8; border:1px solid var(--color-border); border-radius:14px; padding:20px; margin-top:18px; min-width:0; }
+.proveedor-history header { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:18px; }
+.proveedor-history h2,.proveedor-history h3 { color:var(--color-text); margin:0 0 6px; }
+.proveedor-history p { color:var(--color-text-secondary); font-size:.9rem; }
+.proveedor-history-table { overflow-x:auto; }
+.proveedor-history table { width:100%; border-collapse:collapse; font-size:.9rem; }
+.proveedor-history th,.proveedor-history td { padding:12px; text-align:left; border-bottom:1px solid var(--color-border); }
+.proveedor-history th { background:var(--color-background-secondary); white-space:nowrap; }
+.proveedor-history-detail { border-top:1px solid var(--color-border); padding-top:20px; margin-top:24px; }
+@media(max-width:640px) { .proveedor-history { padding:12px; } .proveedor-history header { align-items:flex-start; flex-direction:column; } }

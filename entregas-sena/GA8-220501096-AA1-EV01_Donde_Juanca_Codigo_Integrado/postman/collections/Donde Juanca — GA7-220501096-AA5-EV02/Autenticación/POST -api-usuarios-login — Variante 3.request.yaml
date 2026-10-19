@@ -1,0 +1,13 @@
+$kind: http-request
+name: POST /api/usuarios/login — Variante 3
+description: "Origen: http-localhost-5000-api-usuarios-login-3.request.yaml"
+url: "{{base_url}}/api/usuarios/login"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: "{}"
+auth:
+  type: noauth
+order: 5000

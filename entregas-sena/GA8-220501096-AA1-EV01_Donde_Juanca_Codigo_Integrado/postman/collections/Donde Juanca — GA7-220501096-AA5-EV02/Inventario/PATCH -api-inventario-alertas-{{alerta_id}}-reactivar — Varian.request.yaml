@@ -1,0 +1,15 @@
+$kind: http-request
+name: PATCH /api/inventario/alertas/{{alerta_id}}/reactivar — Variante 2
+description: "Origen: http-localhost-5000-api-inventario-alertas-1057a544-c6c8-11f1-a0-2.request.yaml"
+url: "{{base_url}}/api/inventario/alertas/{{alerta_id}}/reactivar"
+method: PATCH
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: "{}"
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+order: 19000

@@ -1,0 +1,10 @@
+$kind: http-request
+name: GET /api/inventario/movimientos
+description: "Origen: http-localhost-5000-api-inventario-movimientos.request.yaml"
+url: "{{base_url}}/api/inventario/movimientos?limite=101"
+method: GET
+queryParams:
+  limite: "101"
+auth:
+  type: noauth
+order: 3000

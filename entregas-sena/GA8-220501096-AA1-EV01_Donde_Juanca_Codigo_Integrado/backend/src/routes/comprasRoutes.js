@@ -1,0 +1,13 @@
+const { autorizarRoles } = require('../middleware/rolesMiddleware');
+const router = require('express').Router();
+const controlador = require('../controllers/comprasController');
+router.get('/', autorizarRoles('Administrador', 'SuperAdmin'), controlador.obtenerCompras);
+router.get('/:id', autorizarRoles('Administrador', 'SuperAdmin'), controlador.obtenerCompra);
+router.post('/', autorizarRoles('Administrador', 'SuperAdmin'), controlador.crearCompra);
+router.patch('/:id/recibir', autorizarRoles('Administrador', 'SuperAdmin'), controlador.recibirCompra);
+router.patch('/:id/cancelar', autorizarRoles('Administrador', 'SuperAdmin'), controlador.cancelarCompra);
+router.get('/:id/recepciones', autorizarRoles('Administrador', 'SuperAdmin'), controlador.listarRecepciones);
+router.get('/:id/recepciones/:recepcion_id', autorizarRoles('Administrador', 'SuperAdmin'), controlador.obtenerRecepcion);
+router.patch('/:id/recepciones/:recepcion_id/reversar', autorizarRoles('Administrador', 'SuperAdmin'), controlador.reversarRecepcion);
+router.patch('/:id/cancelar-pendiente', autorizarRoles('Administrador', 'SuperAdmin'), controlador.cancelarPendiente);
+module.exports = router;

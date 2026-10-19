@@ -1,0 +1,10 @@
+﻿ZIP: C:\Users\karol\OneDrive\Documents\Documentos\Proyectos\Dondejuanca\entregas-sena\GA8-220501096-AA1-EV01_Donde_Juanca_Codigo_Integrado.zip
+Archivos abiertos, descomprimidos en memoria y comparados SHA256: 615 de 615
+SHA256 ZIP: FAFC4A26B92A04313195FE96344A9BC65059D8478E27378A2B869078B6B39616
+Integridad: APROBADA (inventario completo, sin duplicados)
+Codigo fuente backend/src y frontend-app/src: 265 archivos identicos al original.
+Auditoria: sin entornos reales, node_modules, .git ni JWT incrustados; sin coincidencias de secretos locales inspeccionados.
+Backend: 84 aprobadas, 0 fallidas, 48 omitidas SQL. Frontend: 462 aprobadas, 0 fallidas. Build y lint aprobados.
+No se ejecutaron cambios en la base de datos, commits ni pushes.
+Nota Windows: extraer en una ruta corta, por ejemplo C:\DJ, para evitar limites de longitud de rutas de herramientas antiguas.
+

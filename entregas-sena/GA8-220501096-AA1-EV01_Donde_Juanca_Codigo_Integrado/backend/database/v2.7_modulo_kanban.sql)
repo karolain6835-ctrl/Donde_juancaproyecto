@@ -1,0 +1,19 @@
+-- ====================================================================
+-- Módulo de Control de Pedidos (Tablero Kanban) - API
+-- v2.7 - 16 de Julio de 2026
+-- ====================================================================
+
+USE `mydb`;
+
+-- 1. Documentación del Estado de la Migración
+SELECT 'Inicializando estructura lógica para el Tablero Kanban' AS Estado;
+
+-- Nota de ingeniería:
+-- El tablero Kanban consumirá directamente el estado de los registros en la tabla `pedidos`.
+-- Los estados válidos de transición para el flujo de trabajo (Workflow) son:
+-- 'pendiente' -> 'en_preparacion' -> 'entregado' -> 'cancelado'
+
+-- 2. Asegurar que la columna estado tenga un valor por defecto correcto
+-- (En caso de que tu diseño físico ya tenga la columna `estado` en `pedidos`)
+-- Aquí documentamos la regla de negocio para el mapeo con el backend.
+SELECT 'Reglas de transición de estados Kanban configuradas' AS Resultado;

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title">
+<title id="title">Para todas las generaciones</title>
+<circle fill="none" stroke="#1E2B22" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" cx="84" cy="88" r="28"/>
+<circle fill="none" stroke="#1E2B22" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" cx="172" cy="88" r="28"/>
+<circle fill="none" stroke="#1E2B22" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" cx="128" cy="133" r="23"/>
+<path fill="none" stroke="#1E2B22" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" d="M42 205c0-40 18-68 42-68 16 0 28 11 36 25"/>
+<path fill="none" stroke="#1E2B22" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" d="M214 205c0-40-18-68-42-68-16 0-28 11-36 25"/>
+<path fill="none" stroke="#1E2B22" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" d="M95 208c4-30 16-48 33-48s29 18 33 48"/>
+<path fill="none" stroke="#1E2B22" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" d="M61 68c5-18 19-30 37-30 7 0 14 2 20 5"/>
+<path fill="none" stroke="#1E2B22" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" d="M151 53c8-10 19-15 31-15 16 0 30 9 37 23"/>
+</svg>

@@ -1,0 +1,24 @@
+$kind: http-request
+name: POST /api/productos — Variante 4
+description: "Origen: http-localhost-5000-api-productos-4.request.yaml"
+url: "{{base_url}}/api/productos"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "nombre": "Producto prueba SENA",
+      "codigo": "SENA-EV02-001",
+      "precio_venta": 5000,
+      "cantidad": 10,
+      "stock_minimo": 3,
+      "categorias_id": 1,
+      "proveedores_id": "{{proveedor_id}}"
+    }
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+order: 8000

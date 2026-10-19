@@ -1,0 +1,6 @@
+$kind: http-request
+name: http://localhost:5000/api/compras/130d020b-86c0-428b-8f64-62e0caec3162/cancelar
+description: ""
+url: http://localhost:5000/api/compras/130d020b-86c0-428b-8f64-62e0caec3162/cancelar
+method: PATCH
+order: 4503596146266635

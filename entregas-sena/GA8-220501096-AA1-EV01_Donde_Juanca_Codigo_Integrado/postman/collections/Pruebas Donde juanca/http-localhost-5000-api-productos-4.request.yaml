@@ -1,0 +1,29 @@
+$kind: http-request
+name: http://localhost:5000/api/productos
+description: ""
+url: http://localhost:5000/api/productos
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"nombre\": \"Producto prueba SENA\",\r
+
+    \  \"codigo\": \"SENA-EV02-001\",\r
+
+    \  \"precio_venta\": 5000,\r
+
+    \  \"cantidad\": 10,\r
+
+    \  \"stock_minimo\": 3,\r
+
+    \  \"categorias_id\": 1,\r
+
+    \  \"proveedores_id\": \"prov-001\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+order: 4503596146314635

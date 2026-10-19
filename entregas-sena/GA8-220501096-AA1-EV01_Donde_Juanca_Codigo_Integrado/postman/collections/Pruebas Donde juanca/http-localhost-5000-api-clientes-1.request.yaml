@@ -1,0 +1,8 @@
+$kind: http-request
+name: "Clientes - sin JWT - 401"
+description: "Sin Authorization. Resultado esperado: 401. Escenario distinto del listado autenticado."
+url: http://localhost:5000/api/clientes
+method: GET
+auth:
+  type: noauth
+order: 4503596146286635

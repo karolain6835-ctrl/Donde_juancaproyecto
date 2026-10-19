@@ -1,0 +1,5 @@
+name: Globals
+values:
+  - key: producto_video_id
+    value: ''
+    enabled: true
