@@ -1,5 +1,37 @@
 # Recuperación de contraseña post-V1
 
+## Estado acordado: entrega externa pendiente de dominio verificado
+
+Al 19 de octubre de 2026, el flujo interno está implementado y validado mediante pruebas aisladas: solicitud, OTP de seis dígitos con HMAC y expiración, límite de intentos, autorización temporal de un solo uso, restablecimiento con bcrypt, invalidación y login posterior. Se conservan sin cambios las protecciones y los endpoints POST /api/usuarios/recuperacion/solicitar, /verificar y /restablecer. No se modifican ni vuelven a aplicar migraciones.
+
+La autenticación SMTP con Resend ya fue verificada correctamente. En las solicitudes reales se registró la recuperación, pero el envío no fue aceptado: enviado=0 y consumido=1. No se confirmó recepción del correo ni se completó el restablecimiento con un OTP entregado externamente. Una respuesta HTTP 202 es genérica y no acredita entrega.
+
+Por decisión de la usuaria, queda pendiente únicamente la entrega externa del OTP dentro del alcance de recuperación. Después del despliegue se verificará el dominio con el proveedor y se completará MAIL_FROM con un remitente autorizado de ese dominio, junto con la configuración SMTP correspondiente. No se atribuye este bloqueo a la lógica OTP ni se declara validado el flujo externo. Los fallos generales de regresión ajenos a recuperación se mantienen documentados por separado.
+
+Para cerrar esa validación después del despliegue: configurar el proveedor y MAIL_FROM fuera de Git, reiniciar el backend, verificar SMTP y solicitar un código para una cuenta activa autorizada. Confirmar recepción real, introducir OTP y nueva contraseña en la interfaz, comprobar uso único y login posterior. No registrar códigos, claves, tokens ni contraseñas. No se realizarán más intentos externos durante esta etapa.
+
+Antes de versionar este bloque se repitieron y aprobaron 56 pruebas backend de recuperación/usuarios sobre un esquema temporal aislado y 41 pruebas del frontend relacionado y buzón cifrado, sin omisiones. También aprobaron sintaxis de scripts, lint y build frontend y git diff --check; se conserva la advertencia de bundle mayor de 500 kB. No se repitió el envío externo ni se incluyeron archivos .env, claves o artefactos temporales.
+
+## Auditoría SMTP del 19 de octubre de 2026
+
+La configuración inicial usaba Gmail, con TLS directo en puerto 465; una conexión externa real, sin enviar mensajes, devolvió EAUTH y respuesta 535. Posteriormente se configuró Resend en el entorno local y su autenticación SMTP pasó. El secreto HMAC cumple el mínimo y sus valores privados no se muestran. El transporte existente ya es configurable y no se cambió la lógica OTP, login, roles, endpoints ni migraciones.
+
+Para repetir exclusivamente el diagnóstico, desde la raíz:
+
+```powershell
+node backend/scripts/verificar-smtp.js
+```
+
+El script usa backend/.env, no consulta usuarios ni envía correo. Solo informa éxito, etapa y códigos permitidos; no imprime errores originales, destinatarios, credenciales, OTP ni tokens. Una verificación SMTP exitosa tampoco certifica que MAIL_FROM esté autorizado o que un mensaje llegue al buzón.
+
+Para cambiar de proveedor, completar SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USER, SMTP_PASSWORD y MAIL_FROM con los valores que entregue el operador SMTP. Usar 587/false para STARTTLS o 465/true para TLS directo cuando así lo indique el proveedor. No desactivar TLS ni la validación de certificados. Conservar RECOVERY_HMAC_SECRET fuera de Git y reiniciar el backend después de cambiar su entorno. Gmail requiere un mecanismo admitido por la cuenta; no se sustituye su rechazo por autenticación insegura. Referencias: [SMTP](https://nodemailer.com/smtp) y [Gmail](https://nodemailer.com/guides/using-gmail).
+
+El buzón sintético E2E ahora guarda únicamente contenido cifrado AES-256-GCM. Su clave aleatoria E2E_MAIL_KEY se transmite en memoria a los procesos de prueba y no se escribe en el archivo. La E2E sigue usando transporte simulado, sin certificar envío externo. Se añadió una prueba de cifrado, autenticación y rechazo fuera del entorno test.
+
+Validación de este bloque: 56 pruebas específicas backend de recuperación, login, perfil y usuarios aprobadas; 463 frontend aprobadas; lint y build frontend aprobados (advertencia existente de tamaño del bundle). La regresión backend amplia produjo 579 aprobadas y dos fallos en inventario-movimientos.test.js y kanban-movimiento.test.js: sus cargadores no resuelven ../utils/fechaHora. No se modifican aquí esos módulos ajenos a recuperación.
+
+También aprobaron las 21 pruebas E2E Chromium con API/MariaDB aislada y transporte sintético, la prueba del buzón cifrado y git diff --check. La prueba manual con correo real queda pendiente del dominio verificado y del remitente autorizado, según el estado acordado arriba. La usuaria introducirá OTP y contraseña nueva directamente en la interfaz, nunca en el chat. No se ha acreditado recepción, verificación real del OTP, restablecimiento de esa cuenta ni login posterior. Las secciones siguientes conservan el registro histórico de implementación.
+
 Implementada el 18 de octubre de 2026. Sustituye la funcionalidad retirada; **no** revive `POST /api/usuarios/auth/otp/solicitar`. La tabla `otp_tokens` y todas las migraciones hasta v2.45 se conservan sin cambios ni escrituras nuevas.
 
 ## Activación y SMTP

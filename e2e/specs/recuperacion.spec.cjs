@@ -1,6 +1,7 @@
 const {test, expect} = require('@playwright/test');
 const {randomBytes} = require('node:crypto');
 const fs = require('node:fs');
+const {leer} = require('../correo-test-buzon.cjs');
 
 test('Recuperación por correo de prueba: UI completa, OTP incorrecto, nueva contraseña y login real', async ({page,request}) => {
   expect(process.env.E2E_DATABASE).toMatch(/^dj_v1_e2e_[a-f0-9]{32}$/);
@@ -9,8 +10,8 @@ test('Recuperación por correo de prueba: UI completa, OTP incorrecto, nueva con
   await page.getByLabel('Correo electrónico',{exact:true}).fill(email);
   await page.getByRole('button',{name:'Enviar código',exact:true}).click();
   await expect(page.getByLabel('Código de recuperación',{exact:true})).toBeVisible();
-  await expect.poll(()=>fs.existsSync(process.env.E2E_MAIL_FILE)&&fs.readFileSync(process.env.E2E_MAIL_FILE,'utf8').includes(email)).toBeTruthy();
-  const messages=fs.readFileSync(process.env.E2E_MAIL_FILE,'utf8').trim().split('\n').map(line=>JSON.parse(line));
+  await expect.poll(()=>fs.existsSync(process.env.E2E_MAIL_FILE)&&leer(process.env.E2E_MAIL_FILE).some(m=>m.to===email)).toBeTruthy();
+  const messages=leer(process.env.E2E_MAIL_FILE);
   const message=messages.filter(m=>m.to===email).at(-1),code=message.text.match(/es: (\d{6})/)[1];
   await page.getByLabel('Código de recuperación',{exact:true}).fill(code==='000000'?'111111':'000000');
   await page.getByRole('button',{name:'Verificar código',exact:true}).click();await expect(page.getByRole('alert')).toContainText('no es válido o expiró');

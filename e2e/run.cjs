@@ -35,7 +35,7 @@ async function main(){
   fs.mkdirSync(path.dirname(mailFile),{recursive:true});
   imagesDir=fs.mkdtempSync(path.join(__dirname,'test-results','imagenes-'));
   const env={...process.env,NODE_ENV:'test',DB_NAME:database,PORT:String(apiPort),JWT_SECRET:randomBytes(48).toString('hex'),E2E_DATABASE:database,E2E_API_URL:'http://127.0.0.1:'+apiPort+'/api',E2E_WEB_URL:'http://127.0.0.1:'+webPort,E2E_PASSWORD:password,
-   RECOVERY_HMAC_SECRET:randomBytes(32).toString('hex'),SMTP_HOST:'smtp.example.invalid',SMTP_PORT:'587',SMTP_SECURE:'false',SMTP_USER:'e2e',SMTP_PASSWORD:randomBytes(24).toString('hex'),MAIL_FROM:'correo@example.invalid',E2E_MAIL_FILE:mailFile,PRODUCT_IMAGES_DIR:imagesDir};
+   RECOVERY_HMAC_SECRET:randomBytes(32).toString('hex'),SMTP_HOST:'smtp.example.invalid',SMTP_PORT:'587',SMTP_SECURE:'false',SMTP_USER:'e2e',SMTP_PASSWORD:randomBytes(24).toString('hex'),MAIL_FROM:'correo@example.invalid',E2E_MAIL_FILE:mailFile,E2E_MAIL_KEY:randomBytes(32).toString('hex'),PRODUCT_IMAGES_DIR:imagesDir};
   backend=spawn(process.execPath,['--require',path.join(__dirname,'correo-test-preload.cjs'),'src/index.js'],{cwd:path.join(root,'backend'),env,windowsHide:true,stdio:'ignore'});
   frontend=spawn(process.execPath,[path.join(root,'frontend-app/node_modules/vite/bin/vite.js'),'--host','127.0.0.1','--port',String(webPort),'--strictPort'],{cwd:path.join(root,'frontend-app'),env:{...env,VITE_API_URL:env.E2E_API_URL},windowsHide:true,stdio:'ignore'});
   await Promise.all([ready('http://127.0.0.1:'+apiPort,backend),ready(env.E2E_WEB_URL,frontend)]);
