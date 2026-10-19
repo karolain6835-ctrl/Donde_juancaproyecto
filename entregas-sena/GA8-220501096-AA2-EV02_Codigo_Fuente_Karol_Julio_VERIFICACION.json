@@ -1,0 +1,271 @@
+﻿{
+    "source":  "mobile",
+    "folder":  "GA8-220501096-AA2-EV02_Codigo_Fuente_Karol_Julio",
+    "totalFiles":  39,
+    "modifiedOnlyInCopy":  [
+                               "README.md",
+                               ".env.example"
+                           ],
+    "excludedFiles":  [
+                          ".env.local"
+                      ],
+    "excludedDirectories":  [
+                                "node_modules",
+                                ".expo",
+                                ".verification",
+                                "dist",
+                                ".git",
+                                "coverage",
+                                ".cache",
+                                "web-build",
+                                "android",
+                                "ios"
+                            ],
+    "secretPatternScan":  "passed; synthetic test fixtures preserved",
+    "originalUnchanged":  true,
+    "inventory":  [
+                      {
+                          "path":  ".easignore",
+                          "bytes":  957,
+                          "sha256":  "97303f06fd89965d45e31f078112d0bc6438809e20db5d4ecc8e53efaa72a862",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  ".env.example",
+                          "bytes":  40,
+                          "sha256":  "4da161b7590b8939ad2504f8d3b4c8c5853f1c9d7266c418b6dcfddaf323b7e6",
+                          "originalIdentical":  false
+                      },
+                      {
+                          "path":  ".gitignore",
+                          "bytes":  533,
+                          "sha256":  "f85a04400391af473b5041fd547d39925526962101a242f0390fd9d4b0464244",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "AGENTS.md",
+                          "bytes":  2598,
+                          "sha256":  "b7d381dd55800d242252e8bf89a40b026586d254e34908210931bc35582396a3",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "app.config.js",
+                          "bytes":  1218,
+                          "sha256":  "5aaff486443c3ff555986d61a96bcd58f65a54fd9751259beff695e2d685d7a5",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "App.js",
+                          "bytes":  230,
+                          "sha256":  "c27e778e40e09478ef5d0b386daa370ada9f9a392233e016b9c3d12fb8e8a4a2",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "app.json",
+                          "bytes":  1399,
+                          "sha256":  "caf4b1af15caf307c52b4a45eb07dc9b504cb557e95a37ba57701bd3d710d04a",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "assets/android-icon-background.png",
+                          "bytes":  17549,
+                          "sha256":  "fb139c2dee362ebf2070e23b96da6fc0d43f8492de38b8af1fd7223e19b5861d",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "assets/android-icon-foreground.png",
+                          "bytes":  78796,
+                          "sha256":  "9e3d0315a33c6799de601dd34cd8bf8cc3a8d16f3bf75592baec2ceb7240b391",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "assets/android-icon-monochrome.png",
+                          "bytes":  4140,
+                          "sha256":  "6371fc2c12e33ad2215a86c281db3d682a81bebe7c957a842c13b8bf00cceb83",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "assets/favicon.png",
+                          "bytes":  1129,
+                          "sha256":  "a4e030697a7571b3e95d31860e4da55d2f98e5e861e2b55e414f45a8556828ba",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "assets/icon.png",
+                          "bytes":  393493,
+                          "sha256":  "119462bb78eb240a65c869fc067ee599639b3cb5a41953f25c07b17d2a8c7e0f",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "assets/splash-icon.png",
+                          "bytes":  17547,
+                          "sha256":  "5f4c0a732b6325bf4071d9124d2ae67e037cb24fcc9c482ef82bea742109a3b8",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "eas.json",
+                          "bytes":  319,
+                          "sha256":  "446a521e813fa5005387cb33cf2376ccdd2546caef68b29f7fe5c60e0c000be6",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "eslint.config.js",
+                          "bytes":  178,
+                          "sha256":  "70c216ea657c8a2dda710ad680bf21634a09f7a286bd259c210f2808ace88c36",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "index.js",
+                          "bytes":  307,
+                          "sha256":  "5c157f4d44972d9c84415e1e4bda595b3abcd8cf733f8a9cd20935bec3eccc42",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "LICENSE",
+                          "bytes":  1106,
+                          "sha256":  "fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "package-lock.json",
+                          "bytes":  429240,
+                          "sha256":  "c70b67d294573b1061d4c4b528349ca4c4c830cb6b683a3c79029f78d5fdbf22",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "package.json",
+                          "bytes":  1039,
+                          "sha256":  "11d0eb73d355662e59ce97d252bb746a46114c6319b44592dcd8592cb9e0d698",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "plugins/withNetworkSecurity.js",
+                          "bytes":  1580,
+                          "sha256":  "7f7a085ae87925aaaea8e4b7bd96e43cb6efc32edef8bf7169169a35f05b998e",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "README.md",
+                          "bytes":  7503,
+                          "sha256":  "40b86aa4e64d4c18824eeb1698b6795cd264b7b59d12b3cb6b89e305037d8960",
+                          "originalIdentical":  false
+                      },
+                      {
+                          "path":  "scripts/prepare-brand.cjs",
+                          "bytes":  526,
+                          "sha256":  "5b600c1660fe7ba620c27971f31f465a101afa7da9756b1f9fdc3763ab5c1339",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "scripts/verify-eas-archive.cjs",
+                          "bytes":  3578,
+                          "sha256":  "4fc06321ef25280e335571756adecb525d268b970ba13134ea48f457c400476e",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "src/app/acceso.tsx",
+                          "bytes":  4918,
+                          "sha256":  "e82b2a98faf0cb8bf44172ae3d81fb894e3f43ba35e37e2a8fe1b80c76ad56cd",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "src/app/index.tsx",
+                          "bytes":  3105,
+                          "sha256":  "8d92b09f1a590a56240fc1e78613a2964295b25e57f5fef70a6263112b6aa7b7",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "src/app/panel.tsx",
+                          "bytes":  1976,
+                          "sha256":  "e86dde974537c6215b8b59ce1983f770503fffe7440d5ed4dca345b2459f66ca",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "src/app/_layout.tsx",
+                          "bytes":  1080,
+                          "sha256":  "f26ee72c2957e1709022b380b27f173688c5482fc671098a40a2b1e1b94f3714",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "src/assets/brand/logo.png",
+                          "bytes":  768552,
+                          "sha256":  "948072de2237be20a90a1203511d94cdb3e99533ca510e38bff972c3b6f0e6ba",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "src/components/ActionButton.tsx",
+                          "bytes":  1099,
+                          "sha256":  "88f713028ff7222076c331fe8863897c006d256c15e6e30506ca001a9bb12d99",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "src/components/Screen.tsx",
+                          "bytes":  668,
+                          "sha256":  "79992eda50b6cf28345d4d7f3b603b59e1ec3ac8786a8d8f8ee2db929e27b02f",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "src/context/AuthContext.tsx",
+                          "bytes":  4400,
+                          "sha256":  "7ce5d138fc27d6ad855489d3e949281176bfaebc9cb9520cff65360dc75f54fd",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "src/services/api.ts",
+                          "bytes":  2870,
+                          "sha256":  "7443df820491cbb61bb72eb6be54f58b3dfc05f77036ed5417a3785069a94fec",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "src/services/auth.ts",
+                          "bytes":  2281,
+                          "sha256":  "e550a20eacc6322310e070715c281cb66b636f60e2dfcbbcdd48e73eadeebe13",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "src/services/sessionStore.ts",
+                          "bytes":  826,
+                          "sha256":  "6d22e64ede46716a64f0a946215c8dc763e44fd6083216cf0bb931155e4cdf4b",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "src/theme/index.ts",
+                          "bytes":  573,
+                          "sha256":  "f8d4252574019ca6702d3db7b9294d324206073f05bd62d377c504afdfa814a1",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "src/types/metro.d.ts",
+                          "bytes":  37,
+                          "sha256":  "57d45be957186273b21383b09f6a6aa3ca599b28d1fb742fb3edfac464504b90",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "tests/auth.test.cjs",
+                          "bytes":  6467,
+                          "sha256":  "84de17e94b3cc181196aab107e22124885460094387e684d12cdd4b0b764ee9f",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "tests/build-config.test.cjs",
+                          "bytes":  4832,
+                          "sha256":  "0aabdbd433f224020f739af048069550c86d709ae9778441ab6b516591067dff",
+                          "originalIdentical":  true
+                      },
+                      {
+                          "path":  "tsconfig.json",
+                          "bytes":  215,
+                          "sha256":  "5abb22a81f8a6a0a7f533cfd5db8c62bdad4a75543b816838545d97b7153d264",
+                          "originalIdentical":  true
+                      }
+                  ],
+    "zipVerification":  "ZIP reopened; all file streams read and SHA-256 matched; originals rechecked",
+    "checks":  {
+                   "additionalLint":  "Direct eslint .: 6 existing no-undef errors in CJS scripts/tests and 1 BOM warning; no fixes applied",
+                   "typecheck":  "passed",
+                   "tests":  "12/12 passed",
+                   "projectLint":  "npm run lint -- --no-cache passed"
+               },
+    "zipBytes":  1383760,
+    "zipSha256":  "2425a86d7641f8980b96316672eeb3cd7c60bfca230fd5dcfd6c40cc2a3f3a65"
+}
