@@ -775,3 +775,35 @@
 }
 
 .pago-directo .operacion-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.pago-directo .operacion-actions button{width:auto;flex:0 1 auto;max-width:100%}
+
+/* Alcance local: catálogo de cuentas, sin modificar pagos ni otros listados. */
+.cuentas-pendientes-section { min-width:0; container-type:inline-size; }
+.cuentas-pendientes-section .cuentas-filtros {
+  display:grid; grid-template-columns:minmax(150px,220px) minmax(0,1fr);
+  align-items:end; gap:16px; padding:16px;
+  background:var(--color-surface,#fff); border:1px solid var(--color-border,#dfe8e2); border-radius:12px;
+}
+.cuentas-pendientes-section .cuentas-filtros label { display:grid; gap:7px; min-width:0; font-size:13px; font-weight:600; color:var(--color-text-secondary); }
+.cuentas-pendientes-section .cuentas-filtros input,
+.cuentas-pendientes-section .cuentas-filtros select { box-sizing:border-box; width:100%; min-width:0; height:40px; padding:8px 12px; border:1px solid var(--color-border,#dfe8e2); border-radius:9px; background:#fff; color:var(--color-text); font:inherit; }
+.cuentas-pendientes-section .cuentas-filtros :is(input,select):focus-visible { outline:2px solid var(--color-primary,#214e3b); outline-offset:2px; }
+.cuentas-pendientes-section .cuentas-grid { grid-template-columns:repeat(4,minmax(0,1fr)); align-items:stretch; }
+.cuentas-pendientes-section .cuenta-card { display:flex; flex-direction:column; gap:16px; padding:18px; box-shadow:0 3px 12px #153d2c06; }
+.cuentas-pendientes-section .cuenta-cabecera h3 { margin:0; font-family:var(--font-brand); font-size:21px; color:var(--color-primary,#214e3b); }
+.cuentas-pendientes-section .cuenta-cabecera .cuenta-referencia { margin:5px 0 0; font:12px ui-monospace,monospace; color:var(--color-text-secondary); }
+.cuentas-pendientes-section .cuenta-personas { display:grid; gap:12px; margin:0; }
+.cuentas-pendientes-section .cuenta-personas dt { margin-bottom:3px; font-size:11px; color:var(--color-text-secondary); }
+.cuentas-pendientes-section .cuenta-personas dd { margin:0; font-size:14px; line-height:1.45; overflow-wrap:anywhere; }
+.cuentas-pendientes-section .cuenta-card .pago-directo { display:flex; flex-direction:column; flex:1; gap:10px; margin-top:auto; padding-top:14px; border-top:1px solid var(--color-border,#dfe8e2); min-width:0; }
+.cuentas-pendientes-section .pago-directo > p { margin:0; font-size:13px; line-height:1.5; }
+.cuentas-pendientes-section .pago-directo > p:first-child strong { display:block; font-size:23px; line-height:1.4; color:var(--color-primary,#214e3b); }
+.cuentas-pendientes-section .pago-directo > .operacion-actions { order:1; margin: auto 0 0; padding-top:8px; gap:8px; }
+.cuentas-pendientes-section .pago-directo > :is(form,[role="alert"],[role="status"]) { order:2; }
+.cuentas-pendientes-section .cuenta-card button { width:auto; max-width:100%; margin:0; padding:9px 11px; font-size:12px; }
+@container (max-width:1000px) {
+  .cuentas-pendientes-section .cuentas-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@container (max-width:540px) {
+  .cuentas-pendientes-section .cuentas-grid,
+  .cuentas-pendientes-section .cuentas-filtros { grid-template-columns:minmax(0,1fr); }
+}
