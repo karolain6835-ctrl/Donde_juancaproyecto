@@ -107,7 +107,7 @@ function ReporteProductosSection() {
           </div>
 
           <span>
-            Valor histórico generados
+            Valor histórico generado
           </span>
 
           <strong>

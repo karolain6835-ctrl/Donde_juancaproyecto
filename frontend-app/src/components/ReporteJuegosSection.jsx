@@ -153,7 +153,7 @@ function ReporteJuegosSection() {
           </div>
 
           <span>
-            Costo final generados
+            Costo final generado
           </span>
 
           <strong>
