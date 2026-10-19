@@ -2,6 +2,7 @@ import GlobalHeaderTools from '../../components/GlobalHeaderTools';
 import Can from "../../components/Can";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
+import { useEffect, useRef, useState } from 'react';
 
 import {
   LayoutDashboard,
@@ -15,6 +16,8 @@ import {
   Users,
   BarChart3,
   Settings2,
+  Menu,
+  X,
 } from "lucide-react";
 
 import UserProfileMenu from "../../components/UserProfileMenu";
@@ -24,6 +27,34 @@ import "./AdminLayout.css";
 
 function AdminLayout({ children }) {
   const { user } = useAuth();
+  // En pantallas angostas el menú no reserva espacio y retiene el foco al abrirse.
+  const [compact,setCompact]=useState(()=>typeof window!=='undefined'&&window.matchMedia('(max-width: 1100px)').matches);
+  const [menuOpen,setMenuOpen]=useState(false);
+  const menuButton=useRef(null),sidebar=useRef(null);
+  function closeMenu(){setMenuOpen(false);requestAnimationFrame(()=>menuButton.current?.focus());}
+  useEffect(()=>{
+    const media=window.matchMedia('(max-width: 1100px)');
+    const resize=()=>{setCompact(media.matches);setMenuOpen(false);};
+    media.addEventListener('change',resize);
+    return ()=>media.removeEventListener('change',resize);
+  },[]);
+  useEffect(()=>{
+    if(!compact||!menuOpen)return;
+    const previousOverflow=document.body.style.overflow;
+    document.body.style.overflow='hidden';
+    const focusFrame=requestAnimationFrame(()=>{sidebar.current?.getBoundingClientRect();sidebar.current?.querySelector('button')?.focus({preventScroll:true});});
+    const keyboard=e=>{
+      if(e.key==='Escape'){e.preventDefault();setMenuOpen(false);requestAnimationFrame(()=>menuButton.current?.focus());}
+      if(e.key==='Tab'){
+        const controls=[...sidebar.current.querySelectorAll('a[href],button,input,select,[tabindex="0"]')].filter(el=>!el.disabled&&el.getClientRects().length);
+        const first=controls[0],last=controls.at(-1);
+        if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}
+        else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}
+      }
+    };
+    document.addEventListener('keydown',keyboard);
+    return ()=>{cancelAnimationFrame(focusFrame);document.body.style.overflow=previousOverflow;document.removeEventListener('keydown',keyboard);};
+  },[compact,menuOpen]);
   const nombre = typeof user?.nombre === "string" && user.nombre.trim() ? user.nombre : "Usuario";
   const rol = typeof user?.rol === "string" && user.rol.trim() ? user.rol : "Sin rol";
   const inicial = nombre.trim().charAt(0).toUpperCase();
@@ -38,13 +69,15 @@ function AdminLayout({ children }) {
   }
 
   return (
-    <div className="admin-layout">
+    <div className={`admin-layout${menuOpen?' sidebar-open':''}`}>
 
       {/* =========================================
           SIDEBAR
       ========================================== */}
 
-      <aside className="sidebar">
+      {compact&&menuOpen&&<button className="sidebar-overlay" aria-label="Cerrar menú de navegación" onClick={closeMenu}/>}
+      <aside id="menu-principal" ref={sidebar} className="sidebar" aria-label="Menú principal" onTransitionEnd={e=>{if(e.target===sidebar.current&&menuOpen)sidebar.current.querySelector('button')?.focus({preventScroll:true});}} inert={compact&&!menuOpen} onClick={e=>{if(compact&&e.target.closest('a[href]'))closeMenu();}}>
+        <button className="sidebar-close" aria-label="Cerrar menú" onClick={closeMenu}><X size={20}/></button>
 
         {/* IDENTIDAD */}
 
@@ -260,11 +293,12 @@ function AdminLayout({ children }) {
           ÁREA PRINCIPAL
       ========================================== */}
 
-      <div className="admin-main">
+      <div className="admin-main" inert={compact&&menuOpen}>
 
         {/* HEADER */}
 
         <header className="admin-header">
+          <button ref={menuButton} className="sidebar-toggle" aria-label="Abrir menú" aria-controls="menu-principal" aria-expanded={menuOpen} onClick={()=>setMenuOpen(true)}><Menu size={22}/></button>
 
           <div className="header-welcome">
             <h3>Buenos días, {nombre}</h3>
@@ -282,7 +316,7 @@ function AdminLayout({ children }) {
 
             {/* USUARIO DEL HEADER */}
 
-            <div className="header-user">
+            <div className="header-user" role="group" aria-label={`${nombre}, ${rol}`} title={`${nombre} · ${rol}`}>
               <div className="user-avatar small">
                 {inicial}
               </div>

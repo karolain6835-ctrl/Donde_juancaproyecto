@@ -17,7 +17,7 @@ test('Cuentas reales: filtros, referencias, acciones y distribución responsive'
  await page.goto('/caja');await page.getByRole('button',{name:'Cuentas pendientes',exact:true}).click();
  const section=page.locator('.cuentas-pendientes-section'),cards=section.locator('.cuenta-card');
  await section.getByRole('searchbox').fill('Cliente cuentas');await expect(cards).toHaveCount(4);await expect(section.getByRole('button',{name:'Actualizar cuentas'})).toHaveCount(0);
- for(const [width,columns]of [[1600,4],[1100,2],[750,1]]){
+ for(const [width,columns]of [[1440,4],[1024,2],[390,1]]){
   await page.setViewportSize({width,height:1000});
   await expect.poll(()=>section.locator('.cuentas-grid').evaluate(el=>getComputedStyle(el).gridTemplateColumns.split(' ').length)).toBe(columns);
   const buttons=await cards.getByRole('button',{name:'Pagar',exact:true}).all();await expect(buttons[0]).toBeEnabled();
