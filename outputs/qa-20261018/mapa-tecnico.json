@@ -1,0 +1,74 @@
+[
+  [
+    "Autenticación/usuarios",
+    "usuariosRoutes.js",
+    "usuariosController.js; authMiddleware.js; rolesMiddleware.js",
+    "bcrypt/jsonwebtoken; identidad",
+    "usuarios, roles",
+    "LoginPage, AdministracionPage"
+  ],
+  [
+    "Categorías",
+    "categoriasRoutes.js (solo GET)",
+    "categoriasController.js",
+    "Consulta db.query",
+    "categorias",
+    "InventarioPage"
+  ],
+  [
+    "Productos/inventario",
+    "productosRoutes.js; inventarioRoutes.js",
+    "productosController.js; inventarioController.js; alertasInventarioController.js",
+    "pedidoItemsService; alertas; triggers baseline",
+    "productos, categorias, movimientos_inventario, alertas_inventario",
+    "InventarioPage, AjusteStockForm"
+  ],
+  [
+    "Mesas/pedidos",
+    "mesasRoutes.js; pedidosRoutes.js",
+    "mesasController.js; pedidosController.js; sesionesMesaController.js",
+    "sesionesMesaService; pedidoItemsService; participantesService",
+    "mesas, sesiones_mesa, pedidos, pedido_items, jugadores",
+    "MesasPage, PedidosPage, PedidoForm, PedidoDetalle"
+  ],
+  [
+    "Pagos/divisiones",
+    "pagosRoutes.js; divisionesRoutes.js",
+    "pagosController.js; divisionesController.js",
+    "liquidacionService; divisionesService; divisionCuotasService",
+    "pagos, sesiones_division_cuentas, division_participantes, division_items_detalle",
+    "CajaPage, PagoDirectoPedido, DivisionCuenta, PagosGlobal"
+  ],
+  [
+    "Juegos",
+    "juegosRoutes.js",
+    "juegosController.js",
+    "juegosService; juegosPedidoService; mantenimientoJuegosService",
+    "activos_juego, sesiones_juego, pedidos",
+    "JuegosPage"
+  ],
+  [
+    "Clientes",
+    "clientesRoutes.js",
+    "clientesController.js",
+    "historialClientesService; identidadService; auditoriaService",
+    "clientes, usuarios, auditoria",
+    "ClientesPage"
+  ],
+  [
+    "Ventas/caja/reportes",
+    "ventasRoutes.js; cierresCajaRoutes.js",
+    "ventasController.js; cierresCajaController.js",
+    "comprobantesService; cierresCajaService; frontend reportesService",
+    "comprobantes, comprobante_items, pagos, cierre_pagos, cierres_caja, reportes_generados",
+    "CajaPage, ReportesPage, ComprobantePedido"
+  ],
+  [
+    "Kanban",
+    "kanbanRoutes.js",
+    "kanbanController.js",
+    "Transacción de estados; pedidoItemsService",
+    "pedido_items, pedidos, kanban_movimientos",
+    "KanbanPage"
+  ]
+]

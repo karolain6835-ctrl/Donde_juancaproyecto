@@ -1,0 +1,20 @@
+{
+  "runId": "6bbb430a113746c6956d6c16d37b8cbc",
+  "database": "dj_qa_6bbb430a113746c6956d6c16d37b8cbc",
+  "node": "v24.18.0",
+  "environment": [
+    {
+      "version": "10.4.32-MariaDB",
+      "servidor": "LAPTOP-AFOBO7B3"
+    }
+  ],
+  "schema": {
+    "tablas": 51,
+    "claves_foraneas": 94,
+    "triggers": 3,
+    "rutinas": 1
+  },
+  "base": "http://127.0.0.1:59729/api",
+  "web": "http://127.0.0.1:59730",
+  "politica": "Base nueva conservada. Sin DROP, DELETE ni cambios en base habitual."
+}

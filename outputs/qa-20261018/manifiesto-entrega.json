@@ -1,0 +1,267 @@
+[
+  {
+    "archivo": "CP-001.png",
+    "bytes": 135113,
+    "sha256": "5f582361bd56dda1c6d87d6d61ca0ef8a5b4754cf92ba074a5adedf7565982c4"
+  },
+  {
+    "archivo": "CP-002.png",
+    "bytes": 99981,
+    "sha256": "826665e95d2f9a0bed0fa3d3d8a3d278a110f86c435160612ce95e780f7bcb7a"
+  },
+  {
+    "archivo": "CP-003.png",
+    "bytes": 99382,
+    "sha256": "0a0306dd40bfb314121e752f04eae0cea33ec4411439676589cf0a8831800c5a"
+  },
+  {
+    "archivo": "CP-005.png",
+    "bytes": 91738,
+    "sha256": "14f23c75ee114179cae681e3ec1b39eecadb59c5ebe6ff5fc621b727e55db492"
+  },
+  {
+    "archivo": "CP-023.png",
+    "bytes": 114709,
+    "sha256": "0f46ff6e8fb2427055e11d8038bc566862b1ac0a77c4f886917a9888e1e6bded"
+  },
+  {
+    "archivo": "CP-024.png",
+    "bytes": 142164,
+    "sha256": "32e136186b0c9e9a2672d5e6c0714819fb2979896ed7eb472ecaeb6af5af79bf"
+  },
+  {
+    "archivo": "CP-025.png",
+    "bytes": 152874,
+    "sha256": "a260857873f290a0b22f8303f8d7b4101b632d0c7c1e9d20ef00d3fac3249073"
+  },
+  {
+    "archivo": "CP-045.png",
+    "bytes": 183339,
+    "sha256": "1a5224d348fcc5e2564abc2258b719978baa7809df4b23dc9fbcb9654e8d7ebc"
+  },
+  {
+    "archivo": "CP-050.png",
+    "bytes": 107967,
+    "sha256": "443d4ca626b4d634d3faef9204a7be3af6adee4de79054c51df0d10a67c74b1d"
+  },
+  {
+    "archivo": "CP-051.png",
+    "bytes": 109531,
+    "sha256": "e78ce7edde1fc61f706c36be82877628f290cf766749c429ec1eb64959a9e3df"
+  },
+  {
+    "archivo": "CP-054-escritorio-_administracion.png",
+    "bytes": 98910,
+    "sha256": "705c0b047f8b02ffd81dc26cad5a80dc6928ace16394b5b048ec4c18cd6d5891"
+  },
+  {
+    "archivo": "CP-054-escritorio-_caja.png",
+    "bytes": 129663,
+    "sha256": "71c760f7871cf9b3fa0f37ed0bc782b5587dcfedf3977126f6f533ddbdcd6e08"
+  },
+  {
+    "archivo": "CP-054-escritorio-_clientes.png",
+    "bytes": 108874,
+    "sha256": "fcc11116c93b35d8bc9e19f943fabbd1c9919f58de4fb6d46118de4b7fb5c6be"
+  },
+  {
+    "archivo": "CP-054-escritorio-_dashboard.png",
+    "bytes": 208793,
+    "sha256": "5104185fac6c0e90cd60562b950148fc18bf74b5463f5d914fc5fed4dce27d26"
+  },
+  {
+    "archivo": "CP-054-escritorio-_inventario.png",
+    "bytes": 141017,
+    "sha256": "bc7634531c998a4d53102f697d24b1872767a82c4731f4266e8f2a9e7fa2c024"
+  },
+  {
+    "archivo": "CP-054-escritorio-_juegos.png",
+    "bytes": 98707,
+    "sha256": "1c0f15bcbe2fa95754a4f3a0df67e523398c790f0862919fbcf89623e6911aa0"
+  },
+  {
+    "archivo": "CP-054-escritorio-_operacion_mesas.png",
+    "bytes": 143913,
+    "sha256": "1bbd2e326bc088a9f91ba92d0eee7284ded032761ad15cbb8ef3f39973706798"
+  },
+  {
+    "archivo": "CP-054-escritorio-_operacion_pedidos.png",
+    "bytes": 164042,
+    "sha256": "7f9174f4600a01b0544a907bf4d2e2af5fa12b8ca58df1c787a7bd54b594bfe1"
+  },
+  {
+    "archivo": "CP-054-escritorio-_reportes.png",
+    "bytes": 225053,
+    "sha256": "a5e3f25e07508077c66fc844955a8c7cb1eb17a225f1d68db4053b58f3df22e1"
+  },
+  {
+    "archivo": "CP-054-movil-_administracion.png",
+    "bytes": 62778,
+    "sha256": "f14c0343f5b739a85346e97e437e0842c033cb6e42829dd726cd865d13420070"
+  },
+  {
+    "archivo": "CP-054-movil-_caja.png",
+    "bytes": 103907,
+    "sha256": "a375293d534443f1a46ca24062d3e803c39057af4d0ee0e40bc12c01e93fcaca"
+  },
+  {
+    "archivo": "CP-054-movil-_clientes.png",
+    "bytes": 88348,
+    "sha256": "ffa0a4d77328ec3e5c9f392e82f01d1445414cdb027e1983124dea92045223ec"
+  },
+  {
+    "archivo": "CP-054-movil-_dashboard.png",
+    "bytes": 220183,
+    "sha256": "336be06df5fb50a3a7f0fbfb2e34ff516e6a671232dc9973bcfa830b6f5e1f41"
+  },
+  {
+    "archivo": "CP-054-movil-_inventario.png",
+    "bytes": 113134,
+    "sha256": "a948aeb6a1505a8026d1700104c5d314aa1bb6603dac3de795d0c6c25946f7ad"
+  },
+  {
+    "archivo": "CP-054-movil-_juegos.png",
+    "bytes": 86082,
+    "sha256": "e6131b091a48f0221b89d4d8d035a80b665ad39945385799db53f194bbd0bcaf"
+  },
+  {
+    "archivo": "CP-054-movil-_operacion_mesas.png",
+    "bytes": 183914,
+    "sha256": "1fb29dd151ce802d6dcdac78b34ae17769d1293788924e5ed47585f89d26848e"
+  },
+  {
+    "archivo": "CP-054-movil-_operacion_pedidos.png",
+    "bytes": 182693,
+    "sha256": "2f0f499b31c11a90f70122cc77fa837cdab39c8360770811fd1b397aece8780d"
+  },
+  {
+    "archivo": "CP-054-movil-_reportes.png",
+    "bytes": 187088,
+    "sha256": "c799afd6a4e1149aa4ed3297304356c0c429d7f0717dccb4b7bfcaa2da35835b"
+  },
+  {
+    "archivo": "CP-054-tableta-_administracion.png",
+    "bytes": 80085,
+    "sha256": "1bd9e67d682738abb0f08c9df31b036122f050d70b15e56fdbfc103acb05d772"
+  },
+  {
+    "archivo": "CP-054-tableta-_caja.png",
+    "bytes": 110276,
+    "sha256": "1c4ebc24d1d0a6fda426e6b7b2713bbc49b217b5ddfabf58b6cbdb6e8c7e77f5"
+  },
+  {
+    "archivo": "CP-054-tableta-_clientes.png",
+    "bytes": 92501,
+    "sha256": "69104bf58600dec37db811f0b9e0ae6c6da493174f3dcfab049b8453a00f22bc"
+  },
+  {
+    "archivo": "CP-054-tableta-_dashboard.png",
+    "bytes": 213889,
+    "sha256": "786406b870ee0e56b2733ce56fc652c4689c59ad6767f11c52f038737b38b48d"
+  },
+  {
+    "archivo": "CP-054-tableta-_inventario.png",
+    "bytes": 128667,
+    "sha256": "bbadd0ae95ec240c528e862a70e197d25c90dc4b313c5e5548e3f23335577302"
+  },
+  {
+    "archivo": "CP-054-tableta-_juegos.png",
+    "bytes": 91775,
+    "sha256": "1d8bb2df2f355bb13c8c1fbc49a5663fed348a57f74849cd0369f9f9fda813bc"
+  },
+  {
+    "archivo": "CP-054-tableta-_operacion_mesas.png",
+    "bytes": 157798,
+    "sha256": "0067bbe32831040990fd4c47f45b6aeb57efb69b3618ed73e5a471ac150dddff"
+  },
+  {
+    "archivo": "CP-054-tableta-_operacion_pedidos.png",
+    "bytes": 194405,
+    "sha256": "ac3ee57109c5c42c26447fc9e2d81b235ca0c54280b410b1fc26e361bef799f1"
+  },
+  {
+    "archivo": "CP-054-tableta-_reportes.png",
+    "bytes": 217543,
+    "sha256": "5b9e26b6a62ddccb1d7060d4593284ca5b7c9dd3926f8075149d032310ddeddb"
+  },
+  {
+    "archivo": "CP-055-pago.png",
+    "bytes": 183649,
+    "sha256": "a766189a19dc53566d93f23fdfd390292e76c59526c6754732ff05397c0bd99d"
+  },
+  {
+    "archivo": "CP-055-pedido.png",
+    "bytes": 262035,
+    "sha256": "670a0385e5f192d327220b8a168c98fefbbc28a6c36f7c2cea59537ced0050c2"
+  },
+  {
+    "archivo": "INFORME_QA.md",
+    "bytes": 17724,
+    "sha256": "4ecf1db9001db665ad5ffc19a5d9d4bd211e6eef9566b558700ffe6f09949339"
+  },
+  {
+    "archivo": "Informe_QA.html",
+    "bytes": 36297,
+    "sha256": "a652bf0ca66375a04f2749a123d8ab1fe94929e0352631542900c971dfc077b8"
+  },
+  {
+    "archivo": "Matriz_ejecucion_Donde_Juanca.xlsx",
+    "bytes": 43458,
+    "sha256": "7de9b4f56f21906bd1c9896831c167946b277e7bb4d3e50115875c74252bc978"
+  },
+  {
+    "archivo": "README_QA.md",
+    "bytes": 3816,
+    "sha256": "92a9931603aa1cf83f61e88461c467dd05526dd3e56e97093dcbb6145af4c720"
+  },
+  {
+    "archivo": "acciones-correctivas.csv",
+    "bytes": 2422,
+    "sha256": "8710d1227fc6abfbf73bb913c3ffd4e9267e5ec56d810812cb7356d2f1f30834"
+  },
+  {
+    "archivo": "ambiente.json",
+    "bytes": 496,
+    "sha256": "11bf214208067dc0c5de6e8436189c5ecfe2883a734dbe62fbcb06de8b400fc5"
+  },
+  {
+    "archivo": "ejecucion.json",
+    "bytes": 112635,
+    "sha256": "dbc056d5268f2dad1218b330415434beb6c9ce0c579ae995df4900021c38ef1f"
+  },
+  {
+    "archivo": "incidencias.csv",
+    "bytes": 6615,
+    "sha256": "33a092c7c8c283d23d8f1c0022087161b792a938fb2f7e363347863afe372ace"
+  },
+  {
+    "archivo": "mapa-tecnico.json",
+    "bytes": 2356,
+    "sha256": "784921de07f738cece746aefa9bd797b0a2865e12f95d9a6366808ce7609838e"
+  },
+  {
+    "archivo": "matriz-ejecucion.csv",
+    "bytes": 18895,
+    "sha256": "4d2e12f9378f77602cae20655bafd1f5f752993b3ffc48bbf9c023290f10ba57"
+  },
+  {
+    "archivo": "piloto/regresion-estado.json",
+    "bytes": 133,
+    "sha256": "54b0635e0b92df0b1be0d9c2a48e044fd9c205a4239a6d01935e801665f7f285"
+  },
+  {
+    "archivo": "piloto/regresion.log",
+    "bytes": 47420,
+    "sha256": "e19a0972153095045241d42a2840da2cbc66f30d18ef5ca8f8e124c9039ee5a4"
+  },
+  {
+    "archivo": "procedencia-codigo.json",
+    "bytes": 36518,
+    "sha256": "d7f72a51cd7d33dc04d2178e76bbcf321e7aa843e1f79ce0b9b88488b23b33cc"
+  },
+  {
+    "archivo": "resumen-estadistico.json",
+    "bytes": 94,
+    "sha256": "654ef826896aa04a21c7b073db962ae18b8a9324bc6b05921ffd020f0921b65e"
+  }
+]

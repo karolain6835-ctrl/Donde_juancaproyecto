@@ -1,0 +1,3785 @@
+{
+  "runId": "6bbb430a113746c6956d6c16d37b8cbc",
+  "database": "dj_qa_6bbb430a113746c6956d6c16d37b8cbc",
+  "fecha": "2026-10-18T19:10:13.752Z",
+  "results": [
+    {
+      "id": "CP-001",
+      "estado": "Aprobado",
+      "real": "API 200 con JWT; login real en Chromium redirige a /dashboard.",
+      "inicio": "2026-10-18T19:09:46.851Z",
+      "fin": "2026-10-18T19:09:48.335Z"
+    },
+    {
+      "id": "CP-002",
+      "estado": "Aprobado",
+      "real": "API 401 sin token, mensaje genérico visible; localStorage sin sesión.",
+      "inicio": "2026-10-18T19:09:48.337Z",
+      "fin": "2026-10-18T19:09:50.440Z"
+    },
+    {
+      "id": "CP-003",
+      "estado": "Aprobado",
+      "real": "Campos vacíos inválidos en navegador; 0 solicitudes de autenticación.",
+      "inicio": "2026-10-18T19:09:50.441Z",
+      "fin": "2026-10-18T19:09:51.854Z"
+    },
+    {
+      "id": "CP-004",
+      "estado": "Aprobado",
+      "real": "GET /usuarios sin JWT: 401. Ruta privada redirige a /login.",
+      "inicio": "2026-10-18T19:09:51.855Z",
+      "fin": "2026-10-18T19:09:52.265Z"
+    },
+    {
+      "id": "CP-005",
+      "estado": "Aprobado",
+      "real": "Usuarios con rol, sin contraseña/hash en JSON; listado visible en administración.",
+      "inicio": "2026-10-18T19:09:52.266Z",
+      "fin": "2026-10-18T19:09:52.658Z"
+    },
+    {
+      "id": "CP-006",
+      "estado": "Aprobado",
+      "real": "201; bcrypt verificado en SQL, contraseña protegida; usuario visible en listado.",
+      "inicio": "2026-10-18T19:09:52.660Z",
+      "fin": "2026-10-18T19:09:53.338Z"
+    },
+    {
+      "id": "CP-007",
+      "estado": "Aprobado",
+      "real": "Correo duplicado: 409; exactamente una fila en usuarios.",
+      "inicio": "2026-10-18T19:09:53.339Z",
+      "fin": "2026-10-18T19:09:53.585Z"
+    },
+    {
+      "id": "CP-008",
+      "estado": "Fallido",
+      "real": "No existe ruta para editar el rol: HTTP 404\n\n404 !== 200\n",
+      "inicio": "2026-10-18T19:09:53.586Z",
+      "fin": "2026-10-18T19:09:53.597Z"
+    },
+    {
+      "id": "CP-009",
+      "estado": "Aprobado",
+      "real": "Mesero: POST registrar 403 y vista administrativa denegada.",
+      "inicio": "2026-10-18T19:09:53.598Z",
+      "fin": "2026-10-18T19:09:54.554Z"
+    },
+    {
+      "id": "CP-010",
+      "estado": "Fallido",
+      "real": "Creación de categoría no implementada: HTTP 404\n\n404 !== 201\n",
+      "inicio": "2026-10-18T19:09:54.555Z",
+      "fin": "2026-10-18T19:09:54.572Z"
+    },
+    {
+      "id": "CP-011",
+      "estado": "Fallido",
+      "real": "Ruta inexistente devuelve 404/404; no valida nombre vacío ni duplicado.",
+      "inicio": "2026-10-18T19:09:54.573Z",
+      "fin": "2026-10-18T19:09:54.604Z"
+    },
+    {
+      "id": "CP-012",
+      "estado": "Aprobado",
+      "real": "200; arreglo JSON datos contiene categoría sembrada (envoltorio del contrato actual).",
+      "inicio": "2026-10-18T19:09:54.605Z",
+      "fin": "2026-10-18T19:09:54.620Z"
+    },
+    {
+      "id": "CP-013",
+      "estado": "Fallido",
+      "real": "Actualización de categoría no implementada: HTTP 404\n\n404 !== 200\n",
+      "inicio": "2026-10-18T19:09:54.620Z",
+      "fin": "2026-10-18T19:09:54.624Z"
+    },
+    {
+      "id": "CP-014",
+      "estado": "Aprobado",
+      "real": "201; producto asociado a categoría 1, stock 24 en SQL y visible en frontend.",
+      "inicio": "2026-10-18T19:09:54.625Z",
+      "fin": "2026-10-18T19:09:55.005Z"
+    },
+    {
+      "id": "CP-015",
+      "estado": "Aprobado",
+      "real": "Precios -1000, 0 y texto: 400, sin nuevas filas.",
+      "inicio": "2026-10-18T19:09:55.006Z",
+      "fin": "2026-10-18T19:09:55.045Z"
+    },
+    {
+      "id": "CP-016",
+      "estado": "Aprobado",
+      "real": "Categoría inexistente: 404 controlado y 0 registros insertados.",
+      "inicio": "2026-10-18T19:09:55.046Z",
+      "fin": "2026-10-18T19:09:55.062Z"
+    },
+    {
+      "id": "CP-017",
+      "estado": "Aprobado",
+      "real": "Listado y detalle 200 con datos coherentes; ID inexistente 404.",
+      "inicio": "2026-10-18T19:09:55.063Z",
+      "fin": "2026-10-18T19:09:55.106Z"
+    },
+    {
+      "id": "CP-018",
+      "estado": "Aprobado",
+      "real": "Precio actualizado a 9000 en API/SQL y producto visible tras recarga.",
+      "inicio": "2026-10-18T19:09:55.107Z",
+      "fin": "2026-10-18T19:09:55.463Z"
+    },
+    {
+      "id": "CP-019",
+      "estado": "Aprobado",
+      "real": "Consulta de existencias mediante /productos (ruta vigente); SQL y API coinciden y listado visible.",
+      "inicio": "2026-10-18T19:09:55.464Z",
+      "fin": "2026-10-18T19:09:55.762Z"
+    },
+    {
+      "id": "CP-020",
+      "estado": "Aprobado",
+      "real": "Ajuste absoluto 100 a 124: incremento +24 y movimiento persistido atómicamente.",
+      "inicio": "2026-10-18T19:09:55.762Z",
+      "fin": "2026-10-18T19:09:55.781Z"
+    },
+    {
+      "id": "CP-021",
+      "estado": "Aprobado",
+      "real": "-5, 1.5 y texto: 400; stock permanece 124.",
+      "inicio": "2026-10-18T19:09:55.782Z",
+      "fin": "2026-10-18T19:09:55.821Z"
+    },
+    {
+      "id": "CP-022",
+      "estado": "Aprobado",
+      "real": "Salida vía pedido superior al stock rechazada; stock y líneas sin cambios.",
+      "inicio": "2026-10-18T19:09:55.823Z",
+      "fin": "2026-10-18T19:09:55.864Z"
+    },
+    {
+      "id": "CP-023",
+      "estado": "Aprobado",
+      "real": "Stock 2 menor que umbral 5 genera alerta SQL/API visible en frontend.",
+      "inicio": "2026-10-18T19:09:55.865Z",
+      "fin": "2026-10-18T19:09:56.295Z"
+    },
+    {
+      "id": "CP-024",
+      "estado": "Aprobado",
+      "real": "Listado de mesas disponible en ruta /mesas/estado/disponible y pantalla real.",
+      "inicio": "2026-10-18T19:09:56.296Z",
+      "fin": "2026-10-18T19:09:56.619Z"
+    },
+    {
+      "id": "CP-025",
+      "estado": "Aprobado",
+      "real": "Mesa 15 ocupada por API y persistida en SQL; tarjeta muestra Ocupada tras recargar. Captura CP-025.",
+      "inicio": "2026-10-18T19:12:15.882Z",
+      "fin": "2026-10-18T19:12:16.259Z",
+      "fase": "complementaria"
+    },
+    {
+      "id": "CP-026",
+      "estado": "Fallido",
+      "real": "Segundo pedido sobre mesa ocupada aceptado HTTP 201 sin acción diferenciada; contrato permite varios pedidos por visita, requiere acordar criterio.",
+      "inicio": "2026-10-18T19:09:56.844Z",
+      "fin": "2026-10-18T19:09:56.878Z"
+    },
+    {
+      "id": "CP-027",
+      "estado": "Aprobado",
+      "real": "Pedido creado y 2 productos distintos agregados por API; asociación y suma SQL 17000 verificadas, productos visibles en detalle.",
+      "inicio": "2026-10-18T19:09:56.879Z",
+      "fin": "2026-10-18T19:09:57.204Z"
+    },
+    {
+      "id": "CP-028",
+      "estado": "Fallido",
+      "real": "Se crea cuenta sin productos: HTTP 201, líneas=0. Contrato actual permite apertura vacía; requiere decisión de aceptación.",
+      "inicio": "2026-10-18T19:09:57.206Z",
+      "fin": "2026-10-18T19:09:57.225Z"
+    },
+    {
+      "id": "CP-029",
+      "estado": "Aprobado",
+      "real": "Listado y detalle 200, pedido inexistente 404 controlado.",
+      "inicio": "2026-10-18T19:09:57.226Z",
+      "fin": "2026-10-18T19:09:57.254Z"
+    },
+    {
+      "id": "CP-030",
+      "estado": "Aprobado",
+      "real": "Estado operativo de línea enviado→preparando persistido; estado inválido 400. Pedido contenedor permanece abierto.",
+      "inicio": "2026-10-18T19:09:57.255Z",
+      "fin": "2026-10-18T19:09:57.299Z"
+    },
+    {
+      "id": "CP-031",
+      "estado": "Aprobado",
+      "real": "Pago 17000 creado pendiente y verificado explícitamente; pago pagado y pedido cerrado en SQL.",
+      "inicio": "2026-10-18T19:09:57.300Z",
+      "fin": "2026-10-18T19:09:57.377Z"
+    },
+    {
+      "id": "CP-032",
+      "estado": "Aprobado",
+      "real": "Importes 0, -1000 y texto: 400; sin pagos adicionales.",
+      "inicio": "2026-10-18T19:09:57.379Z",
+      "fin": "2026-10-18T19:09:57.418Z"
+    },
+    {
+      "id": "CP-033",
+      "estado": "Aprobado",
+      "real": "Pedido inexistente: 404 y sin pago insertado.",
+      "inicio": "2026-10-18T19:09:57.419Z",
+      "fin": "2026-10-18T19:09:57.437Z"
+    },
+    {
+      "id": "CP-034",
+      "estado": "Aprobado",
+      "real": "Listado JSON 200 contiene pago y vínculo al pedido verificados.",
+      "inicio": "2026-10-18T19:09:57.438Z",
+      "fin": "2026-10-18T19:09:57.453Z"
+    },
+    {
+      "id": "CP-035",
+      "estado": "Aprobado",
+      "real": "Activos de juego: estado disponible en API y nombre visible en frontend.",
+      "inicio": "2026-10-18T19:09:57.454Z",
+      "fin": "2026-10-18T19:09:57.758Z"
+    },
+    {
+      "id": "CP-036",
+      "estado": "Aprobado",
+      "real": "Sesión activa con fecha_inicio y pedido directo; activo ocupado, sin producto ficticio.",
+      "inicio": "2026-10-18T19:09:57.759Z",
+      "fin": "2026-10-18T19:09:57.836Z"
+    },
+    {
+      "id": "CP-037",
+      "estado": "Aprobado",
+      "real": "Segundo inicio sobre activo ocupado: 409; solo una sesión activa.",
+      "inicio": "2026-10-18T19:09:57.838Z",
+      "fin": "2026-10-18T19:09:57.861Z"
+    },
+    {
+      "id": "CP-038",
+      "estado": "Aprobado",
+      "real": "Sesión cerrada con fecha_fin; juego vuelve a disponible en SQL.",
+      "inicio": "2026-10-18T19:09:57.863Z",
+      "fin": "2026-10-18T19:09:57.883Z"
+    },
+    {
+      "id": "CP-039",
+      "estado": "Aprobado",
+      "real": "Cliente creado 201; teléfono persistido y nombre visible en listado.",
+      "inicio": "2026-10-18T19:09:57.884Z",
+      "fin": "2026-10-18T19:09:58.142Z"
+    },
+    {
+      "id": "CP-040",
+      "estado": "Fallido",
+      "real": "Teléfono alfabético aceptado con HTTP 201 y persistido en clientes.\n\n201 !== 400\n",
+      "inicio": "2026-10-18T19:09:58.144Z",
+      "fin": "2026-10-18T19:09:58.166Z"
+    },
+    {
+      "id": "CP-041",
+      "estado": "Aprobado",
+      "real": "Teléfono actualizado, nombre preservado, API/SQL/listado disponibles.",
+      "inicio": "2026-10-18T19:09:58.168Z",
+      "fin": "2026-10-18T19:09:58.436Z"
+    },
+    {
+      "id": "CP-042",
+      "estado": "Fallido",
+      "real": "Respuesta 200 con comprobante=null; el pago no genera venta/comprobante automáticamente. Requiere emisión explícita y decisión del criterio de aceptación.",
+      "inicio": "2026-10-18T19:09:58.437Z",
+      "fin": "2026-10-18T19:09:58.445Z"
+    },
+    {
+      "id": "CP-043",
+      "estado": "Bloqueado",
+      "real": "El sistema registra ingresos mediante pagos verificados y comprobantes, no expone GET /ventas. Falta acordar equivalencia entre venta y pago, y ejecutar dos rangos sobre el contrato aceptado.",
+      "inicio": "2026-10-18T19:09:58.446Z",
+      "fin": "2026-10-18T19:09:58.447Z"
+    },
+    {
+      "id": "CP-044",
+      "estado": "Aprobado",
+      "real": "Cierre creado; total 17000.00 coincide con suma SQL de pagos verificados elegibles. Diferencia efectivo cero.",
+      "inicio": "2026-10-18T19:09:58.448Z",
+      "fin": "2026-10-18T19:09:58.489Z"
+    },
+    {
+      "id": "CP-045",
+      "estado": "Aprobado",
+      "real": "Reporte de ingresos verificados para periodo personalizado del día: total visible conciliado con suma SQL 17000.00. No es una predicción futura.",
+      "inicio": "2026-10-18T19:09:58.491Z",
+      "fin": "2026-10-18T19:09:58.961Z"
+    },
+    {
+      "id": "CP-046",
+      "estado": "Aprobado",
+      "real": "8000 / 3 = cuotas 2666.67, 2666.67 y 2666.66; suma exacta 8000 con persistencia real.",
+      "inicio": "2026-10-18T19:09:58.963Z",
+      "fin": "2026-10-18T19:09:59.098Z"
+    },
+    {
+      "id": "CP-047",
+      "estado": "Aprobado",
+      "real": "Lista vacía, 0, -2 y texto rechazados 400 sin cuotas (API recibe lista, no contador).",
+      "inicio": "2026-10-18T19:09:59.099Z",
+      "fin": "2026-10-18T19:09:59.236Z"
+    },
+    {
+      "id": "CP-048",
+      "estado": "Aprobado",
+      "real": "Primera cuota pagada y verificada; resumen informa participante pagado y saldo restante exacto.",
+      "inicio": "2026-10-18T19:09:59.237Z",
+      "fin": "2026-10-18T19:09:59.315Z"
+    },
+    {
+      "id": "CP-049",
+      "estado": "Aprobado",
+      "real": "Cierre con saldo rechazado 409; tras verificar todas las cuotas, división completada en SQL.",
+      "inicio": "2026-10-18T19:09:59.316Z",
+      "fin": "2026-10-18T19:09:59.459Z"
+    },
+    {
+      "id": "CP-050",
+      "estado": "Aprobado",
+      "real": "Tarjeta real aparece en tablero JSON y en pantalla Kanban. Ver agrupación en captura.",
+      "inicio": "2026-10-18T19:09:59.460Z",
+      "fin": "2026-10-18T19:09:59.887Z"
+    },
+    {
+      "id": "CP-051",
+      "estado": "Aprobado",
+      "real": "Botón Aceptar pedido ejecutado en frontend; SQL preparando y tarjeta en columna Preparando tras recarga.",
+      "inicio": "2026-10-18T19:09:59.888Z",
+      "fin": "2026-10-18T19:10:00.494Z"
+    },
+    {
+      "id": "CP-052",
+      "estado": "Bloqueado",
+      "real": "Conexión API–MariaDB activa verificada. No se detuvo el servicio compartido; falta instancia exclusiva para comprobar caída y recuperación sin afectar otras aplicaciones.",
+      "inicio": "2026-10-18T19:10:00.496Z",
+      "fin": "2026-10-18T19:10:00.511Z"
+    },
+    {
+      "id": "CP-053",
+      "estado": "Aprobado",
+      "real": "JSON incompleto produce 400 con error controlado; GET posterior 200 confirma servidor activo.",
+      "inicio": "2026-10-18T19:10:00.513Z",
+      "fin": "2026-10-18T19:10:00.529Z"
+    },
+    {
+      "id": "CP-054",
+      "estado": "Fallido",
+      "real": "Desbordamiento horizontal detectado: [{\"name\":\"movil\",\"route\":\"/dashboard\",\"width\":390,\"scroll\":548},{\"name\":\"movil\",\"route\":\"/operacion/mesas\",\"width\":390,\"scroll\":548},{\"name\":\"movil\",\"route\":\"/operacion/pedidos\",\"width\":390,\"scroll\":548},{\"name\":\"movil\",\"route\":\"/inventario\",\"width\":390,\"scroll\":548},{\"name\":\"movil\",\"route\":\"/juegos\",\"width\":390,\"scroll\":548},{\"name\":\"movil\",\"route\":\"/caja\",\"width\":390,\"scroll\":548},{\"name\":\"movil\",\"route\":\"/clientes\",\"width\":390,\"scroll\":548},{\"name\":\"movil\",\"route\":\"/reportes\",\"width\":390,\"scroll\":548},{\"name\":\"movil\",\"route\":\"/administracion\",\"width\":390,\"scroll\":548}]\n\n9 !== 0\n",
+      "inicio": "2026-10-18T19:10:00.530Z",
+      "fin": "2026-10-18T19:10:13.358Z"
+    },
+    {
+      "id": "CP-055",
+      "estado": "Aprobado",
+      "real": "Flujo completo en Chromium: crear pedido→seleccionar producto→registrar pago 8000→verificar pago→consultar pedido/pago. API y SQL confirman pedido cerrado y pago verificado.",
+      "inicio": "2026-10-18T19:11:50.691Z",
+      "fin": "2026-10-18T19:11:52.932Z",
+      "fase": "complementaria"
+    },
+    {
+      "id": "QA-STOCK",
+      "estado": "Aprobado",
+      "real": "Stock final de Cerveza QA concilia exactamente con 100 inicial + movimientos. Cada pedido probado registra una única salida de -1; pagos y juegos no añaden descuentos.",
+      "inicio": "2026-10-18T19:12:03.168Z",
+      "fin": "2026-10-18T19:12:03.173Z",
+      "fase": "complementaria"
+    }
+  ],
+  "http": [
+    {
+      "caso": "CP-001",
+      "method": "POST",
+      "url": "/usuarios/login",
+      "request": {
+        "correo": "qa-admin@example.invalid",
+        "contrasena": "[REDACTADO]"
+      },
+      "status": 200,
+      "body": {
+        "mensaje": "¡Inicio de sesión exitoso! Bienvenido al sistema de Donde Juanca. 🔓✨",
+        "token": "[REDACTADO]",
+        "token_type": "[REDACTADO]",
+        "expires_in": 3600,
+        "usuario": {
+          "id": "qa-admin",
+          "nombre": "QA Administrador",
+          "correo": "qa-admin@example.invalid",
+          "roles_id": 1,
+          "rol": "Administrador"
+        }
+      }
+    },
+    {
+      "caso": "CP-002",
+      "method": "POST",
+      "url": "/usuarios/login",
+      "request": {
+        "correo": "qa-admin@example.invalid",
+        "contrasena": "[REDACTADO]"
+      },
+      "status": 401,
+      "body": {
+        "error": "Credenciales incorrectas."
+      }
+    },
+    {
+      "caso": "CP-004",
+      "method": "GET",
+      "url": "/usuarios",
+      "request": null,
+      "status": 401,
+      "body": {
+        "error": "Autenticación requerida o sesión no válida."
+      }
+    },
+    {
+      "caso": "CP-005",
+      "method": "GET",
+      "url": "/usuarios",
+      "request": null,
+      "status": 200,
+      "body": {
+        "datos": [
+          {
+            "id": "qa-admin",
+            "nombre": "QA Administrador",
+            "correo": "qa-admin@example.invalid",
+            "rol": "Administrador",
+            "estado": "activo"
+          },
+          {
+            "id": "qa-mesero",
+            "nombre": "QA Mesero",
+            "correo": "qa-mesero@example.invalid",
+            "rol": "Mesero",
+            "estado": "activo"
+          }
+        ]
+      }
+    },
+    {
+      "caso": "CP-006",
+      "method": "POST",
+      "url": "/usuarios/registrar",
+      "request": {
+        "nombre": "Usuario Prueba QA",
+        "correo": "nuevo.qa@example.invalid",
+        "contrasena": "[REDACTADO]",
+        "roles_id": 3
+      },
+      "status": 201,
+      "body": {
+        "mensaje": "Usuario creado correctamente.",
+        "usuario": {
+          "id": "bf12ecdf-e720-43f2-bdc5-08727f143d44",
+          "nombre": "Usuario Prueba QA",
+          "correo": "nuevo.qa@example.invalid",
+          "rol": "Mesero",
+          "estado": "activo"
+        }
+      }
+    },
+    {
+      "caso": "CP-007",
+      "method": "POST",
+      "url": "/usuarios/registrar",
+      "request": {
+        "nombre": "Usuario Prueba QA",
+        "correo": "nuevo.qa@example.invalid",
+        "contrasena": "[REDACTADO]",
+        "roles_id": 3
+      },
+      "status": 409,
+      "body": {
+        "error": "Ya existe un usuario con ese correo."
+      }
+    },
+    {
+      "caso": "CP-008",
+      "method": "PUT",
+      "url": "/usuarios/bf12ecdf-e720-43f2-bdc5-08727f143d44",
+      "request": {
+        "roles_id": 6
+      },
+      "status": 404,
+      "body": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot PUT /api/usuarios/bf12ecdf-e720-43f2-bdc5-08727f143d44</pre>\n</body>\n</html>\n"
+    },
+    {
+      "caso": "CP-009",
+      "method": "POST",
+      "url": "/usuarios/login",
+      "request": {
+        "correo": "qa-mesero@example.invalid",
+        "contrasena": "[REDACTADO]"
+      },
+      "status": 200,
+      "body": {
+        "mensaje": "¡Inicio de sesión exitoso! Bienvenido al sistema de Donde Juanca. 🔓✨",
+        "token": "[REDACTADO]",
+        "token_type": "[REDACTADO]",
+        "expires_in": 3600,
+        "usuario": {
+          "id": "qa-mesero",
+          "nombre": "QA Mesero",
+          "correo": "qa-mesero@example.invalid",
+          "roles_id": 3,
+          "rol": "Mesero"
+        }
+      }
+    },
+    {
+      "caso": "CP-009",
+      "method": "POST",
+      "url": "/usuarios/registrar",
+      "request": {
+        "nombre": "Usuario Prueba QA",
+        "correo": "prohibido@example.invalid",
+        "contrasena": "[REDACTADO]",
+        "roles_id": 3
+      },
+      "status": 403,
+      "body": {
+        "error": "No tienes autorización para esta operación."
+      }
+    },
+    {
+      "caso": "CP-010",
+      "method": "POST",
+      "url": "/categorias",
+      "request": {
+        "nombre": "Nueva QA"
+      },
+      "status": 404,
+      "body": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /api/categorias</pre>\n</body>\n</html>\n"
+    },
+    {
+      "caso": "CP-011",
+      "method": "POST",
+      "url": "/categorias",
+      "request": {
+        "nombre": ""
+      },
+      "status": 404,
+      "body": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /api/categorias</pre>\n</body>\n</html>\n"
+    },
+    {
+      "caso": "CP-011",
+      "method": "POST",
+      "url": "/categorias",
+      "request": {
+        "nombre": "Cervezas QA"
+      },
+      "status": 404,
+      "body": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /api/categorias</pre>\n</body>\n</html>\n"
+    },
+    {
+      "caso": "CP-012",
+      "method": "GET",
+      "url": "/categorias",
+      "request": null,
+      "status": 200,
+      "body": {
+        "mensaje": "¡Categorías cargadas con éxito! 🍻",
+        "total": 1,
+        "datos": [
+          {
+            "id": 1,
+            "nombre": "Cervezas QA",
+            "descripcion": null,
+            "icono": null,
+            "activo": 1
+          }
+        ]
+      }
+    },
+    {
+      "caso": "CP-013",
+      "method": "PUT",
+      "url": "/categorias/1",
+      "request": {
+        "nombre": "Cervezas nacionales QA"
+      },
+      "status": 404,
+      "body": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot PUT /api/categorias/1</pre>\n</body>\n</html>\n"
+    },
+    {
+      "caso": "CP-014",
+      "method": "POST",
+      "url": "/productos",
+      "request": {
+        "nombre": "Producto nuevo QA",
+        "codigo": "QA-NEW",
+        "precio_venta": 8000,
+        "cantidad": 24,
+        "stock_minimo": 5,
+        "categorias_id": 1,
+        "proveedores_id": "qa-prov"
+      },
+      "status": 201,
+      "body": {
+        "mensaje": "Producto creado correctamente.",
+        "id_producto": "3a0b5ee8-0930-4f0a-aa8b-c5a2ef5820df"
+      }
+    },
+    {
+      "caso": "CP-015",
+      "method": "POST",
+      "url": "/productos",
+      "request": {
+        "nombre": "Producto nuevo QA",
+        "codigo": "INVALID",
+        "precio_venta": -1000,
+        "cantidad": 24,
+        "stock_minimo": 5,
+        "categorias_id": 1,
+        "proveedores_id": "qa-prov"
+      },
+      "status": 400,
+      "body": {
+        "error": "El precio de venta debe ser mayor que 0."
+      }
+    },
+    {
+      "caso": "CP-015",
+      "method": "POST",
+      "url": "/productos",
+      "request": {
+        "nombre": "Producto nuevo QA",
+        "codigo": "INVALID",
+        "precio_venta": 0,
+        "cantidad": 24,
+        "stock_minimo": 5,
+        "categorias_id": 1,
+        "proveedores_id": "qa-prov"
+      },
+      "status": 400,
+      "body": {
+        "error": "El precio de venta debe ser mayor que 0."
+      }
+    },
+    {
+      "caso": "CP-015",
+      "method": "POST",
+      "url": "/productos",
+      "request": {
+        "nombre": "Producto nuevo QA",
+        "codigo": "INVALID",
+        "precio_venta": "texto",
+        "cantidad": 24,
+        "stock_minimo": 5,
+        "categorias_id": 1,
+        "proveedores_id": "qa-prov"
+      },
+      "status": 400,
+      "body": {
+        "error": "El precio de venta debe ser mayor que 0."
+      }
+    },
+    {
+      "caso": "CP-016",
+      "method": "POST",
+      "url": "/productos",
+      "request": {
+        "nombre": "Producto nuevo QA",
+        "codigo": "INVALID-FK",
+        "precio_venta": 8000,
+        "cantidad": 24,
+        "stock_minimo": 5,
+        "categorias_id": 999999,
+        "proveedores_id": "qa-prov"
+      },
+      "status": 404,
+      "body": {
+        "error": "La categoría o el proveedor especificado no existe."
+      }
+    },
+    {
+      "caso": "CP-017",
+      "method": "GET",
+      "url": "/productos",
+      "request": null,
+      "status": 200,
+      "body": {
+        "mensaje": "Productos consultados correctamente.",
+        "total": 2,
+        "datos": [
+          {
+            "id": "qa-product",
+            "nombre": "Cerveza QA",
+            "codigo": "QA-001",
+            "precio_venta": "8000.00",
+            "costo_promedio_ponderado": "0.00",
+            "cantidad_disponible": 100,
+            "stock_minimo": 5,
+            "estado": "activo",
+            "categorias_id": 1,
+            "proveedores_id": "qa-prov",
+            "historial_costos_id": null,
+            "stock": 10,
+            "version_inventario": 0,
+            "categoria_nombre": "Cervezas QA"
+          },
+          {
+            "id": "3a0b5ee8-0930-4f0a-aa8b-c5a2ef5820df",
+            "nombre": "Producto nuevo QA",
+            "codigo": "QA-NEW",
+            "precio_venta": "8000.00",
+            "costo_promedio_ponderado": "0.00",
+            "cantidad_disponible": 24,
+            "stock_minimo": 5,
+            "estado": "activo",
+            "categorias_id": 1,
+            "proveedores_id": "qa-prov",
+            "historial_costos_id": null,
+            "stock": 10,
+            "version_inventario": 0,
+            "categoria_nombre": "Cervezas QA"
+          }
+        ]
+      }
+    },
+    {
+      "caso": "CP-017",
+      "method": "GET",
+      "url": "/productos/qa-product",
+      "request": null,
+      "status": 200,
+      "body": {
+        "mensaje": "Producto encontrado correctamente.",
+        "datos": {
+          "id": "qa-product",
+          "nombre": "Cerveza QA",
+          "codigo": "QA-001",
+          "precio_venta": "8000.00",
+          "costo_promedio_ponderado": "0.00",
+          "cantidad_disponible": 100,
+          "stock_minimo": 5,
+          "estado": "activo",
+          "categorias_id": 1,
+          "proveedores_id": "qa-prov",
+          "historial_costos_id": null,
+          "stock": 10,
+          "version_inventario": 0,
+          "categoria_nombre": "Cervezas QA"
+        }
+      }
+    },
+    {
+      "caso": "CP-017",
+      "method": "GET",
+      "url": "/productos/inexistente",
+      "request": null,
+      "status": 404,
+      "body": {
+        "error": "Producto no encontrado."
+      }
+    },
+    {
+      "caso": "CP-018",
+      "method": "PUT",
+      "url": "/productos/3a0b5ee8-0930-4f0a-aa8b-c5a2ef5820df",
+      "request": {
+        "nombre": "Producto nuevo QA",
+        "codigo": "QA-NEW",
+        "precio_venta": 9000,
+        "cantidad": 24,
+        "stock_minimo": 5,
+        "categorias_id": 1,
+        "proveedores_id": "qa-prov",
+        "estado": "activo"
+      },
+      "status": 200,
+      "body": {
+        "mensaje": "Producto actualizado correctamente.",
+        "aviso": "cantidad se ignora en la edición general. Para cambiar existencias utiliza PUT /api/inventario/actualizar-stock."
+      }
+    },
+    {
+      "caso": "CP-018",
+      "method": "GET",
+      "url": "/productos/3a0b5ee8-0930-4f0a-aa8b-c5a2ef5820df",
+      "request": null,
+      "status": 200,
+      "body": {
+        "mensaje": "Producto encontrado correctamente.",
+        "datos": {
+          "id": "3a0b5ee8-0930-4f0a-aa8b-c5a2ef5820df",
+          "nombre": "Producto nuevo QA",
+          "codigo": "QA-NEW",
+          "precio_venta": "9000.00",
+          "costo_promedio_ponderado": "0.00",
+          "cantidad_disponible": 24,
+          "stock_minimo": 5,
+          "estado": "activo",
+          "categorias_id": 1,
+          "proveedores_id": "qa-prov",
+          "historial_costos_id": null,
+          "stock": 10,
+          "version_inventario": 0,
+          "categoria_nombre": "Cervezas QA"
+        }
+      }
+    },
+    {
+      "caso": "CP-019",
+      "method": "GET",
+      "url": "/productos/qa-product",
+      "request": null,
+      "status": 200,
+      "body": {
+        "mensaje": "Producto encontrado correctamente.",
+        "datos": {
+          "id": "qa-product",
+          "nombre": "Cerveza QA",
+          "codigo": "QA-001",
+          "precio_venta": "8000.00",
+          "costo_promedio_ponderado": "0.00",
+          "cantidad_disponible": 100,
+          "stock_minimo": 5,
+          "estado": "activo",
+          "categorias_id": 1,
+          "proveedores_id": "qa-prov",
+          "historial_costos_id": null,
+          "stock": 10,
+          "version_inventario": 0,
+          "categoria_nombre": "Cervezas QA"
+        }
+      }
+    },
+    {
+      "caso": "CP-020",
+      "method": "PUT",
+      "url": "/inventario/actualizar-stock",
+      "request": {
+        "producto_id": "qa-product",
+        "nueva_cantidad": 124
+      },
+      "status": 200,
+      "body": {
+        "mensaje": "Inventario actualizado con éxito. Cerveza QA ahora tiene 124 unidades.",
+        "producto_id": "qa-product",
+        "producto_nombre": "Cerveza QA",
+        "stock_anterior": 100,
+        "stock_actual": 124,
+        "diferencia": 24
+      }
+    },
+    {
+      "caso": "CP-021",
+      "method": "PUT",
+      "url": "/inventario/actualizar-stock",
+      "request": {
+        "producto_id": "qa-product",
+        "nueva_cantidad": -5
+      },
+      "status": 400,
+      "body": {
+        "error": "nueva_cantidad debe ser un número entero entre 0 y 2147483647."
+      }
+    },
+    {
+      "caso": "CP-021",
+      "method": "PUT",
+      "url": "/inventario/actualizar-stock",
+      "request": {
+        "producto_id": "qa-product",
+        "nueva_cantidad": 1.5
+      },
+      "status": 400,
+      "body": {
+        "error": "nueva_cantidad debe ser un número entero entre 0 y 2147483647."
+      }
+    },
+    {
+      "caso": "CP-021",
+      "method": "PUT",
+      "url": "/inventario/actualizar-stock",
+      "request": {
+        "producto_id": "qa-product",
+        "nueva_cantidad": "texto"
+      },
+      "status": 400,
+      "body": {
+        "error": "nueva_cantidad debe ser un número entero entre 0 y 2147483647."
+      }
+    },
+    {
+      "caso": "CP-022",
+      "method": "POST",
+      "url": "/pedidos",
+      "request": {
+        "mesas_id": "qa-mesa-2",
+        "usuarios_id": "qa-admin",
+        "clientes_id": "qa-cliente"
+      },
+      "status": 201,
+      "body": {
+        "mensaje": "¡Cuenta abierta con éxito para la mesa! 🍻",
+        "id_pedido": "b2de1cdf-5c15-4fb7-a4e2-4a822ad057a3"
+      }
+    },
+    {
+      "caso": "CP-022",
+      "method": "POST",
+      "url": "/pedidos/b2de1cdf-5c15-4fb7-a4e2-4a822ad057a3/items",
+      "request": {
+        "productos_id": "qa-product",
+        "cantidad_pedida": 125,
+        "precio_unitario": 8000
+      },
+      "status": 400,
+      "body": {
+        "error": "Stock insuficiente para \"Cerveza QA\". Disponible: 124, solicitado: 125."
+      }
+    },
+    {
+      "caso": "CP-023",
+      "method": "PUT",
+      "url": "/inventario/actualizar-stock",
+      "request": {
+        "producto_id": "3a0b5ee8-0930-4f0a-aa8b-c5a2ef5820df",
+        "nueva_cantidad": 2
+      },
+      "status": 200,
+      "body": {
+        "mensaje": "Inventario actualizado con éxito. Producto nuevo QA ahora tiene 2 unidades.",
+        "producto_id": "3a0b5ee8-0930-4f0a-aa8b-c5a2ef5820df",
+        "producto_nombre": "Producto nuevo QA",
+        "stock_anterior": 24,
+        "stock_actual": 2,
+        "diferencia": -22
+      }
+    },
+    {
+      "caso": "CP-023",
+      "method": "GET",
+      "url": "/inventario/alertas",
+      "request": null,
+      "status": 200,
+      "body": {
+        "mensaje": "Alertas de inventario consultadas correctamente.",
+        "total_alertas": 1,
+        "alertas": [
+          {
+            "id": "814de544-cb27-11f1-b704-30c599879abf",
+            "productos_id": "3a0b5ee8-0930-4f0a-aa8b-c5a2ef5820df",
+            "producto": "Producto nuevo QA",
+            "stock_actual": 2,
+            "stock_minimo": 5,
+            "tipo": "bajo",
+            "estado": "activa",
+            "creado_en": "2026-10-18T19:09:55Z",
+            "actualizado_en": "2026-10-18T19:09:55Z",
+            "resuelto_en": null,
+            "vista_por": null,
+            "silenciada_por": null,
+            "resuelta_por": null
+          }
+        ]
+      }
+    },
+    {
+      "caso": "CP-024",
+      "method": "GET",
+      "url": "/mesas/estado/disponible",
+      "request": null,
+      "status": 200,
+      "body": {
+        "mensaje": "¡Mesas en estado 'disponible' cargadas con éxito! 🎲",
+        "total": 14,
+        "datos": [
+          {
+            "id": "qa-mesa-1",
+            "numero": 1,
+            "estado": "disponible",
+            "codigo_qr": null,
+            "creado_en": "2026-10-19T00:09:45.000Z"
+          },
+          {
+            "id": "qa-mesa-10",
+            "numero": 10,
+            "estado": "disponible",
+            "codigo_qr": null,
+            "creado_en": "2026-10-19T00:09:45.000Z"
+          },
+          {
+            "id": "qa-mesa-11",
+            "numero": 11,
+            "estado": "disponible",
+            "codigo_qr": null,
+            "creado_en": "2026-10-19T00:09:45.000Z"
+          },
+          {
+            "id": "qa-mesa-12",
+            "numero": 12,
+            "estado": "disponible",
+            "codigo_qr": null,
+            "creado_en": "2026-10-19T00:09:45.000Z"
+          },
+          {
+            "id": "qa-mesa-13",
+            "numero": 13,
+            "estado": "disponible",
+            "codigo_qr": null,
+            "creado_en": "2026-10-19T00:09:45.000Z"
+          },
+          {
+            "id": "qa-mesa-14",
+            "numero": 14,
+            "estado": "disponible",
+            "codigo_qr": null,
+            "creado_en": "2026-10-19T00:09:45.000Z"
+          },
+          {
+            "id": "qa-mesa-15",
+            "numero": 15,
+            "estado": "disponible",
+            "codigo_qr": null,
+            "creado_en": "2026-10-19T00:09:45.000Z"
+          },
+          {
+            "id": "qa-mesa-3",
+            "numero": 3,
+            "estado": "disponible",
+            "codigo_qr": null,
+            "creado_en": "2026-10-19T00:09:45.000Z"
+          },
+          {
+            "id": "qa-mesa-4",
+            "numero": 4,
+            "estado": "disponible",
+            "codigo_qr": null,
+            "creado_en": "2026-10-19T00:09:45.000Z"
+          },
+          {
+            "id": "qa-mesa-5",
+            "numero": 5,
+            "estado": "disponible",
+            "codigo_qr": null,
+            "creado_en": "2026-10-19T00:09:45.000Z"
+          },
+          {
+            "id": "qa-mesa-6",
+            "numero": 6,
+            "estado": "disponible",
+            "codigo_qr": null,
+            "creado_en": "2026-10-19T00:09:45.000Z"
+          },
+          {
+            "id": "qa-mesa-7",
+            "numero": 7,
+            "estado": "disponible",
+            "codigo_qr": null,
+            "creado_en": "2026-10-19T00:09:45.000Z"
+          },
+          {
+            "id": "qa-mesa-8",
+            "numero": 8,
+            "estado": "disponible",
+            "codigo_qr": null,
+            "creado_en": "2026-10-19T00:09:45.000Z"
+          },
+          {
+            "id": "qa-mesa-9",
+            "numero": 9,
+            "estado": "disponible",
+            "codigo_qr": null,
+            "creado_en": "2026-10-19T00:09:45.000Z"
+          }
+        ]
+      }
+    },
+    {
+      "caso": "CP-025",
+      "method": "PATCH",
+      "url": "/mesas/qa-mesa-3/estado",
+      "request": {
+        "estado": "ocupada"
+      },
+      "status": 200,
+      "body": {
+        "mensaje": "¡Mesa actualizada a 'ocupada' con éxito! 🕹️"
+      }
+    },
+    {
+      "caso": "CP-025",
+      "method": "PATCH",
+      "url": "/mesas/qa-mesa-3/estado",
+      "request": {
+        "estado": "disponible"
+      },
+      "status": 200,
+      "body": {
+        "mensaje": "¡Mesa actualizada a 'disponible' con éxito! 🕹️"
+      }
+    },
+    {
+      "caso": "CP-026",
+      "method": "POST",
+      "url": "/pedidos",
+      "request": {
+        "mesas_id": "qa-mesa-3",
+        "usuarios_id": "qa-admin",
+        "clientes_id": "qa-cliente"
+      },
+      "status": 201,
+      "body": {
+        "mensaje": "¡Cuenta abierta con éxito para la mesa! 🍻",
+        "id_pedido": "d100bf81-c0c8-4e02-a7d1-41ad29451db4"
+      }
+    },
+    {
+      "caso": "CP-026",
+      "method": "POST",
+      "url": "/pedidos",
+      "request": {
+        "mesas_id": "qa-mesa-3",
+        "usuarios_id": "qa-admin",
+        "clientes_id": "qa-cliente"
+      },
+      "status": 201,
+      "body": {
+        "mensaje": "¡Cuenta abierta con éxito para la mesa! 🍻",
+        "id_pedido": "66dc7fe9-32e2-4220-9817-2e773f4cedc7"
+      }
+    },
+    {
+      "caso": "CP-027",
+      "method": "POST",
+      "url": "/pedidos",
+      "request": {
+        "mesas_id": "qa-mesa-1",
+        "usuarios_id": "qa-admin",
+        "clientes_id": "qa-cliente"
+      },
+      "status": 201,
+      "body": {
+        "mensaje": "¡Cuenta abierta con éxito para la mesa! 🍻",
+        "id_pedido": "4daef3d0-567a-4acd-9372-fbf89933e5a5"
+      }
+    },
+    {
+      "caso": "CP-027",
+      "method": "POST",
+      "url": "/pedidos/4daef3d0-567a-4acd-9372-fbf89933e5a5/items",
+      "request": {
+        "productos_id": "qa-product",
+        "cantidad_pedida": 1,
+        "precio_unitario": 8000
+      },
+      "status": 201,
+      "body": {
+        "mensaje": "?Producto agregado y stock descontado exitosamente! ??",
+        "id_item": "743caa3f-c732-4430-884a-521cda0b98f5",
+        "stock_restante": 123
+      }
+    },
+    {
+      "caso": "CP-027",
+      "method": "POST",
+      "url": "/pedidos/4daef3d0-567a-4acd-9372-fbf89933e5a5/items",
+      "request": {
+        "productos_id": "3a0b5ee8-0930-4f0a-aa8b-c5a2ef5820df",
+        "cantidad_pedida": 1,
+        "precio_unitario": 9000
+      },
+      "status": 201,
+      "body": {
+        "mensaje": "?Producto agregado y stock descontado exitosamente! ??",
+        "id_item": "7c589410-4d2d-48ee-8f63-1ba0a1a702ad",
+        "stock_restante": 1
+      }
+    },
+    {
+      "caso": "CP-028",
+      "method": "POST",
+      "url": "/pedidos",
+      "request": {
+        "mesas_id": "qa-mesa-4",
+        "usuarios_id": "qa-admin",
+        "clientes_id": "qa-cliente",
+        "items": []
+      },
+      "status": 201,
+      "body": {
+        "mensaje": "¡Cuenta abierta con éxito para la mesa! 🍻",
+        "id_pedido": "2b3d5bb0-a073-4bc9-8a3f-390e6a74cc4a"
+      }
+    },
+    {
+      "caso": "CP-029",
+      "method": "GET",
+      "url": "/pedidos",
+      "request": null,
+      "status": 200,
+      "body": {
+        "datos": [
+          {
+            "id": "2b3d5bb0-a073-4bc9-8a3f-390e6a74cc4a",
+            "estado": "abierto",
+            "creado_en": "2026-10-18T19:09:57.000Z",
+            "mesas_id": "qa-mesa-4",
+            "usuarios_id": "qa-admin",
+            "clientes_id": "qa-cliente",
+            "mesa_numero": 4,
+            "cliente_nombre": "Cliente QA",
+            "responsable_nombre": "QA Administrador"
+          },
+          {
+            "id": "d100bf81-c0c8-4e02-a7d1-41ad29451db4",
+            "estado": "abierto",
+            "creado_en": "2026-10-18T19:09:56.000Z",
+            "mesas_id": "qa-mesa-3",
+            "usuarios_id": "qa-admin",
+            "clientes_id": "qa-cliente",
+            "mesa_numero": 3,
+            "cliente_nombre": "Cliente QA",
+            "responsable_nombre": "QA Administrador"
+          },
+          {
+            "id": "66dc7fe9-32e2-4220-9817-2e773f4cedc7",
+            "estado": "abierto",
+            "creado_en": "2026-10-18T19:09:56.000Z",
+            "mesas_id": "qa-mesa-3",
+            "usuarios_id": "qa-admin",
+            "clientes_id": "qa-cliente",
+            "mesa_numero": 3,
+            "cliente_nombre": "Cliente QA",
+            "responsable_nombre": "QA Administrador"
+          },
+          {
+            "id": "4daef3d0-567a-4acd-9372-fbf89933e5a5",
+            "estado": "abierto",
+            "creado_en": "2026-10-18T19:09:56.000Z",
+            "mesas_id": "qa-mesa-1",
+            "usuarios_id": "qa-admin",
+            "clientes_id": "qa-cliente",
+            "mesa_numero": 1,
+            "cliente_nombre": "Cliente QA",
+            "responsable_nombre": "QA Administrador"
+          },
+          {
+            "id": "b2de1cdf-5c15-4fb7-a4e2-4a822ad057a3",
+            "estado": "abierto",
+            "creado_en": "2026-10-18T19:09:55.000Z",
+            "mesas_id": "qa-mesa-2",
+            "usuarios_id": "qa-admin",
+            "clientes_id": "qa-cliente",
+            "mesa_numero": 2,
+            "cliente_nombre": "Cliente QA",
+            "responsable_nombre": "QA Administrador"
+          }
+        ],
+        "paginacion": {
+          "pagina": 1,
+          "limite": 20,
+          "total": 5,
+          "total_paginas": 1
+        }
+      }
+    },
+    {
+      "caso": "CP-029",
+      "method": "GET",
+      "url": "/pedidos/4daef3d0-567a-4acd-9372-fbf89933e5a5",
+      "request": null,
+      "status": 200,
+      "body": {
+        "mensaje": "Detalle de la cuenta cargado con éxito 📋",
+        "datos": {
+          "id": "4daef3d0-567a-4acd-9372-fbf89933e5a5",
+          "estado": "abierto",
+          "total_productos": "0.00",
+          "total_juegos": "0.00",
+          "total_general": "0.00",
+          "sincronizado": 0,
+          "creado_en": "2026-10-18T19:09:56.000Z",
+          "mesas_id": "qa-mesa-1",
+          "usuarios_id": "qa-admin",
+          "clientes_id": "qa-cliente",
+          "sesion_mesa_id": "77345a14-0d1f-44e3-9aa7-d0e096e7ad0e",
+          "items": [
+            {
+              "id": "743caa3f-c732-4430-884a-521cda0b98f5",
+              "cantidad_pedida": 1,
+              "precio_unitario": "8000.00",
+              "estado": "enviado",
+              "nombre": "Cerveza QA",
+              "participante_id": null,
+              "participante_nombre": null,
+              "productos_id": "qa-product",
+              "ronda_consumo_id": null
+            },
+            {
+              "id": "7c589410-4d2d-48ee-8f63-1ba0a1a702ad",
+              "cantidad_pedida": 1,
+              "precio_unitario": "9000.00",
+              "estado": "enviado",
+              "nombre": "Producto nuevo QA",
+              "participante_id": null,
+              "participante_nombre": null,
+              "productos_id": "3a0b5ee8-0930-4f0a-aa8b-c5a2ef5820df",
+              "ronda_consumo_id": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "caso": "CP-029",
+      "method": "GET",
+      "url": "/pedidos/inexistente",
+      "request": null,
+      "status": 404,
+      "body": {
+        "error": "Pedido no encontrado."
+      }
+    },
+    {
+      "caso": "CP-030",
+      "method": "PUT",
+      "url": "/kanban/743caa3f-c732-4430-884a-521cda0b98f5/estado",
+      "request": {
+        "nuevo_estado": "preparando"
+      },
+      "status": 200,
+      "body": {
+        "mensaje": "¡Ítem 743caa3f-c732-4430-884a-521cda0b98f5 movido con éxito a: PREPARANDO!",
+        "pedido_id": "4daef3d0-567a-4acd-9372-fbf89933e5a5",
+        "estado_actual": "preparando",
+        "tarjeta": {
+          "id_item": "743caa3f-c732-4430-884a-521cda0b98f5",
+          "id_pedido": "4daef3d0-567a-4acd-9372-fbf89933e5a5",
+          "mesa": 1,
+          "producto": "Cerveza QA",
+          "cantidad": 1,
+          "cantidad_pagada": 0,
+          "hora": "2026-10-18T19:09:56.000Z",
+          "estado_item": "preparando"
+        }
+      }
+    },
+    {
+      "caso": "CP-030",
+      "method": "PUT",
+      "url": "/kanban/743caa3f-c732-4430-884a-521cda0b98f5/estado",
+      "request": {
+        "nuevo_estado": "inexistente"
+      },
+      "status": 400,
+      "body": {
+        "error": "nuevo_estado debe ser enviado, preparando o servido. La cancelación utiliza /api/pedidos/items/:id/cancelar."
+      }
+    },
+    {
+      "caso": "CP-031",
+      "method": "POST",
+      "url": "/pagos",
+      "request": {
+        "pedidos_id": "4daef3d0-567a-4acd-9372-fbf89933e5a5",
+        "total_seleccionado": 17000,
+        "metodo_de_pago": "efectivo"
+      },
+      "status": 201,
+      "body": {
+        "mensaje": "Pago registrado pendiente de verificación.",
+        "id_pago": "pago-57a570f217e232",
+        "estado": "pendiente",
+        "verificacion_estado": "pendiente",
+        "liquidacion": {
+          "pedido_id": "4daef3d0-567a-4acd-9372-fbf89933e5a5",
+          "total_cuenta": "17000.00",
+          "total_pagado": "0.00",
+          "pagos_pendientes_verificacion": "17000.00",
+          "saldo_pendiente": "17000.00",
+          "total_definitivo": true,
+          "cuenta_liquidada": false,
+          "estado_pedido": "abierto",
+          "estado_mesa": "en_cobro",
+          "estado_sesion": "activa",
+          "motivo_no_liberacion": "Hay un pago pendiente de verificación."
+        }
+      }
+    },
+    {
+      "caso": "CP-031",
+      "method": "PATCH",
+      "url": "/pagos/pago-57a570f217e232/verificar",
+      "request": {
+        "verificacion_estado": "verificado"
+      },
+      "status": 200,
+      "body": {
+        "mensaje": "Pago verificado.",
+        "id_pago": "pago-57a570f217e232",
+        "estado": "pagado",
+        "verificacion_estado": "verificado",
+        "liquidacion": {
+          "pedido_id": "4daef3d0-567a-4acd-9372-fbf89933e5a5",
+          "total_cuenta": "17000.00",
+          "total_pagado": "17000.00",
+          "pagos_pendientes_verificacion": "0.00",
+          "saldo_pendiente": "0.00",
+          "total_definitivo": true,
+          "cuenta_liquidada": true,
+          "estado_pedido": "cerrado",
+          "estado_mesa": "disponible",
+          "estado_sesion": "cerrada",
+          "motivo_no_liberacion": null,
+          "division": null
+        }
+      }
+    },
+    {
+      "caso": "CP-032",
+      "method": "POST",
+      "url": "/pagos",
+      "request": {
+        "pedidos_id": "4daef3d0-567a-4acd-9372-fbf89933e5a5",
+        "total_seleccionado": 0,
+        "metodo_de_pago": "efectivo"
+      },
+      "status": 400,
+      "body": {
+        "error": "total_seleccionado debe ser mayor que cero y no superar 9999999999.99."
+      }
+    },
+    {
+      "caso": "CP-032",
+      "method": "POST",
+      "url": "/pagos",
+      "request": {
+        "pedidos_id": "4daef3d0-567a-4acd-9372-fbf89933e5a5",
+        "total_seleccionado": -1000,
+        "metodo_de_pago": "efectivo"
+      },
+      "status": 400,
+      "body": {
+        "error": "total_seleccionado debe ser decimal positivo con hasta dos decimales, sin notación exponencial."
+      }
+    },
+    {
+      "caso": "CP-032",
+      "method": "POST",
+      "url": "/pagos",
+      "request": {
+        "pedidos_id": "4daef3d0-567a-4acd-9372-fbf89933e5a5",
+        "total_seleccionado": "texto",
+        "metodo_de_pago": "efectivo"
+      },
+      "status": 400,
+      "body": {
+        "error": "total_seleccionado debe ser decimal positivo con hasta dos decimales, sin notación exponencial."
+      }
+    },
+    {
+      "caso": "CP-033",
+      "method": "POST",
+      "url": "/pagos",
+      "request": {
+        "pedidos_id": "inexistente",
+        "total_seleccionado": 8000,
+        "metodo_de_pago": "efectivo"
+      },
+      "status": 404,
+      "body": {
+        "error": "El pedido no existe."
+      }
+    },
+    {
+      "caso": "CP-034",
+      "method": "GET",
+      "url": "/pagos",
+      "request": null,
+      "status": 200,
+      "body": {
+        "datos": [
+          {
+            "id": "pago-57a570f217e232",
+            "estado": "pagado",
+            "verificacion_estado": "verificado",
+            "metodo_de_pago": "efectivo",
+            "total_seleccionado": "17000.00",
+            "creado_en": "2026-10-18T14:09:57Z",
+            "verificado_en": "2026-10-18T19:09:57Z",
+            "pedidos_id": "4daef3d0-567a-4acd-9372-fbf89933e5a5",
+            "sesion_division_id": null,
+            "mesas_id": "qa-mesa-1",
+            "mesa_numero": 1,
+            "cliente_nombre": "Cliente QA",
+            "registrado_por": "QA Administrador",
+            "procesado_por": "QA Administrador",
+            "procesado_en": "2026-10-18T19:09:57Z"
+          }
+        ],
+        "paginacion": {
+          "total": 1,
+          "pagina": 1,
+          "limite": 20,
+          "totalPaginas": 1
+        },
+        "resumen": {
+          "verificados": 1,
+          "pendientes": 0,
+          "rechazados": 0,
+          "total_verificado": "17000.00"
+        }
+      }
+    },
+    {
+      "caso": "CP-035",
+      "method": "GET",
+      "url": "/juegos/activos",
+      "request": null,
+      "status": 200,
+      "body": {
+        "mensaje": "Activos consultados correctamente.",
+        "datos": [
+          {
+            "id": "qa-game",
+            "nombre": "Billar QA",
+            "estado": "disponible",
+            "tipo": "billar",
+            "precio_hora": "3600.00",
+            "sesiones_activas": []
+          }
+        ]
+      }
+    },
+    {
+      "caso": "CP-036",
+      "method": "POST",
+      "url": "/pedidos",
+      "request": {
+        "mesas_id": "qa-mesa-5",
+        "usuarios_id": "qa-admin",
+        "clientes_id": "qa-cliente"
+      },
+      "status": 201,
+      "body": {
+        "mensaje": "¡Cuenta abierta con éxito para la mesa! 🍻",
+        "id_pedido": "8105e324-fc6c-46eb-8dc2-710e29362edb"
+      }
+    },
+    {
+      "caso": "CP-036",
+      "method": "POST",
+      "url": "/juegos/iniciar",
+      "request": {
+        "activos_juego_id": "qa-game",
+        "mesas_id": "qa-mesa-5",
+        "pedidos_id": "8105e324-fc6c-46eb-8dc2-710e29362edb"
+      },
+      "status": 201,
+      "body": {
+        "mensaje": "Sesión de juego iniciada correctamente.",
+        "id_sesion": "f8b2a990-2953-4f38-9f57-e3232b6b1396",
+        "datos": {
+          "id": "f8b2a990-2953-4f38-9f57-e3232b6b1396",
+          "tipo_juego": "billar",
+          "estado": "activa",
+          "costo_total": null,
+          "fecha_inicio": "2026-10-18T19:09:57Z",
+          "fecha_fin": null,
+          "tarifa_hora_aplicada": "3600.00",
+          "activos_juego_id": "qa-game",
+          "activo_nombre": "Billar QA",
+          "mesas_id": "qa-mesa-5",
+          "mesa_numero": 5,
+          "iniciada_por": "qa-admin",
+          "cerrada_por": null,
+          "pedido_items_id": null,
+          "pedidos_id": "8105e324-fc6c-46eb-8dc2-710e29362edb",
+          "pedido_id": "8105e324-fc6c-46eb-8dc2-710e29362edb"
+        }
+      }
+    },
+    {
+      "caso": "CP-037",
+      "method": "POST",
+      "url": "/juegos/iniciar",
+      "request": {
+        "activos_juego_id": "qa-game",
+        "mesas_id": "qa-mesa-5",
+        "pedidos_id": "8105e324-fc6c-46eb-8dc2-710e29362edb"
+      },
+      "status": 409,
+      "body": {
+        "error": "El activo no está disponible."
+      }
+    },
+    {
+      "caso": "CP-038",
+      "method": "PUT",
+      "url": "/juegos/f8b2a990-2953-4f38-9f57-e3232b6b1396/terminar",
+      "request": {},
+      "status": 200,
+      "body": {
+        "mensaje": "Sesión de juego finalizada correctamente.",
+        "id_sesion": "f8b2a990-2953-4f38-9f57-e3232b6b1396",
+        "total_cobrado": "0.00",
+        "datos": {
+          "id": "f8b2a990-2953-4f38-9f57-e3232b6b1396",
+          "tipo_juego": "billar",
+          "estado": "cerrada",
+          "costo_total": "0.00",
+          "fecha_inicio": "2026-10-18T19:09:57Z",
+          "fecha_fin": "2026-10-18T19:09:57Z",
+          "tarifa_hora_aplicada": "3600.00",
+          "activos_juego_id": "qa-game",
+          "activo_nombre": "Billar QA",
+          "mesas_id": "qa-mesa-5",
+          "mesa_numero": 5,
+          "iniciada_por": "qa-admin",
+          "cerrada_por": "qa-admin",
+          "pedido_items_id": null,
+          "pedidos_id": "8105e324-fc6c-46eb-8dc2-710e29362edb",
+          "pedido_id": "8105e324-fc6c-46eb-8dc2-710e29362edb"
+        }
+      }
+    },
+    {
+      "caso": "CP-039",
+      "method": "POST",
+      "url": "/clientes/registrar",
+      "request": {
+        "nombre": "Cliente Prueba QA",
+        "telefono": "3001234567"
+      },
+      "status": 201,
+      "body": {
+        "mensaje": "Cliente registrado correctamente.",
+        "cliente": {
+          "id": "69dc8e51-5eb6-443d-8438-551dec4f29e9",
+          "nombre": "Cliente Prueba QA",
+          "email": null,
+          "telefono": "3001234567",
+          "estado": "activo",
+          "delete_at": null,
+          "usuarios_id": "qa-admin"
+        }
+      }
+    },
+    {
+      "caso": "CP-040",
+      "method": "POST",
+      "url": "/clientes/registrar",
+      "request": {
+        "nombre": "",
+        "telefono": "3001234567"
+      },
+      "status": 400,
+      "body": {
+        "error": "nombre debe ser texto no vacío de hasta 100 caracteres."
+      }
+    },
+    {
+      "caso": "CP-040",
+      "method": "POST",
+      "url": "/clientes/registrar",
+      "request": {
+        "nombre": "Cliente teléfono inválido QA",
+        "telefono": "abcdefghij"
+      },
+      "status": 201,
+      "body": {
+        "mensaje": "Cliente registrado correctamente.",
+        "cliente": {
+          "id": "d056a701-31c0-4675-a6ad-351f0a746d67",
+          "nombre": "Cliente teléfono inválido QA",
+          "email": null,
+          "telefono": "abcdefghij",
+          "estado": "activo",
+          "delete_at": null,
+          "usuarios_id": "qa-admin"
+        }
+      }
+    },
+    {
+      "caso": "CP-041",
+      "method": "PUT",
+      "url": "/clientes/69dc8e51-5eb6-443d-8438-551dec4f29e9",
+      "request": {
+        "telefono": "3019876543"
+      },
+      "status": 200,
+      "body": {
+        "mensaje": "Cliente actualizado correctamente.",
+        "cliente": {
+          "id": "69dc8e51-5eb6-443d-8438-551dec4f29e9",
+          "nombre": "Cliente Prueba QA",
+          "email": null,
+          "telefono": "3019876543",
+          "estado": "activo",
+          "delete_at": null,
+          "usuarios_id": "qa-admin"
+        }
+      }
+    },
+    {
+      "caso": "CP-041",
+      "method": "GET",
+      "url": "/clientes/69dc8e51-5eb6-443d-8438-551dec4f29e9",
+      "request": null,
+      "status": 200,
+      "body": {
+        "mensaje": "Cliente encontrado.",
+        "cliente": {
+          "id": "69dc8e51-5eb6-443d-8438-551dec4f29e9",
+          "nombre": "Cliente Prueba QA",
+          "email": null,
+          "telefono": "3019876543",
+          "estado": "activo",
+          "delete_at": null,
+          "usuarios_id": "qa-admin"
+        }
+      }
+    },
+    {
+      "caso": "CP-042",
+      "method": "GET",
+      "url": "/ventas/comprobantes/pedido/4daef3d0-567a-4acd-9372-fbf89933e5a5",
+      "request": null,
+      "status": 200,
+      "body": {
+        "comprobante": null,
+        "mesa_numero": 1,
+        "puede_generar": true,
+        "motivo": null
+      }
+    },
+    {
+      "caso": "CP-044",
+      "method": "GET",
+      "url": "/cierres-caja/resumen?fecha_inicio=2020-01-01T00%3A00%3A00&fecha_fin=2030-01-01T00%3A00%3A00",
+      "request": null,
+      "status": 200,
+      "body": {
+        "mensaje": "Resumen de cierre calculado correctamente.",
+        "fecha_inicio": "2020-01-01T00:00:00",
+        "fecha_fin": "2030-01-01T00:00:00",
+        "cantidad_pagos": 1,
+        "efectivo_esperado": "17000.00",
+        "total_general": "17000.00",
+        "por_metodo": {
+          "efectivo": "17000.00",
+          "nequi": "0.00",
+          "daviplata": "0.00",
+          "tarjeta": "0.00"
+        },
+        "pagos": [
+          {
+            "id": "pago-57a570f217e232",
+            "metodo_de_pago": "efectivo",
+            "total_seleccionado": "17000.00",
+            "verificado_en": "2026-10-18T19:09:57Z",
+            "pedidos_id": "4daef3d0-567a-4acd-9372-fbf89933e5a5",
+            "usuarios_id": "qa-admin"
+          }
+        ]
+      }
+    },
+    {
+      "caso": "CP-044",
+      "method": "POST",
+      "url": "/cierres-caja",
+      "request": {
+        "fecha_inicio": "2020-01-01T00:00:00",
+        "fecha_fin": "2030-01-01T00:00:00",
+        "total_efectivo_real": "17000.00"
+      },
+      "status": 201,
+      "body": {
+        "mensaje": "Cierre de caja creado correctamente.",
+        "cierre": {
+          "id": "f4be08e2-9655-42b6-a876-677de115bbc6",
+          "fecha": "2026-10-18T19:09:58Z",
+          "total_efectivo_esperado": "17000.00",
+          "total_efectivo_real": "17000.00",
+          "diferencia_efectivo": "0.00",
+          "total_general": "17000.00",
+          "usuarios_id": "qa-admin",
+          "responsable_nombre": "QA Administrador",
+          "reportes_generados_id": "097ac3c2-684a-4c92-829e-e2bf6b7584dd",
+          "fecha_inicio": "2020-01-01T00:00:00Z",
+          "fecha_fin": "2030-01-01T00:00:00Z",
+          "reporte": {
+            "id": "097ac3c2-684a-4c92-829e-e2bf6b7584dd",
+            "tipo": "diario",
+            "fecha_inicio": "2020-01-01",
+            "fecha_fin": "2030-01-01",
+            "datos_json": {
+              "mensaje": "Resumen de cierre calculado correctamente.",
+              "fecha_inicio": "2020-01-01T00:00:00",
+              "fecha_fin": "2030-01-01T00:00:00",
+              "cantidad_pagos": 1,
+              "efectivo_esperado": "17000.00",
+              "total_general": "17000.00",
+              "por_metodo": {
+                "efectivo": "17000.00",
+                "nequi": "0.00",
+                "daviplata": "0.00",
+                "tarjeta": "0.00"
+              },
+              "pagos": [
+                {
+                  "id": "pago-57a570f217e232",
+                  "metodo_de_pago": "efectivo",
+                  "total_seleccionado": "17000.00",
+                  "verificado_en": "2026-10-18T19:09:57Z",
+                  "pedidos_id": "4daef3d0-567a-4acd-9372-fbf89933e5a5",
+                  "usuarios_id": "qa-admin"
+                }
+              ],
+              "total_efectivo_real": "17000.00",
+              "diferencia_efectivo": "0.00"
+            },
+            "archivo_url": null,
+            "creado_en": "2026-10-18T19:09:58Z",
+            "usuarios_id": "qa-admin"
+          },
+          "pagos": [
+            {
+              "id": "46412c4a-3531-4fbe-a0b3-72e411a71afb",
+              "cierres_caja_id": "f4be08e2-9655-42b6-a876-677de115bbc6",
+              "pagos_id": "pago-57a570f217e232",
+              "importe": "17000.00",
+              "metodo_de_pago": "efectivo",
+              "incluido_en": "2026-10-18T19:09:58Z"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "caso": "CP-046",
+      "method": "POST",
+      "url": "/pedidos",
+      "request": {
+        "mesas_id": "qa-mesa-6",
+        "usuarios_id": "qa-admin",
+        "clientes_id": "qa-cliente"
+      },
+      "status": 201,
+      "body": {
+        "mensaje": "¡Cuenta abierta con éxito para la mesa! 🍻",
+        "id_pedido": "f08ebc58-6063-4a0b-acae-3770e19d54f7"
+      }
+    },
+    {
+      "caso": "CP-046",
+      "method": "POST",
+      "url": "/pedidos/f08ebc58-6063-4a0b-acae-3770e19d54f7/items",
+      "request": {
+        "productos_id": "qa-product",
+        "cantidad_pedida": 1,
+        "precio_unitario": 8000
+      },
+      "status": 201,
+      "body": {
+        "mensaje": "?Producto agregado y stock descontado exitosamente! ??",
+        "id_item": "ec086814-c98e-4159-abf3-763e314a3b4c",
+        "stock_restante": 122
+      }
+    },
+    {
+      "caso": "CP-046",
+      "method": "POST",
+      "url": "/pedidos/f08ebc58-6063-4a0b-acae-3770e19d54f7/participantes",
+      "request": {
+        "tipo_participante": "temporal",
+        "nombre": "Participante QA dos"
+      },
+      "status": 201,
+      "body": {
+        "datos": {
+          "id": "9e285f26-aac5-4dfa-85cd-fdad603013af",
+          "pedido_id": null,
+          "sesion_mesa_id": "0b93d0ea-5ee7-413b-b56f-8f1f01b94508",
+          "tipo_participante": "temporal",
+          "nombre": "Participante QA dos",
+          "clientes_id": null
+        }
+      }
+    },
+    {
+      "caso": "CP-046",
+      "method": "POST",
+      "url": "/pedidos/f08ebc58-6063-4a0b-acae-3770e19d54f7/participantes",
+      "request": {
+        "tipo_participante": "temporal",
+        "nombre": "Participante QA tres"
+      },
+      "status": 201,
+      "body": {
+        "datos": {
+          "id": "86b6e545-a6a4-4ef9-a293-ba0591935011",
+          "pedido_id": null,
+          "sesion_mesa_id": "0b93d0ea-5ee7-413b-b56f-8f1f01b94508",
+          "tipo_participante": "temporal",
+          "nombre": "Participante QA tres",
+          "clientes_id": null
+        }
+      }
+    },
+    {
+      "caso": "CP-046",
+      "method": "GET",
+      "url": "/pedidos/f08ebc58-6063-4a0b-acae-3770e19d54f7/participantes",
+      "request": null,
+      "status": 200,
+      "body": {
+        "datos": [
+          {
+            "id": "808935b9-e7b5-40ab-9105-1c05a1c86cc3",
+            "nombre": "Cliente QA",
+            "tipo_participante": "registrado",
+            "clientes_id": "qa-cliente",
+            "pedido_id": null,
+            "sesion_mesa_id": "0b93d0ea-5ee7-413b-b56f-8f1f01b94508"
+          },
+          {
+            "id": "86b6e545-a6a4-4ef9-a293-ba0591935011",
+            "nombre": "Participante QA tres",
+            "tipo_participante": "temporal",
+            "clientes_id": null,
+            "pedido_id": null,
+            "sesion_mesa_id": "0b93d0ea-5ee7-413b-b56f-8f1f01b94508"
+          },
+          {
+            "id": "9e285f26-aac5-4dfa-85cd-fdad603013af",
+            "nombre": "Participante QA dos",
+            "tipo_participante": "temporal",
+            "clientes_id": null,
+            "pedido_id": null,
+            "sesion_mesa_id": "0b93d0ea-5ee7-413b-b56f-8f1f01b94508"
+          }
+        ]
+      }
+    },
+    {
+      "caso": "CP-046",
+      "method": "POST",
+      "url": "/sesiones-division",
+      "request": {
+        "mesas_id": "qa-mesa-6",
+        "modalidad": "equitativa"
+      },
+      "status": 201,
+      "body": {
+        "exito": true,
+        "data": {
+          "id": "173e20e6-de1b-4db2-99f2-c71bb31c6b38",
+          "modalidad": "equitativa",
+          "usuarios_id": "qa-admin",
+          "mesas_id": "qa-mesa-6",
+          "sesion_mesa_id": "0b93d0ea-5ee7-413b-b56f-8f1f01b94508"
+        }
+      }
+    },
+    {
+      "caso": "CP-046",
+      "method": "POST",
+      "url": "/sesiones-division/173e20e6-de1b-4db2-99f2-c71bb31c6b38/cuotas",
+      "request": {
+        "pedido_id": "f08ebc58-6063-4a0b-acae-3770e19d54f7",
+        "jugadores_ids": [
+          "808935b9-e7b5-40ab-9105-1c05a1c86cc3",
+          "86b6e545-a6a4-4ef9-a293-ba0591935011",
+          "9e285f26-aac5-4dfa-85cd-fdad603013af"
+        ]
+      },
+      "status": 201,
+      "body": {
+        "exito": true,
+        "data": {
+          "sesion": {
+            "id": "173e20e6-de1b-4db2-99f2-c71bb31c6b38",
+            "modalidad": "equitativa",
+            "mesas_id": "qa-mesa-6",
+            "numero_mesa": 6,
+            "usuarios_id": "qa-admin",
+            "creado_en": "2026-10-18T19:09:59.000Z",
+            "sesion_mesa_id": "0b93d0ea-5ee7-413b-b56f-8f1f01b94508",
+            "pedido_id": "f08ebc58-6063-4a0b-acae-3770e19d54f7",
+            "estado": "activa",
+            "completada_en": null,
+            "cancelada_en": null
+          },
+          "estado": "activa",
+          "modalidad": "equitativa",
+          "total_objetivo": "8000.00",
+          "total_asignado": "8000.00",
+          "total_acumulado": 8000,
+          "total_pagado": "0.00",
+          "total_pendiente": "8000.00",
+          "pendiente_verificacion": "0.00",
+          "saldo_actual": "8000.00",
+          "desactualizada": false,
+          "total_definitivo": true,
+          "pagos_sin_cuota": false,
+          "participantes": [
+            {
+              "id": "7b74f2c5-61c9-49bc-a8f7-f93f7d66c24b",
+              "jugadores_id": "86b6e545-a6a4-4ef9-a293-ba0591935011",
+              "nombre_cliente": "Participante QA tres",
+              "creado_en": "2026-10-18T19:09:59.000Z",
+              "total_asignado": 2666.67,
+              "nombre": "Participante QA tres",
+              "asignado": "2666.67",
+              "pagado": "0.00",
+              "pendiente_verificacion": "0.00",
+              "saldo": "2666.67",
+              "estado": "pendiente",
+              "items": []
+            },
+            {
+              "id": "95efae9d-8f2d-4310-86f3-994744a39f21",
+              "jugadores_id": "808935b9-e7b5-40ab-9105-1c05a1c86cc3",
+              "nombre_cliente": "Cliente QA",
+              "creado_en": "2026-10-18T19:09:59.000Z",
+              "total_asignado": 2666.67,
+              "nombre": "Cliente QA",
+              "asignado": "2666.67",
+              "pagado": "0.00",
+              "pendiente_verificacion": "0.00",
+              "saldo": "2666.67",
+              "estado": "pendiente",
+              "items": []
+            },
+            {
+              "id": "de92908f-3dae-4087-a4e7-5174cc0bf05f",
+              "jugadores_id": "9e285f26-aac5-4dfa-85cd-fdad603013af",
+              "nombre_cliente": "Participante QA dos",
+              "creado_en": "2026-10-18T19:09:59.000Z",
+              "total_asignado": 2666.66,
+              "nombre": "Participante QA dos",
+              "asignado": "2666.66",
+              "pagado": "0.00",
+              "pendiente_verificacion": "0.00",
+              "saldo": "2666.66",
+              "estado": "pendiente",
+              "items": []
+            }
+          ]
+        }
+      }
+    },
+    {
+      "caso": "CP-047",
+      "method": "POST",
+      "url": "/sesiones-division",
+      "request": {
+        "mesas_id": "qa-mesa-6",
+        "modalidad": "equitativa"
+      },
+      "status": 201,
+      "body": {
+        "exito": true,
+        "data": {
+          "id": "c751893b-a95a-4ee6-b011-f679f5de5f3e",
+          "modalidad": "equitativa",
+          "usuarios_id": "qa-admin",
+          "mesas_id": "qa-mesa-6",
+          "sesion_mesa_id": "0b93d0ea-5ee7-413b-b56f-8f1f01b94508"
+        }
+      }
+    },
+    {
+      "caso": "CP-047",
+      "method": "POST",
+      "url": "/sesiones-division/c751893b-a95a-4ee6-b011-f679f5de5f3e/cuotas",
+      "request": {
+        "pedido_id": "f08ebc58-6063-4a0b-acae-3770e19d54f7",
+        "jugadores_ids": []
+      },
+      "status": 400,
+      "body": {
+        "error": "Indica entre 1 y 100 clientes."
+      }
+    },
+    {
+      "caso": "CP-047",
+      "method": "POST",
+      "url": "/sesiones-division",
+      "request": {
+        "mesas_id": "qa-mesa-6",
+        "modalidad": "equitativa"
+      },
+      "status": 201,
+      "body": {
+        "exito": true,
+        "data": {
+          "id": "3219b5d2-dcf0-48c5-88ce-1e21bcf13d00",
+          "modalidad": "equitativa",
+          "usuarios_id": "qa-admin",
+          "mesas_id": "qa-mesa-6",
+          "sesion_mesa_id": "0b93d0ea-5ee7-413b-b56f-8f1f01b94508"
+        }
+      }
+    },
+    {
+      "caso": "CP-047",
+      "method": "POST",
+      "url": "/sesiones-division/3219b5d2-dcf0-48c5-88ce-1e21bcf13d00/cuotas",
+      "request": {
+        "pedido_id": "f08ebc58-6063-4a0b-acae-3770e19d54f7",
+        "jugadores_ids": 0
+      },
+      "status": 400,
+      "body": {
+        "error": "Indica una lista de clientes."
+      }
+    },
+    {
+      "caso": "CP-047",
+      "method": "POST",
+      "url": "/sesiones-division",
+      "request": {
+        "mesas_id": "qa-mesa-6",
+        "modalidad": "equitativa"
+      },
+      "status": 201,
+      "body": {
+        "exito": true,
+        "data": {
+          "id": "cafedb13-009c-46ed-9abb-c6b9215b13e9",
+          "modalidad": "equitativa",
+          "usuarios_id": "qa-admin",
+          "mesas_id": "qa-mesa-6",
+          "sesion_mesa_id": "0b93d0ea-5ee7-413b-b56f-8f1f01b94508"
+        }
+      }
+    },
+    {
+      "caso": "CP-047",
+      "method": "POST",
+      "url": "/sesiones-division/cafedb13-009c-46ed-9abb-c6b9215b13e9/cuotas",
+      "request": {
+        "pedido_id": "f08ebc58-6063-4a0b-acae-3770e19d54f7",
+        "jugadores_ids": -2
+      },
+      "status": 400,
+      "body": {
+        "error": "Indica una lista de clientes."
+      }
+    },
+    {
+      "caso": "CP-047",
+      "method": "POST",
+      "url": "/sesiones-division",
+      "request": {
+        "mesas_id": "qa-mesa-6",
+        "modalidad": "equitativa"
+      },
+      "status": 201,
+      "body": {
+        "exito": true,
+        "data": {
+          "id": "e17587e3-b516-495d-8056-6a0773447f1a",
+          "modalidad": "equitativa",
+          "usuarios_id": "qa-admin",
+          "mesas_id": "qa-mesa-6",
+          "sesion_mesa_id": "0b93d0ea-5ee7-413b-b56f-8f1f01b94508"
+        }
+      }
+    },
+    {
+      "caso": "CP-047",
+      "method": "POST",
+      "url": "/sesiones-division/e17587e3-b516-495d-8056-6a0773447f1a/cuotas",
+      "request": {
+        "pedido_id": "f08ebc58-6063-4a0b-acae-3770e19d54f7",
+        "jugadores_ids": "texto"
+      },
+      "status": 400,
+      "body": {
+        "error": "Indica una lista de clientes."
+      }
+    },
+    {
+      "caso": "CP-048",
+      "method": "POST",
+      "url": "/pagos",
+      "request": {
+        "pedidos_id": "f08ebc58-6063-4a0b-acae-3770e19d54f7",
+        "total_seleccionado": "2666.67",
+        "metodo_de_pago": "efectivo",
+        "sesion_division_id": "173e20e6-de1b-4db2-99f2-c71bb31c6b38",
+        "participante_id": "7b74f2c5-61c9-49bc-a8f7-f93f7d66c24b"
+      },
+      "status": 201,
+      "body": {
+        "mensaje": "Pago registrado pendiente de verificación.",
+        "id_pago": "pago-9f777a53b0668e",
+        "estado": "pendiente",
+        "verificacion_estado": "pendiente",
+        "liquidacion": {
+          "pedido_id": "f08ebc58-6063-4a0b-acae-3770e19d54f7",
+          "total_cuenta": "8000.00",
+          "total_pagado": "0.00",
+          "pagos_pendientes_verificacion": "2666.67",
+          "saldo_pendiente": "8000.00",
+          "total_definitivo": true,
+          "cuenta_liquidada": false,
+          "estado_pedido": "abierto",
+          "estado_mesa": "en_cobro",
+          "estado_sesion": "activa",
+          "motivo_no_liberacion": "Hay un pago pendiente de verificación."
+        }
+      }
+    },
+    {
+      "caso": "CP-048",
+      "method": "PATCH",
+      "url": "/pagos/pago-9f777a53b0668e/verificar",
+      "request": {
+        "verificacion_estado": "verificado"
+      },
+      "status": 200,
+      "body": {
+        "mensaje": "Pago verificado.",
+        "id_pago": "pago-9f777a53b0668e",
+        "estado": "pagado",
+        "verificacion_estado": "verificado",
+        "liquidacion": {
+          "pedido_id": "f08ebc58-6063-4a0b-acae-3770e19d54f7",
+          "total_cuenta": "8000.00",
+          "total_pagado": "2666.67",
+          "pagos_pendientes_verificacion": "0.00",
+          "saldo_pendiente": "5333.33",
+          "total_definitivo": true,
+          "cuenta_liquidada": false,
+          "estado_pedido": "abierto",
+          "estado_mesa": "en_cobro",
+          "estado_sesion": "activa",
+          "motivo_no_liberacion": "Hay otro pedido pendiente o este pedido sigue abierto.",
+          "division": {
+            "id": "173e20e6-de1b-4db2-99f2-c71bb31c6b38",
+            "estado": "activa",
+            "motivo": "La división tiene saldo, pagos pendientes o cuotas desactualizadas."
+          }
+        }
+      }
+    },
+    {
+      "caso": "CP-048",
+      "method": "GET",
+      "url": "/sesiones-division/173e20e6-de1b-4db2-99f2-c71bb31c6b38",
+      "request": null,
+      "status": 200,
+      "body": {
+        "exito": true,
+        "data": {
+          "sesion": {
+            "id": "173e20e6-de1b-4db2-99f2-c71bb31c6b38",
+            "modalidad": "equitativa",
+            "mesas_id": "qa-mesa-6",
+            "numero_mesa": 6,
+            "usuarios_id": "qa-admin",
+            "creado_en": "2026-10-18T19:09:59.000Z",
+            "sesion_mesa_id": "0b93d0ea-5ee7-413b-b56f-8f1f01b94508",
+            "pedido_id": "f08ebc58-6063-4a0b-acae-3770e19d54f7",
+            "estado": "activa",
+            "completada_en": null,
+            "cancelada_en": null
+          },
+          "estado": "activa",
+          "modalidad": "equitativa",
+          "total_objetivo": "8000.00",
+          "total_asignado": "8000.00",
+          "total_acumulado": 8000,
+          "total_pagado": "2666.67",
+          "total_pendiente": "5333.33",
+          "pendiente_verificacion": "0.00",
+          "saldo_actual": "5333.33",
+          "desactualizada": false,
+          "total_definitivo": true,
+          "pagos_sin_cuota": false,
+          "participantes": [
+            {
+              "id": "7b74f2c5-61c9-49bc-a8f7-f93f7d66c24b",
+              "jugadores_id": "86b6e545-a6a4-4ef9-a293-ba0591935011",
+              "nombre_cliente": "Participante QA tres",
+              "creado_en": "2026-10-18T19:09:59.000Z",
+              "total_asignado": 2666.67,
+              "nombre": "Participante QA tres",
+              "asignado": "2666.67",
+              "pagado": "2666.67",
+              "pendiente_verificacion": "0.00",
+              "saldo": "0.00",
+              "estado": "pagado",
+              "items": []
+            },
+            {
+              "id": "95efae9d-8f2d-4310-86f3-994744a39f21",
+              "jugadores_id": "808935b9-e7b5-40ab-9105-1c05a1c86cc3",
+              "nombre_cliente": "Cliente QA",
+              "creado_en": "2026-10-18T19:09:59.000Z",
+              "total_asignado": 2666.67,
+              "nombre": "Cliente QA",
+              "asignado": "2666.67",
+              "pagado": "0.00",
+              "pendiente_verificacion": "0.00",
+              "saldo": "2666.67",
+              "estado": "pendiente",
+              "items": []
+            },
+            {
+              "id": "de92908f-3dae-4087-a4e7-5174cc0bf05f",
+              "jugadores_id": "9e285f26-aac5-4dfa-85cd-fdad603013af",
+              "nombre_cliente": "Participante QA dos",
+              "creado_en": "2026-10-18T19:09:59.000Z",
+              "total_asignado": 2666.66,
+              "nombre": "Participante QA dos",
+              "asignado": "2666.66",
+              "pagado": "0.00",
+              "pendiente_verificacion": "0.00",
+              "saldo": "2666.66",
+              "estado": "pendiente",
+              "items": []
+            }
+          ]
+        }
+      }
+    },
+    {
+      "caso": "CP-049",
+      "method": "PATCH",
+      "url": "/sesiones-division/173e20e6-de1b-4db2-99f2-c71bb31c6b38/completar",
+      "request": {},
+      "status": 409,
+      "body": {
+        "error": "La división tiene saldo, pagos pendientes o cuotas desactualizadas."
+      }
+    },
+    {
+      "caso": "CP-049",
+      "method": "POST",
+      "url": "/pagos",
+      "request": {
+        "pedidos_id": "f08ebc58-6063-4a0b-acae-3770e19d54f7",
+        "total_seleccionado": "2666.67",
+        "metodo_de_pago": "efectivo",
+        "sesion_division_id": "173e20e6-de1b-4db2-99f2-c71bb31c6b38",
+        "participante_id": "95efae9d-8f2d-4310-86f3-994744a39f21"
+      },
+      "status": 201,
+      "body": {
+        "mensaje": "Pago registrado pendiente de verificación.",
+        "id_pago": "pago-9b670f287f691c",
+        "estado": "pendiente",
+        "verificacion_estado": "pendiente",
+        "liquidacion": {
+          "pedido_id": "f08ebc58-6063-4a0b-acae-3770e19d54f7",
+          "total_cuenta": "8000.00",
+          "total_pagado": "2666.67",
+          "pagos_pendientes_verificacion": "2666.67",
+          "saldo_pendiente": "5333.33",
+          "total_definitivo": true,
+          "cuenta_liquidada": false,
+          "estado_pedido": "abierto",
+          "estado_mesa": "en_cobro",
+          "estado_sesion": "activa",
+          "motivo_no_liberacion": "Hay un pago pendiente de verificación."
+        }
+      }
+    },
+    {
+      "caso": "CP-049",
+      "method": "PATCH",
+      "url": "/pagos/pago-9b670f287f691c/verificar",
+      "request": {
+        "verificacion_estado": "verificado"
+      },
+      "status": 200,
+      "body": {
+        "mensaje": "Pago verificado.",
+        "id_pago": "pago-9b670f287f691c",
+        "estado": "pagado",
+        "verificacion_estado": "verificado",
+        "liquidacion": {
+          "pedido_id": "f08ebc58-6063-4a0b-acae-3770e19d54f7",
+          "total_cuenta": "8000.00",
+          "total_pagado": "5333.34",
+          "pagos_pendientes_verificacion": "0.00",
+          "saldo_pendiente": "2666.66",
+          "total_definitivo": true,
+          "cuenta_liquidada": false,
+          "estado_pedido": "abierto",
+          "estado_mesa": "en_cobro",
+          "estado_sesion": "activa",
+          "motivo_no_liberacion": "Hay otro pedido pendiente o este pedido sigue abierto.",
+          "division": {
+            "id": "173e20e6-de1b-4db2-99f2-c71bb31c6b38",
+            "estado": "activa",
+            "motivo": "La división tiene saldo, pagos pendientes o cuotas desactualizadas."
+          }
+        }
+      }
+    },
+    {
+      "caso": "CP-049",
+      "method": "POST",
+      "url": "/pagos",
+      "request": {
+        "pedidos_id": "f08ebc58-6063-4a0b-acae-3770e19d54f7",
+        "total_seleccionado": "2666.66",
+        "metodo_de_pago": "efectivo",
+        "sesion_division_id": "173e20e6-de1b-4db2-99f2-c71bb31c6b38",
+        "participante_id": "de92908f-3dae-4087-a4e7-5174cc0bf05f"
+      },
+      "status": 201,
+      "body": {
+        "mensaje": "Pago registrado pendiente de verificación.",
+        "id_pago": "pago-c8826f7e823404",
+        "estado": "pendiente",
+        "verificacion_estado": "pendiente",
+        "liquidacion": {
+          "pedido_id": "f08ebc58-6063-4a0b-acae-3770e19d54f7",
+          "total_cuenta": "8000.00",
+          "total_pagado": "5333.34",
+          "pagos_pendientes_verificacion": "2666.66",
+          "saldo_pendiente": "2666.66",
+          "total_definitivo": true,
+          "cuenta_liquidada": false,
+          "estado_pedido": "abierto",
+          "estado_mesa": "en_cobro",
+          "estado_sesion": "activa",
+          "motivo_no_liberacion": "Hay un pago pendiente de verificación."
+        }
+      }
+    },
+    {
+      "caso": "CP-049",
+      "method": "PATCH",
+      "url": "/pagos/pago-c8826f7e823404/verificar",
+      "request": {
+        "verificacion_estado": "verificado"
+      },
+      "status": 200,
+      "body": {
+        "mensaje": "Pago verificado.",
+        "id_pago": "pago-c8826f7e823404",
+        "estado": "pagado",
+        "verificacion_estado": "verificado",
+        "liquidacion": {
+          "pedido_id": "f08ebc58-6063-4a0b-acae-3770e19d54f7",
+          "total_cuenta": "8000.00",
+          "total_pagado": "8000.00",
+          "pagos_pendientes_verificacion": "0.00",
+          "saldo_pendiente": "0.00",
+          "total_definitivo": true,
+          "cuenta_liquidada": true,
+          "estado_pedido": "cerrado",
+          "estado_mesa": "disponible",
+          "estado_sesion": "cerrada",
+          "motivo_no_liberacion": null,
+          "division": {
+            "id": "173e20e6-de1b-4db2-99f2-c71bb31c6b38",
+            "estado": "completada",
+            "motivo": null
+          }
+        }
+      }
+    },
+    {
+      "caso": "CP-049",
+      "method": "PATCH",
+      "url": "/sesiones-division/173e20e6-de1b-4db2-99f2-c71bb31c6b38/completar",
+      "request": {},
+      "status": 200,
+      "body": {
+        "exito": true,
+        "data": {
+          "sesion": {
+            "id": "173e20e6-de1b-4db2-99f2-c71bb31c6b38",
+            "modalidad": "equitativa",
+            "mesas_id": "qa-mesa-6",
+            "numero_mesa": 6,
+            "usuarios_id": "qa-admin",
+            "creado_en": "2026-10-18T19:09:59.000Z",
+            "sesion_mesa_id": "0b93d0ea-5ee7-413b-b56f-8f1f01b94508",
+            "pedido_id": "f08ebc58-6063-4a0b-acae-3770e19d54f7",
+            "estado": "completada",
+            "completada_en": "2026-10-19T00:09:59.000Z",
+            "cancelada_en": null
+          },
+          "estado": "completada",
+          "modalidad": "equitativa",
+          "total_objetivo": "8000.00",
+          "total_asignado": "8000.00",
+          "total_acumulado": 8000,
+          "total_pagado": "8000.00",
+          "total_pendiente": "0.00",
+          "pendiente_verificacion": "0.00",
+          "saldo_actual": "0.00",
+          "desactualizada": false,
+          "total_definitivo": true,
+          "pagos_sin_cuota": false,
+          "participantes": [
+            {
+              "id": "7b74f2c5-61c9-49bc-a8f7-f93f7d66c24b",
+              "jugadores_id": "86b6e545-a6a4-4ef9-a293-ba0591935011",
+              "nombre_cliente": "Participante QA tres",
+              "creado_en": "2026-10-18T19:09:59.000Z",
+              "total_asignado": 2666.67,
+              "nombre": "Participante QA tres",
+              "asignado": "2666.67",
+              "pagado": "2666.67",
+              "pendiente_verificacion": "0.00",
+              "saldo": "0.00",
+              "estado": "pagado",
+              "items": []
+            },
+            {
+              "id": "95efae9d-8f2d-4310-86f3-994744a39f21",
+              "jugadores_id": "808935b9-e7b5-40ab-9105-1c05a1c86cc3",
+              "nombre_cliente": "Cliente QA",
+              "creado_en": "2026-10-18T19:09:59.000Z",
+              "total_asignado": 2666.67,
+              "nombre": "Cliente QA",
+              "asignado": "2666.67",
+              "pagado": "2666.67",
+              "pendiente_verificacion": "0.00",
+              "saldo": "0.00",
+              "estado": "pagado",
+              "items": []
+            },
+            {
+              "id": "de92908f-3dae-4087-a4e7-5174cc0bf05f",
+              "jugadores_id": "9e285f26-aac5-4dfa-85cd-fdad603013af",
+              "nombre_cliente": "Participante QA dos",
+              "creado_en": "2026-10-18T19:09:59.000Z",
+              "total_asignado": 2666.66,
+              "nombre": "Participante QA dos",
+              "asignado": "2666.66",
+              "pagado": "2666.66",
+              "pendiente_verificacion": "0.00",
+              "saldo": "0.00",
+              "estado": "pagado",
+              "items": []
+            }
+          ]
+        }
+      }
+    },
+    {
+      "caso": "CP-050",
+      "method": "POST",
+      "url": "/pedidos",
+      "request": {
+        "mesas_id": "qa-mesa-7",
+        "usuarios_id": "qa-admin",
+        "clientes_id": "qa-cliente"
+      },
+      "status": 201,
+      "body": {
+        "mensaje": "¡Cuenta abierta con éxito para la mesa! 🍻",
+        "id_pedido": "f3c872b3-88f4-401b-adb1-891d58ec33ec"
+      }
+    },
+    {
+      "caso": "CP-050",
+      "method": "POST",
+      "url": "/pedidos/f3c872b3-88f4-401b-adb1-891d58ec33ec/items",
+      "request": {
+        "productos_id": "qa-product",
+        "cantidad_pedida": 1,
+        "precio_unitario": 8000
+      },
+      "status": 201,
+      "body": {
+        "mensaje": "?Producto agregado y stock descontado exitosamente! ??",
+        "id_item": "adc68e1f-da44-4799-9662-f1c5f55bb0a1",
+        "stock_restante": 121
+      }
+    },
+    {
+      "caso": "CP-050",
+      "method": "GET",
+      "url": "/kanban/tablero",
+      "request": null,
+      "status": 200,
+      "body": {
+        "exito": true,
+        "mensaje": "Tablero Kanban cargado exitosamente 📋",
+        "data": {
+          "enviado": [
+            {
+              "id_item": "adc68e1f-da44-4799-9662-f1c5f55bb0a1",
+              "id_pedido": "f3c872b3-88f4-401b-adb1-891d58ec33ec",
+              "mesa": 7,
+              "producto": "Cerveza QA",
+              "cantidad": 1,
+              "hora": "2026-10-18T19:09:59.000Z"
+            }
+          ],
+          "preparacion": [],
+          "servido": []
+        }
+      }
+    },
+    {
+      "caso": "CP-052",
+      "method": "GET",
+      "url": "/productos",
+      "request": null,
+      "status": 200,
+      "body": {
+        "mensaje": "Productos consultados correctamente.",
+        "total": 2,
+        "datos": [
+          {
+            "id": "qa-product",
+            "nombre": "Cerveza QA",
+            "codigo": "QA-001",
+            "precio_venta": "8000.00",
+            "costo_promedio_ponderado": "0.00",
+            "cantidad_disponible": 121,
+            "stock_minimo": 5,
+            "estado": "activo",
+            "categorias_id": 1,
+            "proveedores_id": "qa-prov",
+            "historial_costos_id": null,
+            "stock": 10,
+            "version_inventario": 4,
+            "categoria_nombre": "Cervezas QA"
+          },
+          {
+            "id": "3a0b5ee8-0930-4f0a-aa8b-c5a2ef5820df",
+            "nombre": "Producto nuevo QA",
+            "codigo": "QA-NEW",
+            "precio_venta": "9000.00",
+            "costo_promedio_ponderado": "0.00",
+            "cantidad_disponible": 1,
+            "stock_minimo": 5,
+            "estado": "activo",
+            "categorias_id": 1,
+            "proveedores_id": "qa-prov",
+            "historial_costos_id": null,
+            "stock": 10,
+            "version_inventario": 2,
+            "categoria_nombre": "Cervezas QA"
+          }
+        ]
+      }
+    },
+    {
+      "caso": "CP-053",
+      "method": "POST",
+      "url": "/productos",
+      "request": "JSON incompleto",
+      "status": 400,
+      "body": {
+        "error": "El cuerpo de la solicitud no contiene JSON válido."
+      }
+    },
+    {
+      "caso": "CP-053",
+      "method": "GET",
+      "url": "/productos",
+      "request": null,
+      "status": 200,
+      "body": {
+        "mensaje": "Productos consultados correctamente.",
+        "total": 2,
+        "datos": [
+          {
+            "id": "qa-product",
+            "nombre": "Cerveza QA",
+            "codigo": "QA-001",
+            "precio_venta": "8000.00",
+            "costo_promedio_ponderado": "0.00",
+            "cantidad_disponible": 121,
+            "stock_minimo": 5,
+            "estado": "activo",
+            "categorias_id": 1,
+            "proveedores_id": "qa-prov",
+            "historial_costos_id": null,
+            "stock": 10,
+            "version_inventario": 4,
+            "categoria_nombre": "Cervezas QA"
+          },
+          {
+            "id": "3a0b5ee8-0930-4f0a-aa8b-c5a2ef5820df",
+            "nombre": "Producto nuevo QA",
+            "codigo": "QA-NEW",
+            "precio_venta": "9000.00",
+            "costo_promedio_ponderado": "0.00",
+            "cantidad_disponible": 1,
+            "stock_minimo": 5,
+            "estado": "activo",
+            "categorias_id": 1,
+            "proveedores_id": "qa-prov",
+            "historial_costos_id": null,
+            "stock": 10,
+            "version_inventario": 2,
+            "categoria_nombre": "Cervezas QA"
+          }
+        ]
+      }
+    },
+    {
+      "caso": "CP-025",
+      "fase": "complementaria",
+      "method": "PATCH",
+      "url": "/mesas/qa-mesa-15/estado",
+      "request": {
+        "estado": "ocupada"
+      },
+      "status": 200,
+      "body": {
+        "mensaje": "¡Mesa actualizada a 'ocupada' con éxito! 🕹️"
+      }
+    },
+    {
+      "caso": "CP-055",
+      "fase": "complementaria",
+      "method": "GET",
+      "url": "/pedidos/fa566ded-4b50-4f43-a30b-a0bbe0a728f7",
+      "status": 200,
+      "body": {
+        "mensaje": "Detalle de la cuenta cargado con éxito 📋",
+        "datos": {
+          "id": "fa566ded-4b50-4f43-a30b-a0bbe0a728f7",
+          "estado": "cerrado",
+          "total_productos": "8000.00",
+          "total_juegos": "0.00",
+          "total_general": "8000.00",
+          "sincronizado": 0,
+          "creado_en": "2026-10-18T19:11:51.000Z",
+          "mesas_id": "qa-mesa-10",
+          "usuarios_id": "qa-admin",
+          "clientes_id": "qa-cliente",
+          "sesion_mesa_id": "4b375d7d-d440-422d-b7bc-d426b0066471",
+          "items": [
+            {
+              "id": "bde8c87e-9a33-4bf7-9e5c-5655838af7db",
+              "cantidad_pedida": 1,
+              "precio_unitario": "8000.00",
+              "estado": "enviado",
+              "nombre": "Cerveza QA",
+              "participante_id": null,
+              "participante_nombre": null,
+              "productos_id": "qa-product",
+              "ronda_consumo_id": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "caso": "CP-025",
+      "fase": "complementaria",
+      "method": "PATCH",
+      "url": "/mesas/qa-mesa-15/estado",
+      "request": {
+        "estado": "ocupada"
+      },
+      "status": 200,
+      "body": {
+        "mensaje": "¡Mesa actualizada a 'ocupada' con éxito! 🕹️"
+      }
+    },
+    {
+      "caso": "CP-025",
+      "fase": "complementaria",
+      "method": "PATCH",
+      "url": "/mesas/qa-mesa-15/estado",
+      "request": {
+        "estado": "ocupada"
+      },
+      "status": 200,
+      "body": {
+        "mensaje": "¡Mesa actualizada a 'ocupada' con éxito! 🕹️"
+      }
+    }
+  ],
+  "sql": [
+    {
+      "query": "SELECT VERSION() AS version,@@hostname AS servidor",
+      "params": [],
+      "rows": [
+        {
+          "version": "10.4.32-MariaDB",
+          "servidor": "LAPTOP-AFOBO7B3"
+        }
+      ]
+    },
+    {
+      "caso": "CP-005",
+      "query": "SELECT id FROM roles WHERE nombre='Mesero'",
+      "params": [],
+      "rows": [
+        {
+          "id": 3
+        }
+      ]
+    },
+    {
+      "caso": "CP-006",
+      "query": "Verificación bcrypt de password_hash; hash omitido",
+      "rows": [
+        {
+          "id": "bf12ecdf-e720-43f2-bdc5-08727f143d44",
+          "bcryptMatch": true,
+          "plaintext": false
+        }
+      ]
+    },
+    {
+      "caso": "CP-007",
+      "query": "SELECT COUNT(*) AS n FROM usuarios WHERE email=?",
+      "params": [
+        "nuevo.qa@example.invalid"
+      ],
+      "rows": [
+        {
+          "n": 1
+        }
+      ]
+    },
+    {
+      "caso": "CP-008",
+      "query": "SELECT id FROM roles WHERE nombre='Cajero'",
+      "params": [],
+      "rows": [
+        {
+          "id": 6
+        }
+      ]
+    },
+    {
+      "caso": "CP-011",
+      "query": "SELECT COUNT(*) AS n FROM categorias",
+      "params": [],
+      "rows": [
+        {
+          "n": 1
+        }
+      ]
+    },
+    {
+      "caso": "CP-011",
+      "query": "SELECT COUNT(*) AS n FROM categorias",
+      "params": [],
+      "rows": [
+        {
+          "n": 1
+        }
+      ]
+    },
+    {
+      "caso": "CP-014",
+      "query": "SELECT nombre,categorias_id,cantidad_disponible FROM productos WHERE id=?",
+      "params": [
+        "3a0b5ee8-0930-4f0a-aa8b-c5a2ef5820df"
+      ],
+      "rows": [
+        {
+          "nombre": "Producto nuevo QA",
+          "categorias_id": 1,
+          "cantidad_disponible": 24
+        }
+      ]
+    },
+    {
+      "caso": "CP-015",
+      "query": "SELECT COUNT(*) AS n FROM productos",
+      "params": [],
+      "rows": [
+        {
+          "n": 2
+        }
+      ]
+    },
+    {
+      "caso": "CP-015",
+      "query": "SELECT COUNT(*) AS n FROM productos",
+      "params": [],
+      "rows": [
+        {
+          "n": 2
+        }
+      ]
+    },
+    {
+      "caso": "CP-016",
+      "query": "SELECT COUNT(*) AS n FROM productos WHERE codigo='INVALID-FK'",
+      "params": [],
+      "rows": [
+        {
+          "n": 0
+        }
+      ]
+    },
+    {
+      "caso": "CP-018",
+      "query": "SELECT precio_venta FROM productos WHERE id=?",
+      "params": [
+        "3a0b5ee8-0930-4f0a-aa8b-c5a2ef5820df"
+      ],
+      "rows": [
+        {
+          "precio_venta": "9000.00"
+        }
+      ]
+    },
+    {
+      "caso": "CP-019",
+      "query": "SELECT cantidad_disponible FROM productos WHERE id='qa-product'",
+      "params": [],
+      "rows": [
+        {
+          "cantidad_disponible": 100
+        }
+      ]
+    },
+    {
+      "caso": "CP-020",
+      "query": "SELECT cantidad_disponible FROM productos WHERE id='qa-product'",
+      "params": [],
+      "rows": [
+        {
+          "cantidad_disponible": 124
+        }
+      ]
+    },
+    {
+      "caso": "CP-020",
+      "query": "SELECT cantidad,stock_antes,stock_despues FROM movimientos_inventario WHERE productos_id='qa-product' AND tipo='ajuste'",
+      "params": [],
+      "rows": [
+        {
+          "cantidad": 24,
+          "stock_antes": 100,
+          "stock_despues": 124
+        }
+      ]
+    },
+    {
+      "caso": "CP-021",
+      "query": "SELECT cantidad_disponible FROM productos WHERE id='qa-product'",
+      "params": [],
+      "rows": [
+        {
+          "cantidad_disponible": 124
+        }
+      ]
+    },
+    {
+      "caso": "CP-022",
+      "query": "SELECT cantidad_disponible FROM productos WHERE id='qa-product'",
+      "params": [],
+      "rows": [
+        {
+          "cantidad_disponible": 124
+        }
+      ]
+    },
+    {
+      "caso": "CP-022",
+      "query": "SELECT cantidad_disponible FROM productos WHERE id='qa-product'",
+      "params": [],
+      "rows": [
+        {
+          "cantidad_disponible": 124
+        }
+      ]
+    },
+    {
+      "caso": "CP-022",
+      "query": "SELECT COUNT(*) AS n FROM pedido_items WHERE pedidos_id=?",
+      "params": [
+        "b2de1cdf-5c15-4fb7-a4e2-4a822ad057a3"
+      ],
+      "rows": [
+        {
+          "n": 0
+        }
+      ]
+    },
+    {
+      "caso": "CP-025",
+      "query": "SELECT estado FROM mesas WHERE id=?",
+      "params": [
+        "qa-mesa-3"
+      ],
+      "rows": [
+        {
+          "estado": "ocupada"
+        }
+      ]
+    },
+    {
+      "caso": "CP-025",
+      "query": "SELECT estado FROM mesas WHERE id=?",
+      "params": [
+        "qa-mesa-3"
+      ],
+      "rows": [
+        {
+          "estado": "disponible"
+        }
+      ]
+    },
+    {
+      "caso": "CP-026",
+      "query": "SELECT id,mesas_id,estado FROM pedidos WHERE mesas_id=?",
+      "params": [
+        "qa-mesa-3"
+      ],
+      "rows": [
+        {
+          "id": "66dc7fe9-32e2-4220-9817-2e773f4cedc7",
+          "mesas_id": "qa-mesa-3",
+          "estado": "abierto"
+        },
+        {
+          "id": "d100bf81-c0c8-4e02-a7d1-41ad29451db4",
+          "mesas_id": "qa-mesa-3",
+          "estado": "abierto"
+        }
+      ]
+    },
+    {
+      "caso": "CP-027",
+      "query": "SELECT precio_venta FROM productos WHERE id=?",
+      "params": [
+        "qa-product"
+      ],
+      "rows": [
+        {
+          "precio_venta": "8000.00"
+        }
+      ]
+    },
+    {
+      "caso": "CP-027",
+      "query": "SELECT * FROM pedido_items WHERE pedidos_id=? ORDER BY id",
+      "params": [
+        "4daef3d0-567a-4acd-9372-fbf89933e5a5"
+      ],
+      "rows": [
+        {
+          "id": "743caa3f-c732-4430-884a-521cda0b98f5",
+          "precio_unitario": "8000.00",
+          "pedido_id": "4daef3d0-567a-4acd-9372-fbf89933e5a5",
+          "producto_id": "qa-product",
+          "cantidad_pedida": 1,
+          "cantidad_pagada": 0,
+          "estado": "enviado",
+          "pedidos_id": "4daef3d0-567a-4acd-9372-fbf89933e5a5",
+          "productos_id": "qa-product",
+          "participante_id": null,
+          "ronda_consumo_id": null
+        }
+      ]
+    },
+    {
+      "caso": "CP-027",
+      "query": "SELECT precio_venta FROM productos WHERE id=?",
+      "params": [
+        "3a0b5ee8-0930-4f0a-aa8b-c5a2ef5820df"
+      ],
+      "rows": [
+        {
+          "precio_venta": "9000.00"
+        }
+      ]
+    },
+    {
+      "caso": "CP-027",
+      "query": "SELECT * FROM pedido_items WHERE pedidos_id=? ORDER BY id",
+      "params": [
+        "4daef3d0-567a-4acd-9372-fbf89933e5a5"
+      ],
+      "rows": [
+        {
+          "id": "743caa3f-c732-4430-884a-521cda0b98f5",
+          "precio_unitario": "8000.00",
+          "pedido_id": "4daef3d0-567a-4acd-9372-fbf89933e5a5",
+          "producto_id": "qa-product",
+          "cantidad_pedida": 1,
+          "cantidad_pagada": 0,
+          "estado": "enviado",
+          "pedidos_id": "4daef3d0-567a-4acd-9372-fbf89933e5a5",
+          "productos_id": "qa-product",
+          "participante_id": null,
+          "ronda_consumo_id": null
+        },
+        {
+          "id": "7c589410-4d2d-48ee-8f63-1ba0a1a702ad",
+          "precio_unitario": "9000.00",
+          "pedido_id": "4daef3d0-567a-4acd-9372-fbf89933e5a5",
+          "producto_id": "3a0b5ee8-0930-4f0a-aa8b-c5a2ef5820df",
+          "cantidad_pedida": 1,
+          "cantidad_pagada": 0,
+          "estado": "enviado",
+          "pedidos_id": "4daef3d0-567a-4acd-9372-fbf89933e5a5",
+          "productos_id": "3a0b5ee8-0930-4f0a-aa8b-c5a2ef5820df",
+          "participante_id": null,
+          "ronda_consumo_id": null
+        }
+      ]
+    },
+    {
+      "caso": "CP-027",
+      "query": "SELECT SUM(cantidad_pedida*precio_unitario) AS total,COUNT(*) AS lineas FROM pedido_items WHERE pedidos_id=?",
+      "params": [
+        "4daef3d0-567a-4acd-9372-fbf89933e5a5"
+      ],
+      "rows": [
+        {
+          "total": "17000.00",
+          "lineas": 2
+        }
+      ]
+    },
+    {
+      "caso": "CP-027",
+      "query": "SELECT mesas_id FROM pedidos WHERE id=?",
+      "params": [
+        "4daef3d0-567a-4acd-9372-fbf89933e5a5"
+      ],
+      "rows": [
+        {
+          "mesas_id": "qa-mesa-1"
+        }
+      ]
+    },
+    {
+      "caso": "CP-028",
+      "query": "SELECT COUNT(*) AS n FROM pedido_items WHERE pedidos_id=?",
+      "params": [
+        "2b3d5bb0-a073-4bc9-8a3f-390e6a74cc4a"
+      ],
+      "rows": [
+        {
+          "n": 0
+        }
+      ]
+    },
+    {
+      "caso": "CP-030",
+      "query": "SELECT estado FROM pedido_items WHERE id=?",
+      "params": [
+        "743caa3f-c732-4430-884a-521cda0b98f5"
+      ],
+      "rows": [
+        {
+          "estado": "preparando"
+        }
+      ]
+    },
+    {
+      "caso": "CP-031",
+      "query": "SELECT pedidos_id,estado,verificacion_estado,total_seleccionado FROM pagos WHERE id=?",
+      "params": [
+        "pago-57a570f217e232"
+      ],
+      "rows": [
+        {
+          "pedidos_id": "4daef3d0-567a-4acd-9372-fbf89933e5a5",
+          "estado": "pagado",
+          "verificacion_estado": "verificado",
+          "total_seleccionado": "17000.00"
+        }
+      ]
+    },
+    {
+      "caso": "CP-031",
+      "query": "SELECT estado FROM pedidos WHERE id=?",
+      "params": [
+        "4daef3d0-567a-4acd-9372-fbf89933e5a5"
+      ],
+      "rows": [
+        {
+          "estado": "cerrado"
+        }
+      ]
+    },
+    {
+      "caso": "CP-032",
+      "query": "SELECT COUNT(*) AS n FROM pagos",
+      "params": [],
+      "rows": [
+        {
+          "n": 1
+        }
+      ]
+    },
+    {
+      "caso": "CP-032",
+      "query": "SELECT COUNT(*) AS n FROM pagos",
+      "params": [],
+      "rows": [
+        {
+          "n": 1
+        }
+      ]
+    },
+    {
+      "caso": "CP-033",
+      "query": "SELECT COUNT(*) AS n FROM pagos WHERE pedidos_id='inexistente'",
+      "params": [],
+      "rows": [
+        {
+          "n": 0
+        }
+      ]
+    },
+    {
+      "caso": "CP-036",
+      "query": "SELECT estado,fecha_inicio,pedidos_id,pedido_items_id FROM sesiones_juego WHERE id=?",
+      "params": [
+        "f8b2a990-2953-4f38-9f57-e3232b6b1396"
+      ],
+      "rows": [
+        {
+          "estado": "activa",
+          "fecha_inicio": "2026-10-19T00:09:57.000Z",
+          "pedidos_id": "8105e324-fc6c-46eb-8dc2-710e29362edb",
+          "pedido_items_id": null
+        }
+      ]
+    },
+    {
+      "caso": "CP-036",
+      "query": "SELECT estado FROM activos_juego WHERE id='qa-game'",
+      "params": [],
+      "rows": [
+        {
+          "estado": "ocupado"
+        }
+      ]
+    },
+    {
+      "caso": "CP-037",
+      "query": "SELECT COUNT(*) AS n FROM sesiones_juego WHERE activos_juego_id='qa-game' AND estado='activa'",
+      "params": [],
+      "rows": [
+        {
+          "n": 1
+        }
+      ]
+    },
+    {
+      "caso": "CP-038",
+      "query": "SELECT estado,fecha_fin FROM sesiones_juego WHERE id=?",
+      "params": [
+        "f8b2a990-2953-4f38-9f57-e3232b6b1396"
+      ],
+      "rows": [
+        {
+          "estado": "cerrada",
+          "fecha_fin": "2026-10-19T00:09:57.000Z"
+        }
+      ]
+    },
+    {
+      "caso": "CP-038",
+      "query": "SELECT estado FROM activos_juego WHERE id='qa-game'",
+      "params": [],
+      "rows": [
+        {
+          "estado": "disponible"
+        }
+      ]
+    },
+    {
+      "caso": "CP-039",
+      "query": "SELECT nombre,telefono FROM clientes WHERE id=?",
+      "params": [
+        "69dc8e51-5eb6-443d-8438-551dec4f29e9"
+      ],
+      "rows": [
+        {
+          "nombre": "Cliente Prueba QA",
+          "telefono": "3001234567"
+        }
+      ]
+    },
+    {
+      "caso": "CP-040",
+      "query": "SELECT nombre,telefono FROM clientes WHERE id=?",
+      "params": [
+        "d056a701-31c0-4675-a6ad-351f0a746d67"
+      ],
+      "rows": [
+        {
+          "nombre": "Cliente teléfono inválido QA",
+          "telefono": "abcdefghij"
+        }
+      ]
+    },
+    {
+      "caso": "CP-044",
+      "query": "SELECT COALESCE(SUM(total_seleccionado),0) AS total FROM pagos WHERE estado='pagado' AND verificacion_estado='verificado'",
+      "params": [],
+      "rows": [
+        {
+          "total": "17000.00"
+        }
+      ]
+    },
+    {
+      "caso": "CP-044",
+      "query": "SELECT total_general FROM cierres_caja",
+      "params": [],
+      "rows": [
+        {
+          "total_general": "17000.00"
+        }
+      ]
+    },
+    {
+      "caso": "CP-045",
+      "query": "SELECT COALESCE(SUM(total_seleccionado),0) AS total FROM pagos WHERE estado='pagado' AND verificacion_estado='verificado' AND DATE(creado_en)=UTC_DATE()",
+      "params": [],
+      "rows": [
+        {
+          "total": "17000.00"
+        }
+      ]
+    },
+    {
+      "caso": "CP-046",
+      "query": "SELECT precio_venta FROM productos WHERE id=?",
+      "params": [
+        "qa-product"
+      ],
+      "rows": [
+        {
+          "precio_venta": "8000.00"
+        }
+      ]
+    },
+    {
+      "caso": "CP-046",
+      "query": "SELECT * FROM pedido_items WHERE pedidos_id=? ORDER BY id",
+      "params": [
+        "f08ebc58-6063-4a0b-acae-3770e19d54f7"
+      ],
+      "rows": [
+        {
+          "id": "ec086814-c98e-4159-abf3-763e314a3b4c",
+          "precio_unitario": "8000.00",
+          "pedido_id": "f08ebc58-6063-4a0b-acae-3770e19d54f7",
+          "producto_id": "qa-product",
+          "cantidad_pedida": 1,
+          "cantidad_pagada": 0,
+          "estado": "enviado",
+          "pedidos_id": "f08ebc58-6063-4a0b-acae-3770e19d54f7",
+          "productos_id": "qa-product",
+          "participante_id": null,
+          "ronda_consumo_id": null
+        }
+      ]
+    },
+    {
+      "caso": "CP-047",
+      "query": "SELECT COUNT(*) AS n FROM division_participantes WHERE sesion_division_id=?",
+      "params": [
+        "c751893b-a95a-4ee6-b011-f679f5de5f3e"
+      ],
+      "rows": [
+        {
+          "n": 0
+        }
+      ]
+    },
+    {
+      "caso": "CP-047",
+      "query": "SELECT COUNT(*) AS n FROM division_participantes WHERE sesion_division_id=?",
+      "params": [
+        "3219b5d2-dcf0-48c5-88ce-1e21bcf13d00"
+      ],
+      "rows": [
+        {
+          "n": 0
+        }
+      ]
+    },
+    {
+      "caso": "CP-047",
+      "query": "SELECT COUNT(*) AS n FROM division_participantes WHERE sesion_division_id=?",
+      "params": [
+        "cafedb13-009c-46ed-9abb-c6b9215b13e9"
+      ],
+      "rows": [
+        {
+          "n": 0
+        }
+      ]
+    },
+    {
+      "caso": "CP-047",
+      "query": "SELECT COUNT(*) AS n FROM division_participantes WHERE sesion_division_id=?",
+      "params": [
+        "e17587e3-b516-495d-8056-6a0773447f1a"
+      ],
+      "rows": [
+        {
+          "n": 0
+        }
+      ]
+    },
+    {
+      "caso": "CP-049",
+      "query": "SELECT estado FROM sesiones_division_cuentas WHERE id=?",
+      "params": [
+        "173e20e6-de1b-4db2-99f2-c71bb31c6b38"
+      ],
+      "rows": [
+        {
+          "estado": "completada"
+        }
+      ]
+    },
+    {
+      "caso": "CP-050",
+      "query": "SELECT precio_venta FROM productos WHERE id=?",
+      "params": [
+        "qa-product"
+      ],
+      "rows": [
+        {
+          "precio_venta": "8000.00"
+        }
+      ]
+    },
+    {
+      "caso": "CP-050",
+      "query": "SELECT * FROM pedido_items WHERE pedidos_id=? ORDER BY id",
+      "params": [
+        "f3c872b3-88f4-401b-adb1-891d58ec33ec"
+      ],
+      "rows": [
+        {
+          "id": "adc68e1f-da44-4799-9662-f1c5f55bb0a1",
+          "precio_unitario": "8000.00",
+          "pedido_id": "f3c872b3-88f4-401b-adb1-891d58ec33ec",
+          "producto_id": "qa-product",
+          "cantidad_pedida": 1,
+          "cantidad_pagada": 0,
+          "estado": "enviado",
+          "pedidos_id": "f3c872b3-88f4-401b-adb1-891d58ec33ec",
+          "productos_id": "qa-product",
+          "participante_id": null,
+          "ronda_consumo_id": null
+        }
+      ]
+    },
+    {
+      "caso": "CP-051",
+      "query": "SELECT estado FROM pedido_items WHERE id=?",
+      "params": [
+        "adc68e1f-da44-4799-9662-f1c5f55bb0a1"
+      ],
+      "rows": [
+        {
+          "estado": "preparando"
+        }
+      ]
+    },
+    {
+      "fase": "complementaria",
+      "query": "SELECT u.id,u.nombre,u.email AS correo,u.roles_id,r.nombre AS rol FROM usuarios u JOIN roles r ON r.id=u.roles_id WHERE u.id='qa-admin'",
+      "params": [],
+      "rows": [
+        {
+          "id": "qa-admin",
+          "nombre": "QA Administrador",
+          "correo": "qa-admin@example.invalid",
+          "roles_id": 1,
+          "rol": "Administrador"
+        }
+      ]
+    },
+    {
+      "caso": "CP-025",
+      "fase": "complementaria",
+      "query": "SELECT estado FROM mesas WHERE id=?",
+      "params": [
+        "qa-mesa-15"
+      ],
+      "rows": [
+        {
+          "estado": "ocupada"
+        }
+      ]
+    },
+    {
+      "caso": "QA-STOCK",
+      "fase": "complementaria",
+      "query": "SELECT id FROM pedidos WHERE mesas_id='qa-mesa-1' ORDER BY id LIMIT 1",
+      "params": [],
+      "rows": [
+        {
+          "id": "4daef3d0-567a-4acd-9372-fbf89933e5a5"
+        }
+      ]
+    },
+    {
+      "caso": "QA-STOCK",
+      "fase": "complementaria",
+      "query": "SELECT p.id,p.nombre,p.cantidad_disponible,COALESCE(SUM(mi.cantidad),0) AS variacion FROM productos p LEFT JOIN movimientos_inventario mi ON mi.productos_id=p.id WHERE p.id='qa-product' GROUP BY p.id",
+      "params": [],
+      "rows": [
+        {
+          "id": "qa-product",
+          "nombre": "Cerveza QA",
+          "cantidad_disponible": 120,
+          "variacion": "20"
+        }
+      ]
+    },
+    {
+      "caso": "QA-STOCK",
+      "fase": "complementaria",
+      "query": "SELECT referencia_id,COUNT(*) AS movimientos,SUM(cantidad) AS salida FROM movimientos_inventario WHERE productos_id='qa-product' AND tipo='venta' GROUP BY referencia_id",
+      "params": [],
+      "rows": [
+        {
+          "referencia_id": "2b04c911-ccf0-4acd-81f9-a4146c3b1a8d",
+          "movimientos": 1,
+          "salida": "-1"
+        },
+        {
+          "referencia_id": "4daef3d0-567a-4acd-9372-fbf89933e5a5",
+          "movimientos": 1,
+          "salida": "-1"
+        },
+        {
+          "referencia_id": "f08ebc58-6063-4a0b-acae-3770e19d54f7",
+          "movimientos": 1,
+          "salida": "-1"
+        },
+        {
+          "referencia_id": "f3c872b3-88f4-401b-adb1-891d58ec33ec",
+          "movimientos": 1,
+          "salida": "-1"
+        }
+      ]
+    },
+    {
+      "fase": "complementaria",
+      "query": "SELECT u.id,u.nombre,u.email AS correo,u.roles_id,r.nombre AS rol FROM usuarios u JOIN roles r ON r.id=u.roles_id WHERE u.id='qa-admin'",
+      "params": [],
+      "rows": [
+        {
+          "id": "qa-admin",
+          "nombre": "QA Administrador",
+          "correo": "qa-admin@example.invalid",
+          "roles_id": 1,
+          "rol": "Administrador"
+        }
+      ]
+    },
+    {
+      "caso": "CP-055",
+      "fase": "complementaria",
+      "query": "SELECT id,total_seleccionado,verificacion_estado FROM pagos WHERE pedidos_id=?",
+      "params": [
+        "fa566ded-4b50-4f43-a30b-a0bbe0a728f7"
+      ],
+      "rows": [
+        {
+          "id": "p-f03521190c784a57b4",
+          "total_seleccionado": "8000.00",
+          "verificacion_estado": "pendiente"
+        }
+      ]
+    },
+    {
+      "caso": "CP-055",
+      "fase": "complementaria",
+      "query": "SELECT estado FROM pedidos WHERE id=?",
+      "params": [
+        "fa566ded-4b50-4f43-a30b-a0bbe0a728f7"
+      ],
+      "rows": [
+        {
+          "estado": "cerrado"
+        }
+      ]
+    },
+    {
+      "caso": "CP-055",
+      "fase": "complementaria",
+      "query": "SELECT verificacion_estado FROM pagos WHERE id=?",
+      "params": [
+        "p-f03521190c784a57b4"
+      ],
+      "rows": [
+        {
+          "verificacion_estado": "verificado"
+        }
+      ]
+    },
+    {
+      "caso": "CP-025",
+      "fase": "complementaria",
+      "query": "SELECT estado FROM mesas WHERE id=?",
+      "params": [
+        "qa-mesa-15"
+      ],
+      "rows": [
+        {
+          "estado": "ocupada"
+        }
+      ]
+    },
+    {
+      "caso": "QA-STOCK",
+      "fase": "complementaria",
+      "query": "SELECT id FROM pedidos WHERE mesas_id='qa-mesa-1' ORDER BY id LIMIT 1",
+      "params": [],
+      "rows": [
+        {
+          "id": "4daef3d0-567a-4acd-9372-fbf89933e5a5"
+        }
+      ]
+    },
+    {
+      "caso": "QA-STOCK",
+      "fase": "complementaria",
+      "query": "SELECT p.id,p.nombre,p.cantidad_disponible,COALESCE(SUM(mi.cantidad),0) AS variacion FROM productos p LEFT JOIN movimientos_inventario mi ON mi.productos_id=p.id WHERE p.id='qa-product' GROUP BY p.id",
+      "params": [],
+      "rows": [
+        {
+          "id": "qa-product",
+          "nombre": "Cerveza QA",
+          "cantidad_disponible": 119,
+          "variacion": "19"
+        }
+      ]
+    },
+    {
+      "caso": "QA-STOCK",
+      "fase": "complementaria",
+      "query": "SELECT referencia_id,COUNT(*) AS movimientos,SUM(cantidad) AS salida FROM movimientos_inventario WHERE productos_id='qa-product' AND tipo='venta' GROUP BY referencia_id",
+      "params": [],
+      "rows": [
+        {
+          "referencia_id": "2b04c911-ccf0-4acd-81f9-a4146c3b1a8d",
+          "movimientos": 1,
+          "salida": "-1"
+        },
+        {
+          "referencia_id": "4daef3d0-567a-4acd-9372-fbf89933e5a5",
+          "movimientos": 1,
+          "salida": "-1"
+        },
+        {
+          "referencia_id": "f08ebc58-6063-4a0b-acae-3770e19d54f7",
+          "movimientos": 1,
+          "salida": "-1"
+        },
+        {
+          "referencia_id": "f3c872b3-88f4-401b-adb1-891d58ec33ec",
+          "movimientos": 1,
+          "salida": "-1"
+        },
+        {
+          "referencia_id": "fa566ded-4b50-4f43-a30b-a0bbe0a728f7",
+          "movimientos": 1,
+          "salida": "-1"
+        }
+      ]
+    },
+    {
+      "fase": "complementaria",
+      "query": "SELECT u.id,u.nombre,u.email AS correo,u.roles_id,r.nombre AS rol FROM usuarios u JOIN roles r ON r.id=u.roles_id WHERE u.id='qa-admin'",
+      "params": [],
+      "rows": [
+        {
+          "id": "qa-admin",
+          "nombre": "QA Administrador",
+          "correo": "qa-admin@example.invalid",
+          "roles_id": 1,
+          "rol": "Administrador"
+        }
+      ]
+    },
+    {
+      "caso": "CP-025",
+      "fase": "complementaria",
+      "query": "SELECT estado FROM mesas WHERE id=?",
+      "params": [
+        "qa-mesa-15"
+      ],
+      "rows": [
+        {
+          "estado": "ocupada"
+        }
+      ]
+    }
+  ],
+  "complementariasFallidas": [
+    {
+      "id": "CP-055",
+      "error": "locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.cuenta-card').filter({ hasText: '2b04c911-ccf0-4acd-81f9-a4146c3b1a8d' }).getByRole('status').filter({ hasText: 'Pago registrado.' }) to be visible\u001b[22m\n"
+    },
+    {
+      "id": "CP-025",
+      "error": "locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Ver mesa 15', exact: true }) to be visible\u001b[22m\n"
+    },
+    {
+      "id": "CP-025",
+      "error": "locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Ver mesa 15', exact: true }) to be visible\u001b[22m\n"
+    }
+  ],
+  "retests": [
+    {
+      "motivo": "Verificación complementaria y corrección del selector del arnés; sin modificar producto."
+    },
+    {
+      "anterior": {
+        "id": "CP-055",
+        "estado": "Fallido",
+        "real": "locator.selectOption: Error: strict mode violation: getByRole('combobox', { name: 'Mesa', exact: true }) resolved to 2 elements:\n    1) <select>…</select> aka getByLabel('MesaTodas las mesasMesa 1Mesa')\n    2) <select required=\"\">…</select> aka getByLabel('MesaSelecciona una mesaMesa 1')\n\nCall log:\n\u001b[2m  - waiting for getByRole('combobox', { name: 'Mesa', exact: true })\u001b[22m\n",
+        "inicio": "2026-10-18T19:10:13.360Z",
+        "fin": "2026-10-18T19:10:13.749Z"
+      },
+      "motivo": "Verificación complementaria y corrección del selector del arnés; sin modificar producto."
+    },
+    {
+      "anterior": {
+        "id": "QA-STOCK",
+        "estado": "Aprobado",
+        "real": "Stock final de Cerveza QA concilia exactamente con 100 inicial + movimientos. Cada pedido probado registra una única salida de -1; pagos y juegos no añaden descuentos.",
+        "inicio": "2026-10-18T19:11:22.975Z",
+        "fin": "2026-10-18T19:11:23.009Z",
+        "fase": "complementaria"
+      },
+      "motivo": "Verificación complementaria y corrección del selector del arnés; sin modificar producto."
+    },
+    {
+      "anterior": {
+        "id": "CP-025",
+        "estado": "Aprobado",
+        "real": "Mesa cambia disponible→ocupada→disponible con persistencia SQL; pantalla de mesas recargada.",
+        "inicio": "2026-10-18T19:09:56.620Z",
+        "fin": "2026-10-18T19:09:56.842Z"
+      },
+      "motivo": "Verificación complementaria y corrección del selector del arnés; sin modificar producto."
+    }
+  ]
+}
