@@ -714,3 +714,19 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+.roles-permisos-grid {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+ gap: 16px;
+ margin-top: 20px;
+}
+.roles-permisos-card {
+ min-width: 0;
+ padding: 16px;
+ border: 1px solid var(--color-border);
+ border-radius: 14px;
+}
+.roles-permisos-card summary { cursor: pointer; font-weight: 600; }
+.roles-permisos-card summary span { font-weight: 400; }
+.roles-permisos-card ul { padding-left: 20px; }
+.roles-permisos-card code { overflow-wrap: anywhere; }

@@ -62,7 +62,12 @@ test('Administración real renderizada: listado, formulario, estado y permisos',
    let body;globalThis.fetch=async(u,o)=>{assert.match(u,/\/usuarios\/registrar$/);body=JSON.parse(o.body);return new Response(JSON.stringify({usuario}),{status:201});};await globalThis.__usuariosSubmit({preventDefault(){}});assert.deepEqual(body,usuarioAdminBody(form,roles));assert.equal(reads,1);assert.equal(closed,1);
    globalThis.__usuariosForm={...form,confirmacion:'distinta'};assert.match(render(Form,{roles:resource(roles)}),/Las contraseñas no coinciden/);
   });
-  await t.test('roles informativos sin edición ficticia',()=>{const html=render(Roles);assert.match(html,/definidos por el sistema/);assert.doesNotMatch(html,/<input|<select|<button/);});
+  await t.test('roles informativos sin edición ficticia',()=>{const html=render(Roles,{roles:resource(roles)});assert.match(html,/definidos por el sistema/);for(const r of roles)assert.ok(html.includes(r.nombre));assert.match(html,/usuarios.registrar/);assert.doesNotMatch(html,/<input|<select|<button/);});
+  await t.test('roles: carga, vacío y error con reintento',()=>{
+   assert.match(render(Roles,{roles:{...resource([]),loading:true}}),/Cargando información/);
+   assert.match(render(Roles,{roles:resource([])}),/No hay roles disponibles/);
+   const html=render(Roles,{roles:{...resource([]),error:'No fue posible consultar roles.'}});assert.match(html,/No fue posible consultar roles/);assert.match(html,/Reintentar/);
+  });
  }finally{globalThis.fetch=old;for(const k of ['__usuariosResources','__usuariosForm','__usuariosSubmit','__usuariosCambiar','__usuariosCreado','__usuariosRetry'])delete globalThis[k];await server.close();}
 });
 test('sin usuarios ficticios, cambios locales de roles ni contraseñas persistidas en navegador',()=>{
