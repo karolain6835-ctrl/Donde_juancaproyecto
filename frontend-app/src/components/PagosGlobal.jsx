@@ -7,6 +7,7 @@ import {formatCurrency} from '../utils/formatCurrency';
 import {formatDateTime} from '../utils/dateTime';
 import OperacionRemoteState from './OperacionRemoteState';
 import {listarMesas} from '../services/mesasService';
+import ModalOperacion from './ModalOperacion';
 export default function PagosGlobal(){
  const {user}=useAuth();
  const [filtros,setFiltros]=useState({estado:'',metodo_de_pago:'',mesas_id:'',desde:'',hasta:''});
@@ -30,11 +31,11 @@ export default function PagosGlobal(){
    {data&&<><section className="caja-kpis">{[['Pagos verificados',data.resumen.verificados],['Pagos pendientes',data.resumen.pendientes],['Pagos rechazados',data.resumen.rechazados],['Total verificado',formatCurrency(data.resumen.total_verificado)]].map(([label,value])=><article className="caja-kpi" key={label}><span>{label}</span><strong>{value}</strong></article>)}</section>
    {!rows.length?<p>No hay pagos para mostrar.</p>:<div className="caja-table-wrapper"><table className="caja-table"><thead><tr>{['Fecha','Mesa','Cliente','Método','Valor','Estado','Registrado por',''].map((t,i)=><th key={i}>{t}</th>)}</tr></thead><tbody>{rows.map(p=><tr key={p.id}><td>{formatDateTime(p.creado_en)}</td><td>{p.mesa_numero==null?'—':`Mesa ${p.mesa_numero}`}</td><td>{p.cliente_nombre||'—'}</td><td>{metodosPago[p.metodo_de_pago]||'—'}</td><td>{formatCurrency(p.total_seleccionado)}</td><td>{estadoPago(p)}</td><td>{p.registrado_por||'—'}</td><td><button className="drawer-secondary-button" onClick={()=>{setSelected(p.id);setDecision(null);mutation.reset();}}>Ver detalle</button></td></tr>)}</tbody></table></div>}
    <div className="pagos-paginacion"><button disabled={pagina<=1||resource.loading||mutation.busy} onClick={()=>{setPagina(pagina-1);setSelected(null);}}>Anterior</button><span>Página {pagina} de {Math.max(1,data.paginacion.totalPaginas)} · {data.paginacion.total} pagos</span><button disabled={pagina>=data.paginacion.totalPaginas||resource.loading||mutation.busy} onClick={()=>{setPagina(pagina+1);setSelected(null);}}>Siguiente</button></div>
-   {pago&&<section className="caja-panel"><div className="caja-panel-header"><h2>Detalle del pago</h2><button onClick={()=>{setSelected(null);setDecision(null);}}>Cerrar</button></div><dl className="pagos-detalle">{[['Estado',estadoPago(pago)],['Valor',formatCurrency(pago.total_seleccionado)],['Método',metodosPago[pago.metodo_de_pago]],['Mesa',pago.mesa_numero],['Pedido',pago.pedidos_id],['Cliente',pago.cliente_nombre],['Registrado por',pago.registrado_por],['Fecha',formatDateTime(pago.creado_en)],['Verificado/rechazado por',pago.procesado_por],['Fecha de verificación',formatDateTime(pago.procesado_en||pago.verificado_en)],['División asociada',pago.sesion_division_id?'Sí':'No']].map(([t,v])=><div key={t}><dt>{t}</dt><dd>{v??'—'}</dd></div>)}</dl>
+   {pago&&<ModalOperacion title="Detalle del pago" busy={mutation.busy} onClose={()=>{setSelected(null);setDecision(null);}}><dl className="pagos-detalle">{[['Estado',estadoPago(pago)],['Valor',formatCurrency(pago.total_seleccionado)],['Método',metodosPago[pago.metodo_de_pago]],['Mesa',pago.mesa_numero],['Pedido',pago.pedidos_id],['Cliente',pago.cliente_nombre],['Registrado por',pago.registrado_por],['Fecha',formatDateTime(pago.creado_en)],['Verificado/rechazado por',pago.procesado_por],['Fecha de verificación',formatDateTime(pago.procesado_en||pago.verificado_en)],['División asociada',pago.sesion_division_id?'Sí':'No']].map(([t,v])=><div key={t}><dt>{t}</dt><dd className={t==='Pedido'?'pago-reference':undefined}>{v??'—'}</dd></div>)}</dl>
     {can(user,'pagos.verificar')&&estadoPago(pago)==='Pendiente'&&<div className="operacion-actions"><button disabled={mutation.busy} onClick={()=>setDecision('verificado')}>Verificar</button><button disabled={mutation.busy} onClick={()=>setDecision('rechazado')}>Rechazar</button></div>}
     {decision&&<div role="alert"><p>¿{decision==='verificado'?'Verificar':'Rechazar'} este pago?</p><button disabled={mutation.busy} onClick={confirmar}>Confirmar</button><button disabled={mutation.busy} onClick={()=>setDecision(null)}>Volver</button></div>}
-   </section>}</>}
+   {mutation.error&&<p role="alert">{mutation.error}</p>}{mutation.success&&<p role="status">{mutation.success}</p>}</ModalOperacion>}</>}
   </OperacionRemoteState>
-  {mutation.error&&<p role="alert">{mutation.error}</p>}{mutation.success&&<p role="status">{mutation.success}</p>}
+  {!pago&&mutation.error&&<p role="alert">{mutation.error}</p>}{!pago&&mutation.success&&<p role="status">{mutation.success}</p>}
  </section>;
 }

@@ -163,7 +163,7 @@ test('HTTP de operación usa apiClient, JWT y contratos auditados', async t => {
 test('Componentes reales de operación: recursos, formularios y controles por permiso', async t => {
   const server = await createServer({ root: fileURLToPath(new URL('..', import.meta.url)), server: { middlewareMode: true }, appType: 'custom', plugins: [{
     name: 'operacion-test-resources', enforce: 'pre', transform(source, filename) {
-      if (filename.replaceAll('\\', '/').endsWith('/hooks/useRemoteCatalog.js')) return source.replace('export function useRemoteCatalog(loader) {', 'export function useRemoteCatalog(loader) { if (loader.toString().includes("listarClientes") && globalThis.__detalleRondasTest) return {data:{datos:[],total:0,limite:20}}; if (globalThis.__operacionResources) return globalThis.__operacionResources.shift() || { data: { sesion: null, datos: [] } };');
+      if (filename.replaceAll('\\', '/').endsWith('/hooks/useRemoteCatalog.js')) return source.replace('export function useRemoteCatalog(loader) {', 'export function useRemoteCatalog(loader) { if (loader.toString().includes("listarParticipantesMesa")) return {data:{sesion:null,datos:[]}}; if (loader.toString().includes("listarClientes") && globalThis.__detalleRondasTest) return {data:{datos:[],total:0,limite:20}}; if (globalThis.__operacionResources) return globalThis.__operacionResources.shift() || { data: { sesion: null, datos: [] } };');
     },
   }] });
   try {

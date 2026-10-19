@@ -32,7 +32,7 @@ test('Juegos real renderizado: activos, sesiones, historial, permisos y operacio
   f=f.replaceAll('\\','/');
   if(f.endsWith('/hooks/useRemoteCatalog.js'))return s.replace('export function useRemoteCatalog(loader) {','export function useRemoteCatalog(loader) {return globalThis.__juegoResources.shift();');
   if(f.endsWith('/pages/JuegosPage.jsx'))return s.replace("useState('activos')","useState(globalThis.__juegoTab||'activos')").replace('if(!permitido)return','globalThis.__juegoChanged=changed;globalThis.__juegoRefresh=refresh;if(!permitido)return');
-  if(f.endsWith('/components/JuegoInicioForm.jsx'))return s.replace("[mesaId,setMesaId]=useState(''),[pedidoId,setPedidoId]=useState('')","[mesaId,setMesaId]=useState('m'),[pedidoId,setPedidoId]=useState('p')").replace('return <section','globalThis.__juegoSubmit=submit;return <section');
+  if(f.endsWith('/components/JuegoInicioForm.jsx'))return s.replace("[mesaId,setMesaId]=useState(''),[pedidoId,setPedidoId]=useState('')","[mesaId,setMesaId]=useState('m'),[pedidoId,setPedidoId]=useState('p')").replace('return <ModalOperacion','globalThis.__juegoSubmit=submit;return <ModalOperacion');
   if(f.endsWith('/components/SesionesJuegosSection.jsx'))return s.replace('useState(null)','useState(globalThis.__juegoSelected||null)').replace('return <section','globalThis.__juegoConfirmar=confirmar;return <section');
  }}]});
  const old=globalThis.fetch;

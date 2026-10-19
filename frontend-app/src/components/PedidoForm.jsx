@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { UserRound } from 'lucide-react';
 import { useAuth } from '../context/useAuth';
 import { can } from '../utils/permissions';
@@ -17,6 +17,7 @@ export default function PedidoForm({ mesas, initialMesa = '', onClose, onCreated
   const [form, setForm] = useState({ mesas_id: initialMesa, usuarios_id: '' });
   const responsableId = assignable ? form.usuarios_id : user?.id;
   const [participant, setParticipant] = useState(null);
+  const clientSection = useRef(null);
   const responsibleLoader = useCallback(options => assignable ? listarResponsables(options) : Promise.resolve([]), [assignable]);
   const responsible = useRemoteCatalog(responsibleLoader);
   const mutation = useCatalogMutation();
@@ -44,8 +45,8 @@ export default function PedidoForm({ mesas, initialMesa = '', onClose, onCreated
         {assignable ? <label>Responsable del pedido<select value={form.usuarios_id} onChange={event => setForm({ ...form, usuarios_id: event.target.value })} disabled={responsible.loading || Boolean(responsible.error)} required><option value="">Selecciona un responsable</option>{(responsible.data || []).map(u => <option key={u.id} value={u.id}>{u.nombre || u.id}</option>)}</select></label> : <div className="pedido-responsable-block"><p className="pedido-responsable-label">Responsable del pedido</p><div className="pedido-responsable-card"><span className="pedido-responsable-avatar" aria-hidden="true"><UserRound size={20} /></span><div className="pedido-responsable-identity"><strong>{user?.nombre || user?.id}</strong><span>Asignado automáticamente</span></div></div></div>}
         </div>
         {assignable && !responsible.loading && !responsible.error && !responsible.data?.length && <p>No hay responsables activos disponibles.</p>}
-        <section className="pedido-create-client"><div className="pedido-create-client-header"><h3>Cliente</h3><ParticipanteVisitaSelector mesaId={form.mesas_id} onSelect={setParticipant} /></div>
-        {participant?.participante_id ? <div className="pedido-client-summary"><div><small>Cliente seleccionado</small><strong>{participant.nombre}</strong></div><button type="button" className="drawer-secondary-button" onClick={() => setParticipant(null)}>Cambiar cliente</button></div> : <ClientePedidoFields compact value={participant} onChange={setParticipant} disabled={mutation.busy} />}
+        <section className="pedido-create-client" ref={clientSection}><div className="pedido-create-client-header"><h3>Cliente</h3>{!participant?.clientes_id&&!participant?.participante_id&&<ParticipanteVisitaSelector mesaId={form.mesas_id} onSelect={setParticipant} onAdd={()=>requestAnimationFrame(()=>clientSection.current?.querySelector('input[type="search"]')?.focus())}/>}</div>
+        {participant?.participante_id ? <div className="pedido-client-summary"><div><small>Cliente seleccionado</small><strong>{participant.nombre}</strong></div><button type="button" className="drawer-secondary-button" onClick={() => setParticipant(null)}>Cambiar</button></div> : <ClientePedidoFields compact value={participant} onChange={setParticipant} disabled={mutation.busy} />}
         </section>
         {(validation || mutation.error) && <p role="alert">{validation || mutation.error}</p>}
         </div>

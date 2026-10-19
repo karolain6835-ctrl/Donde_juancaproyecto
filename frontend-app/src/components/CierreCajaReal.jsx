@@ -1,3 +1,4 @@
+import ModalOperacion from './ModalOperacion';
 import {useCallback,useState} from 'react';
 import {useRemoteCatalog,useCatalogMutation} from '../hooks/useRemoteCatalog';
 import {resumenCierre,arqueoCierre,crearCierre,detalleCierre} from '../services/cierresCajaService';
@@ -26,9 +27,9 @@ export function NuevoCierre({periodo,onClosed,onCancel}){
 export function DetalleCierre({id,onClose}){
  const resource=useRemoteCatalog(useCallback(options=>detalleCierre(id,options),[id]));
  const c=resource.data;
- return <section className="cierre-real-panel"><div className="operacion-actions"><h3>Detalle de cierre</h3><button className="drawer-secondary-button" onClick={onClose}>Cerrar detalle</button></div><OperacionRemoteState resource={resource}>{c&&<>
+ return <ModalOperacion title="Detalle de cierre" onClose={onClose}><section className="cierre-real-panel"><OperacionRemoteState resource={resource}>{c&&<>
   <p>{formatDateTime(c.fecha)} · {c.responsable_nombre||'—'}</p><p>Período: {formatDateTime(c.fecha_inicio)} — {formatDateTime(c.fecha_fin)}</p>
   <ResumenCierre data={{cantidad_pagos:c.pagos.length,total_general:c.total_general,efectivo_esperado:c.total_efectivo_esperado,por_metodo:c.reporte.datos_json.por_metodo}} contado={String(c.total_efectivo_real).replace('.',',')}/>
   <h4>Pagos incluidos</h4><div className="cierre-real-tabla"><table><thead><tr><th>Pago</th><th>Método</th><th>Valor</th></tr></thead><tbody>{c.pagos.map((p,i)=><tr key={p.id}><td>Pago {i+1}</td><td>{metodosPago[p.metodo_de_pago]}</td><td>{formatCurrency(p.importe)}</td></tr>)}</tbody></table></div>
- </>}</OperacionRemoteState></section>;
+ </>}</OperacionRemoteState></section></ModalOperacion>;
 }

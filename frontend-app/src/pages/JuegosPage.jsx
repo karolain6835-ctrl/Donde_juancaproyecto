@@ -48,7 +48,7 @@ export default function JuegosPage(){
     const Icon=a.tipo==='tejo'?Target:a.tipo==='billar'?CircleDot:Gamepad2;
     return <article className="juegos-asset-card" key={a.id}><div className="juegos-card-heading"><div className={'juegos-icon '+a.tipo}><Icon size={27}/></div><span className={'juegos-badge '+a.estado}>{etiquetasEstado[a.estado]}</span></div><div className="juegos-asset-name"><h3>{a.nombre}</h3><p>{tiposJuego[a.tipo]}</p></div><div className="juegos-tarifa"><span>Tarifa por hora</span><strong>{formatCurrency(a.precio_hora)}</strong></div>{activas.map(s=><p className="juegos-session-note" key={s.id}><Clock3 size={14}/>Sesión activa · Mesa {s.mesa_numero??'—'}</p>)}{can(user,'juegos.iniciar')&&a.estado==='disponible'&&!activas.length&&<button className="drawer-primary-button juegos-start" disabled={bloqueado} onClick={()=>setSelected(a.id)}>Iniciar juego<ArrowRight size={16}/></button>}</article>;
    })}</div></OperacionRemoteState><OperacionRemoteState resource={{...sesiones,data:null}}/>
-   {activo&&can(user,'juegos.iniciar')&&<><OperacionRemoteState resource={mesas} empty="No hay mesas disponibles para seleccionar."/><JuegoInicioForm key={activo.id} activo={activo} mesas={mesas} bloqueado={bloqueado} onCancel={()=>setSelected(null)} onChanged={changed}/></>}
+   {activo&&can(user,'juegos.iniciar')&&<><JuegoInicioForm key={activo.id} activo={activo} mesas={mesas} bloqueado={bloqueado} onCancel={()=>setSelected(null)} onChanged={changed}/></>}
   </section>}
   {tab==='sesiones'&&<SesionesJuegosSection resource={sesiones} bloqueado={bloqueado} onChanged={changed}/>}
   {tab==='historial'&&<HistorialJuegosSection resource={sesiones}/>}

@@ -74,6 +74,9 @@
 .pedido-client-summary small{font-size:12px;color:var(--color-text-secondary)}
 .pedido-create-footer{position:sticky;bottom:0;background:var(--color-surface,#fff);border-top:1px solid var(--color-border);padding:14px 24px;z-index:1}
 .pedido-create-footer-actions{display:flex;justify-content:flex-end;gap:10px}
+.pedido-mesa-clientes-vacio{display:grid;gap:8px;margin-top:10px;font-size:12px;color:var(--color-text-secondary)}
+.pedido-mesa-clientes-vacio p{margin:0}
+.pedido-create-modal .pedido-mesa-clientes-vacio button{justify-self:start}
 .pedido-create-modal .pedido-session-note{display:block;margin:8px 0 0;text-align:right;font-size:11px}
 @media(max-width:600px){.pedido-create-modal.pedido-drawer{top:12px;width:calc(100% - 24px);height:calc(100dvh - 24px);border-radius:14px}.pedido-create-assignment{grid-template-columns:1fr;gap:14px}.pedido-create-modal .pedido-drawer-header,.pedido-create-body{padding:16px}.pedido-create-footer{padding:12px 16px}.pedido-create-client-header{flex-wrap:wrap}.pedido-create-client-header>div{max-width:100%}.pedido-create-modal .pedido-person-fields>label:first-child{max-width:none}.pedido-client-summary{flex-wrap:wrap}.pedido-create-modal .pedido-person-fields-compact.registrado{grid-template-columns:1fr}}
 .mesa-consumo-resumen > strong { display: block; margin-bottom: 8px; overflow-wrap: anywhere; }
