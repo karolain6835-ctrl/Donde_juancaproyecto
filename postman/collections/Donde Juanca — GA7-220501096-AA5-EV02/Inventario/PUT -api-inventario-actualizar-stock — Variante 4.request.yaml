@@ -1,0 +1,19 @@
+$kind: http-request
+name: PUT /api/inventario/actualizar-stock — Variante 4
+description: "Origen: http-localhost-5000-api-inventario-actualizar-stock-4.request.yaml"
+url: "{{base_url}}/api/inventario/actualizar-stock"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "producto_id": "{{producto_id_2}}",
+      "nueva_cantidad": 0
+    }
+auth:
+  type: bearer
+  credentials:
+    token: "{{token_prueba_2}}"
+order: 15000

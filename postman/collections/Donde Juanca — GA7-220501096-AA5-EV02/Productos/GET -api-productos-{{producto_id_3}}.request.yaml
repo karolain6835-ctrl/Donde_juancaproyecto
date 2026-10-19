@@ -1,0 +1,10 @@
+$kind: http-request
+name: GET /api/productos/{{producto_id_3}}
+description: "Origen: http-localhost-5000-api-productos-a32745cb-091f-4e02-9ea2-87f4d6.request.yaml"
+url: "{{base_url}}/api/productos/{{producto_id_3}}"
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{token_admin}}"
+order: 5000

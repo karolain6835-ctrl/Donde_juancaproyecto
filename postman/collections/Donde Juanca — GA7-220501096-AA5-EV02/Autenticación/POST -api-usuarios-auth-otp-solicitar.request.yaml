@@ -1,0 +1,16 @@
+$kind: http-request
+name: POST /api/usuarios/auth/otp/solicitar
+description: "Origen: http-localhost-5000-api-usuarios-auth-otp-solicitar.request.yaml"
+url: "{{base_url}}/api/usuarios/auth/otp/solicitar"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "email": "{{correo_login}}"
+    }
+auth:
+  type: noauth
+order: 1000

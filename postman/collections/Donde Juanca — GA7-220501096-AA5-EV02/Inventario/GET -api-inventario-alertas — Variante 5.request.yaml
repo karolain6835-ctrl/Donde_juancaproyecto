@@ -1,0 +1,10 @@
+$kind: http-request
+name: GET /api/inventario/alertas — Variante 5
+description: "Origen: http-localhost-5000-api-inventario-alertas-5.request.yaml"
+url: "{{base_url}}/api/inventario/alertas"
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{token_prueba_2}}"
+order: 16000

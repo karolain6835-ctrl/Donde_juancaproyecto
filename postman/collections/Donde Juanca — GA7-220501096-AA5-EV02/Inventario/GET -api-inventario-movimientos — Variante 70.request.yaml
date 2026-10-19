@@ -1,0 +1,10 @@
+$kind: http-request
+name: GET /api/inventario/movimientos — Variante 70
+description: "Origen: http-localhost-5000-api-pedidos-items-9fd12a63-0f4b-4ce2-9891-70.request.yaml"
+url: "{{base_url}}/api/inventario/movimientos?tipo=venta"
+method: GET
+queryParams:
+  tipo: venta
+auth:
+  type: noauth
+order: 2000

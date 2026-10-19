@@ -1,0 +1,19 @@
+$kind: http-request
+name: POST /api/mermas — Variante 2
+description: "Origen: http-localhost-5000-api-mermas-2.request.yaml"
+url: "{{base_url}}/api/mermas"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "productos_id": "{{producto_id_2}}",
+      "cantidad": 1000,
+      "merma_motivos_id": "{{motivo_merma_id}}",
+      "refrigeradores_id": "{{refrigerador_id}}"
+    }
+auth:
+  type: noauth
+order: 6000

@@ -1,0 +1,10 @@
+$kind: http-request
+name: GET /api/mermas/refrigeradores
+description: "Origen: http-localhost-5000-api-mermas-refrigeradores.request.yaml"
+url: "{{base_url}}/api/mermas/refrigeradores"
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{token_prueba_5}}"
+order: 23000

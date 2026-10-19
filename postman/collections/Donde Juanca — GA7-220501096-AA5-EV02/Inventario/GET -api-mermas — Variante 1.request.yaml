@@ -1,0 +1,8 @@
+$kind: http-request
+name: GET /api/mermas — Variante 1
+description: "Origen: http-localhost-5000-api-mermas-1.request.yaml"
+url: "{{base_url}}/api/mermas"
+method: GET
+auth:
+  type: noauth
+order: 5000

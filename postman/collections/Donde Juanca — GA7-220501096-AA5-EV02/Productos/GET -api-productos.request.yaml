@@ -1,0 +1,8 @@
+$kind: http-request
+name: GET /api/productos
+description: "Origen: http-localhost-5000-api-productos.request.yaml"
+url: "{{base_url}}/api/productos"
+method: GET
+auth:
+  type: noauth
+order: 1000

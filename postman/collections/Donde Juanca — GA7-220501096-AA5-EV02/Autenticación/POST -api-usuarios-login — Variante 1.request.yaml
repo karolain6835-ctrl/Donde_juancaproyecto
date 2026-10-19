@@ -1,0 +1,21 @@
+$kind: http-request
+name: POST /api/usuarios/login — Variante 1
+description: |-
+  Origen: http-localhost-5000-api-usuarios-login-1.request.yaml
+  Endpoint publico. Resultado esperado: 200 con las credenciales actuales y usuario activo. Definir password_desarrollo localmente como secreto; sin valor exportado. El rol efectivo procede de MySQL.
+url: "{{base_url}}/api/usuarios/login"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "correo": "{{correo_login_2}}",
+      "contrasena": "{{password_login_2}}"
+    }
+auth:
+  type: bearer
+  credentials:
+    token: "{{token_prueba_6}}"
+order: 3000
