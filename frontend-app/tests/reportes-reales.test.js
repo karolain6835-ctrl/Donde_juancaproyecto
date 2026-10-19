@@ -10,9 +10,9 @@ const rango={desde:'2026-10-01',hasta:'2026-10-16'};
 const producto={id:'x',nombre:'Producto real',codigo:'X',categoria_nombre:'Bebidas',proveedores_id:'pr',estado:'activo',historial_costos_id:null,categorias_id:1,cantidad_disponible:4,stock_minimo:6,costo_promedio_ponderado:'2844.44',precio_venta:'3000.00'};
 const pedido={id:'p',estado:'cerrado',mesas_id:'m',usuarios_id:'u',clientes_id:null,creado_en:'2026-10-16T00:00:00Z'};
 const sesion={id:'s',activos_juego_id:'j',mesas_id:'m',activo_nombre:'Billar real',tipo_juego:'billar',estado:'cerrada',fecha_inicio:'2026-10-16T12:00:00Z',fecha_fin:'2026-10-16T12:30:00Z',costo_total:'2844.44'};
-test('filtros UTC inclusivos y dinero exacto; rango inválido rechazado',()=>{
- assert.deepEqual(rangoReporte('semana','','',new Date('2026-10-16T00:00:00Z')),{desde:'2026-10-12',hasta:'2026-10-16'});
- assert.deepEqual(rangoReporte('mes','','',new Date('2026-10-16T00:00:00Z')),rango);
+test('filtros de Bogota inclusivos y dinero exacto; rango inválido rechazado',()=>{
+ assert.deepEqual(rangoReporte('semana','','',new Date('2026-10-16T05:00:00Z')),{desde:'2026-10-12',hasta:'2026-10-16'});
+ assert.deepEqual(rangoReporte('mes','','',new Date('2026-10-16T05:00:00Z')),rango);
  assert.deepEqual(rangoReporte('personalizado',rango.desde,rango.hasta),rango);
  for(const pair of [['',''],['2026-02-30','2026-03-01'],['2026-10-17','2026-10-16']])assert.throws(()=>rangoReporte('personalizado',...pair));
  assert.equal(porcentajeReporte('0.01','0.03'),'33.3');assert.equal(porcentajeReporte(null,'0.00'),'—');
@@ -46,7 +46,7 @@ test('inventario completo, juegos finalizados y caja con fin exclusivo correcto'
   };
   const inv=await inventarioReporte();assert.equal(inv.valorInventario,'11377.76');assert.equal(inv.stockBajo,1);assert.equal(inv.movimientos,84);assert.equal(inv.alertasActivas,7);
   const juego=await juegosReporte(rango);assert.equal(juego.totalSesiones,2);assert.equal(juego.ingresosTotales,'2844.44');assert.equal(juego.totalMinutos,30);assert.equal(juego.sesiones[1].ingresos,null);assert.equal(juego.sesiones[1].duracionMin,null);
-  const caja=await cajaReporte(rango,2);assert.equal(caja.totalIngresos,'50000.00');assert.equal(caja.totalSalidas,2);assert.equal(caja.diferenciaTotal,'-1000.00');assert.equal(caja.paginas,2);const q=new URL(urls.find(u=>u.includes('/cierres-caja?'))).searchParams;assert.equal(q.get('fecha_inicio'),'2026-10-01T00:00:00');assert.equal(q.get('fecha_fin'),'2026-10-17T00:00:00');
+  const caja=await cajaReporte(rango,2);assert.equal(caja.totalIngresos,'50000.00');assert.equal(caja.totalSalidas,2);assert.equal(caja.diferenciaTotal,'-1000.00');assert.equal(caja.paginas,2);const q=new URL(urls.find(u=>u.includes('/cierres-caja?'))).searchParams;assert.equal(q.get('fecha_inicio'),'2026-10-01T05:00:00');assert.equal(q.get('fecha_fin'),'2026-10-17T05:00:00');
  }finally{globalThis.fetch=old;}
 });
 test('ranking obtiene ambas páginas y aplica límites de fecha a todo el conjunto',async()=>{
@@ -55,7 +55,7 @@ test('ranking obtiene ambas páginas y aplica límites de fecha a todo el conjun
   globalThis.fetch=async u=>{let r;
    if(u.endsWith('/productos'))r={datos:[producto]};
    else if(u.includes('/pedidos?')){const q=new URL(u).searchParams,p=Number(q.get('pagina')),limite=Number(q.get('limite'));paginas.add(p);r={datos:ordenes.slice((p-1)*limite,p*limite),paginacion:{pagina:p,total:101,total_paginas:Math.ceil(101/limite)}};}
-   else {const id=u.split('/').at(-1);r={datos:{...pedido,id,creado_en:id==='p100'?'2026-10-17T00:00:00Z':'2026-10-16T23:59:59Z',items:[{productos_id:'x',nombre:'Producto real',cantidad_pedida:1,precio_unitario:'0.01',estado:'servido'}]}};}
+   else {const id=u.split('/').at(-1);r={datos:{...pedido,id,creado_en:id==='p100'?'2026-10-17T05:00:00Z':'2026-10-17T04:59:59Z',items:[{productos_id:'x',nombre:'Producto real',cantidad_pedida:1,precio_unitario:'0.01',estado:'servido'}]}};}
    return new Response(JSON.stringify(r));
   };
   const r=await productosReporte(rango);assert.ok(paginas.has(2));assert.equal(r.unidadesTotales,100);assert.equal(r.ingresosTotales,'1.00');

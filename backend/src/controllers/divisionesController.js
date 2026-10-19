@@ -1,4 +1,5 @@
 const mysql = require('mysql2');
+const {horaBogotaSQL,fechaLocalSQL}=require('../utils/fechaHora');
 const { randomUUID } = require('node:crypto');
 const { ejecutor } = require('../services/identidadService');
 const { sesionActiva } = require('../services/sesionesMesaService');
@@ -21,7 +22,7 @@ const iniciarSesionDivision=(req,res)=>transaccion(req,res,async(c,actor)=>{
  const [[mesa]]=await c.query('SELECT id FROM mesas WHERE id=? FOR UPDATE',[mesas_id]);
  if(!mesa)throw fallo(404,'La mesa no existe.');
  const visita=await sesionActiva(c,mesas_id);if(!visita)throw fallo(409,'La mesa no tiene una visita activa.');
- const id=randomUUID();await c.query('INSERT INTO sesiones_division_cuentas(id,modalidad,usuarios_id,mesas_id,sesion_mesa_id) VALUES (?,?,?,?,?)',[id,modalidad,actor,mesas_id,visita.id]);
+ const id=randomUUID();await c.query(`INSERT INTO sesiones_division_cuentas(id,modalidad,usuarios_id,mesas_id,sesion_mesa_id,creado_en) VALUES (?,?,?,?,?,${horaBogotaSQL})`,[id,modalidad,actor,mesas_id,visita.id]);
  return {status:201,data:{id,modalidad,usuarios_id:actor,mesas_id,sesion_mesa_id:visita.id}};
 });
 const asignarItemsACliente=(req,res)=>{
@@ -33,7 +34,7 @@ const asignarItemsACliente=(req,res)=>{
 
 
 const obtenerResumenDivision=(req,res)=>transaccion(req,res,async c=>{
- const [[division]]=await c.query('SELECT * FROM sesiones_division_cuentas WHERE id=?',[req.params.id]);
+ const [[division]]=await c.query(`SELECT *,${fechaLocalSQL('creado_en')} AS creado_en FROM sesiones_division_cuentas WHERE id=?`,[req.params.id]);
  if(!division)throw fallo(404,'La división no existe.');
  return {status:200,data:await cuotas.resumen(c,division,{bloquear:false})};
 },{soloLectura:true});

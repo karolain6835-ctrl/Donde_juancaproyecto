@@ -9,7 +9,11 @@ const dbConfig = {
   port: process.env.DB_PORT,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
+  database: process.env.DB_NAME,
+  // DATETIME UTC se interpreta como UTC, independientemente de la zona de Node.
+  // Las columnas históricas locales se convierten explícitamente en sus SELECT.
+  timezone: 'Z',
+  dateStrings: ['DATE']
 };
 
 // ==========================================

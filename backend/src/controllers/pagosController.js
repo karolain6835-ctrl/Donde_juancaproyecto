@@ -1,4 +1,5 @@
 const { registrarAuditoria } = require('../services/auditoriaService');
+const { horaBogotaSQL,fechaLocalSQL } = require('../utils/fechaHora');
 const { ejecutor } = require('../services/identidadService');
 const db = require('../config/db');
 const { completarAlVerificar } = require('../services/divisionCuotasService');
@@ -214,7 +215,7 @@ exports.registrarPago = async (req, res) => {
         'pendiente',
         'pendiente',
         'mesera',
-        NOW(),
+        ${horaBogotaSQL},
         ?,
         ?,
         ?,
@@ -391,7 +392,7 @@ exports.obtenerPagoPorId = async (req, res) => {
         verificacion_estado,
         estado,
         origen,
-        creado_en,
+        ${fechaLocalSQL('creado_en')} AS creado_en,
         pedidos_id,
         sesion_division_id,
         participante_id,

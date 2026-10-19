@@ -1,3 +1,4 @@
+const {fechaLocalSQL,horaBogotaSQL}=require('../utils/fechaHora');
 const { ejecutor } = require('../services/identidadService');
 const db = require('../config/db');
 const mysql = require('mysql2');
@@ -67,14 +68,14 @@ const actualizarEstadoPedido = async (req, res) => {
     }
     const [movimiento] = await conexion.query(`
       INSERT INTO kanban_movimientos (id, estado_anterior, creado_en, pedido_items_id, usuarios_id)
-      VALUES (?, ?, NOW(), ?, ?)
+      VALUES (?, ?, ${horaBogotaSQL}, ?, ?)
     `, [crypto.randomUUID(), item.estado, id, usuarios_id]);
     if (movimiento.affectedRows !== 1) throw new Error('No se registró el movimiento de la tarjeta.');
 
     const [tarjetas] = await conexion.query(`
       SELECT pi.id AS id_item, ped.id AS id_pedido, m.numero AS mesa,
              p.nombre AS producto, pi.cantidad_pedida AS cantidad,
-             pi.cantidad_pagada, ped.creado_en AS hora, pi.estado AS estado_item
+             pi.cantidad_pagada, ${fechaLocalSQL('ped.creado_en')} AS hora, pi.estado AS estado_item
       FROM pedido_items pi
       JOIN productos p ON pi.productos_id = p.id
       JOIN pedidos ped ON pi.pedidos_id = ped.id
@@ -121,7 +122,7 @@ const obtenerTableroKanban = (req, res) => {
       p.nombre AS producto_nombre,
       ped.id AS pedido_id,
       m.numero AS numero_mesa,
-      ped.creado_en
+      ${fechaLocalSQL('ped.creado_en')} AS creado_en
     FROM pedido_items pi
     JOIN productos p ON (pi.producto_id = p.id OR pi.productos_id = p.id)
     JOIN pedidos ped ON (pi.pedido_id = ped.id OR pi.pedidos_id = ped.id)
@@ -198,7 +199,7 @@ const cambiarLineasPedido = async (req, res, despacho = false) => {
     for (const item of enviados) {
       const [update] = await conexion.query('UPDATE pedido_items SET estado=? WHERE id=? AND estado=?', [destino, item.id, anterior]);
       if (update.affectedRows !== 1 || update.changedRows !== 1) reject(409, 'El estado del ítem cambió durante la aceptación.');
-      const [history] = await conexion.query('INSERT INTO kanban_movimientos (id,estado_anterior,creado_en,pedido_items_id,usuarios_id) VALUES (?, ?, NOW(), ?, ?)', [crypto.randomUUID(), anterior, item.id, actor]);
+      const [history] = await conexion.query(`INSERT INTO kanban_movimientos (id,estado_anterior,creado_en,pedido_items_id,usuarios_id) VALUES (?, ?, ${horaBogotaSQL}, ?, ?)`, [crypto.randomUUID(), anterior, item.id, actor]);
       if (history.affectedRows !== 1) throw new Error('No se registró la aceptación.');
     }
     await conexion.commit(); abierta = false;
@@ -226,7 +227,7 @@ const estadoDerivado = items => {
 };
 const obtenerPedidosAgrupados = (req, res) => {
   db.query(`SELECT ped.id AS pedido_id,m.numero AS mesa,ped.usuarios_id AS responsable_id,u.nombre AS responsable,
-    ped.creado_en,pi.id AS pedido_item_id,p.nombre AS producto,pi.cantidad_pedida,pi.estado
+    ${fechaLocalSQL('ped.creado_en')} AS creado_en,pi.id AS pedido_item_id,p.nombre AS producto,pi.cantidad_pedida,pi.estado
     FROM pedidos ped JOIN pedido_items pi ON pi.pedidos_id=ped.id
     LEFT JOIN mesas m ON m.id=ped.mesas_id LEFT JOIN usuarios u ON u.id=ped.usuarios_id
     LEFT JOIN productos p ON p.id=pi.productos_id

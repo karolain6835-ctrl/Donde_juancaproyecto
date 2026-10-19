@@ -9,7 +9,7 @@ function cargar(db, real) {
   const module = { exports: {} };
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/controllers/pedidosController.js'), 'utf8'), {
     module, console: { error() {} }, require: name => name === 'mysql2' ? { createConnection: () => ({ promise: () => connection }) } : name === '../config/db' ? db :
-      name.startsWith('../services/') ? require(path.join(__dirname, '../src/controllers', name)) : require(name)
+      name.startsWith('../services/') || name.startsWith('../utils/') ? require(path.join(__dirname, '../src/controllers', name)) : require(name)
   });
   return module.exports.crearPedido;
 }

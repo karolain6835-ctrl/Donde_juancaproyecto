@@ -4,7 +4,7 @@ test('V1: endpoints simulados ausentes del montaje real; rutas reales conservada
  const load=(file,deps)=>{const m={exports:{}};vm.runInNewContext(fs.readFileSync(path.join(__dirname,file),'utf8'),{module:m,exports:m.exports,process,Buffer,console,require:n=>Object.hasOwn(deps,n)?deps[n]:require(n)});return m.exports;};
  const reales={};
  for(const name of ['kanban','ventas']){
-  const actual=load('../src/controllers/'+name+'Controller.js',{'../config/db':{query:forbidden},'../services/identidadService':require('../src/services/identidadService'),'../services/comprobantesService':{}});
+  const actual=load('../src/controllers/'+name+'Controller.js',{'../config/db':{query:forbidden},'../utils/fechaHora':require('../src/utils/fechaHora'),'../services/identidadService':require('../src/services/identidadService'),'../services/comprobantesService':{}});
   assert.equal(actual[name==='kanban'?'obtenerPedidosKanban':'crearPedido'],undefined);
   const controllers=Object.fromEntries(Object.keys(actual).map(key=>[key,(req,res)=>{hits.push(name+'.'+key);res.json({handler:key});}]));
   reales['./routes/'+name+'Routes']=load('../src/routes/'+name+'Routes.js',{['../controllers/'+name+'Controller']:controllers,'../middleware/rolesMiddleware':require('../src/middleware/rolesMiddleware')});

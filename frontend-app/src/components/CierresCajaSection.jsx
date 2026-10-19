@@ -8,7 +8,7 @@ import {formatDateTime} from '../utils/dateTime';
 import {NuevoCierre,DetalleCierre} from './CierreCajaReal';
 import OperacionRemoteState from './OperacionRemoteState';
 import './CierresCajaSection.css';
-const inicial=()=>{const now=new Date(),start=new Date(now);start.setHours(0,0,0,0);return {fecha_inicio:fechaLocalCierre(start),fecha_fin:fechaLocalCierre(now)};};
+const inicial=()=>{const now=fechaLocalCierre();return {fecha_inicio:now.slice(0,10)+'T00:00:00',fecha_fin:now};};
 export default function CierresCajaSection(){
  const {user}=useAuth();
  const [query,setQuery]=useState({pagina:1,limite:20}),[filters,setFilters]=useState({fecha_inicio:'',fecha_fin:'',usuarios_id:''});

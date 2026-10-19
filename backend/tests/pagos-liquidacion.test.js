@@ -37,6 +37,7 @@ test('pagos y liquidación con MySQL y tablas temporales', {
     module: modulo,
     exports: modulo.exports,
     require: nombre => {
+      if (nombre === '../utils/fechaHora') return require('../src/utils/fechaHora');
       if (nombre === '../config/db') return { dbConfig: {} };
       if (nombre === 'mysql2') return { createConnection: () => ({ promise: () => conexion }) };
       if (nombre === '../services/divisionCuotasService') return require('../src/services/divisionCuotasService');

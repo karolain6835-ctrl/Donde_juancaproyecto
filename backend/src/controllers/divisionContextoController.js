@@ -1,5 +1,6 @@
 const mysql=require('mysql2');
 const db=require('../config/db');
+const {fechaLocalSQL}=require('../utils/fechaHora');
 const {consultarPedido,calcularCuenta}=require('../services/liquidacionService');
 const {divisionesActivasPedido}=require('../services/divisionesService');
 const dinero=n=>`${n/100n}.${String(n%100n).padStart(2,'0')}`;
@@ -28,7 +29,7 @@ exports.obtener=async(req,res)=>{
    item.cantidad_asignada=asignaciones.reduce((n,r)=>n+r.cantidad_asignada,0);
    item.cantidad_disponible=Math.max(0,item.cantidad_pedida-item.cantidad_asignada-item.cantidad_pagada);
   }
-  const [divisiones]=await c.query(`SELECT sd.id,sd.modalidad,sd.estado,sd.pedido_id,sd.creado_en FROM sesiones_division_cuentas sd
+  const [divisiones]=await c.query(`SELECT sd.id,sd.modalidad,sd.estado,sd.pedido_id,${fechaLocalSQL('sd.creado_en')} AS creado_en FROM sesiones_division_cuentas sd
    WHERE sd.sesion_mesa_id=? AND (sd.pedido_id=? OR (sd.pedido_id IS NULL AND (
     NOT EXISTS (SELECT 1 FROM division_participantes dp WHERE dp.sesion_division_id=sd.id) OR
     EXISTS (SELECT 1 FROM division_participantes dp JOIN division_items_detalle di ON di.participante_id=dp.id

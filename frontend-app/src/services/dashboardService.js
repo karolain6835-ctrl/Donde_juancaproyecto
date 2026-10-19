@@ -5,11 +5,12 @@ import {listarPagosGlobal} from './pagosService.js';
 import {listarSesionesJuego} from './juegosService.js';
 import {centavosDivision,decimalDivision} from './divisionesService.js';
 import {invalidResponse} from './catalogoContract.js';
+import {businessDate,addCalendarDays} from '../utils/businessTime.js';
 
-// Los filtros de pagos operan sobre creado_en en UTC, no sobre la fecha de verificación.
+// Los filtros diarios de pagos usan su fecha de creación en el calendario de Bogotá.
 export function diasDashboard(ahora=new Date()){
- const inicio=new Date(Date.UTC(ahora.getUTCFullYear(),ahora.getUTCMonth(),ahora.getUTCDate()));
- return Array.from({length:7},(_,i)=>new Date(inicio.getTime()-(6-i)*86400000).toISOString().slice(0,10));
+ const hoy=businessDate(ahora);
+ return Array.from({length:7},(_,i)=>addCalendarDays(hoy,i-6));
 }
 export async function pagosDiaDashboard(fecha,options){
  const r=await listarPagosGlobal({estado:'verificado',desde:fecha,hasta:fecha,pagina:1,limite:1},options);

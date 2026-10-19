@@ -1,4 +1,5 @@
 const { randomUUID, createHash } = require('node:crypto');
+const {horaBogotaSQL,fechaLocalSQL,fechaBogota}=require('../utils/fechaHora');
 const { centavos, calcularCuenta } = require('./liquidacionService');
 const { registrarAuditoria } = require('./auditoriaService');
 const fallo=(status,message)=>Object.assign(new Error(message),{status});
@@ -17,7 +18,7 @@ async function bloquear(c,divisionId){
  const [[ubicacion]]=await c.query('SELECT mesas_id FROM sesiones_division_cuentas WHERE id=?',[divisionId]);
  if(!ubicacion)throw fallo(404,'La división no existe.');
  await c.query('SELECT id FROM mesas WHERE id=? FOR UPDATE',[ubicacion.mesas_id]);
- const [[division]]=await c.query('SELECT * FROM sesiones_division_cuentas WHERE id=? FOR UPDATE',[divisionId]);
+ const [[division]]=await c.query(`SELECT *,${fechaLocalSQL('creado_en')} AS creado_en FROM sesiones_division_cuentas WHERE id=? FOR UPDATE`,[divisionId]);
  if(!division||division.mesas_id!==ubicacion.mesas_id)throw fallo(409,'La división cambió de mesa. Reintenta.');
  return division;
 }
@@ -66,8 +67,8 @@ async function asignar(c,divisionId,body,key,actor){
  }
  bases[pedidoId]=dinero(cuenta.total);
  await c.query('UPDATE sesiones_division_cuentas SET cuentas_items_json=? WHERE id=?',[JSON.stringify(bases),divisionId]);
- await c.query('INSERT INTO division_participantes(id,sesion_division_id,jugadores_id,nombre_cliente,total_asignado,idempotencia_clave,solicitud_hash) VALUES (?,?,?,?,?,?,?)',[participanteId,divisionId,pagador.id,pagador.nombre,dinero(total),key,hash]);
- await c.query('INSERT INTO division_items_detalle(id,participante_id,pedido_item_id,cantidad_asignada,subtotal) VALUES ?',[procesados]);
+ await c.query(`INSERT INTO division_participantes(id,sesion_division_id,jugadores_id,nombre_cliente,total_asignado,idempotencia_clave,solicitud_hash,creado_en) VALUES (?,?,?,?,?,?,?,${horaBogotaSQL})`,[participanteId,divisionId,pagador.id,pagador.nombre,dinero(total),key,hash]);
+ await c.query('INSERT INTO division_items_detalle(id,participante_id,pedido_item_id,cantidad_asignada,subtotal,creado_en) VALUES ?',[procesados.map(r=>[...r,fechaBogota()])]);
  await registrarAuditoria(c,actor,'divisiones','division_items_asignados','sesiones_division_cuentas',divisionId,{iniciador_original:division.usuarios_id,participante_id:participanteId,jugadores_id:pagador.id,total_asignado:dinero(total),items:procesados.map(r=>({id:r[0],pedido_item_id:r[2],cantidad:r[3],subtotal:r[4]}))});
  return {status:201,data:{participante_id:participanteId,sesion_division_id:divisionId,jugadores_id:pagador.id,nombre_cliente:pagador.nombre,total_asignado:dinero(total),items_asignados:procesados.length}};
 }
@@ -85,7 +86,7 @@ async function validarPago(c,pedido,divisionId,participanteId){
   if(activas.length)throw fallo(409,'Este pedido tiene una división activa. Registra el pago por cliente desde la división.');
   return;
  }
- const [[division]]=await c.query('SELECT * FROM sesiones_division_cuentas WHERE id=? FOR UPDATE',[divisionId]);
+ const [[division]]=await c.query(`SELECT *,${fechaLocalSQL('creado_en')} AS creado_en FROM sesiones_division_cuentas WHERE id=? FOR UPDATE`,[divisionId]);
  if(!division)throw fallo(404,'La división no existe.');
  if(division.estado!=='activa')throw fallo(409,'La división ya no acepta pagos.');
  if(!division.sesion_mesa_id)return; // Compatibilidad con pagos históricos.

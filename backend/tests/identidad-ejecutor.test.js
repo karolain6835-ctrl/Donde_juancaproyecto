@@ -26,7 +26,7 @@ const cargar = (nombre, db, real) => {
   const prohibido = new Proxy({}, { get: () => () => assert.fail('No debe iniciar operaciones de negocio') });
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/controllers', nombre + 'Controller.js'), 'utf8'), {
     module: modulo, exports: modulo.exports, console,
-    require: n => n === '../services/juegosPedidoService' ? require('../src/services/juegosPedidoService') : n === '../services/identidadService' ? identidad
+    require: n => n === '../utils/fechaHora' ? require('../src/utils/fechaHora') : n === '../services/juegosPedidoService' ? require('../src/services/juegosPedidoService') : n === '../services/identidadService' ? identidad
       : n === '../services/participantesService' && real ? require('../src/services/participantesService')
       : n === '../services/sesionesMesaService' && real ? require('../src/services/sesionesMesaService')
       : n === 'mysql2' && real ? { createConnection: () => ({ promise: () => ({ query: (s,p) => real.query(s,p), beginTransaction: () => real.beginTransaction(), commit: () => real.commit(), rollback: () => real.rollback(), end: async () => {} }) }) }

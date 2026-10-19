@@ -1,4 +1,5 @@
 const {pedidoJuegoSQL}=require('./juegosPedidoService');
+const {fechaLocalSQL}=require('../utils/fechaHora');
 const {centavos}=require('./liquidacionService');
 const dinero=n=>`${n/100n}.${String(n%100n).padStart(2,'0')}`;
 const fallo=(status,message)=>Object.assign(new Error(message),{status});
@@ -14,7 +15,7 @@ async function consultar(c,id,query={}){
  const where=`p.clientes_id=? OR ${participacion}`;
  const [[count]]=await c.query(`SELECT COUNT(*) AS total FROM pedidos p WHERE ${where}`,[id,id]);
  const [rows]=await c.query(`SELECT p.id,p.estado,p.sesion_mesa_id,
- DATE_FORMAT(p.creado_en,'%Y-%m-%dT%H:%i:%sZ') AS fecha,m.numero AS mesa,
+ ${fechaLocalSQL('p.creado_en')} AS fecha,m.numero AS mesa,
  (p.clientes_id=?) AS cliente_del_pedido,${participacion} AS participa
  FROM pedidos p LEFT JOIN mesas m ON m.id=p.mesas_id WHERE ${where}
  ORDER BY p.creado_en DESC,p.id DESC LIMIT ? OFFSET ?`,[id,id,id,id,limite,(pagina-1)*limite]);

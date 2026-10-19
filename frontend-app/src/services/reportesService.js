@@ -7,6 +7,7 @@ import {listarSesionesJuego,listarActivosJuego,tiposJuego} from './juegosService
 import {listarCierres} from './cierresCajaService.js';
 import {centavosDivision,decimalDivision} from './divisionesService.js';
 import {formatDateTime} from '../utils/dateTime.js';
+import {businessDate,businessDayStart,addCalendarDays} from '../utils/businessTime.js';
 export const LIMITE_PEDIDOS_REPORTE=200;
 const falla=mensaje=>{throw new Error(mensaje);};
 export const decimalReporte=n=>n<0n?'-'+decimalDivision(-n):decimalDivision(n);
@@ -17,7 +18,7 @@ export function porcentajeReporte(valor,total){
 }
 const suma=valores=>decimalReporte(valores.reduce((n,v)=>n+centavosReporte(v),0n));
 export function rangoReporte(periodo,desde,hasta,ahora=new Date()){
- const fin=new Date(Date.UTC(ahora.getUTCFullYear(),ahora.getUTCMonth(),ahora.getUTCDate())),inicio=new Date(fin);
+ const fin=new Date(businessDate(ahora)+'T00:00:00Z'),inicio=new Date(fin);
  if(periodo==='semana')inicio.setUTCDate(inicio.getUTCDate()-((inicio.getUTCDay()+6)%7));
  else if(periodo==='mes')inicio.setUTCDate(1);
  else if(periodo==='personalizado'){
@@ -28,7 +29,7 @@ export function rangoReporte(periodo,desde,hasta,ahora=new Date()){
 }
 const dentro=(fecha,r)=>{
  if(typeof fecha!=='string'||!Number.isFinite(Date.parse(fecha)))falla('El historial contiene una fecha inválida.');
- return Date.parse(fecha)>=Date.parse(r.desde+'T00:00:00Z')&&Date.parse(fecha)<Date.parse(r.hasta+'T00:00:00Z')+86400000;
+ return Date.parse(fecha)>=businessDayStart(r.desde).getTime()&&Date.parse(fecha)<businessDayStart(addCalendarDays(r.hasta,1)).getTime();
 };
 export async function ventasReporte(r,pagina=1,options){
  const [listado,metodos]=await Promise.all([listarPagosGlobal({...r,estado:'verificado',pagina,limite:20},options),Promise.all(Object.keys(nombresMetodos).map(async k=>[nombresMetodos[k],(await listarPagosGlobal({...r,estado:'verificado',metodo_de_pago:k,pagina:1,limite:1},options)).resumen.total_verificado]))]);
@@ -73,8 +74,8 @@ export async function juegosReporte(r,options){
  return {totalSesiones:sesiones.length,totalMinutos:Math.floor(finales.reduce((n,s)=>n+seg(s),0)/60),duracionPromedio:finales.length?Math.round(finales.reduce((n,s)=>n+seg(s),0)/60/finales.length):0,ingresosTotales:suma(sesiones.filter(s=>s.estado==='cerrada'&&s.costo_total!=null).map(s=>s.costo_total)),juegoMasUsado:Object.entries(resumen).sort((a,b)=>b[1].sesiones-a[1].sesiones)[0]?.[0]||'Sin datos',resumenPorTipo:Object.fromEntries(Object.entries(resumen).map(([k,g])=>[k,{sesiones:g.sesiones,minutos:Math.floor(g.minutos),ingresos:decimalDivision(g.importe)}])),sesiones:sesiones.map(s=>({id:s.id,juego:s.activo_nombre||'Juego',tipo:tiposJuego[s.tipo_juego]||'Juego',mesa:s.mesa_numero==null?'—':`Mesa ${s.mesa_numero}`,fecha:formatDateTime(s.fecha_inicio),duracionMin:finales.includes(s)?Math.floor(seg(s)/60):null,ingresos:s.estado==='cerrada'?s.costo_total:null,responsable:'No disponible',estado:s.estado}))};
 }
 export async function cajaReporte(r,pagina,options){
- const fin=new Date(Date.parse(r.hasta+'T00:00:00Z')+86400000).toISOString().slice(0,19);
- const [p,c]=await Promise.all([listarPagosGlobal({...r,pagina:1,limite:1},options),listarCierres({pagina,limite:20,fecha_inicio:r.desde+'T00:00:00',fecha_fin:fin},options)]);
+ const inicio=businessDayStart(r.desde).toISOString().slice(0,19),fin=businessDayStart(addCalendarDays(r.hasta,1)).toISOString().slice(0,19);
+ const [p,c]=await Promise.all([listarPagosGlobal({...r,pagina:1,limite:1},options),listarCierres({pagina,limite:20,fecha_inicio:inicio,fecha_fin:fin},options)]);
  const cierres=c.datos.map(v=>({id:v.id,fecha:formatDateTime(v.fecha),responsable:v.responsable_nombre||'—',ingresos:v.total_general,salidas:v.total_efectivo_real,balance:v.total_efectivo_esperado,diferencia:decimalReporte(centavosReporte(v.diferencia_efectivo)),estado:centavosReporte(v.diferencia_efectivo)===0n?'cuadrado':'diferencia'}));
  return {cierres,totalIngresos:p.resumen.total_verificado,totalSalidas:p.resumen.pendientes,balanceTotal:p.resumen.verificados,diferenciaTotal:suma(cierres.map(c=>c.diferencia)),paginas:Math.ceil(c.total/20),total:c.total};
 }

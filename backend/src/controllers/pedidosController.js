@@ -1,4 +1,5 @@
 const {pedidoJuegoSQL}=require('../services/juegosPedidoService');
+const {fechaBogota,fechaLocalSQL}=require('../utils/fechaHora');
 const {centavos}=require('../services/liquidacionService');
 const { agregarLineaPedido, registrarMovimientoPedido } = require('../services/pedidoItemsService');
 const { ejecutor } = require('../services/identidadService');
@@ -25,7 +26,7 @@ const listarPedidos = (req, res) => {
   const where = filters.length ? ` WHERE ${filters.join(' AND ')}` : '';
   db.query(`SELECT COUNT(*) AS total FROM pedidos ped${where}`, params, (error, counts) => {
     if (error) return res.status(500).json({ error: 'No se pudieron consultar los pedidos.' });
-    db.query(`SELECT ped.id,ped.estado,ped.creado_en,ped.mesas_id,ped.usuarios_id,ped.clientes_id,
+    db.query(`SELECT ped.id,ped.estado,${fechaLocalSQL('ped.creado_en')} AS creado_en,ped.mesas_id,ped.usuarios_id,ped.clientes_id,
       m.numero AS mesa_numero,c.nombre AS cliente_nombre,u.nombre AS responsable_nombre
       FROM pedidos ped LEFT JOIN mesas m ON m.id=ped.mesas_id
       LEFT JOIN clientes c ON c.id=ped.clientes_id LEFT JOIN usuarios u ON u.id=ped.usuarios_id
@@ -78,8 +79,7 @@ const crearPedido = async (req, res) => {
       if (person.clientes_id) await insertarParticipante(conexion, { mesas_id: mesa.id, sesion_mesa_id: sesion.id }, { tipo_participante: 'registrado', clientes_id: person.clientes_id }, true);
     }
     const id = crypto.randomUUID();
-    const fechaActual = new Date(); fechaActual.setHours(fechaActual.getHours() - 5);
-    const creado_en = fechaActual.toISOString().slice(0, 19).replace('T', ' ');
+    const creado_en=fechaBogota();
     const [insert] = await conexion.query('INSERT INTO pedidos (id,estado,sincronizado,creado_en,mesas_id,usuarios_id,clientes_id,sesion_mesa_id) VALUES (?,?,?,?,?,?,?,?)', [id,'abierto',0,creado_en,mesa.id,usuarios_id,clientes_id,sesion.id]);
     if (insert.affectedRows !== 1) throw new Error('No se insertó el pedido.');
     if (!participante_id) await insertarParticipante(conexion, { id, mesas_id: mesa.id, sesion_mesa_id: sesion.id }, clientes_id === null
@@ -163,7 +163,7 @@ const agregarItemPedido = async (req, res) => {
 const obtenerPedidoConDetalles = (req, res) => {
   const { id } = req.params;
 
-  const queryPedido = 'SELECT * FROM pedidos WHERE id = ?';
+  const queryPedido = `SELECT *,${fechaLocalSQL('creado_en')} AS creado_en FROM pedidos WHERE id = ?`;
   
   const queryItems = `
     SELECT pi.id, pi.cantidad_pedida, pi.precio_unitario, pi.estado, p.nombre, pi.participante_id, j.nombre AS participante_nombre, p.id AS productos_id, pi.ronda_consumo_id

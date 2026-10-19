@@ -16,7 +16,7 @@ function validar(body, key) {
   return { items };
 }
 async function detalle(c,pedidoId,id) {
-  const [[row]] = await c.query('SELECT id,pedido_id,numero_ronda,estado,creada_en,creada_por FROM rondas_consumo WHERE id=? AND pedido_id=? FOR UPDATE',[id,pedidoId]);
+  const [[row]] = await c.query("SELECT id,pedido_id,numero_ronda,estado,DATE_FORMAT(creada_en,'%Y-%m-%dT%H:%i:%sZ') AS creada_en,creada_por FROM rondas_consumo WHERE id=? AND pedido_id=? FOR UPDATE",[id,pedidoId]);
   if (!row) throw fallo(404,'Ronda no encontrada en este pedido.');
   [row.items] = await c.query(`SELECT pi.id,pi.participante_id,j.nombre AS participante_nombre,pi.productos_id,p.nombre AS producto,
     pi.cantidad_pedida,pi.precio_unitario,pi.estado FROM pedido_items pi

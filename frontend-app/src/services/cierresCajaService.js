@@ -2,15 +2,14 @@ import {apiClient} from './apiClient.js';
 import {operationPath,operationFail} from './operacionContract.js';
 import {invalidResponse} from './catalogoContract.js';
 import {montoCOP,centavosDivision,decimalDivision} from './divisionesService.js';
+import {businessDateTime,businessToUTC} from '../utils/businessTime.js';
 export function fechaLocalCierre(date=new Date()){
- const n=v=>String(v).padStart(2,'0');
- return `${date.getFullYear()}-${n(date.getMonth()+1)}-${n(date.getDate())}T${n(date.getHours())}:${n(date.getMinutes())}:${n(date.getSeconds())}`;
+ return businessDateTime(date);
 }
 export function periodoCierre(form){
  const fechas=['fecha_inicio','fecha_fin'].map(k=>{
   const v=form[k];if(typeof v!=='string'||!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$/.test(v))operationFail('Indica las fechas y horas del período.');
-  const d=new Date(v);if(!Number.isFinite(d.getTime())||fechaLocalCierre(d)!==(v.length===16?v+':00':v))operationFail('Fecha inválida.');
-  return d;
+  try{return businessToUTC(v);}catch{operationFail('Fecha inválida.');}
  });
  if(fechas[0]>=fechas[1])operationFail('La fecha inicial debe ser anterior a la final.');
  return Object.fromEntries(['fecha_inicio','fecha_fin'].map((k,i)=>[k,fechas[i].toISOString().slice(0,19)]));

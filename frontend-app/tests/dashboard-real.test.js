@@ -29,10 +29,10 @@ test('Dashboard compone datos reales y usa conteos completos, no tamaño de pág
   assert.ok(urls.some(u=>u.includes('estado=abierto')));assert.ok(urls.some(u=>u.includes('estado=activa')));
  }finally{globalThis.fetch=old;}
 });
-test('siete días UTC reales, resúmenes completos y suma exacta COP sin sumar páginas',async()=>{
- assert.deepEqual(diasDashboard(ahora),['2026-10-10','2026-10-11','2026-10-12','2026-10-13','2026-10-14','2026-10-15','2026-10-16']);
+test('siete dias de Bogota reales, resúmenes completos y suma exacta COP sin sumar páginas',async()=>{
+ assert.deepEqual(diasDashboard(ahora),['2026-10-09','2026-10-10','2026-10-11','2026-10-12','2026-10-13','2026-10-14','2026-10-15']);
  const old=globalThis.fetch,urls=[];try{
-  globalThis.fetch=async u=>{urls.push(u);const q=new URL(u).searchParams;assert.equal(q.get('estado'),'verificado');assert.equal(q.get('desde'),q.get('hasta'));return new Response(JSON.stringify({datos:[],paginacion:{total:99,totalPaginas:99},resumen:{verificados:99,total_verificado:q.get('desde').endsWith('16')?'2844.44':'0.01'}}));};
+  globalThis.fetch=async u=>{urls.push(u);const q=new URL(u).searchParams;assert.equal(q.get('estado'),'verificado');assert.equal(q.get('desde'),q.get('hasta'));return new Response(JSON.stringify({datos:[],paginacion:{total:99,totalPaginas:99},resumen:{verificados:99,total_verificado:q.get('desde').endsWith('15')?'2844.44':'0.01'}}));};
   const r=await ingresosSemanaDashboard(undefined,ahora);assert.equal(urls.length,7);assert.equal(r.total,'2844.50');assert.equal(r.dias.at(-1).altura,100);assert.equal(r.dias[0].cantidad,99);
   assert.equal((await ingresosHoyDashboard(undefined,ahora)).total,'2844.44');
   globalThis.fetch=async()=>new Response(JSON.stringify({datos:[],paginacion:{},resumen:{verificados:0,total_verificado:'0.00'}}));const cero=await ingresosSemanaDashboard(undefined,ahora);assert.equal(cero.total,'0.00');assert.ok(cero.dias.every(d=>d.altura===0));

@@ -1,3 +1,4 @@
+const {fechaLocalSQL}=require('../utils/fechaHora');
 const fallo=message=>Object.assign(new Error(message),{status:400});
 function filtros(q={}){
  const args=[],where=[];
@@ -22,7 +23,7 @@ async function listar(c,q){
   CAST(COALESCE(SUM(CASE WHEN p.verificacion_estado='verificado' AND p.estado='pagado' THEN p.total_seleccionado ELSE 0 END),0) AS CHAR) total_verificado${from}${f.where}`,f.args);
  const [datos]=await c.query(`SELECT p.id,p.estado,p.verificacion_estado,p.metodo_de_pago,
   CAST(p.total_seleccionado AS CHAR) total_seleccionado,
-  DATE_FORMAT(p.creado_en,'%Y-%m-%dT%H:%i:%sZ') creado_en,
+  ${fechaLocalSQL('p.creado_en')} creado_en,
   DATE_FORMAT(p.verificado_en,'%Y-%m-%dT%H:%i:%sZ') verificado_en,
   p.pedidos_id,p.sesion_division_id,o.mesas_id,m.numero mesa_numero,
   CASE WHEN p.sesion_division_id IS NOT NULL THEN dp.nombre_cliente ELSE cl.nombre END cliente_nombre,

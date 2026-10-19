@@ -1,4 +1,5 @@
 const {randomUUID,createHash}=require('node:crypto');
+const {fechaLocalSQL,horaBogotaSQL}=require('../utils/fechaHora');
 const {centavos,calcularCuenta}=require('./liquidacionService');
 const {registrarAuditoria}=require('./auditoriaService');
 const fallo=(status,message)=>Object.assign(new Error(message),{status});
@@ -9,13 +10,13 @@ async function bloquear(c,id){
  const [[l]]=await c.query('SELECT mesas_id FROM sesiones_division_cuentas WHERE id=?',[id]);
  if(!l)throw fallo(404,'La división no existe.');
  await c.query('SELECT id FROM mesas WHERE id=? FOR UPDATE',[l.mesas_id]);
- const [[d]]=await c.query('SELECT * FROM sesiones_division_cuentas WHERE id=? FOR UPDATE',[id]);
+ const [[d]]=await c.query(`SELECT *,${fechaLocalSQL('creado_en')} AS creado_en FROM sesiones_division_cuentas WHERE id=? FOR UPDATE`,[id]);
  if(!d||d.mesas_id!==l.mesas_id)throw fallo(409,'La división cambió de mesa. Reintenta.');
  return d;
 }
 async function resumen(c,d,{bloquear=true}={}){
  const bloqueo=bloquear?' FOR UPDATE':'';
- const [personas]=await c.query('SELECT * FROM division_participantes WHERE sesion_division_id=? ORDER BY id'+bloqueo,[d.id]);
+ const [personas]=await c.query(`SELECT *,${fechaLocalSQL('creado_en')} AS creado_en FROM division_participantes WHERE sesion_division_id=? ORDER BY id`+bloqueo,[d.id]);
  const [pagos]=await c.query('SELECT * FROM pagos WHERE sesion_division_id=?'+bloqueo,[d.id]);
  let asignado=0n,pagado=0n,reservado=0n;
  const participantes=[];
@@ -92,7 +93,7 @@ async function configurar(c,d,body,key,actor){
   const monto=d.modalidad==='personalizada'?centavos(p.monto):objetivo/N+(BigInt(i)<objetivo%N?1n:0n);
   if(monto<=0n||monto>9999999999n)throw fallo(409,'La cuota está fuera del rango permitido.');
   suma+=monto;
-  await c.query('INSERT INTO division_participantes(id,sesion_division_id,jugadores_id,nombre_cliente,total_asignado) VALUES (?,?,?,?,?)',[randomUUID(),d.id,p.jugadores_id,persona.nombre,dinero(monto)]);
+  await c.query(`INSERT INTO division_participantes(id,sesion_division_id,jugadores_id,nombre_cliente,total_asignado,creado_en) VALUES (?,?,?,?,?,${horaBogotaSQL})`,[randomUUID(),d.id,p.jugadores_id,persona.nombre,dinero(monto)]);
  }
  if(suma!==objetivo)throw fallo(409,'La suma de cuotas debe coincidir exactamente con el saldo objetivo.');
  await c.query('UPDATE sesiones_division_cuentas SET pedido_id=?,total_objetivo=?,total_cuenta_base=?,cuotas_clave=?,cuotas_hash=? WHERE id=?',[pedido.id,dinero(objetivo),dinero(cuenta.total),key,hash,d.id]);
@@ -121,7 +122,7 @@ async function cambiarEstado(c,d,estado,actor){
  }
  await c.query(`UPDATE sesiones_division_cuentas SET estado=?,${estado==='cancelada'?'cancelada_en':'completada_en'}=UTC_TIMESTAMP() WHERE id=?`,[estado,d.id]);
  await registrarAuditoria(c,actor,'divisiones',estado==='cancelada'?'division_cancelada':'division_completada','sesiones_division_cuentas',d.id,{antes:'activa',despues:estado});
- const [[actual]]=await c.query('SELECT * FROM sesiones_division_cuentas WHERE id=? FOR UPDATE',[d.id]);
+ const [[actual]]=await c.query(`SELECT *,${fechaLocalSQL('creado_en')} AS creado_en FROM sesiones_division_cuentas WHERE id=? FOR UPDATE`,[d.id]);
  return {status:200,data:await resumen(c,actual)};
 }
 // Reutiliza las mismas reglas del cierre manual; los fallos de escritura abortan el pago.
