@@ -25,7 +25,7 @@ test('Placeholder, imagen rota, imagen real y editor opcional con quitar/conserv
   try{
     const {default:Imagen}=await server.ssrLoadModule('/src/components/ProductoImagen.jsx'),{default:Editor}=await server.ssrLoadModule('/src/components/ProductoImagenEditor.jsx');
     const render=url=>renderToString(React.createElement(Imagen,{url,nombre:'Producto real'}));
-    assert.match(render(null),/Sin imagen de Producto real/);assert.doesNotMatch(render(null),/<img /);assert.match(render(ruta),/<img /);assert.match(render(ruta),/Imagen de Producto real/);
+    assert.match(render(null),/Sin imagen de Producto real/);assert.match(render(null),/lucide-bottle-wine/);assert.doesNotMatch(render(null),/lucide-package/);assert.doesNotMatch(render(null),/<img /);assert.match(render(ruta),/<img /);assert.match(render(ruta),/Imagen de Producto real/);
     globalThis.__imagenFallida=imagenProductoUrl(ruta);assert.doesNotMatch(render(ruta),/<img /);assert.match(render(ruta),/Sin imagen/);delete globalThis.__imagenFallida;
     const editor=value=>renderToString(React.createElement(Editor,{actual:ruta,value,onChange(){}}));
     assert.match(editor({archivo:null,eliminar:false,error:''}),/Imagen del producto \(opcional\)/);assert.match(editor({archivo:null,eliminar:false,error:''}),/Quitar imagen/);
