@@ -3,3 +3,4 @@ node_modules/
 
 # Variantes de entorno que pueden contener secretos
 .env.*
+!/mobile/.env.example

@@ -1,0 +1,37 @@
+﻿const fs=require('node:fs');
+const path=require('node:path');
+const crypto=require('node:crypto');
+const assert=require('node:assert/strict');
+const base=path.resolve(__dirname,'..');
+const archive=path.resolve(base,process.argv[2]||'.verification/archive-local-v2');
+const walk=dir=>fs.readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(dir,e.name)):[path.join(dir,e.name)]);
+const relative=(root,f)=>path.relative(root,f).replaceAll('\\','/');
+const files=walk(archive);
+const names=files.map(f=>relative(archive,f));
+const required=['App.js','index.js','app.json','app.config.js','eas.json','package.json','package-lock.json','tsconfig.json',...['src','assets','plugins'].flatMap(d=>walk(path.join(base,d)).map(f=>relative(base,f)))];
+const missing=required.filter(f=>!names.includes(f));
+const hash=f=>crypto.createHash('sha256').update(fs.readFileSync(f)).digest('hex');
+const different=required.filter(f=>names.includes(f)&&hash(path.join(base,f))!==hash(path.join(archive,f)));
+const forbidden=names.filter(n=>/(^|\/)(\.verification|\.expo|dist|node_modules|backend|frontend-app|\.git|\.aws|\.ssh)(\/|$)|(^|\/)\.env(?:\.|$)|\.(pem|key|jks|keystore|p12|p8|pfx|sql|sqlite|db|apk|aab)$|(^|\/)(credentials|google-services)\.json$/i.test(n));
+const patterns=[/-----BEGIN (?:[A-Z ]+ )?PRIVATE KEY-----/,/\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b/,/\b(?:DB_PASSWORD|JWT_SECRET|EXPO_TOKEN)\s*[:=]\s*["'][^"']+["']/];
+const secretFiles=files.filter(f=>!f.endsWith('.png')&&patterns.some(p=>p.test(fs.readFileSync(f,'utf8')))).map(f=>relative(archive,f));
+// Además comparar con valores privados reales sin imprimirlos ni guardarlos.
+const envFiles=[path.join(base,'.env.local'),path.join(base,'../backend/.env')];
+const privateValues=envFiles.filter(f=>fs.existsSync(f)).flatMap(f=>fs.readFileSync(f,'utf8').split(/\r?\n/).flatMap(line=>{
+ const m=/^\s*(?:export\s+)?([\w]+)\s*=\s*(.*?)\s*$/.exec(line);
+ if(!m||!/PASSWORD|SECRET|TOKEN|PRIVATE_KEY/i.test(m[1]))return [];
+ const value=m[2].replace(/^(['"])(.*)\1$/,'$2');
+ return value.length>=8?[value]:[];
+}));
+const privateMatches=files.filter(f=>!f.endsWith('.png')&&privateValues.some(v=>fs.readFileSync(f,'utf8').includes(v))).map(f=>relative(archive,f));
+const pkg=require(path.join(archive,'package.json'));
+const lock=require(path.join(archive,'package-lock.json'));
+const app=require(path.join(archive,'app.json')).expo;
+const current=require(path.join(base,'app.json')).expo;
+const eas=require(path.join(archive,'eas.json'));
+assert.equal(missing.length,0,'Faltan archivos'); assert.equal(different.length,0,'Archivos distintos');
+assert.equal(forbidden.length,0,'Archivos prohibidos');assert.equal(secretFiles.length,0,'Patrones sensibles');assert.equal(privateMatches.length,0,'Valores privados');
+assert.equal(lock.packages['node_modules/expo'].version,'57.0.30');
+assert.equal(app.extra.eas.projectId,current.extra.eas.projectId);assert.equal(app.owner,current.owner);
+assert.equal(eas.build['preview-local'].extends,'preview');assert.equal(eas.build.preview.distribution,'internal');assert.equal(eas.build.preview.android.buildType,'apk');
+console.log(JSON.stringify({totalFiles:files.length,rootFiles:names.filter(n=>!n.includes('/')),folders:Object.fromEntries(['src','assets','plugins'].map(d=>[d,names.filter(n=>n.startsWith(d+'/')).length])),missing,different,forbidden,secretFiles,privateMatches,expo:pkg.dependencies.expo,expoLocked:lock.packages['node_modules/expo'].version,owner:app.owner,projectId:app.extra.eas.projectId,files:names},null,2));

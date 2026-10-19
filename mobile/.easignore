@@ -1,0 +1,64 @@
+# Usar EAS_NO_VCS=1 y EAS_PROJECT_ROOT apuntando a mobile.
+# Exclusiones expl?citas: src, assets y plugins se incluyen normalmente.
+.git
+.git/**
+.verification
+.verification/**
+.expo
+.expo/**
+dist
+dist/**
+web-build
+web-build/**
+node_modules
+node_modules/**
+coverage
+coverage/**
+/android
+android/**
+/ios
+ios/**
+# Material ajeno a la aplicaci?n, si apareciera en esta ra?z.
+backend
+backend/**
+frontend-app
+frontend-app/**
+outputs
+outputs/**
+# Entornos y credenciales, tambi?n en subcarpetas.
+**/.env
+**/.env.*
+**/*.pem
+**/*.key
+**/*.jks
+**/*.keystore
+**/*.p12
+**/*.p8
+**/*.pfx
+**/*.mobileprovision
+**/credentials.json
+**/google-services.json
+**/.npmrc
+**/.netrc
+**/.aws
+**/.aws/**
+**/.ssh
+**/.ssh/**
+# Archivos locales, temporales y resultados de compilaci?n.
+**/*.apk
+**/*.aab
+**/*.log
+**/*.tmp
+**/*.temp
+**/*.tsbuildinfo
+**/*.orig
+**/*~
+.DS_Store
+Thumbs.db
+# Material de desarrollo no requerido por EAS.
+tests
+tests/**
+scripts
+scripts/**
+AGENTS.md
+README.md
