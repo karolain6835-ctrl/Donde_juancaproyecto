@@ -13,28 +13,29 @@ async function bloquear(c,id){
  if(!d||d.mesas_id!==l.mesas_id)throw fallo(409,'La división cambió de mesa. Reintenta.');
  return d;
 }
-async function resumen(c,d){
- const [personas]=await c.query('SELECT * FROM division_participantes WHERE sesion_division_id=? ORDER BY id FOR UPDATE',[d.id]);
- const [pagos]=await c.query('SELECT * FROM pagos WHERE sesion_division_id=? FOR UPDATE',[d.id]);
+async function resumen(c,d,{bloquear=true}={}){
+ const bloqueo=bloquear?' FOR UPDATE':'';
+ const [personas]=await c.query('SELECT * FROM division_participantes WHERE sesion_division_id=? ORDER BY id'+bloqueo,[d.id]);
+ const [pagos]=await c.query('SELECT * FROM pagos WHERE sesion_division_id=?'+bloqueo,[d.id]);
  let asignado=0n,pagado=0n,reservado=0n;
  const participantes=[];
  for(const p of personas){
   const propios=pagos.filter(x=>x.participante_id===p.id);
   const a=centavos(p.total_asignado||0),v=propios.filter(valido).reduce((n,x)=>n+centavos(x.total_seleccionado),0n),r=propios.filter(pendiente).reduce((n,x)=>n+centavos(x.total_seleccionado),0n);
-  const [items]=await c.query('SELECT id AS detalle_id,pedido_item_id,cantidad_asignada AS cantidad,subtotal FROM division_items_detalle WHERE participante_id=? ORDER BY id FOR UPDATE',[p.id]);
+  const [items]=await c.query('SELECT id AS detalle_id,pedido_item_id,cantidad_asignada AS cantidad,subtotal FROM division_items_detalle WHERE participante_id=? ORDER BY id'+bloqueo,[p.id]);
   participantes.push({id:p.id,jugadores_id:p.jugadores_id,nombre_cliente:p.nombre_cliente,creado_en:p.creado_en,total_asignado:Number(p.total_asignado),nombre:p.nombre_cliente,asignado:dinero(a),pagado:dinero(v),pendiente_verificacion:dinero(r),saldo:dinero(a>=v?a-v:0n),estado:v===a?'pagado':'pendiente',items:items.map(i=>({...i,subtotal:Number(i.subtotal)}))});
   asignado+=a;pagado+=v;reservado+=r;
  }
  const pagosValidos=pagos.filter(valido).reduce((n,p)=>n+centavos(p.total_seleccionado),0n),pagosPendientes=pagos.filter(pendiente).reduce((n,p)=>n+centavos(p.total_seleccionado),0n);
  let desactualizada=false,saldoActual=null,totalDefinitivo=true;
  if(d.pedido_id){
-  const [[p]]=await c.query('SELECT id,mesas_id,estado FROM pedidos WHERE id=? FOR UPDATE',[d.pedido_id]);
+  const [[p]]=await c.query('SELECT id,mesas_id,estado FROM pedidos WHERE id=?'+bloqueo,[d.pedido_id]);
   if(!p)throw fallo(409,'El pedido de la división no existe.');
-  const cuenta=await calcularCuenta(c,p);saldoActual=dinero(cuenta.saldo);totalDefinitivo=cuenta.totalDefinitivo;
+  const cuenta=await calcularCuenta(c,p,{bloquear});saldoActual=dinero(cuenta.saldo);totalDefinitivo=cuenta.totalDefinitivo;
   desactualizada=centavos(d.total_cuenta_base)!==cuenta.total || cuenta.saldo!==centavos(d.total_objetivo)-pagado || cuenta.pendienteVerificacion!==reservado;
  }else if(d.modalidad==='items'&&d.cuentas_items_json){
   for(const [id,base]of Object.entries(JSON.parse(d.cuentas_items_json))){
-   const cuenta=await calcularCuenta(c,{id});
+   const cuenta=await calcularCuenta(c,{id},{bloquear});
    if(cuenta.total!==centavos(base))desactualizada=true;
    totalDefinitivo=totalDefinitivo&&cuenta.totalDefinitivo;
   }

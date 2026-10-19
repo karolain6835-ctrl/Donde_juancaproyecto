@@ -14,6 +14,16 @@ const dinero = (valor) => `${valor / 100n}.${String(valor % 100n).padStart(2, '0
 const esValido = p => p.verificacion_estado === 'verificado' && p.estado === 'pagado';
 const esPendiente = p => p.verificacion_estado === 'pendiente' && p.estado === 'pendiente';
 
+// Solo para lecturas dentro de un snapshot consistente; las escrituras usan bloquearPedido.
+const consultarPedido = async (conexion, pedidoId) => {
+  const [pedidos] = await conexion.query('SELECT id, mesas_id, estado FROM pedidos WHERE id = ?', [pedidoId]);
+  if (!pedidos.length) throw errorLiquidacion(404, 'El pedido no existe.');
+  const [mesas] = await conexion.query('SELECT id FROM mesas WHERE id = ?', [pedidos[0].mesas_id]);
+  if (!mesas.length) throw errorLiquidacion(409, 'La mesa del pedido no existe.');
+  if (pedidos[0].estado === 'cancelado') throw errorLiquidacion(409, 'El pedido está cancelado.');
+  return pedidos[0];
+};
+
 const bloquearPedido = async (conexion, pedidoId) => {
   // Localizar sin bloquear y luego respetar el orden mesa -> pedido del traslado.
   const [ubicacion] = await conexion.query('SELECT mesas_id FROM pedidos WHERE id = ?', [pedidoId]);
@@ -28,11 +38,13 @@ const bloquearPedido = async (conexion, pedidoId) => {
   return pedidos[0];
 };
 
-const calcularCuenta = async (conexion, pedido) => {
+const calcularCuenta = async (conexion, pedido, { bloquear = true } = {}) => {
+  // Mantener el comportamiento pesimista de todos los llamadores de escritura.
+  const bloqueo = bloquear ? ' FOR UPDATE' : '';
   const [items] = await conexion.query(`
     SELECT id, pedido_id, pedidos_id, estado,
            CAST(cantidad_pedida * precio_unitario AS DECIMAL(20,2)) AS subtotal
-    FROM pedido_items WHERE pedido_id = ? OR pedidos_id = ? FOR UPDATE
+    FROM pedido_items WHERE pedido_id = ? OR pedidos_id = ?${bloqueo}
   `, [pedido.id, pedido.id]);
   // No asignar deuda a dos pedidos si las columnas heredadas discrepan.
   if (items.some(i => i.pedido_id !== pedido.id || i.pedidos_id !== pedido.id)) {
@@ -41,11 +53,11 @@ const calcularCuenta = async (conexion, pedido) => {
   const [juegos] = await conexion.query(`
     SELECT sj.id, sj.estado, sj.costo_total
     FROM sesiones_juego sj
-    WHERE sj.estado != 'cancelada' AND ${pedidoJuegoSQL()} = ? FOR UPDATE
+    WHERE sj.estado != 'cancelada' AND ${pedidoJuegoSQL()} = ?${bloqueo}
   `, [pedido.id]);
   const [pagos] = await conexion.query(`
     SELECT id, total_seleccionado, estado, verificacion_estado
-    FROM pagos WHERE pedidos_id = ? FOR UPDATE
+    FROM pagos WHERE pedidos_id = ?${bloqueo}
   `, [pedido.id]);
   // Misma separación de consumos que la cuenta: ítems + costo registrado de juegos.
   const productos = items.filter(i => i.estado !== 'cancelado').reduce((a, i) => a + centavos(i.subtotal), 0n);
@@ -150,5 +162,5 @@ const validarParticipante = async (conexion, participanteId, importe = 0n) => {
     [pagado === asignado ? 'pagado' : 'pendiente', participanteId]);
 };
 
-module.exports = { bloquearPedido, calcularCuenta, validarImporte, actualizarLiquidacion,
+module.exports = { consultarPedido, bloquearPedido, calcularCuenta, validarImporte, actualizarLiquidacion,
   evaluarLiberacionMesa, validarParticipante, errorLiquidacion, centavos };

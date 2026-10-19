@@ -5,10 +5,13 @@ const { sesionActiva } = require('../services/sesionesMesaService');
 const { validar, asignar, fallo } = require('../services/divisionesService');
 const db = require('../config/db');
 const cuotas = require('../services/divisionCuotasService');
-async function transaccion(req,res,operation){
+async function transaccion(req,res,operation,{soloLectura=false}={}){
  const actor=ejecutor(req,res);if(!actor)return;
  let c;
- try{c=mysql.createConnection(db.dbConfig).promise();await c.beginTransaction();const r=await operation(c,actor);await c.commit();return res.status(r.status).json({exito:true,data:r.data});}
+ try{c=mysql.createConnection(db.dbConfig).promise();
+  if(soloLectura){await c.query('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ');await c.query('START TRANSACTION WITH CONSISTENT SNAPSHOT, READ ONLY');}
+  else await c.beginTransaction();
+  const r=await operation(c,actor);await c.commit();return res.status(r.status).json({exito:true,data:r.data});}
  catch(e){if(c)await c.rollback();console.error('Division:', new Error('Fallo interno; detalles sensibles omitidos.').stack);return res.status(e.status||(['ER_DUP_ENTRY','ER_LOCK_DEADLOCK','ER_LOCK_WAIT_TIMEOUT'].includes(e.code)?409:500)).json({error:e.status?e.message:'No se pudo procesar la division. Reintenta con la misma clave.'});}
  finally{if(c)await c.end();}
 }
@@ -29,7 +32,11 @@ const asignarItemsACliente=(req,res)=>{
 
 
 
-const obtenerResumenDivision=(req,res)=>transaccion(req,res,async c=>({status:200,data:await cuotas.resumen(c,await cuotas.bloquear(c,req.params.id))}));
+const obtenerResumenDivision=(req,res)=>transaccion(req,res,async c=>{
+ const [[division]]=await c.query('SELECT * FROM sesiones_division_cuentas WHERE id=?',[req.params.id]);
+ if(!division)throw fallo(404,'La división no existe.');
+ return {status:200,data:await cuotas.resumen(c,division,{bloquear:false})};
+},{soloLectura:true});
 const definirCuotas=(req,res)=>transaccion(req,res,async(c,actor)=>cuotas.configurar(c,await cuotas.bloquear(c,req.params.id),req.body,req.get?.('Idempotency-Key'),actor));
 const cancelarDivision=(req,res)=>transaccion(req,res,async(c,actor)=>cuotas.cambiarEstado(c,await cuotas.bloquear(c,req.params.id),'cancelada',actor));
 const completarDivision=(req,res)=>transaccion(req,res,async(c,actor)=>cuotas.cambiarEstado(c,await cuotas.bloquear(c,req.params.id),'completada',actor));
