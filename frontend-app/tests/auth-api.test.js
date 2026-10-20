@@ -1,10 +1,18 @@
 ﻿import test from 'node:test';
 import assert from 'node:assert/strict';
-import { apiClient, ApiError, configureUnauthorizedHandler } from '../src/services/apiClient.js';
+import { apiClient, ApiError, configureUnauthorizedHandler, normalizarApiUrl } from '../src/services/apiClient.js';
 import { readSession, saveSession, clearSession, isUsableSession } from '../src/services/sessionStorage.js';
 
 const token = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1MSJ9.signature';
 const user = { id: 'u1', nombre: 'Ana', rol: 'Mesera', correo: 'ana@example.invalid' };
+
+test('URL de API admite origen solo o /api sin duplicar el prefijo del login', () => {
+  for (const value of ['https://api.example.invalid', 'https://api.example.invalid/', 'https://api.example.invalid/api', ' https://api.example.invalid/api/ ']) {
+    assert.equal(`${normalizarApiUrl(value)}/usuarios/login`, 'https://api.example.invalid/api/usuarios/login');
+  }
+  for (const value of [undefined, '', ' ']) assert.equal(normalizarApiUrl(value), 'http://localhost:5000/api');
+  assert.equal(normalizarApiUrl('http://localhost:5000'), 'http://localhost:5000/api');
+});
 
 function storage() {
   const data = new Map();

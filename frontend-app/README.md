@@ -14,6 +14,12 @@ La ruta `/inventario` reúne productos, categorías, búsqueda, filtros e indica
 
 React 19, JavaScript y JSX, Vite 8, React Router DOM 7, CSS, Lucide React, fuentes de Fontsource y ESLint. El backend del proyecto utiliza Node.js, Express y MySQL.
 
+## URL de la API y despliegue
+
+Configurar `VITE_API_URL` en el servicio frontend de Railway antes del build. Admite el origen del backend (por ejemplo `https://api.example.invalid`) o ese mismo origen terminado en `/api`. El cliente central añade `/api` una sola vez, de modo que el login se envía a `/api/usuarios/login`. Los recursos de imágenes comparten esa configuración. Sin variable, desarrollo usa `http://localhost:5000/api`.
+
+Vite incorpora las variables `VITE_*` al compilar: cambiar la variable exige reconstruir y desplegar el frontend. Estas variables son públicas y no deben contener secretos. La corrección del prefijo no modifica autenticación ni CORS; el cliente usa Bearer y no solicita cookies entre orígenes.
+
 ## Estructura del frontend
 
 ```text

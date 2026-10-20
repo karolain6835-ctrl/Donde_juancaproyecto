@@ -1,5 +1,12 @@
-﻿const API_URL = (import.meta.env?.VITE_API_URL || 'http://localhost:5000/api').replace(/\/+$/, '');
 let unauthorizedHandler = null;
+
+// VITE_API_URL admite el origen del backend o su base terminada en /api.
+export function normalizarApiUrl(value) {
+  const base = (value?.trim() || 'http://localhost:5000/api').replace(/\/+$/, '');
+  return base.endsWith('/api') ? base : `${base}/api`;
+}
+
+export const API_URL = normalizarApiUrl(import.meta.env?.VITE_API_URL);
 
 /** Registra el manejador de sesión no autorizada y devuelve una función para retirarlo. */
 export function configureUnauthorizedHandler(handler) {

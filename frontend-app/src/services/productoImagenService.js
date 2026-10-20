@@ -1,8 +1,8 @@
-import {apiClient, ApiError} from './apiClient.js';
+import {apiClient, ApiError, API_URL} from './apiClient.js';
 const patron=/^\/uploads\/productos\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\.webp$/;
 export function imagenProductoUrl(ruta) {
   if(typeof ruta!=='string'||!patron.test(ruta))return null;
-  return new URL(ruta,import.meta.env?.VITE_API_URL||'http://localhost:5000/api').href;
+  return new URL(ruta,API_URL).href;
 }
 export function validarImagenProducto(file) {
   if(!file||!['image/jpeg','image/png','image/webp'].includes(file.type))return 'Elige una imagen JPG, PNG o WebP.';
