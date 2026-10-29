@@ -24,12 +24,12 @@ export async function listarSesionesJuego(estado,options){
 export function inicioJuegoBody(activo,mesaId,pedido,mesas){
  if(!activo||activo.estado!=='disponible'||activo.sesiones_activas?.length)operationFail('El juego no está disponible. Actualiza la lista.');
  if(!mesas.some(m=>m.id===mesaId))operationFail('Selecciona una mesa real.');
- if(!pedido||pedido.estado!=='abierto'||pedido.mesas_id!==mesaId)operationFail('Selecciona un pedido abierto de esta mesa.');
- return {activos_juego_id:operationId(activo.id),mesas_id:operationId(mesaId),pedidos_id:operationId(pedido.id)};
+ if(pedido&&(pedido.estado!=='abierto'||pedido.mesas_id!==mesaId))operationFail('Selecciona un pedido abierto de esta mesa.');
+ return {activos_juego_id:operationId(activo.id),mesas_id:operationId(mesaId),...(pedido?{pedidos_id:operationId(pedido.id)}:{})};
 }
 export async function iniciarJuego(body){
  const result=await apiClient('/juegos/iniciar',{method:'POST',body});
- if(typeof result?.id_sesion!=='string'||result.datos?.pedidos_id!==body.pedidos_id||result.datos?.pedido_items_id!==null)throw invalidResponse('inicio de juego');
+ if(typeof result?.id_sesion!=='string'||result.datos?.pedidos_id!==(body.pedidos_id??null)||result.datos?.pedido_items_id!==null)throw invalidResponse('inicio de juego');
  sesion(result.datos);return result;
 }
 export async function finalizarJuego(id){
@@ -42,6 +42,26 @@ export async function cambiarEstadoJuego(id,estado){
  const result=await apiClient(`/juegos/activos/${operationPath(id)}/estado`,{method:'PATCH',body:{estado}});
  if(result?.datos?.id!==id||result.datos.estado!==estado)throw invalidResponse('estado del juego');
  return result;
+}
+export async function editarTarifaJuego(id,precio){
+ const result=await apiClient(`/juegos/activos/${operationPath(id)}/tarifa`,{method:'PATCH',body:{precio_hora:precio}});
+ if(result?.datos?.id!==id)throw invalidResponse('tarifa del juego');
+ centavosDivision(result.datos.precio_hora);return result;
+}
+export async function asociarPedidoJuego(id,pedidoId){
+ const result=await apiClient(`/juegos/sesiones/${operationPath(id)}/pedido`,{method:'PATCH',body:{pedidos_id:operationId(pedidoId)}});
+ if(result?.datos?.id!==id||result.datos.pedidos_id!==pedidoId)throw invalidResponse('pedido del juego');
+ sesion(result.datos);return result;
+}
+export async function liquidacionJuego(id,options){
+ const data=(await apiClient(`/juegos/sesiones/${operationPath(id)}/liquidacion`,options))?.datos;
+ if(data?.sesion?.id!==id||!Array.isArray(data.pagos)||typeof data.total_definitivo!=='boolean')throw invalidResponse('cuenta del juego');
+ for(const key of ['total_cuenta','total_pagado','saldo_pendiente','pagos_pendientes_verificacion','disponible'])centavosDivision(data[key]);
+ return data;
+}
+export function juegoSinPedidoPendiente(s){
+ if(s.pedidos_id||s.pedido_items_id||s.pedido_id||s.estado==='cancelada')return false;
+ return s.estado==='activa'||s.costo_total==null||centavosDivision(s.costo_total)>centavosDivision(s.pagado_directo??0)||centavosDivision(s.pendiente_directo??0)>0n;
 }
 export function duracionJuego(s){
  if(!s.fecha_inicio||!s.fecha_fin)return '—';
