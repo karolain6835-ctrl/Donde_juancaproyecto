@@ -1,0 +1,33 @@
+.tejo-demo { padding:24px; background:var(--color-surface); border:1px solid var(--color-border); border-top:4px solid var(--color-accent); border-radius:var(--radius-lg); box-shadow:var(--shadow-card); }
+.tejo-demo-header { display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; padding-bottom:20px; border-bottom:1px solid var(--color-border); }
+.tejo-demo-label { font-size:12px; font-weight:700; letter-spacing:.05em; color:var(--color-primary); }
+.tejo-demo-header p,.tejo-demo-context p { margin-top:6px; font-size:13px; color:var(--color-text-secondary); }
+.tejo-demo .tejo-demo-badge { color:var(--color-info); background:var(--color-info-bg); }
+.tejo-demo-context { display:flex; align-items:center; gap:14px; margin:24px 0; }
+.tejo-demo-equipos { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; }
+.tejo-demo-equipo header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:20px; }
+.juegos-page .tejo-demo-equipo h3 { display:flex; align-items:center; gap:8px; font:700 14px var(--font-ui); letter-spacing:.06em; }
+.tejo-demo-equipo header > span { color:var(--color-text-secondary); font-size:13px; }
+.tejo-demo-equipo header > span strong { margin-left:7px; font-size:30px; color:var(--color-primary); font-variant-numeric:tabular-nums; }
+.tejo-demo-equipo ul { list-style:none; padding:0; margin:0; }
+.tejo-demo-equipo li { display:flex; align-items:center; justify-content:space-between; gap:16px; border-top:1px solid var(--color-border); padding:13px 0; color:var(--color-text); }
+.tejo-demo-equipo li strong { font-size:24px; font-variant-numeric:tabular-nums; }
+.tejo-demo-controls { display:grid; grid-template-columns:auto minmax(180px,1fr) minmax(250px,1.4fr); align-items:start; gap:24px; margin:26px 0; padding:20px; border-radius:var(--radius-md); background:var(--color-background); }
+.tejo-demo-ronda { font-size:20px; font-weight:700; white-space:nowrap; color:var(--color-primary); padding-top:24px; }
+.tejo-demo-controls label { display:grid; gap:8px; min-width:0; font-size:13px; font-weight:600; }
+.tejo-demo-controls select { width:100%; min-width:0; padding:10px; border:1px solid var(--color-border); border-radius:9px; background:var(--color-surface); font:inherit; color:var(--color-text); min-height:44px; }
+.tejo-demo-controls fieldset { border:0; padding:0; min-width:0; }
+.tejo-demo-controls legend { font-size:13px; font-weight:600; margin-bottom:8px; }
+.tejo-demo-controls fieldset p { margin-top:8px; font-size:12px; color:var(--color-text-secondary); }
+.tejo-demo-incrementos { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; }
+.tejo-demo-incrementos button { display:inline-flex; align-items:center; justify-content:center; gap:3px; min-height:44px; border:1px solid var(--color-primary); border-radius:9px; background:var(--color-primary); color:var(--color-surface); font:700 18px var(--font-ui); }
+.tejo-demo-incrementos button:disabled { opacity:.4; cursor:not-allowed; }
+.tejo-demo-ultima { display:grid; gap:6px; padding:18px; border-radius:var(--radius-md); background:var(--color-info-bg); }
+.tejo-demo-ultima span { font-size:12px; color:var(--color-info); }
+.tejo-demo-ultima strong { font-size:20px; color:var(--color-primary); }
+.tejo-demo-actions { display:flex; justify-content:flex-end; flex-wrap:wrap; gap:10px; margin-top:24px; padding-top:20px; border-top:1px solid var(--color-border); }
+.tejo-demo-actions button { display:inline-flex; align-items:center; justify-content:center; gap:8px; width:auto; min-height:44px; margin:0; }
+.tejo-demo button:focus-visible,.tejo-demo select:focus-visible { outline:2px solid var(--color-accent); outline-offset:3px; }
+.juegos-page .tejo-demo-entry { display:inline-flex; align-items:center; gap:8px; width:auto; margin:0 0 20px; padding:12px 16px; background:var(--color-info-bg); color:var(--color-info); border:1px solid var(--color-border); border-radius:10px; font:600 13px var(--font-ui); }
+@media(max-width:1000px){.tejo-demo-controls{grid-template-columns:1fr 2fr}.tejo-demo-controls fieldset{grid-column:1/-1}.tejo-demo-ronda{padding-top:26px}}
+@media(max-width:600px){.tejo-demo{padding:18px}.tejo-demo-equipos,.tejo-demo-controls{grid-template-columns:1fr}.tejo-demo-context{align-items:flex-start}.tejo-demo-ronda{padding:0}.tejo-demo-controls{padding:16px;gap:18px}.tejo-demo-actions{flex-direction:column}.tejo-demo-actions button{width:100%}.juegos-page .tejo-demo-entry{white-space:normal;text-align:left}}
