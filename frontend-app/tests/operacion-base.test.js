@@ -13,7 +13,7 @@ test('Administración estructural solo Admin/SuperAdmin y contrato numérico mí
     for (const p of ['mesas.crear','mesas.editarNumero']) assert.equal(can({ rol }, p), ['Administrador','SuperAdmin'].includes(rol));
   }
   assert.deepEqual(mesaNumeroBody({ numero: '12', estado: 'ocupada' }), { numero: 12 });
-  for (const numero of ['', 0, -1, 1.5, null, '2e3', 2147483648]) assert.throws(() => mesaNumeroBody({ numero }));
+  for (const numero of ['', ' ', 'texto', '0', '-1', '1.5', 0, -1, 1.5, null, '2e3', 2147483648]) assert.throws(() => mesaNumeroBody({ numero }));
 });
 test('Alta y cambio de número usan API real y propagan duplicados', async () => {
   const previous = globalThis.fetch; let request, status = 201, response = { datos: { id: 'mesa-real', numero: 12, estado: 'disponible' } };
@@ -22,7 +22,8 @@ test('Alta y cambio de número usan API real y propagan duplicados', async () =>
     assert.equal((await guardarNumeroMesa({ numero: '12' })).estado, 'disponible');
     assert.ok(request.url.endsWith('/mesas')); assert.equal(request.method, 'POST'); assert.deepEqual(JSON.parse(request.body), { numero: 12 });
     status = 200; await guardarNumeroMesa({ numero: 12 }, 'mesa-real'); assert.equal(request.method, 'PATCH'); assert.ok(request.url.endsWith('/mesas/mesa-real/numero'));
-    status = 409; response = { error: 'Ya existe una mesa con ese número.' }; await assert.rejects(guardarNumeroMesa({ numero: 12 }), e => e.status === 409 && e.message === response.error);
+    status = 409; response = { error: 'Ya existe una mesa con el número 12.' };
+    for (const id of [undefined, 'mesa-real']) await assert.rejects(guardarNumeroMesa({ numero: 12 }, id), e => e.status === 409 && e.message === response.error);
   } finally { globalThis.fetch = previous; }
 });
 
@@ -60,9 +61,15 @@ test('UI real de participantes y administración de mesas: permisos, confirmaci�
       const pending = globalThis.__baseSubmit({ preventDefault() {} }); assert.deepEqual(events, []);
       confirm(new Response(JSON.stringify({ datos: { id: 'nueva', numero: 12, estado: 'disponible' } }), { status: 201 }));
       await pending; assert.deepEqual(events, ['reconsulta','cerrar']);
-      events.length = 0; globalThis.fetch = async () => new Response(JSON.stringify({ error: 'Ya existe una mesa con ese número.' }), { status: 409 });
-      render(Form, props); await globalThis.__baseSubmit({ preventDefault() {} }); assert.deepEqual(events, []);
-      assert.match(render(Form, props), /role="alert">Ya existe una mesa/); delete globalThis.__baseError;
+      events.length = 0; globalThis.fetch = async () => new Response(JSON.stringify({ error: 'Ya existe una mesa con el número 12.' }), { status: 409 });
+      for (const mesa of [undefined, { id: 'mesa-real', numero: 12 }]) {
+        const formProps = { ...props, mesa };
+        render(Form, formProps); await globalThis.__baseSubmit({ preventDefault() {} }); assert.deepEqual(events, []);
+        const html = render(Form, formProps);
+        assert.match(html, /role="alert">Ya existe una mesa con el número 12\./);
+        assert.doesNotMatch(html, /ER_DUP_ENTRY|uq_mesas_numero|Duplicate entry/);
+        delete globalThis.__baseError;
+      }
     });
     await t.test('lista mixta, homónimos, vacío, loading y error con reintento', () => {
       const people = [{ id: 'c', nombre: 'Carlos', tipo_participante: 'registrado' }, { id: 'l', nombre: 'Laura', tipo_participante: 'registrado' }, { id: 't1', nombre: 'Felipe', tipo_participante: 'temporal' }, { id: 't2', nombre: 'Felipe', tipo_participante: 'temporal' }];

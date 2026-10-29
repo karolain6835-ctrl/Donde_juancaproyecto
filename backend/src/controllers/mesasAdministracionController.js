@@ -11,7 +11,7 @@ async function guardar(req, res, editar) {
   let c, abierta = false, bloqueo = false;
   try {
     c = mysql.createConnection(db.dbConfig).promise();
-    // La BD contiene números duplicados y no permite añadir UNIQUE sin limpieza.
+    // La restricción UNIQUE de la BD respalda la validación de esta API.
     // Serializar altas/renumeraciones de esta API incluso con varias instancias.
     const [[lock]] = await c.query("SELECT GET_LOCK(CONCAT('dj:mesas:',LEFT(SHA2(DATABASE(),256),40)),5) AS adquirido");
     if (Number(lock.adquirido) !== 1) throw fallo(409, 'Otra mesa se está guardando. Reintenta.');
@@ -24,7 +24,7 @@ async function guardar(req, res, editar) {
     }
     const id = editar ? anterior.id : crypto.randomUUID();
     const [[duplicada]] = await c.query('SELECT id FROM mesas WHERE numero=? AND id<>? LIMIT 1 FOR UPDATE', [numero, id]);
-    if (duplicada) throw fallo(409, 'Ya existe una mesa con ese número.');
+    if (duplicada) throw fallo(409, `Ya existe una mesa con el número ${numero}.`);
     if (editar) await c.query('UPDATE mesas SET numero=? WHERE id=?', [numero, id]);
     else await c.query("INSERT INTO mesas(id,numero,estado,creado_en) VALUES (?,?,'disponible',UTC_TIMESTAMP())", [id, numero]);
     if (!editar || anterior.numero !== numero) await registrarAuditoria(c, actor, 'mesas', editar ? 'mesa_numero_cambiado' : 'mesa_creada', 'mesas', id, { antes: editar ? { numero: anterior.numero } : null, despues: { numero } });
@@ -33,7 +33,7 @@ async function guardar(req, res, editar) {
     return res.status(editar ? 200 : 201).json({ datos: mesa });
   } catch (error) {
     if (abierta) { try { await c.rollback(); } catch (rollback) { console.error('Rollback mesa:', new Error('Fallo interno; detalles sensibles omitidos.').stack); } }
-    return res.status(error.status || (['ER_DUP_ENTRY','ER_LOCK_DEADLOCK','ER_LOCK_WAIT_TIMEOUT'].includes(error.code) ? 409 : 500)).json({ error: error.status ? error.message : error.code === 'ER_DUP_ENTRY' ? 'Ya existe una mesa con ese número.' : 'No se pudo guardar la mesa. Reintenta.' });
+    return res.status(error.status || (['ER_DUP_ENTRY','ER_LOCK_DEADLOCK','ER_LOCK_WAIT_TIMEOUT'].includes(error.code) ? 409 : 500)).json({ error: error.status ? error.message : error.code === 'ER_DUP_ENTRY' ? `Ya existe una mesa con el número ${numero}.` : 'No se pudo guardar la mesa. Reintenta.' });
   } finally {
     if (c) {
       try { if (bloqueo) await c.query("SELECT RELEASE_LOCK(CONCAT('dj:mesas:',LEFT(SHA2(DATABASE(),256),40)))"); }
