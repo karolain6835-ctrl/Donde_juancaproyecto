@@ -5,6 +5,7 @@ import {can} from '../utils/permissions';
 import {useRemoteCatalog,useCatalogMutation} from '../hooks/useRemoteCatalog';
 import {listarRefrigeradores,guardarRefrigerador,estadosRefrigerador} from '../services/refrigeradoresService';
 import './RefrigeradoresSection.css';
+import RefrigeradorDemoPanel from './RefrigeradorDemoPanel';
 const EMPTY_REFRIGERADORES=Object.freeze([]);
 // Catálogo real; las existencias por equipo no tienen un flujo operativo sincronizado.
 export default function RefrigeradoresSection({onChanged}){
@@ -12,6 +13,7 @@ export default function RefrigeradoresSection({onChanged}){
  const resource=useRemoteCatalog(useCallback(options=>allowed?listarRefrigeradores(options):Promise.resolve([]),[allowed]));
  const mutation=useCatalogMutation();
  const [busqueda,setBusqueda]=useState(''),[filtroEstado,setFiltroEstado]=useState('todos');
+ const [demo,setDemo]=useState(false);
  const [selectedId,setSelectedId]=useState(null),[form,setForm]=useState(null),[editingId,setEditingId]=useState(null);
  const refrigeradores=resource.data||EMPTY_REFRIGERADORES;
  const selected=refrigeradores.find(r=>r.id===selectedId);
@@ -27,7 +29,9 @@ export default function RefrigeradoresSection({onChanged}){
  }
  const close=()=>{if(!mutation.busy){setForm(null);setSelectedId(null);}};
  if(!allowed)return <p>No tienes permiso para consultar refrigeradores.</p>;
+ if(demo)return <div className="refrigeradores-section"><RefrigeradorDemoPanel onExit={()=>setDemo(false)}/></div>;
  return <div className="refrigeradores-section">
+  <div className="refrigeradores-demo-entry"><button type="button" className="drawer-secondary-button" disabled={mutation.busy} onClick={()=>{setForm(null);setSelectedId(null);mutation.reset();setDemo(true);}}>Modo demostración IoT</button></div>
   {mutation.success&&<p role="status">{mutation.success}</p>}{mutation.error&&<p role="alert">{mutation.error}</p>}
   {resource.loading?<p role="status">Cargando refrigeradores...</p>:resource.error?<div role="alert">{resource.error}<button className="drawer-secondary-button" onClick={resource.refresh}>Reintentar</button></div>:<>
   <section className="refrigeradores-kpis">{[['todos','Total',Refrigerator],['activa','Activas',CircleCheck],['mantenimiento','Mantenimiento',Wrench],['apagada','Apagadas',Power]].map(([key,label,Icon])=><button key={key} className={'refrigerador-kpi '+(key===filtroEstado?'selected':'')} onClick={()=>setFiltroEstado(key)}><div className="refrigerador-kpi-icon"><Icon size={20}/></div><span>{label}</span><strong>{key==='todos'?refrigeradores.length:refrigeradores.filter(r=>r.estado===key).length}</strong></button>)}</section>
