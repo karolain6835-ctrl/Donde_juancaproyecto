@@ -1891,9 +1891,10 @@ function InventarioPage() {
                   display: "grid",
                   gridTemplateColumns: "1fr 1fr",
                   gap: "12px",
+                  alignItems: "start",
                 }}
               >
-                <label style={{ display: "grid", gap: "6px" }}>
+                <label className="producto-stock-campo">
                   <span style={{ fontSize: "12px", fontWeight: 700 }}>
                     {productoEditandoId ? "Stock actual" : "Cantidad inicial"}
                   </span>
@@ -1906,18 +1907,12 @@ function InventarioPage() {
                     value={formProducto.cantidad}
                     onChange={cambiarCampoProducto}
                     required
-                    style={{
-                      width: "100%",
-                      padding: "11px 12px",
-                      border: "1px solid var(--color-border)",
-                      borderRadius: "10px",
-                      font: "inherit",
-                    }}
+                    className="producto-stock-input"
                   />
                   {productoEditandoId && <small>Para cambiar las unidades disponibles, utiliza el ajuste de inventario.</small>}
                 </label>
 
-                <label style={{ display: "grid", gap: "6px" }}>
+                <label className="producto-stock-campo">
                   <span style={{ fontSize: "12px", fontWeight: 700 }}>
                     Stock mínimo
                   </span>
@@ -1929,13 +1924,7 @@ function InventarioPage() {
                     value={formProducto.stock_minimo}
                     onChange={cambiarCampoProducto}
                     required
-                    style={{
-                      width: "100%",
-                      padding: "11px 12px",
-                      border: "1px solid var(--color-border)",
-                      borderRadius: "10px",
-                      font: "inherit",
-                    }}
+                    className="producto-stock-input"
                   />
                 </label>
               </div>

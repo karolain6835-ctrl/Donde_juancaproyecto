@@ -769,6 +769,32 @@ button.inventario-kpi:hover {
     -12px 0 32px rgba(30, 43, 34, 0.14);
 }
 
+/* La ayuda ocupa su propio espacio sin estirar el campo vecino. */
+.producto-stock-campo {
+  display: flex;
+  flex-direction: column;
+  align-self: start;
+  height: auto;
+  min-height: 0;
+  min-width: 0;
+  gap: 6px;
+}
+
+.producto-stock-campo > .producto-stock-input {
+  flex: none;
+  align-self: start;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: calc(1.5em + 24px);
+  min-height: 0;
+  padding: 11px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  font: inherit;
+  line-height: 1.5;
+}
+
 .inventario-drawer-header {
   display: flex;
   justify-content: space-between;
