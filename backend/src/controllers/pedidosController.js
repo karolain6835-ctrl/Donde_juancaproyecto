@@ -4,7 +4,6 @@ const {centavos}=require('../services/liquidacionService');
 const { agregarLineaPedido, registrarMovimientoPedido } = require('../services/pedidoItemsService');
 const { ejecutor } = require('../services/identidadService');
 const db = require('../config/db');
-const mysql = require('mysql2');
 const crypto = require('crypto'); // Generador de UUIDs
 const { insertarParticipante, validarParticipante } = require('../services/participantesService');
 const { asegurarSesion, bloquearAmbitoPedido, validarSesionPedido } = require('../services/sesionesMesaService');
@@ -58,7 +57,7 @@ const crearPedido = async (req, res) => {
   let conexion, abierta = false;
   const rechazar = (status, message) => { throw Object.assign(new Error(message), { status }); };
   try {
-    conexion = mysql.createConnection(db.dbConfig).promise();
+    conexion = await db.obtenerConexion();
     await conexion.beginTransaction(); abierta = true;
     const [[mesa]] = await conexion.query('SELECT id,estado FROM mesas WHERE id=? FOR UPDATE', [mesas_id]);
     if (!mesa) rechazar(404, 'Mesa no encontrada.');
@@ -136,7 +135,7 @@ const agregarItemPedido = async (req, res) => {
   let conexion;
   let transaccionIniciada = false;
   try {
-    conexion = mysql.createConnection(db.dbConfig).promise();
+    conexion = await db.obtenerConexion();
     await conexion.beginTransaction();
     transaccionIniciada = true;
 
@@ -264,7 +263,7 @@ const cancelarItemPedido = async (req, res) => {
   let conexion;
   let transaccionIniciada = false;
   try {
-    conexion = mysql.createConnection(db.dbConfig).promise();
+    conexion = await db.obtenerConexion();
     await conexion.beginTransaction();
     transaccionIniciada = true;
 

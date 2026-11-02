@@ -1,5 +1,4 @@
 const crypto = require('crypto');
-const mysql = require('mysql2');
 const db = require('../config/db');
 const { ejecutor } = require('../services/identidadService');
 const { registrarAuditoria } = require('../services/auditoriaService');
@@ -10,7 +9,7 @@ async function guardar(req, res, editar) {
   if (Object.keys(body).some(k => k !== 'numero') || !Number.isInteger(numero) || numero < 1 || numero > 2147483647) return res.status(400).json({ error: 'El número de mesa debe ser un entero mayor que cero.' });
   let c, abierta = false, bloqueo = false;
   try {
-    c = mysql.createConnection(db.dbConfig).promise();
+    c = await db.obtenerConexion();
     // La restricción UNIQUE de la BD respalda la validación de esta API.
     // Serializar altas/renumeraciones de esta API incluso con varias instancias.
     const [[lock]] = await c.query("SELECT GET_LOCK(CONCAT('dj:mesas:',LEFT(SHA2(DATABASE(),256),40)),5) AS adquirido");
@@ -37,7 +36,7 @@ async function guardar(req, res, editar) {
   } finally {
     if (c) {
       try { if (bloqueo) await c.query("SELECT RELEASE_LOCK(CONCAT('dj:mesas:',LEFT(SHA2(DATABASE(),256),40)))"); }
-      catch (error) { console.error('Liberación de bloqueo de mesas:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
+      catch (error) { c.descartar?.(); /* Un GET_LOCK sin liberar no debe volver al pool. */ console.error('Liberación de bloqueo de mesas:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
       finally { try { await c.end(); } catch (error) { console.error('Cierre de mesas:', new Error('Fallo interno; detalles sensibles omitidos.').stack); } }
     }
   }

@@ -1,4 +1,3 @@
-const mysql = require('mysql2');
 const db = require('../config/db');
 const imagen = require('../services/productoImagenService');
 const {registrarAuditoria} = require('../services/auditoriaService');
@@ -10,7 +9,7 @@ function modificar(quitar) {return async(req,res)=>{
     if(typeof req.params.id!=='string'||!req.params.id.trim()||req.params.id.length>36||Object.keys(req.query||{}).length) return res.status(400).json({error:'Producto inválido.'});
     if(quitar&&((req.body&&Object.keys(req.body).length)||req.file))return res.status(400).json({error:'Esta operación no admite archivos ni otros datos.'});
     const contenido=quitar?null:await imagen.preparar(req.file);
-    c=mysql.createConnection(db.dbConfig).promise();await c.beginTransaction();
+    c=await db.obtenerConexion();await c.beginTransaction();
     const [[producto]]=await c.query('SELECT id,imagen_url FROM productos WHERE id=? FOR UPDATE',[req.params.id]);
     if(!producto){await c.rollback();return res.status(404).json({error:'Producto no encontrado.'});}
     anterior=producto.imagen_url;

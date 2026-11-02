@@ -1,12 +1,11 @@
 const db = require('../config/db');
-const mysql = require('mysql2');
 const { insertarParticipante, validarParticipante, listarParticipantes, fallo } = require('../services/participantesService');
 const { bloquearAmbitoPedido, validarSesionPedido } = require('../services/sesionesMesaService');
 async function operar(req, res, agregar) {
   let c, abierta = false;
   try {
     if (agregar) validarParticipante(req.body);
-    c = mysql.createConnection(db.dbConfig).promise();
+    c = await db.obtenerConexion();
     await c.beginTransaction(); abierta = true;
     const pedido = await bloquearAmbitoPedido(c, req.params.id);
     let datos;

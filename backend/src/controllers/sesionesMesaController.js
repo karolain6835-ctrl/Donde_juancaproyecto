@@ -1,4 +1,3 @@
-const mysql = require('mysql2');
 const db = require('../config/db');
 const { sesionActiva } = require('../services/sesionesMesaService');
 const { fallo, validarParticipante, insertarParticipante, listarParticipantes } = require('../services/participantesService');
@@ -8,7 +7,7 @@ async function operar(req, res, modo) {
   let c, abierta = false;
   try {
     if (modo === 'agregar') validarParticipante(req.body);
-    c = mysql.createConnection(db.dbConfig).promise();
+    c = await db.obtenerConexion();
     await c.beginTransaction(); abierta = true;
     let datos, sesion;
     if (modo === 'consumos') {

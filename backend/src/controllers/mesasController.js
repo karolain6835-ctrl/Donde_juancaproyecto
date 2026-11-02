@@ -2,7 +2,6 @@ const {pedidoJuegoSQL}=require('../services/juegosPedidoService');
 const { ejecutor } = require('../services/identidadService');
 const { registrarAuditoria } = require('../services/auditoriaService');
 const db = require('../config/db');
-const mysql = require('mysql2');
 const { evaluarLiberacionMesa } = require('../services/liquidacionService');
 const { asegurarSesion, cerrarSesion, sesionActiva } = require('../services/sesionesMesaService');
 
@@ -43,7 +42,7 @@ const actualizarEstadoMesa = async (req,res) => {
   if(!['disponible','ocupada','en_cobro'].includes(estado))return res.status(400).json({error:'Estado no válido. Use: disponible, ocupada o en_cobro.'});
   let conexion,abierta=false;
   try {
-    conexion=mysql.createConnection(db.dbConfig).promise();await conexion.beginTransaction();abierta=true;
+    conexion=await db.obtenerConexion();await conexion.beginTransaction();abierta=true;
     const [[mesa]]=await conexion.query('SELECT id,estado FROM mesas WHERE id=? FOR UPDATE',[id]);
     if(!mesa)throw Object.assign(new Error('Mesa no encontrada.'),{status:404});
     if (estado === 'disponible') {
@@ -66,7 +65,7 @@ const actualizarEstadoMesa = async (req,res) => {
 const consultarLiberacionMesa = async (req, res) => {
   let conexion, abierta = false;
   try {
-    conexion = mysql.createConnection(db.dbConfig).promise(); await conexion.beginTransaction(); abierta = true;
+    conexion = await db.obtenerConexion(); await conexion.beginTransaction(); abierta = true;
     const [[mesa]] = await conexion.query('SELECT id,estado FROM mesas WHERE id=? FOR UPDATE', [req.params.id]);
     if (!mesa) throw Object.assign(new Error('Mesa no encontrada.'), { status: 404 });
     let disponibilidad;
@@ -102,7 +101,7 @@ const trasladarMesa = async (req, res) => {
   const rechazar = (status, mensaje) => { throw Object.assign(new Error(mensaje), { status }); };
   try {
     // Conexión exclusiva: otras peticiones no comparten esta transacción.
-    conexion = mysql.createConnection(db.dbConfig).promise();
+    conexion = await db.obtenerConexion();
     await conexion.beginTransaction();
     transaccionIniciada = true;
     // Orden estable para serializar traslados concurrentes de las mismas mesas.

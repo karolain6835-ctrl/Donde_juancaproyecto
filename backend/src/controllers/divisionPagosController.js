@@ -1,10 +1,9 @@
-const mysql=require('mysql2');
 const db=require('../config/db');
 const {fechaLocalSQL}=require('../utils/fechaHora');
 exports.listar=async(req,res)=>{
  let c;
  try{
-  c=mysql.createConnection(db.dbConfig).promise();
+  c=await db.obtenerConexion();
   const [[division]]=await c.query('SELECT id FROM sesiones_division_cuentas WHERE id=?',[req.params.id]);
   if(!division)return res.status(404).json({error:'La división no existe.'});
   const [pagos]=await c.query(`SELECT p.id,p.metodo_de_pago,p.total_seleccionado,p.estado,p.verificacion_estado,

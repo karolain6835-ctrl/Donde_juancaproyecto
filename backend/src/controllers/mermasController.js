@@ -1,6 +1,5 @@
 const { ejecutor } = require('../services/identidadService');
 const db = require('../config/db');
-const mysql = require('mysql2');
 const crypto = require('crypto');
 
 const errorMerma = (status, mensaje) => Object.assign(new Error(mensaje), { status });
@@ -11,7 +10,7 @@ const conConexion = async (res, operacion, lectura = false) => {
   let conexion;
   let transaccion = false;
   try {
-    conexion = mysql.createConnection(db.dbConfig).promise();
+    conexion = await db.obtenerConexion();
     if (lectura) {
       await conexion.query('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ');
       await conexion.query('START TRANSACTION WITH CONSISTENT SNAPSHOT, READ ONLY');

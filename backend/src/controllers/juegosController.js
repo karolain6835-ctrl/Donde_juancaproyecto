@@ -2,7 +2,6 @@ const {pedidoJuegoSQL}=require('../services/juegosPedidoService');
 const {bloquearPedido}=require('../services/liquidacionService');
 const {validarSesionPedido}=require('../services/sesionesMesaService');
 const { ejecutor } = require('../services/identidadService');
-const mysql = require('mysql2');
 const db = require('../config/db');
 const { randomUUID } = require('node:crypto');
 const { calcularCosto } = require('../services/juegosService');
@@ -22,7 +21,7 @@ const campos = (body, nombres) => {
 const ejecutar = async (res, operacion, transaccion = false) => {
   let conexion, abierta = false;
   try {
-    conexion = mysql.createConnection(db.dbConfig).promise();
+    conexion = await db.obtenerConexion();
     if (transaccion) { await conexion.beginTransaction(); abierta = true; }
     const respuesta = await operacion(conexion);
     if (abierta) { await conexion.commit(); abierta = false; }

@@ -1,5 +1,4 @@
 const db = require('../config/db');
-const mysql = require('mysql2');
 
 const errorCompra = (status, mensaje) => Object.assign(new Error(mensaje), { status });
 const idValido = id => typeof id === 'string' && id.length > 0 && id.length <= 36 && id === id.trim();
@@ -20,7 +19,7 @@ const conConexion = async (res, operacion, lectura = false) => {
   let conexion;
   let transaccion = false;
   try {
-    conexion = mysql.createConnection(db.dbConfig).promise();
+    conexion = await db.obtenerConexion();
     if (lectura) {
       await conexion.query('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ');
       await conexion.query('START TRANSACTION WITH CONSISTENT SNAPSHOT, READ ONLY');

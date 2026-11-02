@@ -1,7 +1,6 @@
 const {fechaLocalSQL,horaBogotaSQL}=require('../utils/fechaHora');
 const { ejecutor } = require('../services/identidadService');
 const db = require('../config/db');
-const mysql = require('mysql2');
 const crypto = require('crypto');
 
 // ==========================================
@@ -27,7 +26,7 @@ const actualizarEstadoPedido = async (req, res) => {
   let transaccionIniciada = false;
   const rechazar = (status, mensaje) => { throw Object.assign(new Error(mensaje), { status }); };
   try {
-    conexion = mysql.createConnection(db.dbConfig).promise();
+    conexion = await db.obtenerConexion();
     await conexion.beginTransaction();
     transaccionIniciada = true;
     const [ubicacion] = await conexion.query(
@@ -183,7 +182,7 @@ const cambiarLineasPedido = async (req, res, despacho = false) => {
   let conexion, abierta = false;
   const reject = (status, message) => { throw Object.assign(new Error(message), { status }); };
   try {
-    conexion = mysql.createConnection(db.dbConfig).promise();
+    conexion = await db.obtenerConexion();
     await conexion.beginTransaction(); abierta = true;
     const [[pedido]] = await conexion.query('SELECT id,estado FROM pedidos WHERE id=? FOR UPDATE', [id]);
     if (!pedido) reject(404, 'Pedido no encontrado.');

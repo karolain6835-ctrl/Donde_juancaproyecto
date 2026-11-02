@@ -1,4 +1,3 @@
-const mysql=require('mysql2');
 const db=require('../config/db');
 const {fechaLocalSQL}=require('../utils/fechaHora');
 const {consultarPedido,calcularCuenta}=require('../services/liquidacionService');
@@ -7,7 +6,7 @@ const dinero=n=>`${n/100n}.${String(n%100n).padStart(2,'0')}`;
 exports.obtener=async(req,res)=>{
  let c,abierta=false;
  try{
-  c=mysql.createConnection(db.dbConfig).promise();
+  c=await db.obtenerConexion();
   // Un GET no reserva saldo ni decide cierres: todas las consultas comparten
   // el mismo snapshot MVCC y no compiten con los bloqueos de los pagos.
   await c.query('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ');

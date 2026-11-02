@@ -1,4 +1,3 @@
-const mysql = require('mysql2');
 const db = require('../config/db');
 const servicio = require('../services/recuperacionService');
 const {crearCorreo} = require('../services/correoRecuperacionService');
@@ -38,7 +37,7 @@ function handler(accion) {
         enCurso++;reservado=true;
         correo = crearCorreo(); await correo.preparar();
       }
-      c = mysql.createConnection(db.dbConfig).promise();
+      c = await db.obtenerConexion();
       await c.beginTransaction();
       const result = accion === 'solicitar' ? await servicio.solicitar(c, servicio.correo(req.body), secret) : accion === 'verificar' ? await servicio.verificar(c, servicio.correo(req.body), req.body.codigo, secret) : await servicio.restablecer(c, req.body);
       await c.commit();

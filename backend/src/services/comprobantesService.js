@@ -1,4 +1,3 @@
-const mysql = require('mysql2');
 const db = require('../config/db');
 const { randomUUID } = require('node:crypto');
 const { bloquearPedido, calcularCuenta, centavos, errorLiquidacion } = require('./liquidacionService');
@@ -29,7 +28,7 @@ const detalle = async (c, comprobanteId) => {
 const ejecutar = async (res, operacion, lectura = false) => {
   let c, abierta = false;
   try {
-    c = mysql.createConnection(db.dbConfig).promise();
+    c = await db.obtenerConexion();
     if (lectura) {
       await c.query('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ');
       await c.query('START TRANSACTION WITH CONSISTENT SNAPSHOT, READ ONLY');

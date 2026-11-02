@@ -1,4 +1,3 @@
-const mysql = require('mysql2');
 const db = require('../config/db');
 const { randomUUID, createHash } = require('crypto');
 const { ejecutor } = require('../services/identidadService');
@@ -32,7 +31,7 @@ async function operar(req,res,confirmar) {
     const key = req.get?.('Idempotency-Key');
     const body = confirmar ? validar(req.body,key) : null;
     const hash = body ? createHash('sha256').update(JSON.stringify(body)).digest('hex') : null;
-    c=mysql.createConnection(db.dbConfig).promise(); await c.beginTransaction(); abierta=true;
+    c=await db.obtenerConexion(); await c.beginTransaction(); abierta=true;
     if (!idValido(req.params.pedido_id)) throw fallo(400,'Pedido inválido.');
     const pedido = await bloquearAmbitoPedido(c,req.params.pedido_id);
     let datos,status=200;

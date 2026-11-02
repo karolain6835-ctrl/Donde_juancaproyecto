@@ -1,6 +1,5 @@
 const { registrarAuditoria } = require('../services/auditoriaService');
 const { ejecutor } = require('../services/identidadService');
-const mysql = require('mysql2');
 const db = require('../config/db');
 const { randomUUID } = require('node:crypto');
 const historialClientes=require('../services/historialClientesService');
@@ -47,7 +46,7 @@ const escrita = resultado => {
 const ejecutar = async (res, operacion, lectura = false) => {
   let conexion, transaccion = false;
   try {
-    conexion = mysql.createConnection(db.dbConfig).promise();
+    conexion = await db.obtenerConexion();
     if (lectura) {
       await conexion.query('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ');
       await conexion.query('START TRANSACTION WITH CONSISTENT SNAPSHOT, READ ONLY');

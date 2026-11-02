@@ -1,4 +1,3 @@
-const mysql = require('mysql2');
 const {horaBogotaSQL,fechaLocalSQL}=require('../utils/fechaHora');
 const { randomUUID } = require('node:crypto');
 const { ejecutor } = require('../services/identidadService');
@@ -9,7 +8,7 @@ const cuotas = require('../services/divisionCuotasService');
 async function transaccion(req,res,operation,{soloLectura=false}={}){
  const actor=ejecutor(req,res);if(!actor)return;
  let c;
- try{c=mysql.createConnection(db.dbConfig).promise();
+ try{c=await db.obtenerConexion();
   if(soloLectura){await c.query('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ');await c.query('START TRANSACTION WITH CONSISTENT SNAPSHOT, READ ONLY');}
   else await c.beginTransaction();
   const r=await operation(c,actor);await c.commit();return res.status(r.status).json({exito:true,data:r.data});}
