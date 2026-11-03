@@ -5,7 +5,7 @@ test('Administración de mesas real: altas, duplicados concurrentes y renumeraci
   const sandbox = await crear(), c = sandbox.connection;
   let failAudit = false;
   const module = { exports: {} };
-  vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/controllers/mesasAdministracionController.js'), 'utf8'), { module, exports: module.exports, console: { error() {} }, require: n => {
+  vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/controllers/mesasAdministracionController.js'), 'utf8'), { module, exports: module.exports, console: { error() {} }, require: require('./helpers/poolRequire')(n => {
     if (n === '../config/db') return { dbConfig: sandbox.config };
     if (n === 'mysql2') return { createConnection(config) {
       const real = require('mysql2').createConnection(config).promise();
@@ -15,7 +15,7 @@ test('Administración de mesas real: altas, duplicados concurrentes y renumeraci
       } }) };
     } };
     return require(n.startsWith('.') ? path.join(__dirname, '../src/controllers', n) : n);
-  } });
+  }) });
   const controller = module.exports;
   const invoke = (fn, body, id, rol = 'Administrador') => new Promise((resolve, reject) => Promise.resolve(fn({ body, params: { id }, usuario: { id: 'actor', rol } }, { status(s) { this.s = s; return this; }, json(data) { resolve({ status: this.s || 200, data }); } })).catch(reject));
   try {

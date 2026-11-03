@@ -1,6 +1,4 @@
 const db = require('../config/db');
-const mysql = require('mysql2');
-
 const errorCompra = (status, mensaje) => Object.assign(new Error(mensaje), { status });
 const idValido = id => typeof id === 'string' && id.length > 0 && id.length <= 36 && id === id.trim();
 const objeto = valor => valor && typeof valor === 'object' && !Array.isArray(valor);
@@ -20,7 +18,7 @@ const conConexion = async (res, operacion, lectura = false) => {
   let conexion;
   let transaccion = false;
   try {
-    conexion = mysql.createConnection(db.dbConfig).promise();
+    conexion = await db.acquire();
     if (lectura) {
       await conexion.query('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ');
       await conexion.query('START TRANSACTION WITH CONSISTENT SNAPSHOT, READ ONLY');
@@ -40,7 +38,7 @@ const conConexion = async (res, operacion, lectura = false) => {
     return res.status(error.status || 500).json({ error: error.status ? error.message : 'No se pudo completar la operación.' });
   } finally {
     if (conexion) {
-      try { await conexion.end(); }
+      try { await conexion.release(); }
       catch (cierre) { console.error('Error al cerrar compras/proveedores:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
     }
   }

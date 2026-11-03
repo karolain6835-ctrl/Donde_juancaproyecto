@@ -20,9 +20,9 @@ function fixture({ duplicada = false, duplicateWrite = false } = {}) {
   };
   const module = { exports: {} };
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/controllers/mesasAdministracionController.js'), 'utf8'), {
-    module, exports: module.exports, console, require(name) {
+    module, exports: module.exports, console, require: function (name) {
       if (name === 'mysql2') return { createConnection: () => ({ promise: () => connection }) };
-      if (name === '../config/db') return { dbConfig: {} };
+      if (name === '../config/db') return { acquire: async()=>({...connection,release:()=>connection.end()}) };
       if (name === '../services/identidadService') return { ejecutor: () => 'actor' };
       if (name === '../services/auditoriaService') return { registrarAuditoria: async () => {} };
       return require(name);

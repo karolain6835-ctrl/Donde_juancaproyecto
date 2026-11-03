@@ -2,7 +2,7 @@ const test=require('node:test');const assert=require('node:assert/strict');
 const fs=require('node:fs');const path=require('node:path');const vm=require('node:vm');
 function controller(c){
  const load=(file,overrides)=>{const m={exports:{}};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../src',file),'utf8'),{module:m,exports:m.exports,console:{error(){}},require:n=>Object.hasOwn(overrides,n)?overrides[n]:require(n)});return m.exports;};
- const utils=load('services/comprasService.js',{'../config/db':{dbConfig:{}},mysql2:{createConnection:()=>({promise:()=>c})}});
+ const utils=load('services/comprasService.js',{'../config/db':{acquire:async()=>({...c,release:()=>c.end()})},mysql2:{createConnection:()=>({promise:()=>c})}});
  const receipts=load('services/recepcionesCompraService.js',{'./comprasService':utils,'./auditoriaService':{registrarAuditoria:async()=>{}}});
  return load('controllers/comprasController.js',{'../services/comprasService':utils,'../services/recepcionesCompraService':receipts,'../services/identidadService':require('../src/services/identidadService')});
 }

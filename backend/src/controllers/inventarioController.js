@@ -1,6 +1,5 @@
 const { ejecutor } = require('../services/identidadService');
 const db = require('../config/db');
-const mysql = require('mysql2');
 const crypto = require('crypto');
 
 // 1. Ajustar la existencia operativa y registrar su movimiento atómicamente.
@@ -21,7 +20,7 @@ exports.actualizarStock = async (req, res) => {
   let transaccionIniciada = false;
   const errorAjuste = (status, mensaje) => Object.assign(new Error(mensaje), { status });
   try {
-    conexion = mysql.createConnection(db.dbConfig).promise();
+    conexion = await db.acquire();
     await conexion.beginTransaction();
     transaccionIniciada = true;
     const [productos] = await conexion.query(
@@ -75,7 +74,7 @@ exports.actualizarStock = async (req, res) => {
     });
   } finally {
     if (conexion) {
-      try { await conexion.end(); }
+      try { await conexion.release(); }
       catch (errorConexion) { console.error('Error al cerrar conexión de ajuste:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
     }
   }
@@ -111,7 +110,7 @@ exports.obtenerMovimientos = async (req, res) => {
   let conexion;
   let transaccion = false;
   try {
-    conexion = mysql.createConnection(db.dbConfig).promise();
+    conexion = await db.acquire();
     // Ambas consultas usan la misma instantánea, incluso con READ COMMITTED configurado globalmente.
     await conexion.query('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ');
     await conexion.query('START TRANSACTION WITH CONSISTENT SNAPSHOT, READ ONLY');
@@ -145,7 +144,7 @@ exports.obtenerMovimientos = async (req, res) => {
     return res.status(500).json({ error: 'No se pudieron consultar los movimientos.' });
   } finally {
     if (conexion) {
-      try { await conexion.end(); }
+      try { await conexion.release(); }
       catch (cierre) { console.error('Error al cerrar lectura:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
     }
   }

@@ -30,7 +30,7 @@ const cargar = (nombre, db, real) => {
       : n === '../services/participantesService' && real ? require('../src/services/participantesService')
       : n === '../services/sesionesMesaService' && real ? require('../src/services/sesionesMesaService')
       : n === 'mysql2' && real ? { createConnection: () => ({ promise: () => ({ query: (s,p) => real.query(s,p), beginTransaction: () => real.beginTransaction(), commit: () => real.commit(), rollback: () => real.rollback(), end: async () => {} }) }) }
-      : n === '../config/db' ? (db || prohibido)
+      : n === '../config/db' ? (real ? {...db,acquire:async()=>({query:(s,p)=>real.query(s,p),beginTransaction:()=>real.beginTransaction(),commit:()=>real.commit(),rollback:()=>real.rollback(),release(){}})} : db || prohibido)
       : n.startsWith('../services/') || n === 'mysql2' ? prohibido : (n === '../services/auditoriaService' ? require('../src/services/auditoriaService') : (n === './alertasInventarioController' ? {listar(){throw new Error('Fuera del alcance de este arnes');}} : require(n)))
   });
   return modulo.exports;
@@ -75,7 +75,7 @@ test('Divisiones y responsable de pedido: MySQL real temporal', {
     for (const id of ['ejecutor', 'asignado']) await c.query(
       "INSERT INTO usuarios (id,nombre,email,password_hash,estado,roles_id) VALUES (?,?,?,'fixture','activo',1)",
       [id, id, id + '@example.invalid']);
-    await c.query("INSERT INTO mesas (id,numero,estado) VALUES ('mesa',1,'disponible')");
+    await c.query("INSERT INTO mesas (id,numero,estado,creado_en) VALUES ('mesa',1,'disponible',UTC_TIMESTAMP())");
     await c.query("INSERT INTO clientes (id,nombre,estado,usuarios_id) VALUES ('cliente','Cliente','activo','ejecutor')");
     const db = { query: (sql, params, cb) => c.query(sql, params).then(([r]) => cb(null, r), cb) };
     const pedido = await invocar(cargar('pedidos', db, c).crearPedido, {

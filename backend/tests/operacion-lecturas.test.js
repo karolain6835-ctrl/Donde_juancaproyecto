@@ -5,7 +5,7 @@ function load(file, db, overrides = {}) {
   const module = { exports: {} };
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/controllers', file), 'utf8'), {
     module, exports: module.exports, console: { error() {} },
-    require: name => Object.hasOwn(overrides, name) ? overrides[name] : name === '../config/db' ? db : require(name.startsWith('.') ? path.join(__dirname, '../src/controllers', name) : name),
+    require: require('./helpers/poolRequire')(name => Object.hasOwn(overrides, name) ? overrides[name] : name === '../config/db' ? db : require(name.startsWith('.') ? path.join(__dirname, '../src/controllers', name) : name)),
   });
   return module.exports;
 }

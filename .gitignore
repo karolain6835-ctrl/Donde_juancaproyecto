@@ -4,3 +4,7 @@ node_modules/
 # Variantes de entorno que pueden contener secretos
 .env.*
 !/mobile/.env.example
+backend/respaldos/
+
+# Entorno local desechable de validacion MariaDB
+.validation/

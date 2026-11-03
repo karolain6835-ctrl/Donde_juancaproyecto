@@ -40,13 +40,14 @@ test('movimiento Kanban contra MySQL con tablas temporales', {
     }
     vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/controllers/kanbanController.js'), 'utf8'), {
       module: modulo,
-      require: nombre => {
+      require: require('./helpers/poolRequire')(nombre => {
         if (nombre === '../config/db') return {
           dbConfig: {}, query: (sql, cb) => real.query(sql).then(([r]) => cb(null, r), e => cb(e))
         };
         if (nombre === 'mysql2') return { createConnection: () => ({ promise: () => conexion }) };
+        if(nombre.startsWith('../utils/'))return require(path.join(__dirname,'../src/controllers',nombre));
         return (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(nombre));
-      },
+      }),
       console: { error() {} }
     });
     const mover = async (estado, id = 'test-item', usuario = 'test-user') => {

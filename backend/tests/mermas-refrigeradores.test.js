@@ -29,7 +29,7 @@ test('GET /mermas/refrigeradores: JWT, roles, lectura minima y errores', async t
     return [[]];
   }, commit: async () => {}, rollback: async () => { rollbacks++; }, end: async () => { closes++; } };
   const controller = load('controllers/mermasController.js', {
-    '../config/db': { dbConfig: {} },
+    '../config/db': { acquire:async()=>{connections++;return {...connection,release:()=>connection.end()};} },
     mysql2: { createConnection: () => { connections++; return { promise: () => connection }; } },
     '../services/identidadService': require('../src/services/identidadService'),
   });
