@@ -10,7 +10,7 @@ const conConexion = async (res, operacion, lectura = false) => {
   let conexion;
   let transaccion = false;
   try {
-    conexion = await db.obtenerConexion();
+    conexion = await db.acquire();
     if (lectura) {
       await conexion.query('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ');
       await conexion.query('START TRANSACTION WITH CONSISTENT SNAPSHOT, READ ONLY');
@@ -33,7 +33,7 @@ const conConexion = async (res, operacion, lectura = false) => {
     });
   } finally {
     if (conexion) {
-      try { await conexion.end(); }
+      try { await conexion.release(); }
       catch (cierre) { console.error('Error al cerrar conexión de mermas:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
     }
   }

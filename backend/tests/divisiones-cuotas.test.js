@@ -2,11 +2,11 @@ const test=require('node:test'),assert=require('node:assert/strict'),fs=require(
 const {crear,ejecutarSQL}=require('./helpers/comprasSandbox');
 test('Divisiones 8B: modalidades, ciclo de vida, saldos y traslados',{skip:process.env.RUN_MYSQL_DIVISION_CUOTAS_TESTS!=='1'},async t=>{
  const sandbox=await crear(),c=sandbox.connection;let fail=false,writes=0;
- const load=file=>{const m={exports:{}};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../src/controllers',file),'utf8'),{module:m,exports:m.exports,console:{error(){}},require:n=>{
+ const load=file=>{const m={exports:{}};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../src/controllers',file),'utf8'),{module:m,exports:m.exports,console:{error(){}},require:require('./helpers/poolRequire')(n=>{
   if(n==='../config/db')return {dbConfig:sandbox.config,query:(sql,args,cb)=>{if(typeof args==='function'){cb=args;args=[];}c.query(sql,args).then(([r])=>cb(null,r),cb);}};
   if(n==='mysql2')return {createConnection(config){const real=require('mysql2').createConnection(config).promise();return {promise:()=>({beginTransaction:()=>real.beginTransaction(),commit:()=>real.commit(),rollback:()=>real.rollback(),end:()=>real.end(),query(sql,args){if(fail&&sql.includes('INSERT INTO auditoria'))throw new Error('Fallo auditoria');return real.query(sql,args);}})};}};
   return require(n.startsWith('.')?path.join(__dirname,'../src/controllers',n):n);
- }});return m.exports;};
+ })});return m.exports;};
  const api=load('divisionesController.js'),pagos=load('pagosController.js');
  const call=(fn,body={},params={},key='clave-0001')=>new Promise((resolve,reject)=>Promise.resolve(fn({body,params,usuario:{id:'u',rol:'Administrador'},get:()=>key},{status(s){this.s=s;return this;},json(data){resolve({status:this.s||200,data});}})).catch(reject));
  const post=(value,key='clave-asignacion',division='d')=>call(api.asignarItemsACliente,value,{id:division},key);
@@ -173,11 +173,11 @@ test('Divisiones 8B: modalidades, ciclo de vida, saldos y traslados',{skip:proce
   await t.test('HTTP montaje real: division activa sin pagos devuelve 200 vacio, inexistente 404 JSON',async()=>{
    const express=require('express'),app=express();
    const moduleRoute={exports:{}};
-   vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../src/routes/divisionesRoutes.js'),'utf8'),{module:moduleRoute,require:n=>{
+   vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../src/routes/divisionesRoutes.js'),'utf8'),{module:moduleRoute,require:require('./helpers/poolRequire')(n=>{
     if(n==='../controllers/divisionesController')return api;
     if(n==='../controllers/divisionPagosController')return load('divisionPagosController.js');
     return require(n.startsWith('.')?path.join(__dirname,'../src/routes',n):n);
-   }});
+   })});
    app.use('/api/sesiones-division',(req,res,next)=>{req.usuario={id:'u',rol:'Administrador'};next();},moduleRoute.exports);
    const server=app.listen(0,'127.0.0.1');await new Promise(r=>server.once('listening',r));
    try{

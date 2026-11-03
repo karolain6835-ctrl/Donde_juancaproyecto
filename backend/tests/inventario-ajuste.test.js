@@ -37,14 +37,14 @@ test('ajuste de inventario contra MySQL con tablas temporales', {
     const modulo = { exports: {} };
     vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/controllers', archivo), 'utf8'), {
       module: modulo, exports: modulo.exports,
-      require: nombre => {
+      require: require('./helpers/poolRequire')(nombre => {
         if (nombre === '../config/db') return {
           dbConfig: {},
           query: (sql, params, cb) => real.query(sql, params).then(([r]) => cb(null, r), e => cb(e))
         };
         if (nombre === 'mysql2') return { createConnection: () => ({ promise: () => conexion }) };
         return (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : (nombre === './alertasInventarioController' ? {listar(){throw new Error('Fuera del alcance de este arnes');}} : require(nombre)));
-      },
+      }),
       console: { error() {} }
     });
     return modulo.exports;

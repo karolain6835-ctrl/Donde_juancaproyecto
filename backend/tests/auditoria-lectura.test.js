@@ -12,7 +12,7 @@ test('Auditoría real: Express/JWT y tablas temporales MySQL',{skip:process.env.
  const c=await require('mysql2/promise').createConnection({host:process.env.DB_HOST,port:process.env.DB_PORT,user:process.env.DB_USER,password:process.env.DB_PASSWORD,database:process.env.DB_NAME});
  const previo=process.env.JWT_SECRET;process.env.JWT_SECRET='auditoria-lectura-secreto-exclusivo-pruebas-123456789';let server;
  const db={dbConfig:{},promise:()=>({query:(s,p)=>c.query(s,p)})};
- const load=(file,deps)=>{const m={exports:{}};vm.runInNewContext(fs.readFileSync(path.join(__dirname,file),'utf8'),{module:m,exports:m.exports,process,Buffer,console,require:n=>Object.hasOwn(deps,n)?deps[n]:require(n)});return m.exports;};
+ const load=(file,deps)=>{const m={exports:{}};vm.runInNewContext(fs.readFileSync(path.join(__dirname,file),'utf8'),{module:m,exports:m.exports,process,Buffer,console,require:require('./helpers/poolRequire')(n=>Object.hasOwn(deps,n)?deps[n]:require(n))});return m.exports;};
  try{
   for(const table of ['roles','usuarios','auditoria']){await c.query(`CREATE TEMPORARY TABLE copia_lectura_${table} LIKE ${table}`);await c.query(`CREATE TEMPORARY TABLE ${table} LIKE copia_lectura_${table}`);}
   const roles=['Administrador','SuperAdmin','Mesero','Mesera','Bartender','Cajero'];
@@ -26,7 +26,8 @@ test('Auditoría real: Express/JWT y tablas temporales MySQL',{skip:process.env.
   const app=express(),listen=app.listen.bind(app);app.listen=()=>{};
   const deps={express:Object.assign(()=>app,{json:express.json}),cors:()=>((req,res,next)=>next()),dotenv:{config(){}},'./config/db':db,'./middleware/authMiddleware':auth,'./routes/auditoriaRoutes':router};
   for(const [,ruta]of fs.readFileSync(path.join(__dirname,'../src/index.js'),'utf8').matchAll(/require\('(\.\/routes\/[^']+)'\)/g))if(!deps[ruta])deps[ruta]=express.Router();
-  deps['./middleware/errorMiddleware']=require('../src/middleware/errorMiddleware');
+  deps['./controllers/healthController']=()=>{throw new Error('Health checked in dedicated integration tests');};
+ deps['./middleware/errorMiddleware']=require('../src/middleware/errorMiddleware');
   load('../src/index.js',deps);server=await new Promise(resolve=>{const s=listen(0,'127.0.0.1',()=>resolve(s));});
   const req=async(query='',rol=0,autenticado=true)=>{const token=jwt.sign({rol:'ignorado'},process.env.JWT_SECRET,{issuer:'dondejuanca',subject:'u'+rol,expiresIn:3600});const r=await fetch(`http://127.0.0.1:${server.address().port}/api/auditoria${query}`,{headers:autenticado?{Authorization:'Bearer '+token}:{}});return {status:r.status,data:await r.json()};};
   await t.test('listado paginado y orden descendente estable',async()=>{const r=await req('?limite=2');assert.equal(r.status,200);assert.deepEqual(r.data.datos.map(e=>e.id),['c','d']);assert.deepEqual(r.data.paginacion,{pagina:1,limite:2,total:4,total_paginas:2});assert.equal(r.data.datos[0].usuario_nombre,'Administrador');assert.deepEqual((await req('?pagina=2&limite=2')).data.datos.map(e=>e.id),['b','a']);});

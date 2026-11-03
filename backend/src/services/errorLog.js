@@ -1,4 +1,4 @@
-const codes=new Set(['ER_DUP_ENTRY','ER_LOCK_DEADLOCK','ER_LOCK_WAIT_TIMEOUT','ER_NO_REFERENCED_ROW_2','ER_ROW_IS_REFERENCED_2','ER_BAD_FIELD_ERROR','ER_NO_SUCH_TABLE','ER_PARSE_ERROR','ER_ACCESS_DENIED_ERROR','ECONNREFUSED','ECONNRESET','ETIMEDOUT','PROTOCOL_CONNECTION_LOST']);
+const codes=new Set(['ER_DUP_ENTRY','ER_LOCK_DEADLOCK','ER_LOCK_WAIT_TIMEOUT','ER_NO_REFERENCED_ROW_2','ER_ROW_IS_REFERENCED_2','ER_BAD_FIELD_ERROR','ER_NO_SUCH_TABLE','ER_PARSE_ERROR','ER_ACCESS_DENIED_ERROR','PROTOCOL_SEQUENCE_TIMEOUT','EPIPE','ENOTFOUND','ECONNREFUSED','ECONNRESET','ETIMEDOUT','PROTOCOL_CONNECTION_LOST']);
 const names=new Set(['Error','TypeError','RangeError','SyntaxError','ReferenceError']);
 // No serializar errores completos: message, stack original, sql, valores y body pueden contener secretos.
 function registrarError(context,error,request){

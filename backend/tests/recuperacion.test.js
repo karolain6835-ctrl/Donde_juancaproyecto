@@ -56,7 +56,7 @@ test('Recuperación HTTP y MariaDB aislada: OTP, token, correo, contraseña y au
   process.env.RECOVERY_HMAC_SECRET=randomBytes(32).toString('hex');process.env.JWT_SECRET=randomBytes(32).toString('hex');
   let server,clock=0,mail=[],unavailable=false,sendFailure=false,auditFailure=false,dbCalls=0,holdSend=null;
   const logs=[],oldConsole=console.error;console.error=(...args)=>logs.push(JSON.stringify(args));
-  const load=(file,deps)=>{const m={exports:{}};vm.runInNewContext(fs.readFileSync(path.join(__dirname,file),'utf8'),{module:m,exports:m.exports,process,Buffer,console,setImmediate,require:n=>Object.hasOwn(deps,n)?deps[n]:require(n)});return m.exports;};
+  const load=(file,deps)=>{const m={exports:{}};vm.runInNewContext(fs.readFileSync(path.join(__dirname,file),'utf8'),{module:m,exports:m.exports,process,Buffer,console,setImmediate,require:require('./helpers/poolRequire')(n=>Object.hasOwn(deps,n)?deps[n]:require(n))});return m.exports;};
   const connect=()=>{dbCalls++;const connection=require('mysql2').createConnection(config).promise();return {promise:()=>({
     query:(sql,params)=>{if(auditFailure&&sql.includes('INSERT INTO auditoria'))throw Error('Fallo controlado');return connection.query(sql,params);},
     beginTransaction:()=>connection.beginTransaction(),commit:()=>connection.commit(),rollback:()=>connection.rollback(),end:()=>connection.end()

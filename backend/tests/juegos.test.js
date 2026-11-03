@@ -50,7 +50,7 @@ test('API juegos: MySQL real con tablas temporales, sin escrituras persistentes'
     for (const nombre of ['fecha_inicio','fecha_fin','tarifa_hora_aplicada']) assert.ok(columnas.some(c => c.Field === nombre), 'Requiere v2.23');
     for (const n of ['1','2']) {
       await real.query("INSERT INTO activos_juego (id,nombre,estado,tipo,precio_hora) VALUES (?,?,'disponible','billar',3600.00)", [`a${n}`, `Activo ${n}`]);
-      await real.query("INSERT INTO mesas (id,numero,estado) VALUES (?,?,'disponible')", [`m${n}`, Number(n)]);
+      await real.query("INSERT INTO mesas (id,numero,estado,creado_en) VALUES (?,?,'disponible',UTC_TIMESTAMP())", [`m${n}`, Number(n)]);
       await real.query("INSERT INTO usuarios (id,nombre,email,password_hash,estado,roles_id) VALUES (?,?,?,'fixture','activo',1)", [`u${n}`, `Usuario ${n}`, `juegos${n}@example.invalid`]);
       await real.query("INSERT INTO pedidos (id,estado,creado_en,mesas_id,usuarios_id,clientes_id) VALUES (?,'abierto',UTC_TIMESTAMP(),?,?,'cliente-fixture')", [`p${n}`, `m${n}`, `u${n}`]);
       await real.query(`INSERT INTO pedido_items (id,precio_unitario,pedido_id,producto_id,cantidad_pedida,cantidad_pagada,estado,pedidos_id,productos_id)
@@ -59,14 +59,14 @@ test('API juegos: MySQL real con tablas temporales, sin escrituras persistentes'
     const modulo = { exports: {} };
     vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/controllers/juegosController.js'), 'utf8'), {
       module: modulo, exports: modulo.exports,
-      require: nombre => nombre === '../config/db' ? { dbConfig: {} }
+      require: require('./helpers/poolRequire')(nombre => nombre === '../config/db' ? { dbConfig: {} }
         : nombre === 'mysql2' ? { createConnection: () => {conexionesAbiertas++;return { promise: () => conexion };} }
-        : nombre === '../services/juegosService' ? { calcularCosto } : (nombre.startsWith('../services/') ? require(path.join(__dirname, '../src/controllers', nombre)) : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(nombre)),
+        : nombre === '../services/juegosService' ? { calcularCosto } : (nombre.startsWith('../services/') ? require(path.join(__dirname, '../src/controllers', nombre)) : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(nombre))),
       console: { error() {} }
     });
     const rutas = { exports: {} };
     vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/routes/juegosRoutes.js'), 'utf8'), {
-      module: rutas, require: nombre => nombre === '../controllers/juegosController' ? modulo.exports : (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(nombre))
+      module: rutas, require: require('./helpers/poolRequire')(nombre => nombre === '../controllers/juegosController' ? modulo.exports : (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(nombre)))
     });
     const app = require('express')(); app.use(require('express').json()); app.use((req,res,next)=>{req.usuario={id:actor,rol:'Administrador'};next();}); app.use('/api/juegos', rutas.exports);
     server = await new Promise(resolve => { const s = app.listen(0, '127.0.0.1', () => resolve(s)); });

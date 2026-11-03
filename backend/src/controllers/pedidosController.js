@@ -57,7 +57,7 @@ const crearPedido = async (req, res) => {
   let conexion, abierta = false;
   const rechazar = (status, message) => { throw Object.assign(new Error(message), { status }); };
   try {
-    conexion = await db.obtenerConexion();
+    conexion = await db.acquire();
     await conexion.beginTransaction(); abierta = true;
     const [[mesa]] = await conexion.query('SELECT id,estado FROM mesas WHERE id=? FOR UPDATE', [mesas_id]);
     if (!mesa) rechazar(404, 'Mesa no encontrada.');
@@ -94,7 +94,7 @@ const crearPedido = async (req, res) => {
     if (abierta) { try { await conexion.rollback(); } catch (rollback) { console.error('Rollback pedido:', new Error('Fallo interno; detalles sensibles omitidos.').stack); } }
     const concurrent = ['ER_LOCK_DEADLOCK','ER_LOCK_WAIT_TIMEOUT'].includes(error.code);
     return res.status(error.status || (concurrent ? 409 : 500)).json({ error: error.status ? error.message : concurrent ? 'Conflicto concurrente al ocupar la mesa. Reintenta.' : 'Hubo un error en el servidor al abrir el pedido.' });
-  } finally { if (conexion) { try { await conexion.end(); } catch (error) { console.error('Cierre pedido:', new Error('Fallo interno; detalles sensibles omitidos.').stack); } } }
+  } finally { if (conexion) { try { await conexion.release(); } catch (error) { console.error('Cierre pedido:', new Error('Fallo interno; detalles sensibles omitidos.').stack); } } }
 };
 
 // ==========================================
@@ -114,7 +114,7 @@ const finalizarTransaccionPedido = async (conexion, transaccionIniciada, error, 
 
 const cerrarConexionPedido = async (conexion) => {
   if (conexion) {
-    try { await conexion.end(); }
+    try { await conexion.release(); }
     catch (errorConexion) { console.error('Error al cerrar conexi?n de pedido:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
   }
 };
@@ -135,7 +135,7 @@ const agregarItemPedido = async (req, res) => {
   let conexion;
   let transaccionIniciada = false;
   try {
-    conexion = await db.obtenerConexion();
+    conexion = await db.acquire();
     await conexion.beginTransaction();
     transaccionIniciada = true;
 
@@ -263,7 +263,7 @@ const cancelarItemPedido = async (req, res) => {
   let conexion;
   let transaccionIniciada = false;
   try {
-    conexion = await db.obtenerConexion();
+    conexion = await db.acquire();
     await conexion.beginTransaction();
     transaccionIniciada = true;
 

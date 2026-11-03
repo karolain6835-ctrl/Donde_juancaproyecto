@@ -5,7 +5,7 @@ test('Visita compartida: identidad, consumos, concurrencia, liberación, traslad
   const sandbox = await crear(), c = sandbox.connection;
   const load = file => {
     const module = { exports: {} };
-    vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/controllers', file), 'utf8'), { module, exports: module.exports, console: { error() {} }, require: n => n === '../config/db' ? { dbConfig: sandbox.config, query: (sql,args,cb) => c.query(sql,args).then(([r]) => cb(null,r),cb) } : require(n.startsWith('.') ? path.join(__dirname, '../src/controllers', n) : n) });
+    vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/controllers', file), 'utf8'), { module, exports: module.exports, console: { error() {} }, require: require('./helpers/poolRequire')(n => n === '../config/db' ? { dbConfig: sandbox.config, query: (sql,args,cb) => c.query(sql,args).then(([r]) => cb(null,r),cb) } : require(n.startsWith('.') ? path.join(__dirname, '../src/controllers', n) : n)) });
     return module.exports;
   };
   const orders = load('pedidosController.js'), people = load('participantesController.js'), visits = load('sesionesMesaController.js'), mesas = load('mesasController.js');

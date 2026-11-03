@@ -4,7 +4,7 @@ function load(name, db, connection) {
   connection ||= { query: (sql, params) => new Promise((resolve, reject) => db.query(sql, params, (error, rows) => error ? reject(error) : resolve([rows]))), beginTransaction: async () => {}, commit: async () => {}, rollback: async () => {}, end: async () => {} };
   const module = { exports: {} };
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/controllers', name), 'utf8'), { module, console: { error() {} }, require: name => {
-    if (name === '../config/db') return db;
+    if (name === '../config/db') return {...db,acquire:async()=>({...connection,release:()=>connection.end()})};
     if (name === 'mysql2' && connection) return { createConnection: () => ({ promise: () => connection }) };
     return require(name.startsWith('.') ? path.join(__dirname, '../src/controllers', name) : name);
   } });

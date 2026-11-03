@@ -13,6 +13,7 @@ test('V1: endpoints simulados ausentes del montaje real; rutas reales conservada
  const pedidos=express.Router();pedidos.post('/',(req,res)=>{hits.push('pedidos.crear');res.status(201).json({handler:'pedido-real'});});reales['./routes/pedidosRoutes']=pedidos;
  const app=express(),listen=app.listen.bind(app);app.listen=()=>{};
  const deps={express:Object.assign(()=>app,{json:express.json}),cors:()=>((req,res,next)=>next()),dotenv:{config(){}},'./config/db':{},'./middleware/authMiddleware':auth,...reales};
+ deps['./controllers/healthController']=()=>{throw new Error('Fuera del alcance de este test');};
  deps['./middleware/errorMiddleware']=require('../src/middleware/errorMiddleware');
  const index=fs.readFileSync(path.join(__dirname,'../src/index.js'),'utf8');for(const [,r]of index.matchAll(/require\('(\.\/routes\/[^']+)'\)/g))if(!deps[r])deps[r]=express.Router();
  try{load('../src/index.js',deps);server=await new Promise(resolve=>{const s=listen(0,'127.0.0.1',()=>resolve(s));});

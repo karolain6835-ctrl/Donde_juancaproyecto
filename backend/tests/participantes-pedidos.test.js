@@ -12,7 +12,7 @@ test('Participantes y consumos reales, migración repetible y datos históricos'
   let failIdentity = false;
   const load = name => {
     const module = { exports: {} };
-    vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/controllers', name), 'utf8'), { module, exports: module.exports, console: { error() {} }, require: n => {
+    vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/controllers', name), 'utf8'), { module, exports: module.exports, console: { error() {} }, require: require('./helpers/poolRequire')(n => {
       if (n === '../config/db') return { dbConfig: sandbox.config, query: (sql, args, cb) => c.query(sql, args).then(([r]) => cb(null, r), cb) };
       if (n === 'mysql2') return { createConnection(config) {
         const real = require('mysql2').createConnection(config).promise();
@@ -22,14 +22,14 @@ test('Participantes y consumos reales, migración repetible y datos históricos'
         } }) };
       } };
       return require(n.startsWith('.') ? path.join(__dirname, '../src/controllers', n) : n);
-    } });
+    }) });
     return module.exports;
   };
   const orders = load('pedidosController.js'), participants = load('participantesController.js');
   const invoke = (fn, body = {}, params = {}) => new Promise((resolve, reject) => Promise.resolve(fn({ body, params, usuario: { id: 'u', rol: 'Administrador' } }, { status(s) { this.s = s; return this; }, json(data) { resolve({ status: this.s || 200, data }); } })).catch(reject));
   try {
     await c.query("INSERT INTO usuarios(id,nombre,email,password_hash,estado,roles_id) VALUES ('u','Actor','u@example.invalid','fixture','activo',1)");
-    await c.query("INSERT INTO mesas(id,numero,estado) VALUES ('m',1,'disponible'),('dest',2,'disponible'),('otra',3,'disponible')");
+    await c.query("INSERT INTO mesas(id,numero,estado,creado_en) VALUES ('m',1,'disponible',UTC_TIMESTAMP()),('dest',2,'disponible',UTC_TIMESTAMP()),('otra',3,'disponible',UTC_TIMESTAMP())");
     await c.query("INSERT INTO clientes(id,nombre,estado,usuarios_id) VALUES ('c','Carlos','activo','u'),('c2','Laura','activo','u'),('inactive','Inactivo','inactivo','u')");
     await c.query("INSERT INTO productos(id,nombre,codigo,precio_venta,costo_promedio_ponderado,cantidad_disponible,stock_minimo,estado,categorias_id,proveedores_id,historial_costos_id) VALUES ('pr','Producto','COD',100,50,20,1,'activo',1,'prov','hist')");
     await c.query("INSERT INTO jugadores(id,nombre,mesas_id) VALUES ('legado','Jugador histórico','m')");
@@ -114,7 +114,7 @@ test('Participantes y consumos reales, migración repetible y datos históricos'
 test('Migración de identidad preserva pedido, jugador e ítem anteriores sin asignar persona', { skip: process.env.RUN_MYSQL_PARTICIPANTES_TESTS !== '1' }, async () => {
   const sandbox = await crear({ participantes: false }), c = sandbox.connection;
   try {
-    await c.query("INSERT INTO mesas(id,numero,estado) VALUES ('mesa-legada',1,'ocupada')");
+    await c.query("INSERT INTO mesas(id,numero,estado,creado_en) VALUES ('mesa-legada',1,'ocupada',UTC_TIMESTAMP())");
     await c.query("INSERT INTO jugadores(id,nombre,mesas_id) VALUES ('persona-legada','Jugador','mesa-legada')");
     await c.query("INSERT INTO pedidos(id,estado,creado_en,mesas_id,usuarios_id,clientes_id) VALUES ('pedido-legado','cerrado',NOW(),'mesa-legada','u','c')");
     await c.query("INSERT INTO pedido_items(id,precio_unitario,pedido_id,producto_id,cantidad_pedida,cantidad_pagada,estado,pedidos_id,productos_id) VALUES ('item-legado',100,'pedido-legado','pr',2,0,'servido','pedido-legado','pr')");

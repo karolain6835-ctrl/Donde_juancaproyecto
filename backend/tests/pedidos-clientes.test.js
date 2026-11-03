@@ -8,7 +8,7 @@ function cargar(db, real) {
   const connection = { query: (sql, params) => new Promise((resolve, reject) => db.query(sql, params, (error, rows) => error ? reject(error) : resolve([rows]))), beginTransaction: () => real ? real.beginTransaction() : Promise.resolve(), commit: () => real ? real.commit() : Promise.resolve(), rollback: () => real ? real.rollback() : Promise.resolve(), end: async () => {} };
   const module = { exports: {} };
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/controllers/pedidosController.js'), 'utf8'), {
-    module, console: { error() {} }, require: name => name === 'mysql2' ? { createConnection: () => ({ promise: () => connection }) } : name === '../config/db' ? db :
+    module, console: { error() {} }, require: name => name === 'mysql2' ? { createConnection: () => ({ promise: () => connection }) } : name === '../config/db' ? {...db,acquire:async()=>({...connection,release:()=>connection.end()})} :
       name.startsWith('../services/') || name.startsWith('../utils/') ? require(path.join(__dirname, '../src/controllers', name)) : require(name)
   });
   return module.exports.crearPedido;
@@ -69,7 +69,7 @@ test('Pedidos: persistencia MySQL temporal y responsable asignado', {
       await c.query(`CREATE TEMPORARY TABLE ${tabla} LIKE copia_pedidos_${tabla}`);
     }
     await require('./helpers/participantesTemporales')(c, { pedidos: true });
-    await c.query("INSERT INTO mesas (id,numero,estado) VALUES ('mesa',1,'disponible')");
+    await c.query("INSERT INTO mesas (id,numero,estado,creado_en) VALUES ('mesa',1,'disponible',UTC_TIMESTAMP())");
     for (const id of ['ejecutor', 'asignado']) await c.query(
       "INSERT INTO usuarios (id,nombre,email,password_hash,estado,roles_id) VALUES (?,?,?,'fixture','activo',1)",
       [id, id, id + '@example.invalid']);

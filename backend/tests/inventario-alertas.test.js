@@ -5,11 +5,11 @@ test('Alertas Fase 2: episodios, acciones e integraciones en MariaDB desechable'
  const sandbox=await crear({alertas:true}),c=sandbox.connection;let fallo=null;
  const proxy={query:async(sql,p)=>{if(fallo&&sql.includes(fallo))throw new Error('Fallo inyectado');return c.query(sql,p);},beginTransaction:()=>c.beginTransaction(),commit:()=>c.commit(),rollback:()=>c.rollback(),end:async()=>{}};
  const cache=new Map();const load=file=>{file=path.resolve(__dirname,'../src',file);if(cache.has(file))return cache.get(file);const m={exports:{}};
-  vm.runInNewContext(fs.readFileSync(file,'utf8'),{module:m,exports:m.exports,console:{error(){},log(){}},require:n=>{
+  vm.runInNewContext(fs.readFileSync(file,'utf8'),{module:m,exports:m.exports,console:{error(){},log(){}},require:require('./helpers/poolRequire')(n=>{
    if(n==='mysql2')return {createConnection:()=>({promise:()=>proxy})};
    if(n==='../config/db')return {dbConfig:{},query:(sql,p,cb)=>c.query(sql,p).then(([r])=>cb(null,r),cb)};
    if(n.startsWith('.'))return load(path.resolve(path.dirname(file),n+'.js'));return require(n);
-  }});cache.set(file,m.exports);return m.exports;};
+  })});cache.set(file,m.exports);return m.exports;};
  const servicio=load('services/alertasInventarioService.js'),controller=load('controllers/alertasInventarioController.js');
  const tx=async(fn,conn=c)=>{await conn.beginTransaction();try{const r=await fn();await conn.commit();return r;}catch(e){await conn.rollback();throw e;}};
  const accion=(id,a,body={})=>tx(()=>servicio.actuar(proxy,id,a,'u2',body));
@@ -20,7 +20,7 @@ test('Alertas Fase 2: episodios, acciones e integraciones en MariaDB desechable'
  try{
   for(const u of ['u1','u2'])await c.query("INSERT INTO usuarios(id,nombre,email,password_hash,estado,roles_id) VALUES (?,?,?,'fixture','activo',1)",[u,u,u+'@example.invalid']);
   await c.query("INSERT INTO productos(id,nombre,codigo,precio_venta,costo_promedio_ponderado,cantidad_disponible,stock_minimo,estado,categorias_id,proveedores_id,historial_costos_id,stock) VALUES ('pr','Producto','PR',100,10,20,10,'activo',1,'prov','hist',777)");
-  await c.query("INSERT INTO mesas(id,numero,estado) VALUES ('m',1,'ocupada')");
+  await c.query("INSERT INTO mesas(id,numero,estado,creado_en) VALUES ('m',1,'ocupada',UTC_TIMESTAMP())");
   await c.query("INSERT INTO pedidos(id,estado,creado_en,mesas_id,usuarios_id,clientes_id) VALUES ('ped','abierto',UTC_TIMESTAMP(),'m','u1','cl')");
   await c.query("INSERT INTO merma_motivos(id,nombre) VALUES ('mot','Rotura')");await c.query("INSERT INTO refrigeradores(id,nombre,estado) VALUES ('ref','Ref','activa')");
   await t.test('normal, umbral exacto, agotado y cambios dentro del mismo episodio',async()=>{

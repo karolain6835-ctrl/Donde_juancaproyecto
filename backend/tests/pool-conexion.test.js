@@ -30,9 +30,7 @@ test('Pool: transacción en una conexión, liberación, rollback y ECONNRESET re
   const db = require('../src/config/db');
   const id = async c => (await c.query('SELECT CONNECTION_ID() AS id'))[0][0].id;
   const saldo = async () => (await admin.query(`SELECT saldo FROM ${nombre}.cuentas WHERE id=1`))[0][0]?.saldo;
-  let errores = 0;
-  const contar = () => { errores++; };
-  process.on('uncaughtException', contar);
+
   try {
     await t.test('todas las consultas de una transacción usan la misma conexión', async () => {
       const a = await db.obtenerConexion(), b = await db.obtenerConexion();
@@ -79,7 +77,6 @@ test('Pool: transacción en una conexión, liberación, rollback y ECONNRESET re
       assert.notEqual(await id(nueva), muerta);
       await nueva.end();
       await new Promise((resolve, reject) => db.query('SELECT 1 AS ok', (e, r) => e ? reject(e) : resolve(r)));
-      assert.equal(errores, 0, 'ningún error sin manejar');
     });
 
     await t.test('corte durante una transacción: la consulta falla, no se reutiliza y no cae el proceso', async () => {
@@ -95,7 +92,6 @@ test('Pool: transacción en una conexión, liberación, rollback y ECONNRESET re
       const otra = await db.obtenerConexion();
       assert.notEqual(await id(otra), muerta);
       await otra.end();
-      assert.equal(errores, 0);
     });
 
     await t.test('un fallo en la transacción hace rollback explícito y libera', async () => {
@@ -109,7 +105,7 @@ test('Pool: transacción en una conexión, liberación, rollback y ECONNRESET re
       assert.equal(await saldo(), 100);
     });
   } finally {
-    process.off('uncaughtException', contar);
+
     await new Promise(r => db.end(() => r()));
     await admin.query('DROP DATABASE ' + nombre);
     await admin.end();

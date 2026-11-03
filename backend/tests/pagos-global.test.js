@@ -20,7 +20,7 @@ test('pagos global: lecturas reales, filtros, resumen, paginacion e identidades'
  try{
   await c.query("INSERT INTO usuarios(id,nombre,email,password_hash,estado,roles_id) VALUES ('u','Ana','ana@example.invalid','x','activo',1),('v','Luisa','luisa@example.invalid','x','activo',1)");
   await c.query("INSERT INTO clientes(id,nombre,estado,usuarios_id) VALUES ('cl','Laura','activo','u')");
-  await c.query("INSERT INTO mesas(id,numero,estado) VALUES ('m',5,'ocupada'),('m2',6,'ocupada')");
+  await c.query("INSERT INTO mesas(id,numero,estado,creado_en) VALUES ('m',5,'ocupada',UTC_TIMESTAMP()),('m2',6,'ocupada',UTC_TIMESTAMP())");
   await c.query("INSERT INTO pedidos(id,estado,creado_en,mesas_id,usuarios_id,clientes_id) VALUES ('p','abierto',NOW(),'m','u','cl'),('p2','abierto',NOW(),'m2','u',NULL)");
   await c.query("INSERT INTO sesiones_division_cuentas(id,modalidad,usuarios_id,mesas_id) VALUES ('d','items','u','m')");
   await c.query("INSERT INTO division_participantes(id,sesion_division_id,nombre_cliente,total_asignado) VALUES ('dp','d','Carlos',3500)");

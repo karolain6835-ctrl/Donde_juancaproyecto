@@ -20,7 +20,7 @@ test('MariaDB: pagos 00:05/23:55, historia, rondas, división y cierre conservan
   let clock=Date.parse('2026-10-19T05:05:00Z')/1000,server;
   const load=file=>{
     const absolute=path.join(__dirname,'../src',file),sourceRequire=createRequire(absolute),m={exports:{}};
-    vm.runInNewContext(fs.readFileSync(absolute,'utf8'),{module:m,exports:m.exports,console:{error(){}},require:n=>{
+    vm.runInNewContext(fs.readFileSync(absolute,'utf8'),{module:m,exports:m.exports,console:{error(){}},require:require('./helpers/poolRequire')(n=>{
       if(n==='../config/db')return {dbConfig:config,query:(sql,args,callback)=>{
         if(typeof args==='function'){callback=args;args=[];}
         c.query(sql,args).then(([rows])=>callback(null,rows),callback);
@@ -33,7 +33,7 @@ test('MariaDB: pagos 00:05/23:55, historia, rondas, división y cierre conservan
           beginTransaction:async()=>{await ready;return real.beginTransaction();},commit:()=>real.commit(),rollback:()=>real.rollback(),end:()=>real.end()})};
       }};
       return sourceRequire(n);
-    }});return m.exports;
+    })});return m.exports;
   };
   try{
     await c.query("INSERT INTO usuarios(id,nombre,email,password_hash,estado,roles_id) VALUES ('u','Actor','fechas@example.invalid','fixture','activo',1)");

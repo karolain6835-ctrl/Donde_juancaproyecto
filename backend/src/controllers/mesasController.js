@@ -42,7 +42,7 @@ const actualizarEstadoMesa = async (req,res) => {
   if(!['disponible','ocupada','en_cobro'].includes(estado))return res.status(400).json({error:'Estado no válido. Use: disponible, ocupada o en_cobro.'});
   let conexion,abierta=false;
   try {
-    conexion=await db.obtenerConexion();await conexion.beginTransaction();abierta=true;
+    conexion=await db.acquire();await conexion.beginTransaction();abierta=true;
     const [[mesa]]=await conexion.query('SELECT id,estado FROM mesas WHERE id=? FOR UPDATE',[id]);
     if(!mesa)throw Object.assign(new Error('Mesa no encontrada.'),{status:404});
     if (estado === 'disponible') {
@@ -57,15 +57,15 @@ const actualizarEstadoMesa = async (req,res) => {
     await conexion.commit();abierta=false;
     res.json({ mensaje: `¡Mesa actualizada a '${estado}' con éxito! 🕹️` });
   } catch(e){
-    if(abierta)await conexion.rollback();
+    if(abierta)try{await conexion.rollback();}catch{/* Conservar el error original; acquire descarta la conexion. */}
     return res.status(e.status||500).json({error:e.status?e.message:'Hubo un error al actualizar el estado de la mesa.'});
-  } finally {if(conexion)await conexion.end();}
+  } finally {if(conexion)await conexion.release();}
 };
 
 const consultarLiberacionMesa = async (req, res) => {
   let conexion, abierta = false;
   try {
-    conexion = await db.obtenerConexion(); await conexion.beginTransaction(); abierta = true;
+    conexion = await db.acquire(); await conexion.beginTransaction(); abierta = true;
     const [[mesa]] = await conexion.query('SELECT id,estado FROM mesas WHERE id=? FOR UPDATE', [req.params.id]);
     if (!mesa) throw Object.assign(new Error('Mesa no encontrada.'), { status: 404 });
     let disponibilidad;
@@ -74,9 +74,9 @@ const consultarLiberacionMesa = async (req, res) => {
     await conexion.commit(); abierta = false;
     return res.json({ datos: { ...disponibilidad, mesa_id: mesa.id, estado: mesa.estado } });
   } catch (error) {
-    if (abierta) await conexion.rollback();
+    if(abierta)try{await conexion.rollback();}catch{/* Conservar el error original; acquire descarta la conexion. */}
     return res.status(error.status || 500).json({ error: error.status ? error.message : 'No se pudo consultar la disponibilidad de la mesa.' });
-  } finally { if (conexion) await conexion.end(); }
+  } finally { if (conexion) await conexion.release(); }
 };
 
 // ==========================================
@@ -101,7 +101,7 @@ const trasladarMesa = async (req, res) => {
   const rechazar = (status, mensaje) => { throw Object.assign(new Error(mensaje), { status }); };
   try {
     // Conexión exclusiva: otras peticiones no comparten esta transacción.
-    conexion = await db.obtenerConexion();
+    conexion = await db.acquire();
     await conexion.beginTransaction();
     transaccionIniciada = true;
     // Orden estable para serializar traslados concurrentes de las mismas mesas.
@@ -221,7 +221,7 @@ const trasladarMesa = async (req, res) => {
     return res.status(error.status || 500).json({ error: error.status ? error.message : mensajeError });
   } finally {
     if (conexion) {
-      try { await conexion.end(); }
+      try { await conexion.release(); }
       catch (errorConexion) { console.error('Error al cerrar conexión de traslado:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
     }
   }

@@ -33,6 +33,7 @@ const PORT = process.env.PORT || 5000; // Usa el puerto de .env o el 5000 por de
 
 // 2. Middlewares globales de procesamiento
 app.use(cors());
+app.get('/api/health', require('./controllers/healthController'));
 app.use(protegerErroresInternos);
 app.use(express.json());
 

@@ -46,7 +46,7 @@ const escrita = resultado => {
 const ejecutar = async (res, operacion, lectura = false) => {
   let conexion, transaccion = false;
   try {
-    conexion = await db.obtenerConexion();
+    conexion = await db.acquire();
     if (lectura) {
       await conexion.query('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ');
       await conexion.query('START TRANSACTION WITH CONSISTENT SNAPSHOT, READ ONLY');
@@ -64,7 +64,7 @@ const ejecutar = async (res, operacion, lectura = false) => {
     return res.status(error.status || 500).json({ error: error.status ? error.message : 'No se pudo completar la operación de clientes.' });
   } finally {
     if (conexion) {
-      try { await conexion.end(); } catch (e) { console.error('Cierre clientes:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
+      try { await conexion.release(); } catch (e) { console.error('Cierre clientes:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
     }
   }
 };

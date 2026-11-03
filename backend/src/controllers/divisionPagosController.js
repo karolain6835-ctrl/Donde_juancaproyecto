@@ -3,7 +3,7 @@ const {fechaLocalSQL}=require('../utils/fechaHora');
 exports.listar=async(req,res)=>{
  let c;
  try{
-  c=await db.obtenerConexion();
+  c=await db.acquire();
   const [[division]]=await c.query('SELECT id FROM sesiones_division_cuentas WHERE id=?',[req.params.id]);
   if(!division)return res.status(404).json({error:'La división no existe.'});
   const [pagos]=await c.query(`SELECT p.id,p.metodo_de_pago,p.total_seleccionado,p.estado,p.verificacion_estado,
@@ -12,5 +12,5 @@ exports.listar=async(req,res)=>{
    WHERE p.sesion_division_id=? ORDER BY p.creado_en,p.id`,[division.id]);
   return res.json({datos:pagos});
  }catch(e){console.error('Pagos de división:', new Error('Fallo interno; detalles sensibles omitidos.').stack);return res.status(500).json({error:'No fue posible consultar los pagos de esta división.'});}
- finally{if(c)await c.end();}
+ finally{if(c)await c.release();}
 };

@@ -1,13 +1,7 @@
 const mysql = require('mysql2');
+const {clearTimeout} = require('node:timers');
+const {registrarError} = require('../services/errorLog');
 require('dotenv').config();
-
-// ==========================================
-// CONFIGURACIÓN DE BASE DE DATOS
-// ==========================================
-const entero = (valor, defecto) => {
-  const n = Number.parseInt(valor, 10);
-  return Number.isInteger(n) && n > 0 ? n : defecto;
-};
 
 const dbConfig = {
   host: process.env.DB_HOST,
@@ -15,119 +9,81 @@ const dbConfig = {
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  // DATETIME UTC se interpreta como UTC, independientemente de la zona de Node.
-  // Las columnas históricas locales se convierten explícitamente en sus SELECT.
   timezone: 'Z',
-  dateStrings: ['DATE']
+  dateStrings: ['DATE'],
+  connectTimeout: 10000,
+  enableKeepAlive: true,
+  keepAliveInitialDelay: 10000
 };
 
-// ==========================================
-// POOL DE CONEXIONES
-// ==========================================
-// El pool descarta las conexiones muertas (ECONNRESET, cortes por inactividad)
-// y abre otras nuevas. La conexión única anterior no tenía listener de 'error':
-// al cortarse, Node lanzaba "Unhandled 'error' event" y el proceso terminaba.
 const pool = mysql.createPool({
   ...dbConfig,
-  waitForConnections: true,
-  connectionLimit: entero(process.env.DB_POOL_LIMIT, 10),
-  queueLimit: 0,
-  connectTimeout: entero(process.env.DB_CONNECT_TIMEOUT_MS, 10000),
-  enableKeepAlive: true,
-  keepAliveInitialDelay: 10000,
-  maxIdle: entero(process.env.DB_POOL_MAX_IDLE, 5),
-  idleTimeout: entero(process.env.DB_POOL_IDLE_TIMEOUT_MS, 60000)
+  connectionLimit: 10,
+  maxIdle: 5,
+  idleTimeout: 60000,
+  // Rechazar saturación en vez de acumular solicitudes sin límite de tiempo.
+  waitForConnections: false
 });
 
-const registrar = (contexto, error) =>
-  console.error(`MySQL (${contexto}): ${error && error.code ? error.code : 'error de conexión'}`);
-
-// Cada conexión nueva recibe un listener: un error de red en una conexión
-// ociosa se registra y el pool la descarta. Los errores de una consulta en
-// curso siguen rechazando su promesa; nada se oculta ni se continúa en falso.
-pool.on('connection', (conexion) => {
-  conexion.on('error', (error) => registrar('conexión descartada', error));
+pool.on('error', error => registrarError('Pool MariaDB', error));
+pool.on('connection', connection => {
+  // mysql2 retira las conexiones rotas del pool. El listener evita que un error
+  // de socket sin consulta activa se convierta en una excepción no manejada.
+  connection.on('error', error => registrarError('Conexión MariaDB', error));
+  const query = connection.query.bind(connection);
+  connection.query = (sql, values, callback) => {
+    // Pool.query entrega un comando ya creado; conservar callback y listeners.
+    const command = typeof sql?.start === 'function' ? sql : mysql.createQuery(sql, values, callback, connection.config);
+    command.timeout = command.timeout || 30000;
+    const onError = error => {
+      if (error && command.queryTimeout) { clearTimeout(command.queryTimeout); command.queryTimeout = null; }
+      if (error?.code === 'PROTOCOL_SEQUENCE_TIMEOUT') {
+        // El resultado de una escritura puede ser incierto: descartar, sin repetir.
+        connection.destroy();
+        registrarError('Timeout MariaDB; operación no reintentada', error);
+      }
+    };
+    if (command.onResult) {
+      const result = command.onResult;
+      command.onResult = (error, ...args) => { onError(error); result(error, ...args); };
+    } else command.once('error', onError);
+    return query(command);
+  };
 });
 
-// ==========================================
-// CONEXIÓN DEDICADA (para transacciones)
-// ==========================================
-// Devuelve UNA conexión del pool con API de promesas. Todas las consultas de
-// una transacción usan esa misma conexión. `end()` la devuelve al pool (es
-// idempotente); si la conexión falló, la destruye en lugar de reutilizarla, y
-// si queda una transacción abierta la revierte antes de devolverla.
-async function obtenerConexion() {
-  let conexion;
-  for (let intento = 0; ; intento += 1) {
-    conexion = await pool.promise().getConnection();
-    try {
-      await conexion.ping(); // detecta una conexión ociosa ya cortada
-      break;
-    } catch (error) {
-      conexion.connection.destroy();
-      if (intento >= 1) throw error; // un reintento: una conexión vieja es recuperable
-    }
-  }
-
-  let fallo = false;
-  let abierta = false;
-  let liberada = false;
-  const crudo = conexion.connection;
-  crudo.on('error', () => { fallo = true; });
-
-  const envolver = (fn) => async (...args) => {
-    try {
-      return await fn(...args);
-    } catch (error) {
-      if (error && (error.fatal || error.code === 'ECONNRESET' || error.code === 'PROTOCOL_CONNECTION_LOST')) fallo = true;
-      throw error;
-    }
+// Una transacción conserva la misma conexión hasta su liberación. Si no se pudo
+// confirmar COMMIT/ROLLBACK, se destruye para no reutilizar una sesión incierta.
+async function acquire() {
+  const connection = await pool.promise().getConnection();
+  let transaction = false, released = false;
+  const query = connection.query.bind(connection);
+  connection.query = (sql, ...args) => {
+    const text = typeof sql === 'string' ? sql : sql?.sql;
+    if (/^\s*(START TRANSACTION|BEGIN|SET TRANSACTION)\b/i.test(text || '')) transaction = true;
+    return query(sql, ...args);
   };
-  const query = conexion.query.bind(conexion);
-  const execute = conexion.execute.bind(conexion);
-  const begin = conexion.beginTransaction.bind(conexion);
-  const commit = conexion.commit.bind(conexion);
-  const rollback = conexion.rollback.bind(conexion);
-  conexion.query = envolver(query);
-  conexion.execute = envolver(execute);
-  conexion.beginTransaction = envolver(async () => { await begin(); abierta = true; });
-  conexion.commit = envolver(async () => { await commit(); abierta = false; });
-  conexion.rollback = envolver(async () => { try { await rollback(); } finally { abierta = false; } });
-
-  // Para estado de sesión que no pudo limpiarse (p. ej. GET_LOCK): no reutilizar.
-  conexion.descartar = () => { fallo = true; };
-
-  conexion.end = async () => {
-    if (liberada) return;
-    liberada = true;
-    if (abierta && !fallo) {
-      try { await rollback(); } catch (error) { fallo = true; }
-    }
-    if (fallo) crudo.destroy();
-    else conexion.release();
+  const begin = connection.beginTransaction.bind(connection);
+  const commit = connection.commit.bind(connection);
+  const rollback = connection.rollback.bind(connection);
+  const release = connection.release.bind(connection);
+  connection.beginTransaction = async () => { transaction = true; return begin(); };
+  connection.commit = async () => { const result = await commit(); transaction = false; return result; };
+  connection.rollback = async () => {
+    try { const result = await rollback(); transaction = false; return result; }
+    catch (error) { connection.destroy(); throw error; }
   };
-  return conexion;
+  connection.release = () => {
+    if (released) return;
+    released = true;
+    if (transaction) connection.destroy();
+    else release();
+  };
+  connection.end = async () => connection.release();
+  return connection;
 }
 
-// ==========================================
-// EXPORTACIONES
-// ==========================================
-
-// El pool conserva db.query(sql, params, cb) y db.promise().query(...).
 module.exports = pool;
-module.exports.obtenerConexion = obtenerConexion;
-
-// IMPORTANTE:
-// usamos "dbConfig" y NO "config",
-// porque "config" ya pertenece internamente a mysql2.
 module.exports.dbConfig = dbConfig;
-
-// Comprobación de arranque: si la base no responde, se registra y el pool
-// reintenta en la siguiente consulta; no termina el proceso.
-pool.query('SELECT 1', (err) => {
-  if (err) {
-    console.error('Error al conectar a la base de datos:', err.code || 'fallo de conexión');
-    return;
-  }
-  console.log('Pool de conexiones MySQL/MariaDB listo.');
-});
+module.exports.acquire = acquire;
+// Compatibilidad con el contrato publicado previamente en esta rama.
+module.exports.obtenerConexion = acquire;

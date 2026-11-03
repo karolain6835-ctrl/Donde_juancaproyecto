@@ -8,12 +8,12 @@ const cuotas = require('../services/divisionCuotasService');
 async function transaccion(req,res,operation,{soloLectura=false}={}){
  const actor=ejecutor(req,res);if(!actor)return;
  let c;
- try{c=await db.obtenerConexion();
+ try{c=await db.acquire();
   if(soloLectura){await c.query('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ');await c.query('START TRANSACTION WITH CONSISTENT SNAPSHOT, READ ONLY');}
   else await c.beginTransaction();
   const r=await operation(c,actor);await c.commit();return res.status(r.status).json({exito:true,data:r.data});}
- catch(e){if(c)await c.rollback();console.error('Division:', new Error('Fallo interno; detalles sensibles omitidos.').stack);return res.status(e.status||(['ER_DUP_ENTRY','ER_LOCK_DEADLOCK','ER_LOCK_WAIT_TIMEOUT'].includes(e.code)?409:500)).json({error:e.status?e.message:'No se pudo procesar la division. Reintenta con la misma clave.'});}
- finally{if(c)await c.end();}
+ catch(e){if(c)try{await c.rollback();}catch{/* Conservar el error original; acquire descarta la conexion. */}console.error('Division:', new Error('Fallo interno; detalles sensibles omitidos.').stack);return res.status(e.status||(['ER_DUP_ENTRY','ER_LOCK_DEADLOCK','ER_LOCK_WAIT_TIMEOUT'].includes(e.code)?409:500)).json({error:e.status?e.message:'No se pudo procesar la division. Reintenta con la misma clave.'});}
+ finally{if(c)await c.release();}
 }
 const iniciarSesionDivision=(req,res)=>transaccion(req,res,async(c,actor)=>{
  const {mesas_id,modalidad}=req.body||{};

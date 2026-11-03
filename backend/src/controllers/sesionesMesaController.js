@@ -7,7 +7,7 @@ async function operar(req, res, modo) {
   let c, abierta = false;
   try {
     if (modo === 'agregar') validarParticipante(req.body);
-    c = await db.obtenerConexion();
+    c = await db.acquire();
     await c.beginTransaction(); abierta = true;
     let datos, sesion;
     if (modo === 'consumos') {
@@ -42,7 +42,7 @@ async function operar(req, res, modo) {
     if (abierta) { try { await c.rollback(); } catch (rollback) { console.error('Rollback visita:', new Error('Fallo interno; detalles sensibles omitidos.').stack); } }
     const conflicto = ['ER_DUP_ENTRY','ER_LOCK_WAIT_TIMEOUT','ER_LOCK_DEADLOCK'].includes(error.code);
     return res.status(error.status || (conflicto ? 409 : 500)).json({ error: error.status ? error.message : conflicto ? 'Conflicto concurrente en la visita. Reintenta.' : 'No se pudo consultar o actualizar la visita.' });
-  } finally { if (c) { try { await c.end(); } catch (error) { console.error('Cierre visita:', new Error('Fallo interno; detalles sensibles omitidos.').stack); } } }
+  } finally { if (c) { try { await c.release(); } catch (error) { console.error('Cierre visita:', new Error('Fallo interno; detalles sensibles omitidos.').stack); } } }
 }
 exports.listar = (req,res) => operar(req,res,'listar');
 exports.agregar = (req,res) => operar(req,res,'agregar');
