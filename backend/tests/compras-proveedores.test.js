@@ -37,7 +37,7 @@ test('proveedores y compras por HTTP con MySQL temporal', {
     const modulo={exports:{}};
     vm.runInNewContext(fs.readFileSync(path.join(__dirname,'..',archivo),'utf8'),{
       module:modulo,exports:modulo.exports,
-      require:n=>Object.hasOwn(dependencias,n) ? dependencias[n] : (n === '../services/identidadService' ? require('../src/services/identidadService') : n === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : (n === '../services/auditoriaService' ? require('../src/services/auditoriaService') : require(n))),console:{error(){}}
+      require:require('./helpers/poolRequire')(n=>Object.hasOwn(dependencias,n) ? dependencias[n] : (n === '../services/identidadService' ? require('../src/services/identidadService') : n === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : (n === '../services/auditoriaService' ? require('../src/services/auditoriaService') : require(n)))),console:{error(){}}
     });
     return modulo.exports;
   };

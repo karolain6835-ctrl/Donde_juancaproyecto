@@ -1,4 +1,3 @@
-const mysql = require('mysql2');
 const db = require('../config/db');
 const { randomUUID } = require('node:crypto');
 const { centavos } = require('./liquidacionService');
@@ -31,7 +30,7 @@ const escrito = r => {if(r.affectedRows!==1)throw new Error('No se escribió exa
 const ejecutar = async(res,operacion,lectura=false)=>{
   let c,abierta=false;
   try{
-    c=mysql.createConnection(db.dbConfig).promise();
+    c=await db.acquire();
     if(lectura){await c.query('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ');await c.query('START TRANSACTION WITH CONSISTENT SNAPSHOT, READ ONLY');}
     else await c.beginTransaction();
     abierta=true;const r=await operacion(c);await c.commit();abierta=false;
@@ -41,7 +40,7 @@ const ejecutar = async(res,operacion,lectura=false)=>{
     if(['ER_DUP_ENTRY','ER_LOCK_DEADLOCK','ER_LOCK_WAIT_TIMEOUT'].includes(e.code))return res.status(409).json({error:'Conflicto concurrente; vuelve a consultar el resumen antes de intentar cerrar.'});
     if(!e.status)console.error('Error cierre:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
     return res.status(e.status||500).json({error:e.status?e.message:'No se pudo completar la operación de cierre.'});
-  }finally{if(c){try{await c.end();}catch(e){console.error('Cierre conexión caja:', new Error('Fallo interno; detalles sensibles omitidos.').stack);}}}
+  }finally{if(c){try{await c.release();}catch(e){console.error('Cierre conexión caja:', new Error('Fallo interno; detalles sensibles omitidos.').stack);}}}
 };
 const elegibles=async(c,inicio,fin,bloquear=false)=>{
   const [pagos]=await c.query(`SELECT p.id,p.metodo_de_pago,CAST(p.total_seleccionado AS CHAR) AS total_seleccionado,

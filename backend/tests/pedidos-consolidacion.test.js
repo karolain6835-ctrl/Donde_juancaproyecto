@@ -6,7 +6,7 @@ test('Consolidación real de pedidos, cantidades adicionales y concurrencia', { 
   let failMovement = false;
   const module = { exports: {} };
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/controllers/pedidosController.js'), 'utf8'), {
-    module, console: { error() {} }, require: name => {
+    module, console: { error() {} }, require: require('./helpers/poolRequire')(name => {
       if (name === '../config/db') return { dbConfig: sandbox.config, query: (sql, params, cb) => c.query(sql, params).then(([rows]) => cb(null, rows), cb) };
       if (name === 'mysql2') return { createConnection: config => {
         const real = require('mysql2').createConnection(config).promise();
@@ -16,7 +16,7 @@ test('Consolidación real de pedidos, cantidades adicionales y concurrencia', { 
         } }) };
       } };
       return require(name.startsWith('.') ? path.join(__dirname, '../src/controllers', name) : name);
-    },
+    }),
   });
   const controller = module.exports;
   const add = (cantidad = 2, precio = 100, pedido = 'p1', producto = 'pr') => new Promise((resolve, reject) => {

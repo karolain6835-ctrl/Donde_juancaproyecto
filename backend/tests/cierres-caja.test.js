@@ -15,7 +15,7 @@ test('Cierres: MySQL real y tablas temporales', {skip:process.env.RUN_MYSQL_CIER
     }
     const [columns]=await real.query('SHOW COLUMNS FROM pagos');assert.ok(columns.some(c=>c.Field==='verificado_en'),'Requiere v2.29');
     await real.query("INSERT INTO usuarios (id,nombre,email,password_hash,estado,roles_id) VALUES ('u1','Responsable','cierres@example.invalid','fixture','activo',1)");
-    const load=(archivo,dependencias)=>{const m={exports:{}};vm.runInNewContext(fs.readFileSync(path.join(__dirname,archivo),'utf8'),{module:m,exports:m.exports,console:{error(){}},require:n=>Object.hasOwn(dependencias,n)?dependencias[n]:(n === '../services/identidadService' ? require('../src/services/identidadService') : n === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(n))});return m.exports;};
+    const load=(archivo,dependencias)=>{const m={exports:{}};vm.runInNewContext(fs.readFileSync(path.join(__dirname,archivo),'utf8'),{module:m,exports:m.exports,console:{error(){}},require:require('./helpers/poolRequire')(n=>Object.hasOwn(dependencias,n)?dependencias[n]:(n === '../services/identidadService' ? require('../src/services/identidadService') : n === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(n)))});return m.exports;};
     const servicio=load('../src/services/cierresCajaService.js',{'mysql2':{createConnection:()=>({promise:()=>conexion})},'../config/db':{dbConfig:{}},'./liquidacionService':require('../src/services/liquidacionService')});
     const controlador=load('../src/controllers/cierresCajaController.js',{'../services/cierresCajaService':servicio});
     const rutas=load('../src/routes/cierresCajaRoutes.js',{'../controllers/cierresCajaController':controlador});

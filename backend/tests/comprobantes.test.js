@@ -35,7 +35,7 @@ test('Comprobantes: HTTP y MySQL real con tablas temporales', {skip:process.env.
     }
     await real.query("INSERT INTO usuarios (id,nombre,email,password_hash,estado,roles_id) VALUES ('u1','Emisor','comprobante@example.invalid','fixture','activo',1)");
     await real.query("INSERT INTO clientes (id,nombre,estado,usuarios_id) VALUES ('c1','Cliente Original','activo','u1')");
-    await real.query("INSERT INTO mesas (id,numero,estado) VALUES ('m1',991,'disponible')");
+    await real.query("INSERT INTO mesas (id,numero,estado,creado_en) VALUES ('m1',991,'disponible',UTC_TIMESTAMP())");
     await real.query(`INSERT INTO productos (id,nombre,codigo,precio_venta,costo_promedio_ponderado,cantidad_disponible,stock_minimo,estado,categorias_id,proveedores_id,historial_costos_id)
       VALUES ('pr1','Producto Original','COMP-TEST',999,1,10,0,'activo',1,'prov','hist')`);
     await real.query("INSERT INTO activos_juego (id,nombre,estado,tipo,precio_hora) VALUES ('a1','Billar Original','disponible','billar',999)");
@@ -57,15 +57,15 @@ test('Comprobantes: HTTP y MySQL real con tablas temporales', {skip:process.env.
     };
     const servicio={exports:{}};
     vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../src/services/comprobantesService.js'),'utf8'),{
-      module:servicio,console:{error(){}},require:n=>n==='./juegosPedidoService'?require('../src/services/juegosPedidoService'):n==='../config/db'?{dbConfig:{}}:n==='mysql2'?{createConnection:()=>({promise:crearConexion})}:n==='./liquidacionService'?liquidacion:(n === '../services/identidadService' ? require('../src/services/identidadService') : n === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(n))
+      module:servicio,console:{error(){}},require:require('./helpers/poolRequire')(n=>n==='./juegosPedidoService'?require('../src/services/juegosPedidoService'):n==='../config/db'?{dbConfig:{}}:n==='mysql2'?{createConnection:()=>({promise:crearConexion})}:n==='./liquidacionService'?liquidacion:(n === '../services/identidadService' ? require('../src/services/identidadService') : n === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(n)))
     });
     const controlador={exports:{}};
     vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../src/controllers/ventasController.js'),'utf8'),{
-      module:controlador,exports:controlador.exports,require:n=>n==='../services/comprobantesService'?servicio.exports:(n === '../services/identidadService' ? require('../src/services/identidadService') : n === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(n))
+      module:controlador,exports:controlador.exports,require:require('./helpers/poolRequire')(n=>n==='../services/comprobantesService'?servicio.exports:(n === '../services/identidadService' ? require('../src/services/identidadService') : n === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(n)))
     });
     const rutas={exports:{}};
     vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../src/routes/ventasRoutes.js'),'utf8'),{
-      module:rutas,require:n=>n==='../controllers/ventasController'?controlador.exports:(n === '../services/identidadService' ? require('../src/services/identidadService') : n === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(n))
+      module:rutas,require:require('./helpers/poolRequire')(n=>n==='../controllers/ventasController'?controlador.exports:(n === '../services/identidadService' ? require('../src/services/identidadService') : n === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(n)))
     });
     const express=require('express'),app=express();app.use(express.json()); app.use((req,res,next)=>{req.usuario={id:actor,rol:'Administrador'};next();});app.use('/api/ventas',rutas.exports);
     server=await new Promise(resolve=>{const s=app.listen(0,'127.0.0.1',()=>resolve(s));});

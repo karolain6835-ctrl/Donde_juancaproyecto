@@ -22,7 +22,7 @@ test('Imágenes HTTP/MariaDB: opcionales, permisos, reemplazo, eliminación, rol
   const c=await mysql.createConnection(config),root=await fs.mkdtemp(path.join(os.tmpdir(),'dj-images-'));
   const ids={user:randomUUID(),waiter:randomUUID(),a:randomUUID(),b:randomUUID(),prov:randomUUID()},cat=990001;
   let server,failAudit=false;const old=process.env.JWT_SECRET;process.env.JWT_SECRET=randomUUID()+randomUUID();
-  const load=(file,deps={},env=process)=>{const m={exports:{}};vm.runInNewContext(sync.readFileSync(path.join(__dirname,'../src',file),'utf8'),{module:m,exports:m.exports,process:env,__dirname:path.dirname(path.join(__dirname,'../src',file)),Buffer,console,require:n=>Object.hasOwn(deps,n)?deps[n]:require(n)});return m.exports;};
+  const load=(file,deps={},env=process)=>{const m={exports:{}};vm.runInNewContext(sync.readFileSync(path.join(__dirname,'../src',file),'utf8'),{module:m,exports:m.exports,process:env,__dirname:path.dirname(path.join(__dirname,'../src',file)),Buffer,console,require:require('./helpers/poolRequire')(n=>Object.hasOwn(deps,n)?deps[n]:require(n))});return m.exports;};
   const service=load('services/productoImagenService.js',{}, {env:{...process.env,PRODUCT_IMAGES_DIR:root}});
   const db={dbConfig:config,promise:()=>c,query:(sql,p,cb)=>{if(typeof p==='function'){cb=p;p=[];}c.query(sql,p).then(([r])=>cb(null,r),cb);}};
   const createConnection=()=>{const real=require('mysql2').createConnection(config).promise();return {promise:()=>({query:(s,p)=>{if(failAudit&&s.includes('INSERT INTO auditoria'))throw Error('Fallo auditado');return real.query(s,p);},beginTransaction:()=>real.beginTransaction(),commit:()=>real.commit(),rollback:()=>real.rollback(),end:()=>real.end()})};};

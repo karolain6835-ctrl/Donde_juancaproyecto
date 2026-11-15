@@ -1,4 +1,3 @@
-const mysql=require('mysql2');
 const db=require('../config/db');
 const {fechaLocalSQL}=require('../utils/fechaHora');
 const {consultarPedido,calcularCuenta}=require('../services/liquidacionService');
@@ -7,7 +6,7 @@ const dinero=n=>`${n/100n}.${String(n%100n).padStart(2,'0')}`;
 exports.obtener=async(req,res)=>{
  let c,abierta=false;
  try{
-  c=mysql.createConnection(db.dbConfig).promise();
+  c=await db.acquire();
   // Un GET no reserva saldo ni decide cierres: todas las consultas comparten
   // el mismo snapshot MVCC y no compiten con los bloqueos de los pagos.
   await c.query('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ');
@@ -36,6 +35,6 @@ exports.obtener=async(req,res)=>{
      JOIN pedido_items pi ON pi.id=di.pedido_item_id WHERE dp.sesion_division_id=sd.id AND pi.pedidos_id=?))))
    ORDER BY sd.creado_en,sd.id`,[ambito.sesion_mesa_id,pedido.id,pedido.id]);
   await c.commit();abierta=false;return res.json({datos:{pedido:{...pedido,...ambito},saldo:dinero(cuenta.saldo),pendiente_verificacion:dinero(cuenta.pendienteVerificacion),total_definitivo:cuenta.totalDefinitivo,tiene_division_activa:tieneDivisionActiva,items,divisiones}});
- }catch(e){if(abierta)await c.rollback();console.error('Contexto de división:', new Error('Fallo interno; detalles sensibles omitidos.').stack);return res.status(e.status||500).json({error:e.status?e.message:'No fue posible cargar la cuenta para dividir.'});}
- finally{if(c)await c.end();}
+ }catch(e){if(abierta)try{await c.rollback();}catch{/* Conservar el error original; acquire descarta la conexion. */}console.error('Contexto de división:', new Error('Fallo interno; detalles sensibles omitidos.').stack);return res.status(e.status||500).json({error:e.status?e.message:'No fue posible cargar la cuenta para dividir.'});}
+ finally{if(c)await c.release();}
 };

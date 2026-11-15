@@ -36,7 +36,7 @@ test('pagos y liquidación con MySQL y tablas temporales', {
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/controllers/pagosController.js'), 'utf8'), {
     module: modulo,
     exports: modulo.exports,
-    require: nombre => {
+    require: require('./helpers/poolRequire')(nombre => {
       if (nombre === '../utils/fechaHora') return require('../src/utils/fechaHora');
       if (nombre === '../config/db') return { dbConfig: {} };
       if (nombre === 'mysql2') return { createConnection: () => ({ promise: () => conexion }) };
@@ -44,7 +44,7 @@ test('pagos y liquidación con MySQL y tablas temporales', {
       if (nombre === '../services/divisionesService') return require('../src/services/divisionesService');
       if (nombre === '../services/liquidacionService') return require('../src/services/liquidacionService');
       return (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : (nombre === '../services/auditoriaService' ? require('../src/services/auditoriaService') : require(nombre)));
-    },
+    }),
     console: { error() {} }
   });
   const api = modulo.exports;

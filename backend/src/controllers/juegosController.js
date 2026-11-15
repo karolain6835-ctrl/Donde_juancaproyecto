@@ -2,7 +2,6 @@ const {pedidoJuegoSQL}=require('../services/juegosPedidoService');
 const {bloquearPedido}=require('../services/liquidacionService');
 const {validarSesionPedido}=require('../services/sesionesMesaService');
 const { ejecutor } = require('../services/identidadService');
-const mysql = require('mysql2');
 const db = require('../config/db');
 const { randomUUID } = require('node:crypto');
 const { calcularCosto } = require('../services/juegosService');
@@ -22,7 +21,7 @@ const campos = (body, nombres) => {
 const ejecutar = async (res, operacion, transaccion = false) => {
   let conexion, abierta = false;
   try {
-    conexion = mysql.createConnection(db.dbConfig).promise();
+    conexion = await db.acquire();
     if (transaccion) { await conexion.beginTransaction(); abierta = true; }
     const respuesta = await operacion(conexion);
     if (abierta) { await conexion.commit(); abierta = false; }
@@ -35,7 +34,7 @@ const ejecutar = async (res, operacion, transaccion = false) => {
     return res.status(error.status || 500).json({ error: error.status ? error.message : 'No se pudo completar la operación de juegos.' });
   } finally {
     if (conexion) {
-      try { await conexion.end(); } catch (e) { console.error('Cierre de conexión de juegos:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
+      try { await conexion.release(); } catch (e) { console.error('Cierre de conexión de juegos:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
     }
   }
 };

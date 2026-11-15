@@ -1,7 +1,6 @@
 const {fechaLocalSQL,horaBogotaSQL}=require('../utils/fechaHora');
 const { ejecutor } = require('../services/identidadService');
 const db = require('../config/db');
-const mysql = require('mysql2');
 const crypto = require('crypto');
 
 // ==========================================
@@ -27,7 +26,7 @@ const actualizarEstadoPedido = async (req, res) => {
   let transaccionIniciada = false;
   const rechazar = (status, mensaje) => { throw Object.assign(new Error(mensaje), { status }); };
   try {
-    conexion = mysql.createConnection(db.dbConfig).promise();
+    conexion = await db.acquire();
     await conexion.beginTransaction();
     transaccionIniciada = true;
     const [ubicacion] = await conexion.query(
@@ -104,7 +103,7 @@ const actualizarEstadoPedido = async (req, res) => {
     });
   } finally {
     if (conexion) {
-      try { await conexion.end(); }
+      try { await conexion.release(); }
       catch (errorConexion) { console.error('Error al cerrar conexión Kanban:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
     }
   }
@@ -183,7 +182,7 @@ const cambiarLineasPedido = async (req, res, despacho = false) => {
   let conexion, abierta = false;
   const reject = (status, message) => { throw Object.assign(new Error(message), { status }); };
   try {
-    conexion = mysql.createConnection(db.dbConfig).promise();
+    conexion = await db.acquire();
     await conexion.beginTransaction(); abierta = true;
     const [[pedido]] = await conexion.query('SELECT id,estado FROM pedidos WHERE id=? FOR UPDATE', [id]);
     if (!pedido) reject(404, 'Pedido no encontrado.');
@@ -208,7 +207,7 @@ const cambiarLineasPedido = async (req, res, despacho = false) => {
     if (abierta) { try { await conexion.rollback(); } catch (rollback) { console.error('Rollback aceptación:', new Error('Fallo interno; detalles sensibles omitidos.').stack); } }
     const concurrent = ['ER_LOCK_DEADLOCK', 'ER_LOCK_WAIT_TIMEOUT'].includes(error.code);
     return res.status(error.status || (concurrent ? 409 : 500)).json({ error: error.status ? error.message : concurrent ? 'Conflicto concurrente. Reintenta la aceptación.' : 'No se pudo aceptar el pedido.' });
-  } finally { if (conexion) { try { await conexion.end(); } catch (error) { console.error('Cierre aceptación:', new Error('Fallo interno; detalles sensibles omitidos.').stack); } } }
+  } finally { if (conexion) { try { await conexion.release(); } catch (error) { console.error('Cierre aceptación:', new Error('Fallo interno; detalles sensibles omitidos.').stack); } } }
 };
 const aceptarPedido = (req, res) => cambiarLineasPedido(req, res);
 const despacharTodo = (req, res) => cambiarLineasPedido(req, res, true);

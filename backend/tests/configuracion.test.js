@@ -10,7 +10,7 @@ test('Configuracion: HTTP real JWT, persistencia MySQL temporal, auditoria y rol
  require('dotenv').config({path:path.join(__dirname,'../.env'),quiet:true});
  const c=await require('mysql2/promise').createConnection({host:process.env.DB_HOST,port:process.env.DB_PORT,user:process.env.DB_USER,password:process.env.DB_PASSWORD,database:process.env.DB_NAME});
  const express=require('express'),jwt=require('jsonwebtoken');let server,fallar=false;const old=process.env.JWT_SECRET;process.env.JWT_SECRET='configuracion-test-secreto-exclusivo-1234567890';
- const load=(file,deps)=>{const m={exports:{}};vm.runInNewContext(fs.readFileSync(path.join(__dirname,file),'utf8'),{module:m,exports:m.exports,process,Buffer,console,require:n=>Object.hasOwn(deps,n)?deps[n]:require(n)});return m.exports;};
+ const load=(file,deps)=>{const m={exports:{}};vm.runInNewContext(fs.readFileSync(path.join(__dirname,file),'utf8'),{module:m,exports:m.exports,process,Buffer,console,require:require('./helpers/poolRequire')(n=>Object.hasOwn(deps,n)?deps[n]:require(n))});return m.exports;};
  const query=async(s,p)=>{if(fallar&&s.includes('INSERT INTO auditoria'))throw new Error('Fallo auditoria');return c.query(s,p);};
  const db={dbConfig:{},promise:()=>({query})};
  try{

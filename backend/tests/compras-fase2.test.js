@@ -5,12 +5,12 @@ const audit=require('../src/services/auditoriaService');
 const cargarServicio=(c)=>{
  const cache=new Map();const load=f=>{
   f=path.resolve(__dirname,'../src',f);if(cache.has(f))return cache.get(f);
-  const m={exports:{}};vm.runInNewContext(fs.readFileSync(f,'utf8'),{module:m,exports:m.exports,console:{error(){}},require:n=>{
+  const m={exports:{}};vm.runInNewContext(fs.readFileSync(f,'utf8'),{module:m,exports:m.exports,console:{error(){}},require:require('./helpers/poolRequire')(n=>{
    if(n==='mysql2')return {createConnection:()=>({promise:()=>c})};
    if(n==='../config/db')return {dbConfig:{}};
    if(n.startsWith('.'))return load(path.resolve(path.dirname(f),n+'.js'));
    return require(n);
-  }});cache.set(f,m.exports);return m.exports;
+  })});cache.set(f,m.exports);return m.exports;
  };return load('services/recepcionesCompraService.js');
 };
 test('Compras Fase 2: MariaDB desechable, trigger y conexiones independientes',{skip:process.env.RUN_MYSQL_COMPRAS_FASE2_TESTS!=='1'},async t=>{

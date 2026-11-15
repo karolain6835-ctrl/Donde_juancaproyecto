@@ -1,4 +1,3 @@
-const mysql=require('mysql2');
 const db=require('../config/db');
 const servicio=require('../services/auditoriaLecturaService');
 exports.listar=async(req,res)=>{
@@ -7,8 +6,8 @@ exports.listar=async(req,res)=>{
  try{servicio.filtros(req.query);}catch(e){return res.status(e.status===400?400:500).json({error:e.status===400?e.message:'Error interno del servidor.'});}
  let c;
  try{
-  c=mysql.createConnection(db.dbConfig).promise();await c.beginTransaction();
+  c=await db.acquire();await c.beginTransaction();
   const r=await servicio.listar(c,req.query);await c.commit();return res.json(r);
  }catch(e){if(c)try{await c.rollback();}catch{/* No exponer información SQL. */}return res.status(500).json({error:'No fue posible consultar la auditoría.'});}
- finally{if(c)try{await c.end();}catch{/* La respuesta ya fue emitida. */}}
+ finally{if(c)try{await c.release();}catch{/* La respuesta ya fue emitida. */}}
 };

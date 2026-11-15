@@ -57,7 +57,7 @@ test('HTTP/MySQL: contextos y pagos concurrentes, recargas y cierre único', {
     const load = file => {
       const m = { exports: {} };
       vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/controllers', file), 'utf8'), {
-        module: m, exports: m.exports, console: { error() {} }, require: name => {
+        module: m, exports: m.exports, console: { error() {} }, require: require('./helpers/poolRequire')(name => {
           if (name === '../config/db') return { dbConfig };
           if (name === 'mysql2') return { createConnection: cfg => {
             const real = require('mysql2').createConnection(cfg).promise();
@@ -73,7 +73,7 @@ test('HTTP/MySQL: contextos y pagos concurrentes, recargas y cierre único', {
             }) };
           } };
           return require(name.startsWith('.') ? path.join(__dirname, '../src/controllers', name) : name);
-        }
+        })
       });
       return m.exports;
     };

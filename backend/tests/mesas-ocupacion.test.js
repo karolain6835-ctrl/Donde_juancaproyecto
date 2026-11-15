@@ -4,7 +4,7 @@ const { evaluarLiberacionMesa } = require('../src/services/liquidacionService');
 function load(name, connection) {
   const module = { exports: {} };
   const db = { dbConfig: {}, query(sql, params, callback) { if (typeof params === 'function') { callback = params; params = []; } connection.query(sql, params).then(([rows]) => callback(null, rows), callback); } };
-  vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/controllers', name), 'utf8'), { module, exports: module.exports, console: { error() {} }, require: name => name === '../config/db' ? db : name === 'mysql2' ? { createConnection: () => ({ promise: () => connection }) } : require(name.startsWith('.') ? path.join(__dirname, '../src/controllers', name) : name) });
+  vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/controllers', name), 'utf8'), { module, exports: module.exports, console: { error() {} }, require: require('./helpers/poolRequire')(name => name === '../config/db' ? db : name === 'mysql2' ? { createConnection: () => ({ promise: () => connection }) } : require(name.startsWith('.') ? path.join(__dirname, '../src/controllers', name) : name)) });
   return module.exports;
 }
 const invoke = (fn, body = {}, params = {}) => new Promise((resolve, reject) => {

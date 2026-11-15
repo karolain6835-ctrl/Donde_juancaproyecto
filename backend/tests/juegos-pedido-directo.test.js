@@ -6,7 +6,7 @@ test('Juegos por pedido: migracion, historicos, cobro, comprobantes, traslado y 
  function load(file){
   const full=path.resolve(__dirname,'../src',file);if(cache.has(full))return cache.get(full);
   const m={exports:{}};cache.set(full,m.exports);
-  vm.runInNewContext(fs.readFileSync(full,'utf8'),{module:m,exports:m.exports,console:{error(){},log(){}},require:name=>{
+  vm.runInNewContext(fs.readFileSync(full,'utf8'),{module:m,exports:m.exports,console:{error(){},log(){}},require:require('./helpers/poolRequire')(name=>{
    if(name==='mysql2')return {createConnection:()=>({promise:()=>{
     const db=require('mysql2/promise').createConnection(sandbox.config);
     return {beginTransaction:async()=> (await db).beginTransaction(),commit:async()=> (await db).commit(),rollback:async()=> (await db).rollback(),end:async()=> (await db).end(),
@@ -15,14 +15,14 @@ test('Juegos por pedido: migracion, historicos, cobro, comprobantes, traslado y 
    if(name.endsWith('/config/db'))return {dbConfig:sandbox.config,query:(sql,args,cb)=>{if(typeof args==='function'){cb=args;args=[];}c.query(sql,args).then(([r])=>cb(null,r),cb);}};
    if(name.startsWith('.'))return load(path.resolve(path.dirname(full),name+'.js'));
    return require(name);
-  }});cache.set(full,m.exports);return m.exports;
+  })});cache.set(full,m.exports);return m.exports;
  }
  const call=async(fn,body={},params={},query={})=>{let r;await fn({body,params,query,usuario:{id:'u',rol:'Administrador'},get:()=> 'clave-juegos-1'},{status(s){this.s=s;return this;},json(data){r={status:this.s||200,data:JSON.parse(JSON.stringify(data))};}});return r;};
  const juegos=load('controllers/juegosController.js'),cuotas=load('controllers/divisionesController.js');
  const liquidacion=require('../src/services/liquidacionService');
  async function nueva(){
   const id=++n,mesa='m'+id,pedido='p'+id,activo='a'+id;
-  await c.query("INSERT INTO mesas(id,numero,estado) VALUES (?,?,'disponible')",[mesa,id]);
+  await c.query("INSERT INTO mesas(id,numero,estado,creado_en) VALUES (?,?,'disponible',UTC_TIMESTAMP())",[mesa,id]);
   await c.query("INSERT INTO pedidos(id,estado,creado_en,mesas_id,usuarios_id,clientes_id) VALUES (?,'abierto',NOW(),?,'u','cl')",[pedido,mesa]);
   await c.query("INSERT INTO sesiones_mesa(id,mesas_id,estado,iniciada_en) VALUES (?,?,'activa',NOW())",['v'+id,mesa]);
   await c.query('UPDATE pedidos SET sesion_mesa_id=? WHERE id=?',['v'+id,pedido]);

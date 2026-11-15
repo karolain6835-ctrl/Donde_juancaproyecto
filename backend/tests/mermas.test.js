@@ -51,13 +51,13 @@ test('API de mermas contra MySQL con tablas temporales', {
     const modulo = { exports: {} };
     vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/controllers/mermasController.js'), 'utf8'), {
       module: modulo, exports: modulo.exports,
-      require: nombre => nombre === '../config/db' ? { dbConfig: {} }
-        : nombre === 'mysql2' ? { createConnection: () => ({ promise: () => conexion }) } : (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(nombre)),
+      require: require('./helpers/poolRequire')(nombre => nombre === '../config/db' ? { dbConfig: {} }
+        : nombre === 'mysql2' ? { createConnection: () => ({ promise: () => conexion }) } : (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(nombre))),
       console: { error() {} }
     });
     const rutas = { exports: {} };
     vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../src/routes/mermasRoutes.js'), 'utf8'), {
-      module: rutas, require: nombre => nombre === '../controllers/mermasController' ? modulo.exports : (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(nombre))
+      module: rutas, require: require('./helpers/poolRequire')(nombre => nombre === '../controllers/mermasController' ? modulo.exports : (nombre === '../services/identidadService' ? require('../src/services/identidadService') : nombre === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : require(nombre)))
     });
     const app = express(); app.use(express.json()); app.use((req,res,next)=>{req.usuario={id:actor,rol:'Administrador'};next();}); app.use('/api/mermas', rutas.exports);
     server = await new Promise(resolve => { const s = app.listen(0, '127.0.0.1', () => resolve(s)); });

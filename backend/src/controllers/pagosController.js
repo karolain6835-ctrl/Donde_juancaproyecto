@@ -4,7 +4,6 @@ const { ejecutor } = require('../services/identidadService');
 const db = require('../config/db');
 const { completarAlVerificar } = require('../services/divisionCuotasService');
 const { validarPago } = require('../services/divisionesService');
-const mysql = require('mysql2');
 const crypto = require('crypto');
 const { bloquearPedido, calcularCuenta, validarImporte, actualizarLiquidacion,
   validarParticipante, errorLiquidacion, centavos } = require('../services/liquidacionService');
@@ -102,7 +101,7 @@ exports.registrarPago = async (req, res) => {
     // CONEXIÓN INDEPENDIENTE PARA TRANSACCIÓN
     // ==========================================
 
- conexion = mysql.createConnection(db.dbConfig).promise();
+ conexion = await db.acquire();
 
     await conexion.beginTransaction();
     transaccionIniciada = true;
@@ -288,7 +287,7 @@ exports.registrarPago = async (req, res) => {
     // por eso sí debemos cerrarla.
     if (conexion) {
       try {
-        await conexion.end();
+        await conexion.release();
       } catch (errorConexion) {
         console.error('Error al cerrar la conexión de pago:', new Error('Fallo interno; detalles sensibles omitidos.').stack);
       }
@@ -309,7 +308,7 @@ exports.verificarPago = async (req, res) => {
   let conexion;
   let transaccionIniciada = false;
   try {
-    conexion = mysql.createConnection(db.dbConfig).promise();
+    conexion = await db.acquire();
     await conexion.beginTransaction();
     transaccionIniciada = true;
     const [ubicacion] = await conexion.query('SELECT pedidos_id FROM pagos WHERE id = ?', [req.params.id]);
@@ -370,7 +369,7 @@ exports.verificarPago = async (req, res) => {
     return res.status(error.status || 500).json({ error: error.status ? error.message : 'Error al verificar el pago.' });
   } finally {
     if (conexion) {
-      try { await conexion.end(); }
+      try { await conexion.release(); }
       catch (errorConexion) { console.error('Error al cerrar conexión de verificación:', new Error('Fallo interno; detalles sensibles omitidos.').stack); }
     }
   }

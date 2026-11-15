@@ -16,7 +16,7 @@ function fixture(estado='disponible',active=false){
  }};
  return {c,calls,historic,get estado(){return stored;},set fail(v){fail=v;}};
 }
-function controller(f){const mod={exports:{}};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../src/controllers/juegosController.js'),'utf8'),{module:mod,exports:mod.exports,console:{error(){}},require:n=>n==='mysql2'?{createConnection:()=>({promise:()=>f.c})}:n==='../config/db'?{dbConfig:{}}:n==='../services/liquidacionService'?{bloquearPedido:async()=>({id:'p',mesas_id:'m',estado:'abierto'})}:n==='../services/sesionesMesaService'?{validarSesionPedido:async()=>{},asegurarSesion:async()=>{}}:n.startsWith('../')?require(path.join(__dirname,'../src/controllers',n)):require(n)});return mod.exports;}
+function controller(f){const mod={exports:{}};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../src/controllers/juegosController.js'),'utf8'),{module:mod,exports:mod.exports,console:{error(){}},require:n=>n==='mysql2'?{createConnection:()=>({promise:()=>f.c})}:n==='../config/db'?{acquire:async()=>({...f.c,release:()=>f.c.end()})}:n==='../services/liquidacionService'?{bloquearPedido:async()=>({id:'p',mesas_id:'m',estado:'abierto'})}:n==='../services/sesionesMesaService'?{validarSesionPedido:async()=>{},asegurarSesion:async()=>{}}:n.startsWith('../')?require(path.join(__dirname,'../src/controllers',n)):require(n)});return mod.exports;}
 function response(){return {code:200,status(n){this.code=n;return this;},json(body){this.body=body;return this;}};}
 test('Mantenimiento persiste, registra historial y auditoría del actor; no toca históricos ni stock',async()=>{
  const f=fixture();const history=JSON.stringify(f.historic);

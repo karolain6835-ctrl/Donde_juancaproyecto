@@ -1,4 +1,3 @@
-const mysql = require('mysql2');
 const db = require('../config/db');
 const servicio = require('../services/recuperacionService');
 const {crearCorreo} = require('../services/correoRecuperacionService');
@@ -19,7 +18,7 @@ function despachar(c, correo, result) {
       catch (fallo) { registrarError('Invalidar recuperación no enviada', fallo); }
       registrarError('No se aceptó correo de recuperación', e);
     } finally {
-      try { await c.end(); } catch { /* Sin secretos en logs. */ }
+      try { await c.release(); } catch { /* Sin secretos en logs. */ }
       enCurso--;
     }
   })();
@@ -38,7 +37,7 @@ function handler(accion) {
         enCurso++;reservado=true;
         correo = crearCorreo(); await correo.preparar();
       }
-      c = mysql.createConnection(db.dbConfig).promise();
+      c = await db.acquire();
       await c.beginTransaction();
       const result = accion === 'solicitar' ? await servicio.solicitar(c, servicio.correo(req.body), secret) : accion === 'verificar' ? await servicio.verificar(c, servicio.correo(req.body), req.body.codigo, secret) : await servicio.restablecer(c, req.body);
       await c.commit();
@@ -59,7 +58,7 @@ function handler(accion) {
       return res.status(500).json({error: 'Error interno del servidor.'});
     } finally {
       if (reservado) enCurso--;
-      if (c) try { await c.end(); } catch { /* Respuesta emitida. */ }
+      if (c) try { await c.release(); } catch { /* Respuesta emitida. */ }
     }
   };
 }

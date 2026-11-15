@@ -12,12 +12,12 @@ test('Fase 3B: actores y atomicidad con MySQL temporal',{skip:process.env.RUN_MY
  const cache=new Map();
  const load=file=>{
   file=path.resolve(__dirname,'../src',file);if(cache.has(file))return cache.get(file);
-  const m={exports:{}};vm.runInNewContext(fs.readFileSync(file,'utf8'),{module:m,exports:m.exports,console:{error(){},log(){}},require:n=>{
+  const m={exports:{}};vm.runInNewContext(fs.readFileSync(file,'utf8'),{module:m,exports:m.exports,console:{error(){},log(){}},require:require('./helpers/poolRequire')(n=>{
    if(n==='mysql2')return {createConnection:()=>({promise:()=>c})};
    if(n==='../config/db')return {dbConfig:{},query:(sql,p,cb)=>real.query(sql,p).then(([r])=>cb(null,r),cb)};
    if(n.startsWith('.'))return load(path.resolve(path.dirname(file),n+'.js'));
    return require(n);
-  }});cache.set(file,m.exports);return m.exports;
+  })});cache.set(file,m.exports);return m.exports;
  };
  const call=async(fn,body={},params={})=>{let r;await fn({body,params,usuario:{id:'u2'},get:()=> 'audit-clave-1'},{status(s){this.s=s;return this;},json(data){r={status:this.s||200,data};}});return r;};
  try{
@@ -33,7 +33,7 @@ test('Fase 3B: actores y atomicidad con MySQL temporal',{skip:process.env.RUN_MY
   const reset=async()=>{
    fallo=null;auditorias=0;await real.query('DELETE FROM sesiones_mesa');await real.query('DELETE FROM jugadores');for(const table of ['auditoria','pagos','pedido_items','pedidos','compras','division_items_detalle','division_participantes','sesiones_division_cuentas','mesas'])await real.query('DELETE FROM '+table);
    await real.query("UPDATE clientes SET nombre='Cliente',estado='activo'");
-   await real.query("INSERT INTO mesas(id,numero,estado) VALUES ('m1',1,'ocupada'),('m2',2,'disponible')");
+   await real.query("INSERT INTO mesas(id,numero,estado,creado_en) VALUES ('m1',1,'ocupada',UTC_TIMESTAMP()),('m2',2,'disponible',UTC_TIMESTAMP())");
    await real.query("INSERT INTO pedidos(id,estado,creado_en,mesas_id,usuarios_id,clientes_id) VALUES ('p','abierto',UTC_TIMESTAMP(),'m1','u1','cl')");
    await real.query("INSERT INTO pedido_items(id,precio_unitario,pedido_id,producto_id,cantidad_pedida,cantidad_pagada,estado,pedidos_id,productos_id) VALUES ('i',10,'p','pr',1,0,'preparando','p','pr')");
    await real.query("INSERT INTO pagos(id,metodo_de_pago,total_seleccionado,estado,verificacion_estado,creado_en,pedidos_id,usuarios_id) VALUES ('pa','efectivo',10,'pendiente','pendiente',UTC_TIMESTAMP(),'p','u1')");

@@ -2,11 +2,11 @@ const test=require('node:test'),assert=require('node:assert/strict'),fs=require(
 const {crear,ejecutarSQL}=require('./helpers/comprasSandbox');
 test('Rondas reales: atomicidad, idempotencia, separación, repetición y concurrencia',{skip:process.env.RUN_MYSQL_RONDAS_TESTS!=='1'},async t=>{
  const sandbox=await crear(),c=sandbox.connection;let fail=false,writes=0;
- const load=file=>{const m={exports:{}};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../src/controllers',file),'utf8'),{module:m,exports:m.exports,console:{error(){}},require:n=>{
+ const load=file=>{const m={exports:{}};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../src/controllers',file),'utf8'),{module:m,exports:m.exports,console:{error(){}},require:require('./helpers/poolRequire')(n=>{
   if(n==='../config/db')return {dbConfig:sandbox.config,query:(sql,args,cb)=>{if(typeof args==='function'){cb=args;args=[];}c.query(sql,args).then(([r])=>cb(null,r),cb);}};
   if(n==='mysql2')return {createConnection(config){const real=require('mysql2').createConnection(config).promise();return {promise:()=>({beginTransaction:()=>real.beginTransaction(),commit:()=>real.commit(),rollback:()=>real.rollback(),end:()=>real.end(),query(sql,args){if(fail&&sql.includes('INSERT INTO movimientos_inventario')&&++writes===2)throw new Error('Fallo segundo movimiento');return real.query(sql,args);}})};}};
   return require(n.startsWith('.')?path.join(__dirname,'../src/controllers',n):n);
- }});return m.exports;};
+ })});return m.exports;};
  const rounds=load('rondasConsumoController.js'),orders=load('pedidosController.js');
  const call=(fn,body={},params={},key='clave-0001')=>new Promise((resolve,reject)=>Promise.resolve(fn({body,params,usuario:{id:'u',rol:'Administrador'},get:()=>key},{status(s){this.s=s;return this;},json(data){resolve({status:this.s||200,data});}})).catch(reject));
  const line=(person='a',producto='pr',cantidad=1)=>({participante_id:person,productos_id:producto,cantidad});

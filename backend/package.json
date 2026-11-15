@@ -1,10 +1,11 @@
 {
  "main": "src/index.js",
  "scripts": {
-  "test": "echo \"Error: no test specified\" && exit 1",
+  "test": "node --test tests/*.test.js",
   "start": "node src/index.js",
   "init:login:dev": "node scripts/inicializar-login-desarrollo.js",
-  "test:login": "node --test tests/login.test.js"
+  "test:login": "node --test tests/login.test.js",
+  "test:integration:pool": "node scripts/validar-pool-mariadb.cjs"
  },
  "keywords": [],
  "author": "",

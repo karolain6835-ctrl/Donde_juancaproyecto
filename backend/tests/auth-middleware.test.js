@@ -7,7 +7,7 @@ test('JWT y montaje: MySQL real con tablas temporales', {skip:process.env.RUN_MY
   let server,fallo=false;
   const db={promise:()=>({query:(sql,p)=>{if(fallo)throw new Error('Fallo privado SQL');return real.query(sql,p);}})};
   const load=(archivo,deps)=>{const m={exports:{}};vm.runInNewContext(fs.readFileSync(path.join(__dirname,archivo),'utf8'),{
-    module:m,exports:m.exports,process,Buffer,console:{log(){},error(){}},require:n=>Object.hasOwn(deps,n)?deps[n]:(n === '../services/identidadService' ? require('../src/services/identidadService') : n === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : (n === '../services/auditoriaService' ? require('../src/services/auditoriaService') : (n === '../services/historialClientesService' ? require('../src/services/historialClientesService') : require(n))))
+    module:m,exports:m.exports,process,Buffer,console:{log(){},error(){}},require:require('./helpers/poolRequire')(n=>Object.hasOwn(deps,n)?deps[n]:(n === '../services/identidadService' ? require('../src/services/identidadService') : n === '../middleware/rolesMiddleware' ? require('../src/middleware/rolesMiddleware') : (n === '../services/auditoriaService' ? require('../src/services/auditoriaService') : (n === '../services/historialClientesService' ? require('../src/services/historialClientesService') : require(n)))))
   });return m.exports;};
   try{
     for(const tabla of ['usuarios','roles','clientes']){await real.query(`CREATE TEMPORARY TABLE copia_auth_${tabla} LIKE ${tabla}`);await real.query(`CREATE TEMPORARY TABLE ${tabla} LIKE copia_auth_${tabla}`);}
@@ -26,6 +26,7 @@ test('JWT y montaje: MySQL real con tablas temporales', {skip:process.env.RUN_MY
     const stub=express.Router();stub.get('/',(req,res)=>res.json({usuario:req.usuario}));
     const deps={'express':()=>app,'cors':()=>((req,res,next)=>next()),'./config/db':db,'./middleware/authMiddleware':auth,
       './routes/clientesRoutes':clientesRouter,'./routes/usuariosRoutes':usuariosRouter,'dotenv':{config(){}}};
+ deps['./controllers/healthController']=()=>{throw new Error('Health checked in dedicated integration tests');};
  deps['./middleware/errorMiddleware']=require('../src/middleware/errorMiddleware');
     const codigo=fs.readFileSync(path.join(__dirname,'../src/index.js'),'utf8');
     for(const [,ruta]of codigo.matchAll(/require\('(\.\/routes\/[^']+)'\)/g))if(!deps[ruta])deps[ruta]=stub;
